@@ -55,8 +55,11 @@ var localized String NoAmmoLabel;
 // Vanilla Matters
 var float VM_mouseX;									// Just something to keep track of mouse position during a drag.
 var float VM_mouseY;
+var int VM_lastMouseSlotX;								// Last slot position the swap checks were run.
+var int VM_lastMouseSlotY;
 
 var bool VM_bSwapping;									// Means we're swapping.
+var bool VM_bValidSwap;
 var PersonaInventoryItemButton VM_swapOriginal;			// The original item being dragged.
 var float VM_swapOriginalX;								// The on screen coordinates.
 var float VM_swapOriginalY;
@@ -1438,15 +1441,20 @@ function UpdateDragMouse(float newX, float newY)
 
 		// Vanilla Matters: Gathers all item buttons in the drop area so check for swapping capabilities. We're only gonna do this if the item hasn't found a suitable drop place yet.
 		if ( !bValidDrop ) {
-			// VM: Fills the list with all item buttons under the mouse, excluding the dragged item or any duplicate.
-			PopulateSwapOthers( buttonInv );
-
-			// VM: Performs this check continously incase there's at least one position in a big item where a swap is possible. Hopefully not too taxing.
-			VM_bSwapping = CheckSwapOtherSlots();
-
 			// VM: Converts the coordinates from mouse location to grid position. This is where the dragged item will land.
 			ConvertCoordinates( self, VM_mouseX, VM_mouseY, winItems, relX, relY );
 			bValidDrop = CalculateItemPosition( buttonInv, relX, relY, slotX, slotY );
+
+			// VM: Only checks if the mouse has moved over to a new slot.
+			if ( bValidDrop && ( slotX != VM_lastMouseSlotX || slotY != VM_lastMouseSlotY ) ) {
+				// VM: Fills the list with all item buttons under the mouse, excluding the dragged item or any duplicate.
+				PopulateSwapOthers( buttonInv, slotX, slotY );
+
+				// VM: Performs this check everytime the player moves to a new slot, incase there's at least one position in a big item where a swap is possible.
+				VM_bValidSwap = CheckSwapOtherSlots();
+			}
+
+			VM_bSwapping = VM_bValidSwap;
 
 			// VM: Fills the draw coordinates of all swapOthers (to draw the yellow indicator), also saves the grid position of swapOriginal, if a swap is possible, also makes the item to be swapped glows green.
 			if ( VM_bSwapping ) {
@@ -1554,8 +1562,12 @@ event DrawWindow( GC gc ) {
 
 		// VM: Draws the yellow indicators.
 		gc.SetTileColor( VM_colSwap );
+
 		for ( i = 0; i < VM_swapOtherCount; i++ ) {
 			gc.DrawPattern( VM_swapOtherXs[i] + 1, VM_swapOtherYs[i] + 1, VM_swapOthers[i].width - 2, VM_swapOthers[i].height - 2, 0, 0, VM_swapOthers[i].fillTexture );
+			gc.SetStyle( DSTY_Masked );
+			gc.DrawTexture( VM_swapOtherXs[i] + ( ( VM_swapOthers[i].width / 2 ) - ( VM_swapOthers[i].iconPosWidth / 2 ) ), VM_swapOtherYs[i] + ( ( VM_swapOthers[i].height / 2 ) - ( VM_swapOthers[i].iconPosHeight / 2 ) ), VM_swapOthers[i].iconPosWidth, VM_swapOthers[i].iconPosHeight, 0, 0, VM_swapOthers[i].icon );
+			gc.SetStyle( DSTY_Translucent );
 		}
 	}
 	// VM: Draws bad location indicator.
@@ -1662,6 +1674,7 @@ function StartButtonDrag(ButtonWindow newDragButton)
 		// Vanilla Matters: Makes this the original swap button.
 		VM_swapOriginal = PersonaInventoryItemButton( dragButton );
 		VM_bSwapping = false;
+		VM_bValidSwap = false;
 	}
 	else
 	{
@@ -1818,6 +1831,7 @@ function FinishButtonDrag()
 			InitSwapOtherSlots();
 			ClearSwapOthers();
 			VM_bSwapping = false;
+			VM_bValidSwap = false;
 		}
 	}
 	else		// 'ObjectSlot'
@@ -1851,14 +1865,13 @@ function FinishButtonDrag()
 }
 
 // Vanilla Matters: Fills the array with item buttons in the potential space occupied of an item.
-function PopulateSwapOthers( Inventory item ) {
+function PopulateSwapOthers( Inventory item, int slotX, int slotY ) {
 	local Window win;
-	local int x, y, slotX, slotY;
+	local int x, y;
 	local float relX, relY;
 
-	// VM: Uses mouse coordinates, then converts them to item slots for accuracy.
-	ConvertCoordinates( self, VM_mouseX, VM_mouseY, winItems, relX, relY );
-	CalculateItemPosition( item, relX, relY, slotX, slotY );
+	VM_lastMouseSlotX = slotX;
+	VM_lastMouseSlotY = slotY;
 
 	ClearSwapOthers();
 
@@ -1875,6 +1888,8 @@ function PopulateSwapOthers( Inventory item ) {
 			win = None;
 		}
 	}
+
+	SortsBySpace();
 }
 
 // Vanilla Matters: Function to check if all of the swap slots are valid.
@@ -1988,6 +2003,26 @@ function bool CheckSwapOtherSlots() {
 	}
 
 	return bValid;
+}
+
+// Vanilla Matters: Sorts the swapOthers list by space occupied from highest to lowest.
+function SortsBySpace() {
+	local int i, j;
+	local PersonaInventoryItemButton tempButton;
+	local Inventory invA, invB;
+
+	for ( i = 0; i < VM_swapOtherCount - 1; i++ ) {
+		for ( j = 0; j < VM_swapOtherCount - 1 - i; j++ ) {
+			invA = Inventory( VM_swapOthers[j].GetClientObject() );
+			invB = Inventory( VM_swapOthers[j + 1].GetClientObject() );
+
+			if ( ( invA.invSlotsX * invA.invSlotsY ) <= ( invB.invSlotsX * invB.invSlotsY ) ) {
+				tempButton = VM_swapOthers[j];
+				VM_swapOthers[j] = VM_swapOthers[j + 1];
+				VM_swapOthers[j + 1] = tempButton;
+			}
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
