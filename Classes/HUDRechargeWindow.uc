@@ -157,6 +157,9 @@ event Tick(float deltaSeconds)
 		UpdateRepairBotWindows();
 		UpdateInfoText();
 		EnableButtons();
+
+		// Vanilla Matters: Fixes the bot not updating your energy properly.
+		UpdateBioWindows();
 	}
 	else
 	{

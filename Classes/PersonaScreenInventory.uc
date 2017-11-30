@@ -1452,19 +1452,21 @@ function UpdateDragMouse(float newX, float newY)
 
 				// VM: Performs this check everytime the player moves to a new slot, incase there's at least one position in a big item where a swap is possible.
 				VM_bValidSwap = CheckSwapOtherSlots();
+
+				if ( VM_bValidSwap ) {
+					// VM: Syncs draw coordinates for swappees.
+					SyncSwapOtherCoordinates();
+
+					// VM: Saves the grid position since it's valid.
+					VM_swapOriginalSlotX = slotX;
+					VM_swapOriginalSlotY = slotY;
+				}
 			}
 
 			VM_bSwapping = VM_bValidSwap;
 
 			// VM: Fills the draw coordinates of all swapOthers (to draw the yellow indicator), also saves the grid position of swapOriginal, if a swap is possible, also makes the item to be swapped glows green.
 			if ( VM_bSwapping ) {
-				// VM: Syncs draw coordinates for swappees.
-				SyncSwapOtherCoordinates();
-
-				// VM: Saves the grid position since it's valid.
-				VM_swapOriginalSlotX = slotX;
-				VM_swapOriginalSlotY = slotY;
-
 				bOverrideButtonColor = true;
 				invButton.ResetFill();
 				invButton.bDimIcon = false;
@@ -1675,6 +1677,8 @@ function StartButtonDrag(ButtonWindow newDragButton)
 		VM_swapOriginal = PersonaInventoryItemButton( dragButton );
 		VM_bSwapping = false;
 		VM_bValidSwap = false;
+		VM_lastMouseSlotX = -1;
+		VM_lastMouseSlotY = -1;
 	}
 	else
 	{
@@ -2016,7 +2020,7 @@ function SortsBySpace() {
 			invA = Inventory( VM_swapOthers[j].GetClientObject() );
 			invB = Inventory( VM_swapOthers[j + 1].GetClientObject() );
 
-			if ( ( invA.invSlotsX * invA.invSlotsY ) <= ( invB.invSlotsX * invB.invSlotsY ) ) {
+			if ( ( invA.invSlotsX * invA.invSlotsY ) < ( invB.invSlotsX * invB.invSlotsY ) ) {
 				tempButton = VM_swapOthers[j];
 				VM_swapOthers[j] = VM_swapOthers[j + 1];
 				VM_swapOthers[j + 1] = tempButton;
