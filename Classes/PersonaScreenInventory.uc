@@ -1879,8 +1879,8 @@ function PopulateSwapOthers( Inventory item, int slotX, int slotY ) {
 
 	ClearSwapOthers();
 
-	for ( x = 0; x < item.invSlotsX; x++ ) {
-		for ( y = 0; y < item.invSlotsY; y++ ) {
+	for ( y = 0; y < item.invSlotsY; y++ ) {
+		for ( x = 0; x < item.invSlotsX; x++ ) {
 			// VM: The + 1 is to fix a weird problem with FindWindow, sometime it can return a window way lower than our search area (lower means closer to the top left).
 			win = winItems.FindWindow( ( ( slotX + x ) * invButtonWidth ) + 1, ( ( slotY + y ) * invButtonHeight ) + 1, relX, relY );
 
