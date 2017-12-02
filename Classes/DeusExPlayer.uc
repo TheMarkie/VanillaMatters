@@ -3694,7 +3694,7 @@ function CreateDrone()
     aDrone.Speed = 75 + ( 25 * spyDroneLevel );
     aDrone.MaxSpeed = aDrone.Speed;
     aDrone.Damage = spyDroneLevelValue;
-    aDrone.blastRadius = 200 + ( 50 * spyDroneLevel );
+    aDrone.blastRadius = 160 + ( 80 * spyDroneLevel );
 	}
 }
 
