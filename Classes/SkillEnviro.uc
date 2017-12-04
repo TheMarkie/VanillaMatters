@@ -47,8 +47,5 @@ defaultproperties
      LevelValues(1)=0.750000
      LevelValues(2)=0.500000
      LevelValues(3)=0.250000
-     VM_SwimmingLevelValues(0)=1.000000
-     VM_SwimmingLevelValues(1)=1.500000
-     VM_SwimmingLevelValues(2)=2.000000
-     VM_SwimmingLevelValues(3)=2.500000
+     VM_subSkillClass=Class'DeusEx.SkillSwimming'
 }

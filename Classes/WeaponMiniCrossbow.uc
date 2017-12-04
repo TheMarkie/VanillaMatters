@@ -48,7 +48,7 @@ function Tick(float deltaTime)
 defaultproperties
 {
      LowAmmoWaterMark=4
-     GoverningSkill=Class'DeusEx.SkillWeaponHighPrecision'
+     GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      Concealability=CONC_All

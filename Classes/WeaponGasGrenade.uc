@@ -66,7 +66,7 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 defaultproperties
 {
      LowAmmoWaterMark=2
-     GoverningSkill=Class'DeusEx.SkillWeaponDestructive'
+     GoverningSkill=Class'DeusEx.SkillDemolition'
      EnemyEffective=ENMEFF_Organic
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_All

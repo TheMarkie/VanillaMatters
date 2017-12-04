@@ -34,7 +34,7 @@ defaultproperties
      mpBurnTime=15
      mpBurnDamage=2
      LowAmmoWaterMark=50
-     GoverningSkill=Class'DeusEx.SkillWeaponDestructive'
+     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
      ShotTime=0.100000

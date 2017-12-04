@@ -21,7 +21,7 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-     GoverningSkill=Class'DeusEx.SkillWeaponHighPrecision'
+     GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=0.010000
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_All

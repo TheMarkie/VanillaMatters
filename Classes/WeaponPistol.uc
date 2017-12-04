@@ -22,7 +22,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      LowAmmoWaterMark=6
-     GoverningSkill=Class'DeusEx.SkillWeaponBallistic'
+     GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
      ShotTime=0.600000

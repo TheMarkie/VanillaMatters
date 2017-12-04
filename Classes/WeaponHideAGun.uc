@@ -6,7 +6,7 @@ class WeaponHideAGun extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=0
-     GoverningSkill=Class'DeusEx.SkillWeaponDestructive'
+     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      NoiseLevel=0.010000
      Concealability=CONC_All
      ShotTime=0.300000

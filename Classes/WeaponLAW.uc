@@ -38,7 +38,7 @@ function BecomePickup()
 defaultproperties
 {
      LowAmmoWaterMark=0
-     GoverningSkill=Class'DeusEx.SkillWeaponDestructive'
+     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
      ShotTime=0.300000

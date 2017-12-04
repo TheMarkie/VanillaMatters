@@ -28,7 +28,7 @@ defaultproperties
 {
      mpNoScopeMult=0.350000
      LowAmmoWaterMark=6
-     GoverningSkill=Class'DeusEx.SkillWeaponHighPrecision'
+     GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
      ShotTime=1.500000

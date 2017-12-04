@@ -22,7 +22,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      LowAmmoWaterMark=12
-     GoverningSkill=Class'DeusEx.SkillWeaponDestructive'
+     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=2.000000
      HitDamage=35

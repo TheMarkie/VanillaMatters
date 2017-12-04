@@ -68,6 +68,12 @@ function CreateSkills(DeusExPlayer newPlayer)
 				}
 
 				LastSkill  = aSkill;
+
+				// Vanilla Matters: Creates subSkill.
+				if ( aSkill.VM_subSkillClass != None ) {
+					aSkill.VM_subSkill = Spawn( aSkill.Default.VM_subSkillClass, self );
+					aSkill.VM_subSkill.Player = player;
+				}
 			}
 		}
 	}
@@ -117,8 +123,17 @@ simulated function Skill GetSkillFromClass(class SkillClass)
 	aSkill = FirstSkill;
 	while(aSkill != None)
 	{
-		if (aSkill.Class == SkillClass)
+		// if (aSkill.Class == SkillClass)
+		// 	break;
+
+		// Vanilla Matters: Makes it also check for subSkill.
+		if ( aSkill.Class == SkillClass ) {
 			break;
+		}
+		else if ( aSkill.VM_subSkill != None && aSkill.VM_subSkill.Class == SkillClass ) {
+			aSkill = aSkill.VM_subSkill;
+			break;
+		}
 
 		aSkill = aSkill.next;
 	}
@@ -234,29 +249,14 @@ function ResetSkills()
 	}
 }
 
-// Vanilla Matters: Only way to get swimming skill values since it doesn't exist anymore. The values are stored in SkillEnviro with custom properties.
-function float GetSwimmingSkillLevelValue( class SkillClass ) {
-	local Skill aSkill;
-	local float retval;
-
-	retval = 0;
-
-	aSkill = GetSkillFromClass( SkillClass );
-
-	if ( aSkill != None )
-		retval = aSkill.VM_SwimmingLevelValues[aSkill.CurrentLevel];
-
-	return retval;
-}
-
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     skillClasses(0)=Class'DeusEx.SkillWeaponDestructive'
-     skillClasses(1)=Class'DeusEx.SkillWeaponHighPrecision'
-     skillClasses(2)=Class'DeusEx.SkillWeaponBallistic'
+     skillClasses(0)=Class'DeusEx.SkillWeaponHeavy'
+     skillClasses(1)=Class'DeusEx.SkillWeaponRifle'
+     skillClasses(2)=Class'DeusEx.SkillWeaponPistol'
      skillClasses(3)=Class'DeusEx.SkillWeaponLowTech'
      skillClasses(4)=Class'DeusEx.SkillEnviro'
      skillClasses(5)=Class'DeusEx.SkillLockpicking'

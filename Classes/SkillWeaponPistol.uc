@@ -1,7 +1,7 @@
 //=============================================================================
-// SkillWeaponBallistic.
+// SkillWeaponPistol.
 //=============================================================================
-class SkillWeaponBallistic extends Skill;
+class SkillWeaponPistol extends Skill;
 
 var int mpCost1;
 var int mpCost2;

@@ -1,7 +1,7 @@
 //=============================================================================
-// SkillWeaponDestructive.
+// SkillWeaponHeavy.
 //=============================================================================
-class SkillWeaponDestructive extends Skill;
+class SkillWeaponHeavy extends Skill;
 
 var int mpCost1;
 var int mpCost2;
@@ -45,4 +45,5 @@ defaultproperties
      LevelValues(1)=-0.100000
      LevelValues(2)=-0.250000
      LevelValues(3)=-0.500000
+     VM_subSkillClass=Class'DeusEx.SkillDemolition'
 }

@@ -1,7 +1,7 @@
 //=============================================================================
-// SkillWeaponHighPrecision.
+// SkillWeaponRifle.
 //=============================================================================
-class SkillWeaponHighPrecision extends Skill;
+class SkillWeaponRifle extends Skill;
 
 var int mpCost1;
 var int mpCost2;

@@ -155,7 +155,7 @@ function Timer()
 			// max out the rifle skill
 			if (Player.SkillSystem != None)
 			{
-				aSkill = Player.SkillSystem.GetSkillFromClass(class'SkillWeaponBallistic');
+				aSkill = Player.SkillSystem.GetSkillFromClass(class'SkillWeaponRifle');
 				if (aSkill != None)
 					aSkill.CurrentLevel = 3;
 			}

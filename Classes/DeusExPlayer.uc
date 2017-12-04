@@ -4158,10 +4158,7 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 		lastbDuck = 0;
 		Velocity = vect(0,0,0);
 		Acceleration = vect(0,0,0);
-		//mult = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-
-    // Vanilla Matters
-    mult = SkillSystem.GetSwimmingSkillLevelValue( class'SkillEnviro' );
+		mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
 
 		swimDuration = UnderWaterTime * mult;
 		swimTimer = swimDuration;
@@ -4290,10 +4287,7 @@ state PlayerSwimming
 		SetBasedPawnSize(Default.CollisionRadius, 16);
 
 		// get our skill info
-		//mult = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-
-    // Vanilla Matters
-    mult = SkillSystem.GetSwimmingSkillLevelValue( class'SkillEnviro' );
+		mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
 
 		swimDuration = UnderWaterTime * mult;
 		swimTimer = swimDuration;
@@ -9776,15 +9770,15 @@ function GetSkillInfoFromProj( DeusExPlayer killer, Actor proj )
 	local class<Skill> skillClass;
 
 	if ( proj.IsA('GasGrenade') || proj.IsA('LAM') || proj.IsA('EMPGrenade') || proj.IsA('TearGas'))
-		skillClass = class'SkillWeaponDestructive';
+		skillClass = class'SkillDemolition';
 	else if ( proj.IsA('Rocket') || proj.IsA('RocketLAW') || proj.IsA('RocketWP') || proj.IsA('Fireball') || proj.IsA('PlasmaBolt'))
-		skillClass = class'SkillWeaponDestructive';
+		skillClass = class'SkillWeaponHeavy';
 	else if ( proj.IsA('Shuriken') )
 		skillClass = class'SkillWeaponLowTech';
 	else if ( proj.IsA('Dart') || proj.IsA('DartFlare') || proj.IsA('DartPoison') )
-		skillClass = class'SkillWeaponHighPrecision';
+		skillClass = class'SkillWeaponRifle';
 	else if ( proj.IsA('HECannister20mm') )
-		skillClass = class'SkillWeaponBallistic';
+		skillClass = class'SkillWeaponPistol';
 	else if ( proj.IsA('DeusExDecoration') )
 	{
 		killProfile.activeSkill = NoneString;
@@ -9957,9 +9951,9 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
 			{
 				killProfile.bProximityKilled = True;
 				killProfile.killerLoc = LAM(myProjKiller).Location;
-				killProfile.myActiveSkill = class'SkillWeaponDestructive'.Default.skillName;
+				killProfile.myActiveSkill = class'SkillDemolition'.Default.skillName;
 				if ( SkillSystem != None )
-					killProfile.myActiveSkillLevel = SkillSystem.GetSkillLevel(class'SkillWeaponDestructive');
+					killProfile.myActiveSkillLevel = SkillSystem.GetSkillLevel(class'SkillDemolition');
 				else
 					killProfile.myActiveSkillLevel = 0;
 			}

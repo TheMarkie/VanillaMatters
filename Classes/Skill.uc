@@ -25,7 +25,8 @@ var Localized string skillLevelStrings[4];
 var localized string SkillAtMaximum;
 
 // Vanilla Matters
-var() float VM_SwimmingLevelValues[4];			// Main way to edit swimming skill now.
+var() Class<Skill> VM_subSkillClass;
+var travel Skill VM_subSkill;							// The subSkill's level will be synchronized with its host.
 
 // ----------------------------------------------------------------------
 // network replication
@@ -149,12 +150,24 @@ function bool IncLevel(optional DeusExPlayer usePlayer)
 				// decrement the cost and increment the current skill level
 				localPlayer.SkillPointsAvail -= GetCost();
 				CurrentLevel++;
+
+				// Vanilla Matters: Syncs subSkill if applicable.
+				if ( VM_subSkill != None ) {
+					VM_subSkill.CurrentLevel = CurrentLevel;
+				}
+
 				return True;
 			}
 		}
 		else
 		{
 			CurrentLevel++;
+
+			// Vanilla Matters: Syncs subSkill if applicable.
+			if ( VM_subSkill != None ) {
+				VM_subSkill.CurrentLevel = CurrentLevel;
+			}
+
 			return True;
 		}
 	}
@@ -195,6 +208,11 @@ function bool DecLevel(
 		// then add the points to the player
 		if (( bGiveUserPoints ) && (localPlayer != None))
 			localPlayer.SkillPointsAvail += GetCost();
+
+		// Vanilla Matters: Syncs subSkill if applicable.
+		if ( VM_subSkill != None ) {
+			VM_subSkill.CurrentLevel = CurrentLevel;
+		}
 
 		return True;
 	}

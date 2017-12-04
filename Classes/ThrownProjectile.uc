@@ -131,9 +131,7 @@ simulated function Tick(float deltaTime)
 								dist = Player.Location - Location;
 								if (VSize(dist) < proxRadius)
 									if (skillTime == 0)
-										//skillTime = FClamp(-20.0 * Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'), 1.0, 10.0);
-										// Vanilla Matters
-										skillTime = FClamp( - 20.0 * Player.SkillSystem.GetSkillLevelValue( class'SkillWeaponDestructive' ), 1.0, 10.0 );
+										skillTime = FClamp(-20.0 * Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'), 1.0, 10.0);
 							}
 						}
 					}
@@ -181,17 +179,12 @@ simulated function Tick(float deltaTime)
 										{
 											if (skillTime == 0)
 											{
-												//skillDiff = -skillAtSet + Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-
-												// Vanilla Matters
-												skillDiff = - skillAtSet + Player.SkillSystem.GetSkillLevelValue( class'SkillWeaponDestructive' );
+												skillDiff = -skillAtSet + Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
 
 												if ( skillDiff >= 0.0 ) // Scale goes 1.0, 1.6, 2.8, 4.0
 													skillTime = FClamp( 1.0 + skillDiff * 6.0, 1.0, 2.5 );
 												else	// Scale goes 1.0, 1.4, 2.2, 3.0
-													//skillTime = FClamp( 1.0	+ (-Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 4.0), 1.0, 3.0 );
-													// Vanilla Matters
-													skillTime = FClamp( 1.0	+ ( - Player.SkillSystem.GetSkillLevelValue( class'SkillWeaponDestructive' ) * 4.0 ), 1.0, 3.0 );
+													skillTime = FClamp( 1.0	+ (-Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 4.0), 1.0, 3.0 );
 											}
 										}
 									}
@@ -623,10 +616,7 @@ simulated function BeginPlay()
 		if (( aplayer != None ) && ( TeamDMGame(aplayer.DXGame) != None ))
 			team = aplayer.PlayerReplicationInfo.team;
 
-		//skillAtSet = aplayer.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-
-		// Vanilla Matters
-		skillAtSet = aplayer.SkillSystem.GetSkillLevelValue( class'SkillWeaponDestructive' );
+		skillAtSet = aplayer.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
 	}
 
 	// don't beep at the start of a level if we've been preplaced
