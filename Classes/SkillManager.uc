@@ -245,6 +245,12 @@ function ResetSkills()
 	while(aSkill != None)
 	{
 		aSkill.CurrentLevel = aSkill.Default.CurrentLevel;
+
+		// Vanilla Matters: Also resets the subSkill.
+		if ( aSkill.VM_subSkill != None ) {
+			aSkill.VM_subSkill.CurrentLevel = aSkill.Default.CurrentLevel;
+		}
+
 		aSkill = aSkill.next;
 	}
 }

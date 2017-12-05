@@ -577,6 +577,12 @@ function ApplySkills()
 			{
 				// Copy the skill
 				aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
+
+				// Vanilla Matters: Applies the level to the subSkill.
+				if ( aSkill.VM_subSkill != None ) {
+					aSkill.VM_subSkill.CurrentLevel = aSkill.CurrentLevel;
+				}
+
 				break;
 			}
 			aSkill = aSkill.next;
