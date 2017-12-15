@@ -32,6 +32,6 @@ function ResetToDefault() {
 
 defaultproperties
 {
-     HelpText="If enabled, saving costs you 100 credits. JOKE OPTION. Default: Off.|nIf FP is also enabled, costs none on full pressure, otherwise between 100 and 300 based on missing pressure."
+     HelpText="If enabled, saving costs 100 credits. JOKE OPTION. Default: Off.|nIf FP is also enabled, costs from 0 to 200 based on missing pressure."
      actionText="|&Save Cost"
 }

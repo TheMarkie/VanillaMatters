@@ -357,7 +357,7 @@ const			NintendoDelay = 6.0;
 var Computers ActiveComputer;
 
 // Vanilla Matters
-const VM_version = "1.1.0";
+const VM_version = "1.1.1";
 
 var globalconfig bool VM_bEnableFP;				// Makes Forward Pressure optional.
 var globalconfig bool VM_bSaveCost;				// Makes saving deduct credits from the player's pocket.
@@ -1189,7 +1189,7 @@ function bool DeductCredits() {
 	amount = VM_SaveCostBase;
 
 	if ( VM_bEnableFP ) {
-		amount = amount + ( ( ( 100 - VM_forwardPressure ) / 100 ) * VM_SaveCostFP );
+		amount = ( ( 100 - VM_forwardPressure ) / 100 ) * VM_SaveCostFP;
 	}
 
 	Credits = Credits - amount;

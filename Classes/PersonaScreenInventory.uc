@@ -846,7 +846,9 @@ function UseSelectedItem()
 		// Check to see if this is a stackable item, and keep track of 
 		// the count
 		if ((inv.IsA('DeusExPickup')) && (DeusExPickup(inv).bCanHaveMultipleCopies))
-			numCopies = DeusExPickup(inv).NumCopies - 1;
+			//numCopies = DeusExPickup(inv).NumCopies - 1;
+			// Vanilla Matters: Fixes a problem with updating info after using a stack of items.
+			numCopies = DeusExPickup( inv ).NumCopies;
 		else
 			numCopies = 0;
 
@@ -858,7 +860,9 @@ function UseSelectedItem()
 			UpdateWinInfo(inv);
 
 		// Vanilla Matters: Updates item info properly.
-		inv.UpdateInfo( winInfo );
+		if ( numCopies > 0 ) {
+			inv.UpdateInfo( winInfo );
+		}
 	}
 }
 
@@ -1512,7 +1516,9 @@ function UpdateDragMouse(float newX, float newY)
 		bValidDrop = False;
 
 		// Can only be dragged over another object slot
-		if (findWin.IsA('HUDObjectSlot'))
+		//if (findWin.IsA('HUDObjectSlot'))
+		// Vanilla Matters: Fixes an accessed none when dragging a belt item too far outside of the inventory window.
+		if ( findWin != None && HUDObjectSlot( findWin ) != None )
 		{
 			if (HUDObjectSlot(findWin).item != None) 
 			{
@@ -1555,6 +1561,11 @@ event DrawWindow( GC gc ) {
 	local int i;
 
 	Super.DrawWindow( gc );
+
+	// VM: Returns because we're only drawing when we drag a PersonaInventoryItemButton and nothing else.
+	if ( VM_swapOriginal == None ) {
+		return;
+	}
 
 	gc.SetStyle( DSTY_Translucent );
 	// VM: Draws swapping indicators.
