@@ -37,7 +37,7 @@ defaultproperties
      mpLevel2=1.000000
      mpLevel3=5.000000
      SkillName="Computer"
-     Description="The covert manipulation of computers and security consoles.|n|nUNTRAINED: An agent can use terminals to read bulletins and news.|n|nTRAINED: An agent can hack ATMs, computers and security consoles.|n|nADVANCED: An agent gains the ability to control gun turrets.|n+100% hacking time budget.|n|nMASTER: An agent is an elite hacker that few systems can withstand.|n+300% hacking time budget."
+     Description="The covert manipulation of computers and security consoles.|n|nUNTRAINED: An agent can use terminals to read bulletins and news.|n|nTRAINED: An agent can hack ATMs, computers and security consoles.|n|nADVANCED: An agent gains the ability to control gun turrets.|n- Available hacking time is doubled.|n|nMASTER: An agent is an elite hacker that few systems can withstand.|n- Available hacking time is quadrupled."
      SkillIcon=Texture'DeusExUI.UserInterface.SkillIconComputer'
      cost(0)=1350
      cost(1)=2700

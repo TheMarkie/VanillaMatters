@@ -36,7 +36,7 @@ defaultproperties
      mpLevel1=-0.250000
      mpLevel2=-0.370000
      mpLevel3=-0.500000
-     SkillName="Weapons: High-Precision"
+     SkillName="Weapons: Precision"
      Description="The use of sharpshooting weapons, including sniper rifles, the stealth pistol, and the mini-crossbow.|n|nUNTRAINED: An agent can use sniper rifles, the stealth pistol and the mini-crossbow.|n|nTRAINED:|n+20% damage, +5% accuracy, and -10% reload time.|n- Flare Darts can set enemies on fire.|n|nADVANCED:|n+50% damage, +12.5% accuracy, and -25% reload time.|n- Stealth Pistol's headshot damage increased by 12.5%.|n|nMASTER: An agent can take down a target a mile away with one shot.|n+100% damage, +25% accuracy, and -50% reload time.|n- Stealth Pistol's headshot damage increased by 25%."
      SkillIcon=Texture'DeusExUI.UserInterface.SkillIconWeaponRifle'
      cost(0)=1575

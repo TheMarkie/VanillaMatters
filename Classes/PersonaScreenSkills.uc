@@ -4,6 +4,14 @@
 
 class PersonaScreenSkills extends PersonaScreenBaseWindow;
 
+// Vanilla Matters: Custom background and border to fix the empty spot of the removed skills.
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.pcx"		NAME="SkillsBackground_4"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.pcx"		NAME="SkillsBackground_5"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.pcx"		NAME="SkillsBackground_6"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_4.pcx"		NAME="SkillsBorder_4"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_5.pcx"		NAME="SkillsBorder_5"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_6.pcx"		NAME="SkillsBorder_6"		GROUP="VMUI" MIPS=Off
+
 var PersonaActionButtonWindow btnUpgrade;
 var TileWindow                winTile;
 var Skill			          selectedSkill;
@@ -61,7 +69,9 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(356, 329);
+	//winStatus.SetPos(356, 329);
+	// Vanilla Matters: Moves the status bar up to fit the new shortened menu.
+	winStatus.SetPos( 356, 275 );
 }
 
 // ----------------------------------------------------------------------
@@ -73,7 +83,9 @@ function CreateSkillsTileWindow()
 	winTile = TileWindow(winClient.NewChild(Class'TileWindow'));
 
 	winTile.SetPos(12, 39);
-	winTile.SetSize(302, 297);
+	//winTile.SetSize(302, 297);
+	// Vanilla Matters: Reduces the skills tile window size to fit the shortened menu.
+	winTile.SetSize( 302, 243 );
 	winTile.SetMinorSpacing(0);
 	winTile.SetMargins(0, 0);
 	winTile.SetOrder(ORDER_Down);
@@ -87,7 +99,9 @@ function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
 	winInfo.SetPos(356, 22);
-	winInfo.SetSize(238, 299);
+	//winInfo.SetSize(238, 299);
+	// Vanilla Matters: Reduces the info window size to fit the shortened menu.
+	winInfo.SetSize( 238, 245 );
 }
 
 // ----------------------------------------------------------------------
@@ -99,7 +113,9 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 338);
+	//winActionButtons.SetPos(10, 338);
+	// Vanilla Matters: Moves the button up to fit the new shortened menu.
+	winActionButtons.SetPos( 10, 284 );
 	winActionButtons.SetWidth(149);
 	winActionButtons.FillAllSpace(False);
 
@@ -165,12 +181,16 @@ function CreateSkillPointsWindow()
 	local PersonaHeaderTextWindow winText;
 
 	winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winText.SetPos(180, 341);
+	//winText.SetPos(180, 341);
+	// Vanilla Matters: Moves the skill points text up to fit the new shortened menu.
+	winText.SetPos( 180, 287 );
 	winText.SetHeight(15);
 	winText.SetText(SkillPointsHeaderText);
 
 	winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winSkillPoints.SetPos(250, 341);
+	//winSkillPoints.SetPos(250, 341);
+	// Vanilla Matters: Moves the skill points text up to fit the new shortened menu.
+	winSkillPoints.SetPos( 250, 287 );
 	winSkillPoints.SetSize(54, 15);
 	winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 	winSkillPoints.SetText(player.SkillPointsAvail);
@@ -411,15 +431,15 @@ defaultproperties
      clientTextures(0)=Texture'DeusExUI.UserInterface.SkillsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.SkillsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.SkillsBackground_3'
-     clientTextures(3)=Texture'DeusExUI.UserInterface.SkillsBackground_4'
-     clientTextures(4)=Texture'DeusExUI.UserInterface.SkillsBackground_5'
-     clientTextures(5)=Texture'DeusExUI.UserInterface.SkillsBackground_6'
+     clientTextures(3)=Texture'DeusEx.VMUI.SkillsBackground_4'
+     clientTextures(4)=Texture'DeusEx.VMUI.SkillsBackground_5'
+     clientTextures(5)=Texture'DeusEx.VMUI.SkillsBackground_6'
      clientBorderTextures(0)=Texture'DeusExUI.UserInterface.SkillsBorder_1'
      clientBorderTextures(1)=Texture'DeusExUI.UserInterface.SkillsBorder_2'
      clientBorderTextures(2)=Texture'DeusExUI.UserInterface.SkillsBorder_3'
-     clientBorderTextures(3)=Texture'DeusExUI.UserInterface.SkillsBorder_4'
-     clientBorderTextures(4)=Texture'DeusExUI.UserInterface.SkillsBorder_5'
-     clientBorderTextures(5)=Texture'DeusExUI.UserInterface.SkillsBorder_6'
+     clientBorderTextures(3)=Texture'DeusEx.VMUI.SkillsBorder_4'
+     clientBorderTextures(4)=Texture'DeusEx.VMUI.SkillsBorder_5'
+     clientBorderTextures(5)=Texture'DeusEx.VMUI.SkillsBorder_6'
      clientTextureRows=2
      clientTextureCols=3
      clientBorderTextureRows=2
