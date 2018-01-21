@@ -635,11 +635,6 @@ function ProcessAction(String actionKey)
 		{
 			SaveSettings();
 
-			// Vanilla Matters: Turns off Forward Pressure by default for the first three difficulties, then on for Realistic.
-			if ( localPlayer.CombatDifficulty >= 4 ) {
-				localPlayer.VM_bEnableFP = true;
-			}
-
 			// DEUS_EX_DEMO
 			//
 			// Don't show the intro for the demo since that map is not available

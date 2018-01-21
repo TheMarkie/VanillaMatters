@@ -32,6 +32,6 @@ function ResetToDefault() {
 
 defaultproperties
 {
-     HelpText="If enabled, the game will use the Forward Pressure save mechanics. Default: On."
+     HelpText="If enabled, the game will use the Forward Pressure save mechanics. Default: Off."
      actionText="|&Forward Pressure"
 }

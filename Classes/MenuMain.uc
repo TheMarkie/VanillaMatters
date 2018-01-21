@@ -105,7 +105,7 @@ function ShowVanillaMattersInfo() {
 	vmInfo.SetTextAlignments( HALIGN_Left, VALIGN_Top );
 	vmInfo.SetTextColorRGB( 255, 255, 255 );
 	vmInfo.SetWindowAlignments( HALIGN_Right, VALIGN_Top );
-	vmInfo.SetText( "VM" @ player.VM_version );
+	vmInfo.SetText( "VM" @ class'DeusExGameInfo'.static.GetVMVersion() );
 }
 
 // ----------------------------------------------------------------------

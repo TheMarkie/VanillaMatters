@@ -357,8 +357,6 @@ const			NintendoDelay = 6.0;
 var Computers ActiveComputer;
 
 // Vanilla Matters
-const VM_version = "1.1.1";
-
 var globalconfig bool VM_bEnableFP;				// Makes Forward Pressure optional.
 var globalconfig bool VM_bSaveCost;				// Makes saving deduct credits from the player's pocket.
 

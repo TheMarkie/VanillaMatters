@@ -203,20 +203,30 @@ function CalculateWindowSizes()
 	// Determine the height of the convo windows, based on available space
 	if (bForcePlay)
 	{
-		// calculate the correct 16:9 ratio
-		ratio = 0.5625 * (root.width / root.height);
-		cinHeight = root.height * ratio;
+		// // calculate the correct 16:9 ratio
+		// ratio = 0.5625 * (root.width / root.height);
+		// cinHeight = root.height * ratio;
 
+		// upperCurrentPos = 0;
+		// upperHeight     = int(0.5 * (root.height - cinHeight));
+		// lowerCurrentPos = upperHeight + cinHeight;
+		// lowerHeight     = upperHeight;
+
+		// // make sure we don't invert the letterbox if the screen size is strange
+		// if (upperHeight < 0)
+		// 	root.ResetRenderViewport();
+		// else
+		// 	root.SetRenderViewport(0, upperHeight, width, cinHeight);
+
+		// Vanilla Matters: Fixes the cutscene subtitles for widescreen.
+		cinHeight = min( root.height - int( height * lowerFinalHeightPercent ), root.width * 0.5625 );
 		upperCurrentPos = 0;
-		upperHeight     = int(0.5 * (root.height - cinHeight));
+		upperHeight     = int( 0.5 * ( root.height - cinHeight ) );
+
 		lowerCurrentPos = upperHeight + cinHeight;
 		lowerHeight     = upperHeight;
 
-		// make sure we don't invert the letterbox if the screen size is strange
-		if (upperHeight < 0)
-			root.ResetRenderViewport();
-		else
-			root.SetRenderViewport(0, upperHeight, width, cinHeight);
+		root.SetRenderViewport( 0, upperHeight, width, cinHeight );
 	}
 	else
 	{
