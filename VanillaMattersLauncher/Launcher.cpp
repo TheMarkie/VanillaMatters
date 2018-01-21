@@ -29,6 +29,9 @@ const string iniName = ".ini";
 const string userIniName = "User.ini";
 const string logName = ".log";
 
+// Timeout for when the game can't be detected to have launched properly.
+const int maxTimeout = 5;
+
 // Copies a file using file stream.
 static void copyFile( const string& srcName, const string& newName ) {
 	std::ifstream srcFile( srcName, std::ios::binary );
@@ -101,7 +104,7 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
 
 	logFile << "Mod detected: " << fileName << "\n";
 
-	logFile << "Checking for ini files...";
+	logFile << "Checking for ini files..." << "\n";
 
 	// Sets up the supposed paths for our ini files, they should exist in the same directory as the launcher, so we can decide it from the start.
 	string iniPath = currentPath + fileName + iniName;
@@ -232,8 +235,8 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
 
 	logFile << "Checking path " << launchDirectory << " for Steam availability..." << "\n";
 
-	// We simply keeps goes the directory (about 4 times), if the game is a steam game, it should have the exact same file structure, so if we follow that file structure and can't find Steam.exe, it means this is non-steam.
-	// Obviously problematic when the user installs on a steam library on another partition, but we'll tackle that later.
+	// We simply goes up the directory (about 4 times), if the copy is a steam copy, it should have the exact same file structure (steamapps/common/..), so if we follow that and can't find Steam.exe, then this is non-steam.
+	// Obviously problematic when the user installs on a steam library on another partition, but then there's nothing much we can do, due to how deus ex is.
 	char* sP = _fullpath( toChar( launchDirectory ), toChar( defaultSteamExePath ), _MAX_PATH );
 	if ( PathFileExists( sP ) == TRUE ) {
 		logFile << "Found Steam at " << sP << "\n";
@@ -246,7 +249,10 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
 	else {
 		logFile << "Can't find Steam, resorting to normal launching." << "\n";
 
-		launchCommand = string( exePath );
+		// We're using cmd to be sure, it's much more reliable than passing the exe straight into ShellExecute, which some program doesn't enjoy.
+		launchCommand = "cmd.exe";
+
+		launchParams = "/C deusex.exe " + launchParams;
 	}
 
 	logFile << "Running command: " << launchCommand << "\n";
@@ -255,29 +261,39 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
 
 	logFile << "Running directory: " << launchDirectory << "\n";
 
+
 	// Tries to launch the game.
+	HINSTANCE result;
 	try {
-		ShellExecute( NULL, "open", launchCommand.c_str(), launchParams.c_str(), launchDirectory.c_str(), 0 );
+		result = ShellExecute( NULL, "open", launchCommand.c_str(), launchParams.c_str(), launchDirectory.c_str(), 0 );
 	}
 	catch ( const std::exception& e ) {
 		logFile << "EXCEPTION OCCURED WHILE LAUNCHING THE GAME: " << e.what() << "\n";
 	}
 
-	logFile << "Finished launching game, waiting for it to close..." << std::endl;
+	logFile << "Finished launching game with code " << ( int ) result << ", waiting for it to close..." << std::endl;
 
 	// Basically checks every one second if the log file has been opened at least once then closed, which means the game started and ended, then cleans up the int overrides if the game's no longer going.
 	char* lfP = toChar( currentPath + fileName + logName );
 	FILE *lF;
 
 	bool logFileOpened = false;
-	bool gameClosed = false;
-	while ( gameClosed == 0 ) {
+	bool gameClosed = ( ( int ) result ) <= 32;
+	int timePassed = 0;
+	while ( !gameClosed ) {
 		std::this_thread::sleep_for( 1000ms );
+		
+		timePassed = timePassed + 1;
 
 		if ( PathFileExists( lfP ) ) {
 			fopen_s( &lF, lfP, "r" );
 			if ( lF != NULL ) {
 				if ( logFileOpened ) {
+					gameClosed = true;
+				}
+				else if ( timePassed > maxTimeout ) {
+					logFile << "Game timed out!" << "\n";
+
 					gameClosed = true;
 				}
 
