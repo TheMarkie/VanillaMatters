@@ -13783,7 +13783,10 @@ RubEyes:
 
 state Stunned
 {
-	ignores seeplayer, hearnoise, bump, hitwall;
+	//ignores seeplayer, hearnoise, bump, hitwall;
+
+	// Vanilla Matters: Fixes a bug where a pawn would regain conciousness prematurely if it's stunned while opening a door.
+	ignores seeplayer, hearnoise, bump, hitwall, stopwaiting;
 
 	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, 
 						Vector momentum, name damageType)
