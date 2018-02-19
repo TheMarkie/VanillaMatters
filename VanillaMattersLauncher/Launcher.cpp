@@ -30,7 +30,7 @@ const string userIniName = "User.ini";
 const string logName = ".log";
 
 // Timeout for when the game can't be detected to have launched properly.
-const int maxTimeout = 5;
+const int maxTimeout = 15;
 
 // Copies a file using file stream.
 static void copyFile( const string& srcName, const string& newName ) {
