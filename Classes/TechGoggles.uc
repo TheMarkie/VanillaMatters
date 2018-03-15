@@ -60,6 +60,7 @@ function ChargedPickupEnd(DeusExPlayer Player)
 
 defaultproperties
 {
+     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.TechGogglesLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconGoggles'
      ExpireMessage="TechGoggles power supply used up"
@@ -69,7 +70,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.GogglesIR'
      PickupViewMesh=LodMesh'DeusExItems.GogglesIR'
      ThirdPersonMesh=LodMesh'DeusExItems.GogglesIR'
-     Charge=250
+     Charge=300
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconTechGoggles'
      largeIcon=Texture'DeusExUI.Icons.LargeIconTechGoggles'

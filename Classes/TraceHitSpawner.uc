@@ -32,8 +32,10 @@ simulated function PlayHitSound(actor destActor, Actor hitActor)
 	local sound snd;
 
 	// don't ricochet unless it's hit by a bullet
-	if ((damageType != 'Shot') && (damageType != 'Sabot'))
-		return;
+	// if ((damageType != 'Shot') && (damageType != 'Sabot'))
+	// 	return;
+
+	// Vanilla Matters: Fixes a bug with ricochet sounds not playing correctly.
 
 	rnd = FRand();
 

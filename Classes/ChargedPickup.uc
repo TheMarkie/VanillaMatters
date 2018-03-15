@@ -75,6 +75,7 @@ simulated function bool UpdateInfo(Object winObject)
 			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoYes );
 		}
 
+		// Vanilla Matters: Adds in whether the charged pickup is currently active.
 		if ( bIsActive ) {
 			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoYes );
 		}

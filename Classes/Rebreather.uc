@@ -12,6 +12,7 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 
 defaultproperties
 {
+     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.RebreatherLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconRebreather'
      ExpireMessage="Rebreather power supply used up"
@@ -20,7 +21,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.Rebreather'
      PickupViewMesh=LodMesh'DeusExItems.Rebreather'
      ThirdPersonMesh=LodMesh'DeusExItems.Rebreather'
-     Charge=250
+     Charge=300
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconRebreather'
      largeIcon=Texture'DeusExUI.Icons.LargeIconRebreather'
