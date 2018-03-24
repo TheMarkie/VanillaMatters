@@ -189,6 +189,11 @@ function PostTerminateConversation()
 	if (playerInHand != None)
 		player.PutInHand(playerInHand);
 
+	// Vanilla Matters: If this is a third-person conversation, give FP.
+	if ( !con.bFirstPerson ) {
+		player.AddForwardPressure( player.VM_fpConversation * 2 );
+	}
+
 	Super.TerminateConversation(bSaveContinueSpeech, bSaveNoPlayedFlag);
 }
 

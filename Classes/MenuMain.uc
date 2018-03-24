@@ -65,13 +65,8 @@ function UpdateButtonStatus()
 	// Vanilla Matters: Disallows saving if not enough forward pressure.
 	if ( Player.VM_bEnableFP ) {
 		if ( !Player.EnoughPressure( 100 ) ) {
-			if ( !( Player.VM_bSaveCost && Player.Credits > 0 ) ) {
-				winButtons[1].SetSensitivity( false );
-			}
+			winButtons[1].SetSensitivity( false );
 		}
-	}
-	else if ( Player.VM_bSaveCost && Player.Credits <= 0 ) {
-		winButtons[1].SetSensitivity( false );
 	}
 
 	// DEUS_EX_DEMO - Uncomment when building demo

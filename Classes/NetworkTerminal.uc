@@ -642,7 +642,7 @@ function bool AreSpecialOptionsAvailable(optional bool bCheckActivated)
 
 defaultproperties
 {
-     detectionTime=15.000000
+     detectionTime=7.000000
      kickTimerID=-1
      bUsesHackWindow=True
      shadowOffsetX=15

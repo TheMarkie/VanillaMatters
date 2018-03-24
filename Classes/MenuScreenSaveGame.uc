@@ -485,11 +485,6 @@ function PerformSave()
 	localPlayer   = player;
 	localRoot     = root;
 
-	// Vanilla Matters: Deducts credits if applicable.
-	if ( player.VM_bSaveCost && !player.EnoughPressure( 100 ) ) {
-		player.DeductCredits();
-	}
-
 	// Vanilla Matters: Resets the forward pressure.
 	player.ResetForwardPressure();
 

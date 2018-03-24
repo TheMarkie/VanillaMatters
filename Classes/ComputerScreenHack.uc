@@ -482,8 +482,8 @@ function Tick(float deltaTime)
 		// Vanilla Matters: Calculates stuff and deducts detectionTime properly.
 		if ( bHacked ) {
 			if ( VM_actionCost > 0 ) {
-				if ( ( VM_actionCost * 0.5 ) > detectionTime ) {
-					timeCost = VM_actionCost;
+				if ( VM_actionCost >= detectionTime ) {
+					timeCost = deltaTime * VM_actionCount * 50;
 				}
 				else {
 					timeCost = deltaTime * VM_actionCount * 25;
@@ -501,7 +501,7 @@ function Tick(float deltaTime)
 				player.AddForwardPressure( timeCost * ( player.VM_fpUtility + player.VM_fpUtilityHS ) );
 			}
 			else {
-				detectionTime = detectionTime - ( deltaTime * ( 0.1 + ( VM_totalActionCount * 0.3 ) ) );
+				detectionTime = detectionTime - ( deltaTime * 0.1 );
 			}
 		}
 		else {

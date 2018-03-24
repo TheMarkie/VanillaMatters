@@ -14,7 +14,7 @@ var float timePassed;
 
 var ScriptedPawn currentSP;
 var float defenseWeaponTime;
-const defenseWeaponDelay = 2;
+const defenseWeaponDelay = 1.5;
 
 // ----------------------------------------------------------------------------
 // Networking Replication
@@ -422,7 +422,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
-     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Takes 2 seconds to detonate a weapon.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range."
+     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Takes 1.5 seconds to detonate a weapon.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range."
      MPInfo="When active, enemy rockets detonate when they get close, doing reduced damage.  Some large rockets may still be close enough to do damage when they explode.  Energy Drain: Very Low"
      LevelValues(0)=240.000000
      LevelValues(1)=480.000000

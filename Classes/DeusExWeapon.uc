@@ -3161,16 +3161,8 @@ simulated function bool UpdateInfo(Object winObject)
 	}
 	winInfo.AddInfoItem(msgInfoMaxRange, str);
 
-	// Vanilla Matters: Displays headshot multiplier, since vanilla multiplier is hardcoded 8 for all except two damage types, we can just print it so.
-	if ( damageType == 'KnockedOut' ) {
-		str = "x2.0";
-	}
-	else if ( damageType == 'Stunned' ) {
-		str = "x4.0";
-	}
-	else {
-		str = "x8.0";
-	}
+	// Vanilla Matters: Displays headshot multiplier, since vanilla multiplier is hardcoded 8 for all, we can just print it so.
+	str = "x8.0";
 
 	if ( Default.VM_HeadshotMult[weaponSkillLevel] != 0.0 ) {
 		str = str @ BuildPercentString( Default.VM_HeadshotMult[weaponSkillLevel] ) @ "=" @ "x" $ FormatFloatString( 8 * ( 1 + Default.VM_HeadshotMult[weaponSkillLevel] ), 0.1 );

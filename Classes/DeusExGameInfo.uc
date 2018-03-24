@@ -5,7 +5,7 @@ class DeusExGameInfo expands GameInfo
 	config;
 
 // Vanilla Matters: Our version string and how to get it.
-const VM_version = "1.1.3";
+const VM_version = "1.2";
 
 static function string GetVMVersion() {
 	return VM_version;

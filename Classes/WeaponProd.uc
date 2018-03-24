@@ -40,6 +40,10 @@ defaultproperties
      mpAccurateRange=80
      mpMaxRange=80
      mpReloadCount=4
+     VM_HeadshotMult(0)=-0.500000
+     VM_HeadshotMult(1)=-0.500000
+     VM_HeadshotMult(2)=-0.500000
+     VM_HeadshotMult(3)=-0.500000
      AmmoName=Class'DeusEx.AmmoBattery'
      ReloadCount=4
      PickupAmmoCount=4

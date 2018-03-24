@@ -256,11 +256,6 @@ function TerminateConversation(optional bool bContinueSpeech, optional bool bNoP
 	// Reset the conversation radious
 	con.radiusDistance = saveRadiusDistance;
 
-	// Vanilla Matters: Adds FP rate for conversation.
-	if ( player != None ) {
-		player.AddForwardPressure( player.VM_fpConversation );
-	}
-
 	// Notify the conversation participants to go about their
 	// business.
 	EndConActorStates();

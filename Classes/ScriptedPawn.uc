@@ -703,8 +703,17 @@ function bool AddInitialInventory(class<Inventory> newInventory,
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
                        optional bool bForce)
 {
+	// Vanilla Matters
+	local DeusExPlayer player;
+
 	if (bForce || IsValidEnemy(newEnemy))
 	{
+		// Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
+		player = DeusExPlayer( Enemy );
+		if ( newEnemy == None && player != None ) {
+			player.AddForwardPressure( player.VM_fpStealth * 10 );
+		}
+
 		if (newEnemy != Enemy)
 			EnemyTimer = 0;
 		Enemy         = newEnemy;
@@ -2889,12 +2898,10 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	if ( DeusExPlayer( instigatedBy ) != None ) {
 		if ( offset.z > headOffsetZ ) {
 			if ( ( Abs( offset.x ) < headOffsetY ) || ( Abs( offset.y ) < headOffsetY) ) {
-				if ( damageType != 'KnockedOut' ) {
-					instigatorWeapon = DeusExWeapon( instigatedBy.Weapon );
-					
-					if ( instigatorWeapon != None ) {
-						actualDamage = actualDamage * ( 1 + instigatorWeapon.VM_HeadshotMult[instigatorWeapon.GetWeaponSkillLevel()] );
-					}
+				instigatorWeapon = DeusExWeapon( instigatedBy.Weapon );
+
+				if ( instigatorWeapon != None ) {
+					actualDamage = actualDamage * ( 1 + instigatorWeapon.VM_HeadshotMult[instigatorWeapon.GetWeaponSkillLevel()] );
 				}
 			}
 		}
@@ -3051,16 +3058,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 				// else
 				// 	HealthHead -= actualDamage * 8;
 
-				// Vanilla Matters: Allows 'Stunned' weapons to headshot for x4 the damage. Also makes KnockedOut deal x2 to head to be consistent with torso normal damage.
-				if ( damageType == 'KnockedOut' ) {
-					HealthHead = HealthHead - ( actualDamage * 2 );
-				}
-				else if ( damageType == 'Stunned' ) {
-					HealthHead = HealthHead - ( actualDamage * 4 );
-				}
-				else {
-					HealthHead = HealthHead - ( actualDamage * 8 );
-				}
+				// Vanilla Matters: Allows all weapons to be able to headshot equally.
+				HealthHead = HealthHead - ( actualDamage * 8 );
 
 				if (offset.x < 0.0)
 					hitPos = HITLOC_HeadBack;
@@ -3069,15 +3068,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else  // sides of head treated as torso
 			{
-				//HealthTorso -= actualDamage * 2;
-
-				// Vanilla Matters: Makes Baton do twice the normal damage to the torso.
-				if ( damageType == 'KnockedOut' ) {
-					HealthTorso = HealthTorso - ( actualDamage * 4 );
-				}
-				else {
-					HealthTorso = HealthTorso - ( actualDamage * 2 );
-				}
+				HealthTorso -= actualDamage * 2;
 
 				if (offset.x < 0.0)
 					hitPos = HITLOC_TorsoBack;

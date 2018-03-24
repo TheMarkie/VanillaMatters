@@ -358,7 +358,6 @@ var Computers ActiveComputer;
 
 // Vanilla Matters
 var globalconfig bool VM_bEnableFP;				// Makes Forward Pressure optional.
-var globalconfig bool VM_bSaveCost;				// Makes saving deduct credits from the player's pocket.
 
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
 var travel Inventory VM_HeldInHand;				// Item being held.
@@ -370,7 +369,8 @@ var() travel float VM_fpCritical;				// FP rate for every critical event like ob
 var() travel float VM_fpConversation;			// FP rate for conversations and datalinks.
 var() travel float VM_fpNoteAdded;				// FP rate for every note added.
 var() travel float VM_fpSPAwarded;				// FP rate for every skill point awarded.
-var() travel float VM_fpTraveling;				// FP rate for walking/swimming.
+var() travel float VM_fpTraveling;				// FP rate for moving.
+var() travel float VM_fpStealth;				// FP rate for various stealth-related actions.
 var() travel float VM_fpDamage;					// FP rate for damage dealt/received.
 var() travel float VM_fpDamageBonus;			// FP rate bonus that scales with difficulty.
 var() travel float VM_fpHeal;					// FP rate for healing.
@@ -396,15 +396,13 @@ var Vector VM_fpZone2;
 var bool VM_lastLocationEmpty;					// Used to know if any of the 3 vectors above is empty.
 var bool VM_fpZone1Empty;
 var bool VM_fpZone2Empty;
-var float VM_fpZoneDeposit1;					// How much pressure can be harvested out of all the current zones.
+var float VM_fpZoneDeposit1;					// How much pressure you can harvest out of the current zones.
 var float VM_fpZoneDeposit2;
-var float VM_fpZoneRadius;
+var() float VM_fpZoneRadius;					// How large these zones are.
+var() float VM_fpStealthRadius;					// How large the stealth radius is, to check for enemy pawns that the player is sneaking around.
 
 var travel int VM_lastMission;					// Keeps track of the last mission number in case the player transitions to a new mission.
 var travel bool VM_mapTravel;					// Denotes if a travel is a normal map travel or game load.
-
-var() travel int VM_SaveCostBase;				// Save cost base and for FP scaling.
-var() travel int VM_SaveCostFP;
 
 var localized String VM_msgTakeHold;
 var localized String VM_msgTakeHoldInstead;
@@ -414,10 +412,6 @@ var localized String VM_msgTooMuchAmmo;
 var localized String VM_msgMuscleCost;
 var localized String VM_msgChargedPickupAlready;
 var localized String VM_msgNotEnoughPressure;
-
-var localized String VM_msgSaveCost[11];			// Lines related to save cost mechanics.
-var localized String VM_msgSaveDebt[4];
-var localized String VM_msgSaveCostNotEnough[4];
 
 // native Functions
 native(1099) final function string GetDeusExVersion();
@@ -1029,16 +1023,11 @@ exec function QuickSave()
 	   return;
 	}
 
-	// Vanilla Matters: Disables quicksaving depending on Forward Pressure and Save Cost.
+	// Vanilla Matters: Disables quicksaving depending on Forward Pressure.
 	if ( VM_bEnableFP ) {
 		if ( !EnoughPressure( 100 ) ) {
-			if ( !( VM_bSaveCost && DeductCredits() ) ) {
-				return;
-			}
+			return;
 		}
-	}
-	else if ( VM_bSaveCost && !DeductCredits() ) {
-		return;
 	}
 
 	// Vanilla Matters: Resets the forward pressure.
@@ -1104,12 +1093,16 @@ function ScaleForwardPressureValues( optional float difficulty ) {
 	VM_fpUtilityHS = VM_fpUtilityH / diff;
 }
 
-// Vanilla Matters: Deals with traveling across a map.
-function BuildForwardPressure() {
+// Vanilla Matters: Builds pressure passively during various activities.
+function BuildForwardPressure( float deltaTime ) {
 	local float diff, dist;
 
 	local float pressure;
 
+	local float stealthCount;
+	local ScriptedPawn sp;
+
+	// VM: There's no way to check if a vector is "empty" or hasn't been set so we use bools.
 	if ( VM_fpZone1Empty ) {
 		VM_fpZone1 = Location;
 		VM_fpZone1Empty = false;
@@ -1122,6 +1115,14 @@ function BuildForwardPressure() {
 		return;
 	}
 
+	diff = VSize( Location - VM_lastLocation );
+
+	// Vanilla Matters: Here's how the whole travelling FP gain thing works:
+	// VM: We set up an "initial" zone right at the player's location when they spawn into a map, it's basically a circle.
+	// VM: As long as the player moves in this circle, they gain FP. However, there's a maximum amount of FP the player can "harvest", if it's "exhausted", the zone no longer provides any FP.
+	// VM: If the player walks out of the first circle, a second zone is established at the player's location, allowing the player to now harvest FP from up to TWO zones.
+	// VM: If both zones are established, and the player walks into a position that's outside of BOTH current zones, then the first zone disappears and is replaced by this new zone.
+	// VM: This mechanics is designed to prevent walking back and forth to reap free FP.
 	dist = VSize( Location - VM_fpZone1 );
 	if ( dist > VM_fpZoneRadius ) {
 		if ( !VM_fpZone2Empty ) {
@@ -1130,13 +1131,13 @@ function BuildForwardPressure() {
 		}
 
 		VM_fpZone2 = Location;
-		VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 320 ) * VM_fpTraveling;
+		VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 160 ) * VM_fpTraveling;
 		VM_fpZone2Empty = false;
 	}
 	else {
 		dist = VSize( VM_lastLocation - VM_fpZone1 );
 		if ( dist <= VM_fpZoneRadius ) {
-			pressure = FClamp( ( VSize( Location - VM_lastLocation ) / 320 ) * VM_fpTraveling, 0, VM_fpZoneDeposit1 );
+			pressure = FMin( ( diff / 160 ) * VM_fpTraveling, VM_fpZoneDeposit1 );
 
 			AddForwardPressure( pressure );
 
@@ -1151,12 +1152,12 @@ function BuildForwardPressure() {
 			VM_fpZoneDeposit1 = VM_fpZoneDeposit2;
 
 			VM_fpZone2 = Location;
-			VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 320 ) * VM_fpTraveling;
+			VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 160 ) * VM_fpTraveling;
 		}
 		else {
 			dist = VSize( VM_lastLocation - VM_fpZone2 );
 			if ( dist <= VM_fpZoneRadius ) {
-				pressure = FClamp( ( VSize( Location - VM_lastLocation ) / 320 ) * VM_fpTraveling, 0, VM_fpZoneDeposit2 );
+				pressure = FMin( ( diff / 160 ) * VM_fpTraveling, VM_fpZoneDeposit2 );
 
 				AddForwardPressure( pressure );
 
@@ -1164,6 +1165,23 @@ function BuildForwardPressure() {
 			}
 		}
 	}
+
+	// Vanilla Matters: Stealth FP rate, we simply check in a radius around the player for enemies who have not spotted the player.
+	dist = 0;
+	stealthCount = 0;
+	foreach AllActors( class'ScriptedPawn', sp ) {
+		dist = VSize( sp.Location - Location );
+		if ( dist <= VM_fpStealthRadius ) {
+			if ( sp.IsValidEnemy( self ) && sp.Enemy == None ) {
+				stealthCount = stealthCount + ( VM_fpStealthRadius - dist );
+			}
+		}
+	}
+
+	// VM: Moving stealthily should give more FP than standing still.
+	pressure = ( stealthCount / ( VM_fpStealthRadius / 2 ) ) * ( ( ( diff / 160 ) + deltaTime ) * VM_fpStealth );
+
+	AddForwardPressure( pressure );
 
 	VM_lastLocation = Location;
 }
@@ -1174,31 +1192,6 @@ function ResetFPZoneInfo() {
 	VM_lastLocationEmpty = true;
 	VM_fpZone1Empty = true;
 	VM_fpZone2Empty = true;
-}
-
-function bool DeductCredits() {
-	local int amount;
-
-	if ( Credits <= 0 ) {
-		ClientMessage( VM_msgSaveCostNotEnough[Rand( 3 )] );
-		return false;
-	}
-
-	amount = VM_SaveCostBase;
-
-	if ( VM_bEnableFP ) {
-		amount = ( ( 100 - VM_forwardPressure ) / 100 ) * VM_SaveCostFP;
-	}
-
-	Credits = Credits - amount;
-
-	ClientMessage( Sprintf( VM_msgSaveCost[Rand( 9 )], amount ) );
-
-	if ( Credits < 0 ) {
-		ClientMessage( VM_msgSaveDebt[Rand( 3 )] );
-	}
-
-	return true;
 }
 
 // ----------------------------------------------------------------------
@@ -4025,9 +4018,6 @@ state PlayerWalking
 					}
 				}
 			}
-
-		// Vanilla Matters: Builds forward pressure as you move.
-		BuildForwardPressure();
 		
 		Super.ProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot);
 	}
@@ -4079,6 +4069,9 @@ state PlayerWalking
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
+		// Vanilla Matters: Builds forward pressure as you move.
+		BuildForwardPressure( deltaTime );
+
 		Super.PlayerTick(deltaTime);
 	}
 }
@@ -4122,6 +4115,9 @@ state PlayerFlying
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
+
+		// Vanilla Matters: Builds forward pressure as you move.
+		BuildForwardPressure( deltaTime );
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -4273,6 +4269,9 @@ state PlayerSwimming
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
+
+		// Vanilla Matters: Builds forward pressure as you move.
+		BuildForwardPressure( deltaTime );
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -8334,9 +8333,6 @@ function EndConversation()
 
 	StopBlendAnims();
 
-	// Vanilla Matters: Adds a second time after ConPlayBase has already done it, to double the FP rate for cutscene conversations specifically.
-	AddForwardPressure( VM_fpConversation );
-
 	// We might already be dead at this point (someone drop a LAM before
 	// entering the conversation?) so we want to make sure the player
 	// doesn't suddenly jump into a non-DEATH state.
@@ -11815,6 +11811,10 @@ exec function DXDumpInfo()
 	ClientMessage("Info dumped for user "$userName);
 }
 
+// Vanilla Matters: Simple command to turn on cheats.
+exec function sv_cheats( bool enabled ) {
+	bCheatsEnabled = enabled;
+}
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
@@ -13022,7 +13022,8 @@ defaultproperties
      VM_fpConversation=20.000000
      VM_fpNoteAdded=25.000000
      VM_fpSPAwarded=0.500000
-     VM_fpTraveling=1.000000
+     VM_fpTraveling=0.500000
+     VM_fpStealth=1.000000
      VM_fpDamage=0.400000
      VM_fpDamageBonus=0.600000
      VM_fpHeal=0.500000
@@ -13035,8 +13036,7 @@ defaultproperties
      VM_fpUtilityLB=1.500000
      VM_fpUtilityH=6.000000
      VM_fpZoneRadius=800.000000
-     VM_SaveCostBase=100
-     VM_SaveCostFP=200
+     VM_fpStealthRadius=800.000000
      VM_msgTakeHold="You took hold of the %s"
      VM_msgTakeHoldInstead="You took hold of the %s instead"
      VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"
@@ -13045,25 +13045,6 @@ defaultproperties
      VM_msgMuscleCost="You don't have enough energy to do a powerthrow"
      VM_msgChargedPickupAlready="You are already using that type of equipment"
      VM_msgNotEnoughPressure="You don't have enough pressure to save"
-     VM_msgSaveCost(0)="Give Me Dat Expense of %d credits"
-     VM_msgSaveCost(1)="That'll be %d credits you're welcome"
-     VM_msgSaveCost(2)="Trust me you can't find a better save slot with %d credits"
-     VM_msgSaveCost(3)="Thank you for donating %d credits to the Combat Knife for Everyone Fund"
-     VM_msgSaveCost(4)="The God of Cigarettes is pleased with your offering of %d credits, he will not crash your game now"
-     VM_msgSaveCost(5)="Back in my days, you could save half a dozen times more with the same %d credits"
-     VM_msgSaveCost(6)="You found a sudden lack of %d credits"
-     VM_msgSaveCost(7)="Placed an order of one scrolling digital text transparent box for %d credits"
-     VM_msgSaveCost(8)="What do you mean %d credits, that's nothing, I can make twice that from selling whatever military equipment I find to some cyberpunk guy"
-     VM_msgSaveCost(9)="%d Credits Deducted - Check Datavault For Details"
-     VM_msgSaveCost(10)="Hey do you know what save mechanics won't cost you %d credits, Forward Pressure, jussayin"
-     VM_msgSaveDebt(0)="You've official gone bankrupt, the bank owns you now"
-     VM_msgSaveDebt(1)="This save addiction has drained you dry, now you wonder how you're gonna get your next hit"
-     VM_msgSaveDebt(2)="Too bad that nano-augmented agent salary couldn't save you from debts"
-     VM_msgSaveDebt(3)="Can't say I didn't warn ya, now you wish you would only lose some dumb save stamina instead"
-     VM_msgSaveCostNotEnough(0)="You can't afford that sweet sweet save right now"
-     VM_msgSaveCostNotEnough(1)="Ain't no charity save for a hobo"
-     VM_msgSaveCostNotEnough(2)="Do you really think save slots grow on trees"
-     VM_msgSaveCostNotEnough(3)="Maybe you should try Forward Pressure instead"
      bCanStrafe=True
      MeleeRange=50.000000
      AccelRate=2048.000000
