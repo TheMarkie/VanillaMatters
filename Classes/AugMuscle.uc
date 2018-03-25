@@ -40,7 +40,6 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      mpAugValue=2.000000
-     EnergyRate=0.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconMuscle'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
      bAlwaysActive=True

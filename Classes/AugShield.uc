@@ -32,7 +32,6 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      mpAugValue=0.500000
-     EnergyRate=0.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconShield'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
      AugmentationName="Energy Shield"

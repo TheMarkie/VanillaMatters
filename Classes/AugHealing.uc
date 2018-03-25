@@ -72,7 +72,6 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      mpAugValue=10.000000
-     EnergyRate=0.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconHealing'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconHealing_Small'
      AugmentationName="Regeneration"

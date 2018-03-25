@@ -221,7 +221,7 @@ function WithdrawCredits()
 
 			// Vanilla Matters: Triggers the drain depending on how much the player took.
 			if ( winTerm.bHacked ) {
-				winTerm.winHack.AddTimeCost( FMin( numCredits / 20.0, winTerm.winHack.GetSaveDetectionTime() ) );
+				winTerm.winHack.AddTimeCost( FMin( numCredits / 50.0, winTerm.winHack.GetSaveDetectionTime() ) );
 			}
 		}
 		else

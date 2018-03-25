@@ -24,7 +24,6 @@ function Deactivate()
 
 defaultproperties
 {
-     EnergyRate=0.000000
      MaxLevel=0
      Icon=Texture'DeusExUI.UserInterface.AugIconIFF'
      bAlwaysActive=True

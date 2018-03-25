@@ -39,7 +39,6 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-     EnergyRate=0.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconRunSilent'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconRunSilent_Small'
      bAlwaysActive=True

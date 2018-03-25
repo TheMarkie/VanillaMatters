@@ -387,7 +387,7 @@ function  float AddImmediateEnergyRate( float iER ) {
 
 defaultproperties
 {
-     EnergyRate=50.000000
+     EnergyRate=0.000000
      MaxLevel=3
      IconWidth=52
      IconHeight=52

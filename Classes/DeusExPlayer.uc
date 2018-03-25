@@ -747,6 +747,9 @@ event TravelPostAccept()
 		// set the player correctly
 		AugmentationSystem.SetPlayer(Self);
 		AugmentationSystem.RefreshAugDisplay();
+
+		// Vanilla Matters: Should ensure all augs work fine through patches.
+		AugmentationSystem.RefreshesAugs();
 	}
 
 	// Nuke any existing conversation
@@ -10442,18 +10445,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 	if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
 		(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
 	{
-		// if (AugmentationSystem != None)
-		// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+		if (AugmentationSystem != None)
+			augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
 
-		// if (augLevel >= 0.0)
-		// 	newDamage *= augLevel;
-
-		// Vanilla Matters: Makes the aug absorbs damage and drains energy properly.
-		aug = AugmentationSystem.FindAugmentation( class'AugEnviro' );
-
-		if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-			newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
-		}
+		if (augLevel >= 0.0)
+			newDamage *= augLevel;
 
 		// get rid of poison if we're maxed out
 		if (newDamage ~= 0.0)

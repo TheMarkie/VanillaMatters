@@ -42,6 +42,25 @@ replication
 
 }
 
+// Vanilla Matters: Makes sure augs are updated to the latest changes.
+function RefreshesAugs() {
+	local Augmentation anAug;
+
+	anAug = FirstAug;
+
+	while ( anAug != None ) {
+		anAug.bAlwaysActive = anAug.default.bAlwaysActive;
+
+		if ( anAug.bHasIt && ( anAug.bIsActive || anAug.bAlwaysActive ) ) {
+			anAug.GoToState( 'Inactive' );
+			anAug.GoToState( 'Active' );
+			anAug.bIsActive = true;
+		}
+
+		anAug = anAug.next;
+	}
+}
+
 // ----------------------------------------------------------------------
 // CreateAugmentations()
 // ----------------------------------------------------------------------
