@@ -15,6 +15,10 @@ simulated function PreBeginPlay()
 {
 	Super.PreBeginPlay();
 
+	// Vanilla Matters: Fixes Pistol skill always starting at Trained.
+	// if ( Level.NetMode == NM_Standalone )
+	// 	CurrentLevel = 1;
+
 	if ( Level.NetMode != NM_Standalone )
 	{
 		cost[0] = mpCost1;

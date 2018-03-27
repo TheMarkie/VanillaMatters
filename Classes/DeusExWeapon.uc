@@ -2428,11 +2428,6 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 	// Vanilla Matters: Sets the number of projectiles properly instead of vanilla hardcoding.
 	numProj = VM_ShotCount[GetWeaponSkillLevel()];
 
-	// VM: Some hack because the Gray doesn't have any skill to use for skill levels.
-	if ( Self.IsA( 'WeaponGraySpit' ) ) {
-		numProj = 3;
-	}
-
 	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
 	Start = ComputeProjectileStart(X, Y, Z);
 
@@ -2448,8 +2443,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 		//AdjustedAim.Pitch += currentAccuracy * (Rand(1024) - 512);
 		
 		// Vanilla Matters: Adds in more spread as count goes up if the spread modifiers are set above zero.
-		AdjustedAim.Yaw += currentAccuracy * (Rand(1024) - 512) * ( numProj * VM_SpreadHorWithShotCount );
-		AdjustedAim.Pitch += currentAccuracy * (Rand(1024) - 512) * ( numProj * VM_SpreadVerWithShotCount );
+		AdjustedAim.Yaw = AdjustedAim.Yaw + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadHorWithShotCount ) ) );
+		AdjustedAim.Pitch = AdjustedAim.Pitch + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadVerWithShotCount ) ) );
 
 		if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
 		{
