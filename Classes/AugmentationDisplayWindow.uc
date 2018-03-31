@@ -471,7 +471,7 @@ function DrawDefenseAugmentation(GC gc)
 			Interpolate( gc, width / 2, height / 2, boxCX, boxCY, 64 );
 			gc.SetTileColor( colHeaderText );
 
-			// VM: Draws four corners of the box.
+			// VM: Draw four corners of the box.
 			gc.DrawPattern( boxCX - 10, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
 			gc.DrawPattern( boxCX - 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
 
@@ -1218,7 +1218,7 @@ function DrawTargetAugmentation(GC gc)
 					// 	gc.DrawText(x, y, w, h, str);
 					// }
 
-					// Vanilla Matters: Lets the player see robots' weapon and identifies monsters' weapons as "undefined".
+					// Vanilla Matters: Let the player see robots' weapon and identifies monsters' weapons as "undefined".
 					str = msgWeapon;
 	
 					if ( Pawn( target ) != None ) {

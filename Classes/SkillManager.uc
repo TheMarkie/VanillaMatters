@@ -69,7 +69,7 @@ function CreateSkills(DeusExPlayer newPlayer)
 
 				LastSkill  = aSkill;
 
-				// Vanilla Matters: Creates subSkill.
+				// Vanilla Matters: Create subSkill.
 				if ( aSkill.VM_subSkillClass != None ) {
 					aSkill.VM_subSkill = Spawn( aSkill.Default.VM_subSkillClass, self );
 					aSkill.VM_subSkill.Player = player;
@@ -126,7 +126,7 @@ simulated function Skill GetSkillFromClass(class SkillClass)
 		// if (aSkill.Class == SkillClass)
 		// 	break;
 
-		// Vanilla Matters: Makes it also check for subSkill.
+		// Vanilla Matters: Make it also check for subSkill.
 		if ( aSkill.Class == SkillClass ) {
 			break;
 		}
@@ -246,7 +246,7 @@ function ResetSkills()
 	{
 		aSkill.CurrentLevel = aSkill.Default.CurrentLevel;
 
-		// Vanilla Matters: Also resets the subSkill.
+		// Vanilla Matters: Also reset the subSkill.
 		if ( aSkill.VM_subSkill != None ) {
 			aSkill.VM_subSkill.CurrentLevel = aSkill.Default.CurrentLevel;
 		}

@@ -127,10 +127,10 @@ function PreTravel()
 		// 	flags.SetBool('FordSchickRescued', True,, 9);
 		// }
 
-		// Vanilla Matters: Checks for conditions that would qualify a rescue.
+		// Vanilla Matters: Check for conditions that would qualify a rescue.
 		if ( !flags.GetBool( 'FordSchick_Dead' ) ) {
 			if ( flags.GetBool( 'FordSchickRescued' ) ) {
-				// VM: Has to set the flag again because the map trigger only set the expiration time to 3 for some dumb reason.
+				// VM: Have to set the flag again because the map trigger only set the expiration time to 3 for some dumb reason.
 				rescued = true;
 			}
 			else {
@@ -151,7 +151,7 @@ function PreTravel()
 			rescued = false;
 		}
 
-		// VM: Also sets the mission done flag, just to be sure.
+		// VM: Also set the mission done flag, just to be sure.
 		if ( rescued ) {
 			flags.SetBool('FordSchickRescued', True,, 9);
 			flags.SetBool('FordSchickRescueDone', True,, 9);

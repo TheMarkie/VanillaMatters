@@ -491,7 +491,7 @@ auto simulated state Flying
 		//		because sever fails to get it the old way
 		player = DeusExPlayer(Owner);
 
-		// Vanilla Matters: Fixes some accessed nones.
+		// Vanilla Matters: Fix some accessed nones.
 		if ( player != None ) {
 
 		dist = Abs(VSize(player.Location - Location));
@@ -534,7 +534,7 @@ auto simulated state Flying
 		local Rotator rot;
 		local float   volume;
 
-		// Vanilla Matters: Makes grenades break through glass.
+		// Vanilla Matters: Make grenades break through glass.
 		if ( HitWall.IsA( 'BreakableGlass' ) ) {
 			HitWall.TakeDamage( speed, Pawn( Owner ), HitWall.Location, MomentumTransfer * Normal( Velocity ), 'Shot' );
 			return;

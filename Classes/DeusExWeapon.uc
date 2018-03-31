@@ -207,9 +207,9 @@ var float	TimeLockSet;
 var() int		VM_ShotCount[4];				// How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
 var() bool		VM_bSlowWithShotCount;			// Does the firing speed slow down as the count goes up? New firing speed is shot count * vanilla formula.
 var() float		VM_SpreadHorWithShotCount;		// Spread the shots as count goes up. Vanilla already does but relies on accuracy, meaning high accuracy would cram all the shots into one place.
-var() float		VM_SpreadVerWithShotCount;		// Applies for projectile weapons only. If spread is 0, then only vanilla spread applies.
+var() float		VM_SpreadVerWithShotCount;		// Apply for projectile weapons only. If spread is 0, then only vanilla spread applies.
 
-var() float		VM_ShotBreaksStuff[4];			// Makes projectiles break doors/lids with a multiplier. Trace weapons already do, but use this for multiplier.
+var() float		VM_ShotBreaksStuff[4];			// Make projectiles break doors/lids with a multiplier. Trace weapons already do, but use this for multiplier.
 
 var() float		VM_HeadshotMult[4];				// Vanilla headshot multiplier is 8. This multiplies that. So 0.25 makes it 10, -0.25 makes it 6.
 
@@ -217,7 +217,7 @@ var float			VM_modTimer;					// Timer before laser/scope mods become effective.
 var() travel float	VM_modTimerMax;					// The max duration before they become effective. Scales with CombatDifficulty: modTimerMax * CombatDifficulty.
 
 var localized String VM_msgInfoIgnite;				// If an ammo type has the VM_IgnitesOnHit property then it's displayed to notify players.
-var localized String VM_msgInfoHeadshot;			// Labels the headshot multipler section.
+var localized String VM_msgInfoHeadshot;			// Label the headshot multipler section.
 var localized String VM_msgFullClip;
 
 //
@@ -480,7 +480,7 @@ function ReloadAmmo()
 		return;
 	}
 
-	// Vanilla Matters: Fixes the bug where player can reload with a full clip. Also the exploit where triggering a reload animation can quicken equip animation.
+	// Vanilla Matters: Fix the bug where player can reload with a full clip. Also the exploit where triggering a reload animation can quicken equip animation.
 	if ( ClipCount <= 0 ) {
 		Pawn( Owner ).ClientMessage( VM_msgFullClip );
 
@@ -524,7 +524,7 @@ function ReloadAmmo()
 // 	return value;
 // }
 
-// Vanilla Matters: Makes the function take into account where it's called for accuracy or damage, and provides appropriate values.
+// Vanilla Matters: Make the function take into account where it's called for accuracy or damage, and provides appropriate values.
 simulated function float GetWeaponSkill( optional bool forDamage ) {
 	local DeusExPlayer player;
 	local float value;
@@ -561,7 +561,7 @@ simulated function float GetWeaponSkill( optional bool forDamage ) {
 	return value;
 }
 
-// Vanilla Matters: Fetchs the skill level instead of trying to use the SkillSystem which takes more typing :)
+// Vanilla Matters: Fetch the skill level instead of trying to use the SkillSystem which takes more typing :)
 function float GetWeaponSkillLevel() {
 	local DeusExPlayer player;
 	local float level;
@@ -635,10 +635,10 @@ simulated function float CalculateAccuracy()
 	if ( Level.NetMode != NM_Standalone )
 		checkit = False;
 
-	// Vanilla Matters: Applies the effectiveness of scope or laser dynamically over time.
+	// Vanilla Matters: Apply the effectiveness of scope or laser dynamically over time.
 	accuracy = FMax( accuracy * ( ( VM_modTimerMax - VM_modTimer ) / VM_modTimerMax ), 0 );
 
-	// Vanilla Matters: Fixes the scope nullifying the laser bonus.
+	// Vanilla Matters: Fix the scope nullifying the laser bonus.
 	if ( bHasScope && !bZoomed && !bLasing ) {
 		accuracy = accuracy + 0.2;
 	}
@@ -1374,12 +1374,12 @@ simulated function Tick(float deltaTime)
 	// if were standing still, increase the timer
 	if (VSize(Owner.Velocity) < 10)
 		//standingTimer += deltaTime;
-		// Vanilla Matters: Prevents standingTimer overspill.
+		// Vanilla Matters: Prevent standingTimer overspill.
 		standingTimer = FMin( standingTimer + deltaTime, 10 );
 	else	// otherwise, decrease it slowly based on velocity
 		standingTimer = FMax(0, standingTimer - 0.03*deltaTime*VSize(Owner.Velocity));
 
-	// Vanilla Matters: Adds in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
+	// Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
 	if ( ( bLasing && VSize( Owner.Velocity ) < 160 )  || ( bZoomed && VSize( Owner.Velocity ) < 10 ) ) {
 		VM_modTimer = FMin( VM_modTimer + deltaTime, VM_modTimerMax );
 	}
@@ -1433,10 +1433,10 @@ function ScopeOn()
 		bZoomed = True;
 		RefreshScopeDisplay(DeusExPlayer(Owner), False, bZoomed);
 
-		// Vanilla Matters: Makes turning on the scope always reset the effective timer to 0, regardless if laser is active.
+		// Vanilla Matters: Make turning on the scope always reset the effective timer to 0, regardless if laser is active.
 		VM_modTimer = 0;
 
-		// Vanilla Matters: Sets modTimerMax depending on the combatDifficulty.
+		// Vanilla Matters: Set modTimerMax depending on the combatDifficulty.
 		if ( DeusExPlayer( Owner ) != None ) {
 			VM_modTimerMax = Default.VM_modTimerMax * DeusExPlayer( Owner ).CombatDifficulty;
 		}
@@ -1510,7 +1510,7 @@ function LaserOn()
 
 		bLasing = True;
 
-		// Vanilla Matters: Sets modTimerMax depending on the combatDifficulty.
+		// Vanilla Matters: Set modTimerMax depending on the combatDifficulty.
 		if ( DeusExPlayer( Owner ) != None ) {
 			VM_modTimerMax = Default.VM_modTimerMax * DeusExPlayer( Owner ).CombatDifficulty;
 		}
@@ -2425,7 +2425,7 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 	// else
 	// 	numProj = 1;
 
-	// Vanilla Matters: Sets the number of projectiles properly instead of vanilla hardcoding.
+	// Vanilla Matters: Set the number of projectiles properly instead of vanilla hardcoding.
 	numProj = VM_ShotCount[GetWeaponSkillLevel()];
 
 	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
@@ -2442,7 +2442,7 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 		//AdjustedAim.Yaw += currentAccuracy * (Rand(1024) - 512);
 		//AdjustedAim.Pitch += currentAccuracy * (Rand(1024) - 512);
 		
-		// Vanilla Matters: Adds in more spread as count goes up if the spread modifiers are set above zero.
+		// Vanilla Matters: Add in more spread as count goes up if the spread modifiers are set above zero.
 		AdjustedAim.Yaw = AdjustedAim.Yaw + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadHorWithShotCount ) ) );
 		AdjustedAim.Pitch = AdjustedAim.Pitch + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadVerWithShotCount ) ) );
 
@@ -2461,8 +2461,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 					proj.bTracking = True;
 				}
 
-				// Vanilla Matters: Fixes weapon's hitdamage not affecting projectiles
-				if ( !proj.VM_overridesDamage ) {
+				// Vanilla Matters: Fix weapon's hitdamage not affecting projectiles
+				if ( !proj.VM_bOverridesDamage ) {
 					proj.Damage = HitDamage * mult;
 				}
 				else {
@@ -2491,8 +2491,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 								proj.bTracking = True;
 							}
 
-							// Vanilla Matters: Fixes weapon's hitdamage not affecting projectiles
-							if ( !proj.VM_overridesDamage ) {
+							// Vanilla Matters: Fix weapon's hitdamage not affecting projectiles
+							if ( !proj.VM_bOverridesDamage ) {
 								proj.Damage = HitDamage * mult;
 							}
 							else {
@@ -2513,9 +2513,9 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 						// else
 						// 	proj.Damage = 0;
 
-						// Vanilla Matters: Fixes weapon's hitdamage not affecting projectiles
+						// Vanilla Matters: Fix weapon's hitdamage not affecting projectiles
 						if ( Role == ROLE_Authority ) {
-							if ( !proj.VM_overridesDamage ) {
+							if ( !proj.VM_bOverridesDamage ) {
 								proj.Damage = HitDamage * mult;
 							}
 							else {
@@ -2687,7 +2687,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 			// if ( Role == ROLE_Authority )
 			// 	Other.TakeDamage(HitDamage * mult, Pawn(Owner), HitLocation, 1000.0*X, damageType);
 
-			// Vanilla Matters: Makes the mover take damage with a multiplier.
+			// Vanilla Matters: Make the mover take damage with a multiplier.
 			if ( Role == ROLE_Authority ) {
 				Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn(Owner), HitLocation, 1000.0 * X, damageType );
 			}
@@ -2704,7 +2704,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 			if (bPenetrating && Other.IsA('Pawn') && !Other.IsA('Robot'))
 				SpawnBlood(HitLocation, HitNormal);
 
-			// Vanilla Matters: Ignites enemies.
+			// Vanilla Matters: Ignite enemies.
 			if ( DeusExPlayer( Pawn( Owner ) ) != None && ScriptedPawn( Other ) != None ) {
 				if ( DeusExAmmo( AmmoType ).VM_IgnitesOnHit >= 0.0 && GetWeaponSkillLevel() >= DeusExAmmo( AmmoType ).VM_IgnitesOnHit ) {
 					ScriptedPawn( Other ).CatchFire();
@@ -2860,7 +2860,7 @@ simulated function bool UpdateInfo(Object winObject)
 	local Ammo weaponAmmo;
 	local int  ammoAmount;
 
-	// Vanilla Matters: Optimizes many calls.
+	// Vanilla Matters: Optimize many calls.
 	local float weaponSkillLevel;
 	local name damageType;
 
@@ -2986,7 +2986,7 @@ simulated function bool UpdateInfo(Object winObject)
 	// }
 
 	// Vanilla Matters: Damage is now displayed exactly per hit, ignoring shot count unlike vanilla.
-	if ( class<DeusExProjectile>( ProjectileClass ) != None && class<DeusExProjectile>( ProjectileClass ).Default.VM_overridesDamage ) {
+	if ( class<DeusExProjectile>( ProjectileClass ) != None && class<DeusExProjectile>( ProjectileClass ).Default.VM_bOverridesDamage ) {
 		if ( Level.NetMode != NM_Standalone ) {
 			dmg = class<DeusExProjectile>( ProjectileClass ).Default.mpDamage;
 
@@ -3011,7 +3011,7 @@ simulated function bool UpdateInfo(Object winObject)
 	str = String(dmg);
 	// mod = 1.0 - GetWeaponSkill();
 
-	// Vanilla Matters: Displays the number of shots to make it clearer how much damage can be dealt.
+	// Vanilla Matters: Display the number of shots to make it clearer how much damage can be dealt.
 	if ( Default.VM_ShotCount[weaponSkillLevel] > 1 ) {
 		str = str $ "x" $ Default.VM_ShotCount[weaponSkillLevel];
 	}
@@ -3023,7 +3023,7 @@ simulated function bool UpdateInfo(Object winObject)
 		str = str @ BuildPercentString(mod - 1.0);
 		str = str @ "=" @ FormatFloatString(dmg * mod, 1.0);
 
-		// Vanilla Matters: Displays the same number of shots afterwards.
+		// Vanilla Matters: Display the same number of shots afterwards.
 		if ( Default.VM_ShotCount[weaponSkillLevel] > 1 ) {
 			str = str $ "x" $ Default.VM_ShotCount[weaponSkillLevel];
 		}
@@ -3156,7 +3156,7 @@ simulated function bool UpdateInfo(Object winObject)
 	}
 	winInfo.AddInfoItem(msgInfoMaxRange, str);
 
-	// Vanilla Matters: Displays headshot multiplier, since vanilla multiplier is hardcoded 8 for all, we can just print it so.
+	// Vanilla Matters: Display headshot multiplier, since vanilla multiplier is hardcoded 8 for all, we can just print it so.
 	str = "x8.0";
 
 	if ( Default.VM_HeadshotMult[weaponSkillLevel] != 0.0 ) {
@@ -3212,7 +3212,7 @@ simulated function bool UpdateInfo(Object winObject)
 	// // Governing Skill
 	// winInfo.AddInfoItem(msgInfoSkill, GoverningSkill.default.SkillName);
 
-	// Vanilla Matters: Fixes some accessed null class context.
+	// Vanilla Matters: Fix some accessed null class context.
 	if ( GoverningSkill != None ) {
 		winInfo.AddInfoItem( msgInfoSkill, GoverningSkill.default.SkillName );
 	}
@@ -3229,7 +3229,7 @@ simulated function bool UpdateInfo(Object winObject)
 		winInfo.AddLine();
 		winInfo.AddAmmoDescription(ammoClass.Default.ItemName $ "|n" $ ammoClass.Default.description);
 
-		// Vanilla Matters: Displays if the ammo type can ignite people. If the property is disabled with -1.0 then it won't show at all.
+		// Vanilla Matters: Display if the ammo type can ignite people. If the property is disabled with -1.0 then it won't show at all.
 		if ( ammoClass.Default.VM_IgnitesOnHit >= 0.0 ) {
 			if ( weaponSkillLevel >= ammoClass.Default.VM_IgnitesOnHit ) {
 				str = msgInfoYes;
@@ -3284,7 +3284,7 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 // ----------------------------------------------------------------------
 
 //simulated final function String BuildPercentString(Float value)
-// Vanilla Matters: Makes it static so it can be used outside of this class easily.
+// Vanilla Matters: Make it static so it can be used outside of this class easily.
 simulated static final function String BuildPercentString(Float value)
 {
 	local string str;
@@ -3307,7 +3307,7 @@ simulated static final function String BuildPercentString(Float value)
 // ----------------------------------------------------------------------
 
 //simulated function String FormatFloatString(float value, float precision)
-// Vanilla Matters: Makes it static so it can be used outside of this class easily.
+// Vanilla Matters: Make it static so it can be used outside of this class easily.
 simulated static function String FormatFloatString(float value, float precision)
 {
 	local string str;
@@ -3494,13 +3494,13 @@ state NormalFire
 				mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
 				if (mult == -1.0)
 					mult = 1.0;
-				// Vanilla Matters: Compensates for reduced augcombat values.
+				// Vanilla Matters: Compensate for reduced augcombat values.
 				else {
 					mult = mult / 10.0;
 				}
 			}
 
-			// Vanilla Matters: Slows the firing speed, the actual firing rate is a combination of shottime and animation duration, this delay formula seems to work reliably enough.
+			// Vanilla Matters: Slow the firing speed, the actual firing rate is a combination of shottime and animation duration, this delay formula seems to work reliably enough.
 			delay = 1.0;
 			if ( VM_bSlowWithShotCount ) {
 				delay = VM_ShotCount[GetWeaponSkillLevel()];
@@ -3724,7 +3724,7 @@ simulated state ClientFiring
 				mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
 				if (mult == -1.0)
 					mult = 1.0;
-				// Vanilla Matters: Compensates for reduced augcombat values.
+				// Vanilla Matters: Compensate for reduced augcombat values.
 				else {
 					mult = mult / 10.0;
 				}

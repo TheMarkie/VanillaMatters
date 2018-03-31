@@ -2864,7 +2864,7 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	local int   actualDamage;
 	local float headOffsetZ, headOffsetY, armOffset;
 
-	// Vanilla Matters: Exists to avoid too much class casting.
+	// Vanilla Matters: Here to avoid too much class casting.
 	local DeusExWeapon instigatorWeapon;
 
 	actualDamage = Damage;
@@ -2882,13 +2882,13 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	// 	if ((instigatedBy != None) && (VSize(instigatedBy.Location - Location) < 64))
 	// 		actualDamage  *= 10;
 
-	// Vanilla Matters: Fixes the bug where stunned enemies can't receive point-blank damage bonus from behind.
+	// Vanilla Matters: Fix the bug where stunned enemies can't receive point-blank damage bonus from behind.
 	if ( bStunned ) {
 		actualDamage = actualDamage * 4;
 	}
 	
 	if ( offset.x < 0 ) {
-		// VM: Boosts the range from 64 to 80 to make baton/melee knockouts more reliable.
+		// VM: Boost the range from 64 to 80 to make baton/melee knockouts more reliable.
 		if ( ( instigatedBy != None ) && ( VSize( instigatedBy.Location - Location ) < 80 ) ) {
 			actualDamage = actualDamage * 10;
 		}
@@ -3058,7 +3058,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 				// else
 				// 	HealthHead -= actualDamage * 8;
 
-				// Vanilla Matters: Allows all weapons to be able to headshot equally.
+				// Vanilla Matters: Allow all weapons to be able to headshot equally.
 				HealthHead = HealthHead - ( actualDamage * 8 );
 
 				if (offset.x < 0.0)
@@ -3249,7 +3249,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	if ((actualDamage > 0) && (damageType == 'Poison'))
 		StartPoison(Damage, instigatedBy);
 
-	// Vanilla Matters: Adds FP rate for damage dealt, based on health loss.
+	// Vanilla Matters: Add FP rate for damage dealt, based on health loss.
 	if ( DeusExPlayer( instigatedBy ) != None ) {
 		if ( self.IsA( 'Animal' ) ) {
 			DeusExPlayer( instigatedBy ).AddForwardPressure( FClamp( origHealth - Health, 0, Default.Health ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
@@ -13776,7 +13776,7 @@ state Stunned
 {
 	//ignores seeplayer, hearnoise, bump, hitwall;
 
-	// Vanilla Matters: Fixes a bug where a pawn would regain conciousness prematurely if it's stunned while opening a door.
+	// Vanilla Matters: Fix a bug where a pawn would regain conciousness prematurely if it's stunned while opening a door.
 	ignores seeplayer, hearnoise, bump, hitwall, stopwaiting;
 
 	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, 

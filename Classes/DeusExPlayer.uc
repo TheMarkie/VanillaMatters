@@ -357,7 +357,7 @@ const			NintendoDelay = 6.0;
 var Computers ActiveComputer;
 
 // Vanilla Matters
-var globalconfig bool VM_bEnableFP;				// Makes Forward Pressure optional.
+var globalconfig bool VM_bEnableFP;
 
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
 var travel Inventory VM_HeldInHand;				// Item being held.
@@ -401,8 +401,8 @@ var float VM_fpZoneDeposit2;
 var() float VM_fpZoneRadius;					// How large these zones are.
 var() float VM_fpStealthRadius;					// How large the stealth radius is, to check for enemy pawns that the player is sneaking around.
 
-var travel int VM_lastMission;					// Keeps track of the last mission number in case the player transitions to a new mission.
-var travel bool VM_mapTravel;					// Denotes if a travel is a normal map travel or game load.
+var travel int VM_lastMission;					// Keep track of the last mission number in case the player transitions to a new mission.
+var travel bool VM_mapTravel;					// Denote if a travel is a normal map travel or game load.
 
 var localized String VM_msgTakeHold;
 var localized String VM_msgTakeHoldInstead;
@@ -656,7 +656,7 @@ function PreTravel()
 		VM_HeldInHand.SetOwner( None );
 	}
 
-	// Vanilla Matters: Saves current mission number and marks this as a normal map transition.
+	// Vanilla Matters: Save current mission number and marks this as a normal map transition.
 	info = GetLevelInfo();
 	if ( info != None ) {
 		VM_lastMission = info.MissionNumber;
@@ -791,7 +791,7 @@ event TravelPostAccept()
 	// make sure the player's eye height is correct
 	BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
 
-	// Vanilla Matters: Repairs the held item since it's fucked up by vanilla coding.
+	// Vanilla Matters: Repair the held item since it's fucked up by vanilla coding.
 	if ( VM_HeldInHand != None ) {
 		VM_lastHeldInHand = VM_HeldInHand;
 
@@ -812,7 +812,7 @@ event TravelPostAccept()
 
 	// Vanilla Matters: If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
 	if ( info != None ) {
-		// VM: Assumes the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
+		// VM: Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
 		if ( VM_lastMission != -3 && info.MissionNumber > VM_lastMission ) {
 			AddForwardPressure( VM_fpCritical );
 		}
@@ -828,7 +828,7 @@ event TravelPostAccept()
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
 
-	// VM: Resets the vectors manually instead of letting the game sets them to vect( 0, 0, 0 ).
+	// VM: Reset the vectors manually instead of letting the game sets them to vect( 0, 0, 0 ).
 	ResetFPZoneInfo();
 }
 
@@ -1026,14 +1026,14 @@ exec function QuickSave()
 	   return;
 	}
 
-	// Vanilla Matters: Disables quicksaving depending on Forward Pressure.
+	// Vanilla Matters: Disable quicksaving depending on Forward Pressure.
 	if ( VM_bEnableFP ) {
 		if ( !EnoughPressure( 100 ) ) {
 			return;
 		}
 	}
 
-	// Vanilla Matters: Resets the forward pressure.
+	// Vanilla Matters: Reset the forward pressure.
 	ResetForwardPressure();
 
 	SaveGame(-1, QuickSaveGameTitle);
@@ -1077,7 +1077,7 @@ function bool EnoughPressure( float amount ) {
 	return ( VM_forwardPressure >= amount );
 }
 
-// Vanilla Matters: Scales all rates to the current difficulty.
+// Vanilla Matters: Scale all rates to the current difficulty.
 function ScaleForwardPressureValues( optional float difficulty ) {
 	local float diff;
 
@@ -1096,7 +1096,7 @@ function ScaleForwardPressureValues( optional float difficulty ) {
 	VM_fpUtilityHS = VM_fpUtilityH / diff;
 }
 
-// Vanilla Matters: Builds pressure passively during various activities.
+// Vanilla Matters: Build pressure passively during various activities.
 function BuildForwardPressure( float deltaTime ) {
 	local float diff, dist;
 
@@ -1539,7 +1539,7 @@ simulated function DrugEffects(float deltaTime)
 	// Vanilla Matters
 	local int supposedFOV;
 
-	// Vanilla Matters: Sets the supposedFOV as the baseline for any change.
+	// Vanilla Matters: Set the supposedFOV as the baseline for any change.
 	if ( DeusExWeapon( Weapon ) != None && DeusExWeapon( Weapon ).bZoomed ) {
 		supposedFOV = DeusExWeapon( Weapon ).ScopeFOV;
 	}
@@ -1586,7 +1586,7 @@ simulated function DrugEffects(float deltaTime)
 		}
 		else
 			//DesiredFOV = Default.DesiredFOV;
-			// Vanilla Matters: Fixes a bug where drugs reset scope FOV.
+			// Vanilla Matters: Fix a bug where drugs reset scope FOV.
 			DesiredFOV = supposedFOV;
 
 		drugEffectTimer -= deltaTime;
@@ -1603,7 +1603,7 @@ simulated function DrugEffects(float deltaTime)
 				root.hud.SetBackgroundStyle(DSTY_Normal);
 				//DesiredFOV = Default.DesiredFOV;
 
-				// Vanilla Matters: Fixes a bug where drugs reset scope FOV.
+				// Vanilla Matters: Fix a bug where drugs reset scope FOV.
 				DesiredFOV = supposedFOV;
 			}
 		}
@@ -1825,7 +1825,7 @@ function MaintainEnergy(float deltaTime)
          
          Energy -= EnergyUse;
 
-		// Vanilla Matters: Adds in FP rate for energy used.
+		// Vanilla Matters: Add in FP rate for energy used.
 		AddForwardPressure( FMin( energyUse, 0 ) * ( VM_fpEnergy + VM_fpEnergyS ) );
          
          // Calculate the energy drain due to EMP attacks
@@ -1861,7 +1861,7 @@ function MaintainEnergy(float deltaTime)
          EnergyDrainTotal = 0;         
          AugmentationSystem.DeactivateAll();
 
-         // Vanilla Matters: Makes the player drop a big decoration since AugMuscle shouldn't be working.
+         // Vanilla Matters: Make the player drop a big decoration since AugMuscle shouldn't be working.
          if ( CarriedDecoration != None ) {
             if ( !CanBeLifted( CarriedDecoration ) ) {
               DropDecoration();
@@ -1902,7 +1902,7 @@ function float DrainEnergy( Augmentation augDraining, float drainAmount, optiona
 		drainAmount = drainAmount - Energy;
 	}
 
-	// VM: Returns the actualAmount to normal.
+	// VM: Return the actualAmount to normal.
 	if ( efficiency > 0.0 ) {
 		drainAmount = drainAmount * efficiency;
 	}
@@ -2462,7 +2462,7 @@ exec function DeactivateAllAugs()
 exec function SwitchAmmo()
 {
 	//if (inHand.IsA('DeusExWeapon'))
-  // Vanilla Matters: Fixes some accessed none.
+  // Vanilla Matters: Fix some accessed none.
   if ( DeusExWeapon ( inHand ) != None )
 		DeusExWeapon(inHand).CycleAmmo();	
 }
@@ -2962,8 +2962,8 @@ simulated function PlayFootStep()
 	massFactor  = Mass/150.0;
   //radius      = 375.0;
 
-  // Vanilla Matters: Makes speed enhancement broadcast sounds over a much wider range.
-  radius = 375.0 * Abs( AugmentationSystem.GetAugLevelValue( class'AugSpeed' ) );
+	// Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
+	radius = 375.0 * Abs( AugmentationSystem.GetAugLevelValue( class'AugSpeed' ) );
 	
 	volume      = (speedFactor+0.2) * massFactor;
 	range       = radius * volume;
@@ -3157,18 +3157,18 @@ function Landed(vector HitNormal)
 					// if (augLevel >= 0)
 					// 	augReduce = 15 * (augLevel+1);
 
-          // Vanilla Matters: Makes AugStealth also reduce a smaller amount of fall damage, while scaling up AugSpeed reduction.
-          augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
-          if ( augLevel >= 0 ) {
-            augReduce = 20 * ( augLevel + 1 );
-          }
-          else {
-            augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
+					// Vanilla Matters: Make AugStealth also reduce a smaller amount of fall damage, while scaling up AugSpeed reduction.
+					augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
+					if ( augLevel >= 0 ) {
+						augReduce = 20 * ( augLevel + 1 );
+					}
+					else {
+						augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
 
-            if ( augLevel >= 0 ) {
-              augReduce = 5 * ( augLevel + 1 );
-            }
-          }
+						if ( augLevel >= 0 ) {
+							augReduce = 5 * ( augLevel + 1 );
+						}
+					}
 				}
 
 				dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
@@ -3380,7 +3380,7 @@ function int ChargePlayer(int baseChargePoints)
 
 	Energy += chargedPoints;
 
-	// Vanilla Matters: Adds in FP rate for energy recharged.
+	// Vanilla Matters: Add in FP rate for energy recharged.
 	AddForwardPressure( FMax( chargedPoints, 0 ) * ( VM_fpRecharge + VM_fpRechargeS ) );
 
 	return chargedPoints;	
@@ -3403,8 +3403,8 @@ function int CalculateSkillHealAmount(int baseHealPoints)
 		// // apply the skill
 		// adjustedHealAmount = baseHealPoints * mult;
 
-    // Vanilla Matters: Applies healing bonus in the new formula we want, which is additive.
-    adjustedHealAmount = baseHealPoints + mult;
+		// Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
+		adjustedHealAmount = baseHealPoints + mult;
 	}
 
 	return adjustedHealAmount;
@@ -3425,7 +3425,7 @@ function HealPart(out int points, out int amt)
 	else
 		spill = 0;
 
-	// Vanilla Matters: Adds in FP rate for health restored.
+	// Vanilla Matters: Add in FP rate for health restored.
 	AddForwardPressure( FMax( amt - spill, 0 ) * ( VM_fpHeal + VM_fpHealS ) );
 
 	amt = spill;
@@ -3684,11 +3684,11 @@ function CreateDrone()
 		// aDrone.blastRadius = 8 * spyDroneLevelValue;
 		// window construction now happens in Tick()
 
-    // Vanilla Matters: Rescales everything.
-    aDrone.Speed = 75 + ( 25 * spyDroneLevel );
-    aDrone.MaxSpeed = aDrone.Speed;
-    aDrone.Damage = spyDroneLevelValue;
-    aDrone.blastRadius = 160 + ( 80 * spyDroneLevel );
+		// Vanilla Matters: Rescale everything.
+		aDrone.Speed = 75 + ( 25 * spyDroneLevel );
+		aDrone.MaxSpeed = aDrone.Speed;
+		aDrone.Damage = spyDroneLevelValue;
+		aDrone.blastRadius = 160 + ( 80 * spyDroneLevel );
 	}
 }
 
@@ -4072,7 +4072,7 @@ state PlayerWalking
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
-		// Vanilla Matters: Builds forward pressure as you move.
+		// Vanilla Matters: Build forward pressure as you move.
 		BuildForwardPressure( deltaTime );
 
 		Super.PlayerTick(deltaTime);
@@ -4119,7 +4119,7 @@ state PlayerFlying
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
-		// Vanilla Matters: Builds forward pressure as you move.
+		// Vanilla Matters: Build forward pressure as you move.
 		BuildForwardPressure( deltaTime );
 
 		Super.PlayerTick(deltaTime);
@@ -4140,10 +4140,10 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 	if (HeadRegion.Zone.AmbientSound != None)
 		HeadRegion.Zone.SoundRadius = 0;
 
-  // VM: Moves out of check so we can use it more times.
-  if ( AugmentationSystem != None ) {
-    augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
-  }
+	// VM: Move out of check so we can use it more times.
+	if ( AugmentationSystem != None ) {
+		augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
+	}
 
 	if (newHeadZone.bWaterZone && !HeadRegion.Zone.bWaterZone)
 	{
@@ -4170,16 +4170,7 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 		}
 		else
 			WaterSpeed = Default.WaterSpeed * mult;
-
-    // Vanilla Matters: Shows that the augaqualung is in effect.
-    // if ( augLevel != -1.0 ) {
-    //   AugmentationSystem.FindAugmentation( class'AugAqualung' ).FakeActivate();
-    // }
 	}
-  // Vanilla Matters: Fakes deactivation of augaqualung since we're not in water anymore.
-  // else if ( augLevel != -1.0 ) {
-  //   AugmentationSystem.FindAugmentation( class'AugAqualung' ).FakeDeactivate();
-  // }
 
 	Super.HeadZoneChange(newHeadZone);
 }
@@ -4273,7 +4264,7 @@ state PlayerSwimming
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
-		// Vanilla Matters: Builds forward pressure as you move.
+		// Vanilla Matters: Build forward pressure as you move.
 		BuildForwardPressure( deltaTime );
 
 		Super.PlayerTick(deltaTime);
@@ -4706,7 +4697,7 @@ function DroneExplode()
   //     // if (anAug != None)      
   //     //    anAug.Deactivate();
 
-		// Vanilla Matters: Makes drone detonation cost energy.
+		// Vanilla Matters: Make drone detonation cost energy.
 		anAug = AugDrone( AugmentationSystem.FindAugmentation( class'AugDrone' ) );
 
 		if ( anAug != None ) {
@@ -4806,7 +4797,7 @@ exec function ParseLeftClick()
 		// if (inHand.bActivatable)
 		// 	inHand.Activate();
 
-		// Vanilla Matters: Prevents the player from activating two charged pickups of the same type at the same time.
+		// Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time.
 		if ( inHand.bActivatable ) {
 			if ( inHand.IsA( 'ChargedPickup' ) ) {
 				if ( UsingChargedPickup( ChargedPickup( inHand ).class ) ) {
@@ -4821,7 +4812,7 @@ exec function ParseLeftClick()
 				// VM: If the charged pickup is being held, tries to put it in the inventory then activate it.
 				else if ( IsHolding( inHand ) ) {
 					if ( FindInventorySlot( inHand, true ) ) {
-						// VM: Saves inHand since it's gonna be wiped. We're also activating it AFTER it's been picked up, just to be safe.
+						// VM: Save inHand since it's gonna be wiped. We're also activating it AFTER it's been picked up, just to be safe.
 						item = inHand;
 						ParseRightClick();
 						item.Activate();
@@ -4861,7 +4852,7 @@ exec function ParseLeftClick()
 			}
 		}
 	}
-	// Vanilla Matters: Allows holding pickups in hands or doing powerthrows.
+	// Vanilla Matters: Allow holding pickups in hands or doing powerthrows.
 	else if ( inHand == None ) {
 		if ( FrobTarget != None ) {
 			if ( TakeHold( Inventory( FrobTarget ), true ) ) {
@@ -4892,17 +4883,17 @@ exec function ParseLeftClick()
   	}
 }
 
-// Vanilla Matters: Checks if the player is holding this item.
+// Vanilla Matters: Check if the player is holding this item.
 function bool IsHolding( Inventory item ) {
 	return ( VM_HeldInHand != None && item == VM_HeldInHand );
 }
 
-// Vanilla Matters: Checks if the player was holding this item.
+// Vanilla Matters: Check if the player was holding this item.
 function bool WasHolding( Inventory item ) {
 	return ( VM_lastHeldInHand != None && item == VM_lastHeldInHand );
 }
 
-// Vanilla Matters: Checks if the conditions are suitable for taking hold of an item.
+// Vanilla Matters: Check if the conditions are suitable for taking hold of an item.
 function bool CanBeHeld( Inventory item ) {
 	local DeusExPickup pickup;
 
@@ -4923,7 +4914,7 @@ function bool TakeHold( Inventory item, optional bool frobOnFail, optional bool 
 		pickup = DeusExPickup( item );
 
 		if ( !pickup.bActive || ignoresActive ) {
-			// VM: Simulates the process of picking up through frobbing.
+			// VM: Simulate the process of picking up through frobbing.
 			pickup.BecomeItem();
 			pickup.SetOwner( self );
 			pickup.SetBase( self );
@@ -4973,7 +4964,7 @@ exec function ParseRightClick()
 	oldInHand = inHand;
 	oldCarriedDecoration = CarriedDecoration;
 
-	// Vanilla Matters: Queues the held item so that it can be picked up.
+	// Vanilla Matters: Queue the held item so that it can be picked up.
 	if ( IsHolding( inHand ) && FrobTarget == None ) {
 		FrobTarget = VM_HeldInHand;
 
@@ -4998,7 +4989,7 @@ exec function ParseRightClick()
 			FrobTarget.Destroy();
 			FrobTarget = None;
 
-			// Vanilla Matters: Cleans up temp stuff just for sure.
+			// Vanilla Matters: Clean up temp stuff just for sure.
 			VM_lastHeldInHand = None;
 
 			return;
@@ -5015,7 +5006,7 @@ exec function ParseRightClick()
 			// if (HandleItemPickup(FrobTarget, True) == False)
 			// 	return;
 
-			// Vanilla Matters: Allows taking hold of an item if the player can't pick it up.
+			// Vanilla Matters: Allow taking hold of an item if the player can't pick it up.
 			if ( !HandleItemPickup( FrobTarget, true ) ) {
 				if ( TakeHold( Inventory( FrobTarget ) ) ) {
 					if ( WasHolding( Inventory( FrobTarget ) ) ) {
@@ -5045,7 +5036,7 @@ exec function ParseRightClick()
 			// 	FrobTarget = None;
 			// }
 
-			// Vanilla Matters: Fixes some dumb accessed none due to the fact some inventory items just self-destruct on frob, haha very funny Ion Storm. Also the vanilla code looks ugly so.
+			// Vanilla Matters: Fix some dumb accessed none due to the fact some inventory items just self-destruct on frob, haha very funny Ion Storm. Also the vanilla code looks ugly so.
 			if ( FrobTarget != None && ( ( Level.NetMode == NM_Standalone && FrobTarget.Owner == Self ) || ( Level.NetMode != NM_Standalone && oldFirstItem != Inventory ) ) ) {
 				if ( Level.NetMode == NM_Standalone ) {
 					FindInventorySlot(Inventory(FrobTarget));
@@ -5057,7 +5048,7 @@ exec function ParseRightClick()
 				FrobTarget = None;
 			}
 
-			// Vanilla Matters: Cleans up temp stuff just for sure.
+			// Vanilla Matters: Clean up temp stuff just for sure.
 			VM_lastHeldInHand = None;
 		}
 		else if (FrobTarget.IsA('Decoration') && Decoration(FrobTarget).bPushable)
@@ -5189,7 +5180,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 				{
 					//ClientMessage(TooMuchAmmo);
 
-					// Vanilla Matters: Uses a clearer message.
+					// Vanilla Matters: Use a clearer message.
 					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
 
 					bCanPickup = False;
@@ -5207,7 +5198,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 				{
 					//ClientMessage(TooMuchAmmo);
 
-					// Vanilla Matters: Uses a clearer message.
+					// Vanilla Matters: Use a clearer message.
 					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
 
 					bCanPickup = False;
@@ -5228,7 +5219,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
 				if (!bCanPickup)
 					ClientMessage(Sprintf(CanCarryOnlyOne, foundItem.itemName));
-				// Vanilla Matters: Fixes the bug where you can pick up a weapon whose ammo you're full of.
+				// Vanilla Matters: Fix the bug where you can pick up a weapon whose ammo you're full of.
 				else {
 					if ( Weapon( foundItem ).AmmoType.AmmoAmount >= Weapon( foundItem ).AmmoType.MaxAmmo ) {
 						ClientMessage( Sprintf( VM_msgTooMuchAmmo, Weapon( foundItem ).AmmoType.itemName ) );
@@ -5422,7 +5413,7 @@ exec function PutInHand(optional Inventory inv)
 			return;
 		}
 
-		// VM: Toggles the laser on automatically.
+		// VM: Toggle the laser on automatically.
 		if ( DeusExWeapon( inv ) != None && DeusExWeapon( inv ).bHasLaser ) {
 			DeusExWeapon( inv ).LaserOn();
 		}
@@ -5542,7 +5533,7 @@ function UpdateInHand()
 			// if (inHand.bActive)
 			// 	inHand.Activate();
 
-			// Vanilla Matters: Prevents toggleable charged pickups from being turned off upon deselection.
+			// Vanilla Matters: Prevent toggleable charged pickups from being turned off upon deselection.
 			if ( inHand.bActive && !inHand.IsA( 'ChargedPickup' ) ) {
 				inHand.Activate();
 			}
@@ -6174,7 +6165,7 @@ function bool CanBeLifted(Decoration deco)
 	}
 
 	//if (!deco.bPushable || (deco.Mass > maxLift) || (deco.StandingCount > 0))
-	// Vanilla Matters: Allows lifting decos with things on them.
+	// Vanilla Matters: Allow lifting decos with things on them.
 	if ( !deco.bPushable || deco.Mass > maxLift )
 	{
 		if (deco.bPushable)
@@ -6374,17 +6365,17 @@ function DropDecoration()
 			if (CarriedDecoration.IsA('DeusExDecoration'))
 				DeusExDecoration(CarriedDecoration).ResetScaleGlow();
 
-			// Vanilla Matters: Handles AugMuscle stuff.
+			// Vanilla Matters: Handle AugMuscle stuff.
 			if ( AugmentationSystem != None ) {
 				aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
-				// VM: Sets the drain rate back to 0 since nothing is held.
+				// VM: Set the drain rate back to 0 since nothing is held.
 				if ( CarriedDecoration.Mass > 50 ) {
 					aug.EnergyRate = 0;
 
 					aug.FakeDeactivate();
 				}
 
-				// VM: Drains energy for powerthrow.
+				// VM: Drain energy for powerthrow.
 				if ( DeusExDecoration( CarriedDecoration ) != None && DeusExDecoration( CarriedDecoration ).VM_bPowerthrown ) {
 					DrainEnergy( aug, ( CarriedDecoration.Mass / 50 ) * 15 );
 				}
@@ -6398,7 +6389,7 @@ function DropDecoration()
 			CarriedDecoration.SetLocation(origLoc);
 			ClientMessage(CannotDropHere);
 
-			// Vanilla Matters: Resets bPowerthrown.
+			// Vanilla Matters: Reset bPowerthrown.
 			if ( DeusExDecoration( CarriedDecoration ) != None ) {
 				DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = false;
 				DeusExDecoration( CarriedDecoration ).VM_powerThrower = None;
@@ -6623,7 +6614,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 							carc.itemName = POVCorpse(item).CorpseItemName;
 							carc.CarcassName = POVCorpse(item).CarcassName;
 
-							// Vanilla Matters: Passes the inventory back in to allow recollecting the items.
+							// Vanilla Matters: Pass the inventory back in to allow recollecting the items.
 							corpseInv = POVCorpse( item ).VM_corpseInventory;
 
 							while ( corpseInv != None ) {
@@ -6712,7 +6703,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	    }
 	}
 
-	// VM: Restores NumCopies.
+	// VM: Restore NumCopies.
 	if ( saveNumCopies > 0 && saveNumCopies != DeusExPickup( item ).NumCopies ) {
     	DeusExPickup( item ).NumCopies = saveNumCopies;
     }
@@ -7975,7 +7966,7 @@ function bool DeleteInventory(inventory item)
 	local DeusExRootWindow root;
 	local PersonaScreenInventory winInv;
 
-	// Vanilla Matters: Makes sure VM_lastInHand is deleted properly.
+	// Vanilla Matters: Make sure VM_lastInHand is deleted properly.
 	if ( item == VM_lastInHand ) {
 		VM_lastInHand = None;
 	}
@@ -9067,7 +9058,7 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
 		DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
 	}
 
-	// Vanilla Matters: Adds FP points for receiving notes.
+	// Vanilla Matters: Add FP points for receiving notes.
 	AddForwardPressure( VM_fpNoteAdded );
 
 	return newNote;
@@ -9208,7 +9199,7 @@ function DeusExGoal AddGoal( Name goalName, bool bPrimaryGoal )
 		ClientMessage(GoalAdded);
 		DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 
-		// Vanilla Matters: Adds FP rate for objectives received.
+		// Vanilla Matters: Add FP rate for objectives received.
 		AddForwardPressure( VM_fpCritical );
 	}
 
@@ -9300,7 +9291,7 @@ function GoalCompleted( Name goalName )
 			else
 				ClientMessage(SecondaryGoalCompleted);
 
-			// Vanilla Matters: Adds FP rate for objective completion.
+			// Vanilla Matters: Add FP rate for objective completion.
 			AddForwardPressure( VM_fpCritical );
 		}
 	}
@@ -10040,7 +10031,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	// 	StartPoison( instigatedBy, Damage );
 	// }
 
-	// Vanilla Matters: Adds in new Rebreather behaviors to multiplayer.
+	// Vanilla Matters: Add in new Rebreather behaviors to multiplayer.
 	if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
 		if ( Level.NetMode != NM_Standalone ) {
 			ServerConditionalNotifyMsg( MPMSG_FirstPoison );
@@ -10343,7 +10334,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	}
 	MakeNoise(1.0); 
 
-	// Vanilla Matters: Adds in FP rate for damage received, based on health loss.
+	// Vanilla Matters: Add in FP rate for damage received, based on health loss.
 	AddForwardPressure( FMax( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0 ) * ( VM_fpDamage + VM_fpDamageS ) );
 
 	if ((DamageType == 'Flamed') && !bOnFire)
@@ -10472,7 +10463,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			// 	newDamage *= 0.75 * skillLevel;
 			// }
 
-		// Vanilla Matters: Nullifies all damage of the gas type if you have a Rebreather.
+		// Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
 		if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
 			newDamage = 0.0;
 		}
@@ -10488,15 +10479,15 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			// 	newDamage *= 0.5 * skillLevel;
 			// }
 
-      // Vanilla Matters: Makes Ballistic Armor absorbs the damage properly and deals with spillovers.
-      cpickup = GetActiveChargedPickup( class'BallisticArmor' );
+		// Vanilla Matters: Make Ballistic Armor absorbs the damage properly and deals with spillovers.
+		cpickup = GetActiveChargedPickup( class'BallisticArmor' );
 
       if ( cpickup != None ) {
         newDamage = newDamage - cpickup.DrainCharge( newDamage - ( newDamage * cpickup.VM_DamageResistance * SkillSystem.GetSkillLevelValue( class'SkillEnviro' ) ) );
       }
 	}
 
-	// Vanilla Matters: Makes HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
+	// Vanilla Matters: Make HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
 	if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas' 
 		|| damageType == 'PoisonEffect' || damageType == 'Poison' || damageType == 'Flamed' || damageType == 'Burned' 
 			|| damageType == 'Shocked' || damageType == 'EMP' ) {
@@ -10522,7 +10513,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// if (augLevel >= 0.0)
 		// 	newDamage *= augLevel;
 
-    // Vanilla Matters: Makes augballistic drain energy based on damage taken.
+    // Vanilla Matters: Make augballistic drain energy based on damage taken.
     aug = AugmentationSystem.FindAugmentation( class'AugBallistic' );
 
     if ( aug != None && aug.bHasIt && aug.bIsActive ) {
@@ -10548,7 +10539,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// if (augLevel >= 0.0)
 		// 	newDamage *= augLevel;
 
-	    // Vanilla Matters: Makes augshield drain energy based on damage taken.
+	    // Vanilla Matters: Make augshield drain energy based on damage taken.
 	    aug = AugmentationSystem.FindAugmentation( class'AugShield' );
 
 	    if ( aug != None && aug.bHasIt && aug.bIsActive ) {
@@ -10881,7 +10872,7 @@ function SkillPointsAdd(int numPoints)
 			DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
 		}
 
-		// Vanilla Matters: Adds FP rate per skill point added.
+		// Vanilla Matters: Add FP rate per skill point added.
 		AddForwardPressure( numPoints * VM_fpSPAwarded );
 	}
 }
@@ -12206,7 +12197,7 @@ function bool UsingChargedPickup(class<ChargedPickup> itemclass)
    return bFound;
 }
 
-// Vanilla Matters: Fetchs the currently active charged pickup from the inventory, there can be only one so we're good.
+// Vanilla Matters: Fetch the currently active charged pickup from the inventory, there can be only one so we're good.
 function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) {
   local inventory item;
 

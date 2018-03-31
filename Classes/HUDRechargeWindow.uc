@@ -158,7 +158,7 @@ event Tick(float deltaSeconds)
 		UpdateInfoText();
 		EnableButtons();
 
-		// Vanilla Matters: Fixes the bot not updating your energy properly.
+		// Vanilla Matters: Fix the bot not updating your energy properly.
 		UpdateBioWindows();
 	}
 	else

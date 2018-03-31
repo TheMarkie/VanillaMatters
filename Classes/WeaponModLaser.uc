@@ -35,7 +35,7 @@ defaultproperties
      ItemName="Weapon Modification (Laser)"
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponModLaser'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponModLaser'
-     Description="A laser targeting dot eliminates any inaccuracy resulting from the inability to visually guage a projectile's point of impact."
+     Description="A laser targeting dot eliminates any inaccuracy resulting from the inability to visually gauge a projectile's point of impact."
      beltDescription="MOD LASER"
      Skin=Texture'DeusExItems.Skins.WeaponModTex4'
 }

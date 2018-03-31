@@ -114,7 +114,7 @@ event DrawWindow(GC gc)
 			// else
 			// 	gc.SetTextColor(colAmmoText);
 
-			// Vanilla Matters: Cuts out clipsRemaining calls.
+			// Vanilla Matters: Cut out clipsRemaining calls.
 			if ( ammoRemaining <= ammoInClip || ammoRemaining < ( weapon.ReloadCount * 2 ) ) {
 				gc.SetTextColor( colAmmoLowText );
 			}
@@ -126,7 +126,7 @@ event DrawWindow(GC gc)
 				gc.DrawText(infoX, 38, 20, 9, msgReloading);
 			else
 				//gc.DrawText(infoX, 38, 20, 9, clipsRemaining);
-				// Vanilla Matters: Shows how much ammo left instead of how many clips.
+				// Vanilla Matters: Show how much ammo left instead of how many clips.
 				gc.DrawText( infoX, 38, 20, 9, ammoRemaining - ammoInClip );
 		}
 		else
@@ -178,7 +178,7 @@ function DrawBackground(GC gc)
 	gc.DrawText(66, 17, 21, 8, AmmoLabel);
 	//gc.DrawText(66, 48, 21, 8, ClipsLabel);
 
-	// Vanilla Matters: Draws RNDS instead of CLIPS.
+	// Vanilla Matters: Draw RNDS instead of CLIPS.
 	gc.DrawText( 66, 48, 21, 8, VM_RoundsLabel );
 }
 

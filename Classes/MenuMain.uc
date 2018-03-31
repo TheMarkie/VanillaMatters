@@ -17,7 +17,7 @@ event InitWindow()
 	UpdateButtonStatus();
 	ShowVersionInfo();
 
-	// Vanilla Matters: Shows Vanilla Matters version.
+	// Vanilla Matters: Show Vanilla Matters version.
 	ShowVanillaMattersInfo();
 }
 
@@ -62,7 +62,7 @@ function UpdateButtonStatus()
 	if (player.dataLinkPlay != None)
 		winButtons[1].SetSensitivity(False);
 
-	// Vanilla Matters: Disallows saving if not enough forward pressure.
+	// Vanilla Matters: Disallow saving if not enough forward pressure.
 	if ( Player.VM_bEnableFP ) {
 		if ( !Player.EnoughPressure( 100 ) ) {
 			winButtons[1].SetSensitivity( false );
@@ -91,7 +91,7 @@ function ShowVersionInfo()
 	version.SetText(player.GetDeusExVersion());
 }
 
-// Vanilla Matters: Shows Vanilla Matters version.
+// Vanilla Matters: Show Vanilla Matters version.
 function ShowVanillaMattersInfo() {
 	local TextWindow vmInfo;
 

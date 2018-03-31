@@ -104,6 +104,7 @@ defaultproperties
      MaxSpeed=1500.000000
      Damage=125.000000
      MomentumTransfer=10000
+     VM_bBreaksGlass=True
      SpawnSound=Sound'DeusExSounds.Weapons.GEPGunFire'
      ImpactSound=Sound'DeusExSounds.Generic.SmallExplosion1'
      ExplosionDecal=Class'DeusEx.ScorchMark'

@@ -20,7 +20,7 @@ function Deactivate()
 	// 	if (!Player.CanBeLifted(Player.CarriedDecoration))
 	// 		Player.DropDecoration();
 
-    // Vanilla Matters: Doesn't need this anymore since it's all handled in DeusExPlayer.
+    // Vanilla Matters: Don't need this anymore since it's all handled in DeusExPlayer.
 }
 
 simulated function PreBeginPlay()

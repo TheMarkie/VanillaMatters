@@ -42,7 +42,7 @@ replication
 
 }
 
-// Vanilla Matters: Makes sure augs are updated to the latest changes.
+// Vanilla Matters: Make sure augs are updated to the latest changes.
 function RefreshesAugs() {
 	local Augmentation anAug;
 
@@ -238,7 +238,7 @@ function SetPlayer(DeusExPlayer newPlayer)
 // 	}
 // }
 
-// Vanilla Matters: Improves the awful vanilla code which needs to be run periodically and costs performance.
+// Vanilla Matters: Improve the awful vanilla code which needs to be run periodically and costs performance.
 function BoostAugs( bool bBoostEnabled, Augmentation augBoosting ) {
 	local Augmentation anAug;
 
@@ -569,7 +569,7 @@ simulated function Float CalcEnergyUse( float deltaTime )
 				energyUse = energyUse + ( ( anAug.GetEnergyRate() / 60 ) * deltaTime );
 			}
 
-			// VM: Gets immediate drain rate regardless of active or not.
+			// VM: Get immediate drain rate regardless of active or not.
 			energyUse = energyUse + anAug.GetImmediateEnergyRate();
 		}
 

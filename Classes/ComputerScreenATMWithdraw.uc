@@ -219,7 +219,7 @@ function WithdrawCredits()
 				atmOwner.bSuckedDryByHack = True;
 			}
 
-			// Vanilla Matters: Triggers the drain depending on how much the player took.
+			// Vanilla Matters: Trigger the drain depending on how much the player took.
 			if ( winTerm.bHacked ) {
 				winTerm.winHack.AddTimeCost( FMin( numCredits / 50.0, winTerm.winHack.GetSaveDetectionTime() ) );
 			}

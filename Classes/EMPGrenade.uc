@@ -51,8 +51,8 @@ simulated function PreBeginPlay()
 		blastRadius=mpBlastRadius;
 		proxRadius=mpProxRadius;
 		//Damage=mpEMPDamage;
-    // Vanilla Matters: Makes mpDamage have a consistent name.
-    Damage = mpDamage;
+		// Vanilla Matters: Make mpDamage have a consistent name.
+		Damage = mpDamage;
 		fuseLength=mpFuselength;
 		bIgnoresNanoDefense=True;
 	}
@@ -71,7 +71,7 @@ defaultproperties
      DamageType=EMP
      spawnWeaponClass=Class'DeusEx.WeaponEMPGrenade'
      ItemName="Electromagnetic Pulse (EMP) Grenade"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      mpDamage=200.000000
      speed=1000.000000
      MaxSpeed=1000.000000

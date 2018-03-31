@@ -258,7 +258,7 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 		// 	selectedAug = None;
 		// 	selectedAugButton = None;
 		// }
-		// Vanilla Matters: Allows reinstalling the same aug to upgrade it. If the aug can't be upgraded further, ignore it.
+		// Vanilla Matters: Allow reinstalling the same aug to upgrade it. If the aug can't be upgraded further, ignore it.
 		if ( HUDMedBotAugItemButton( buttonPressed ).bHasIt && !selectedAug.CanBeUpgraded() ) {
 			winInfo.Clear();
 			winInfo.SetTitle( selectedAug.AugmentationName );

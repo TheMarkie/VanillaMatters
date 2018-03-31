@@ -59,7 +59,8 @@ defaultproperties
      maxRange=800
      ItemName="HE 20mm Shell"
      ItemArticle="a"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
+     VM_bBreaksGlass=True
      speed=1000.000000
      MaxSpeed=1000.000000
      Damage=125.000000

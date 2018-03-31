@@ -47,7 +47,7 @@ simulated function PreBeginPlay()
 	// Damage = mpDamage;
 	// blastRadius = mpBlastRadius;
 
-	// Vanilla Matters: Fixes damage being always MP.
+	// Vanilla Matters: Fix plasma bolt damage being always MP.
 	if ( Level.NetMode != NM_Standalone ) {
 		Damage = mpDamage;
 		blastRadius = mpBlastRadius;

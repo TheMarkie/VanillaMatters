@@ -130,7 +130,7 @@ function InitSwapOtherCoordinates() {
 		VM_swapOtherYs[i] = -1;
 	}
 }
-// Vanilla Matters: Syncs the grid coordinates of these potential swappees with the on screen draw coordinates.
+// Vanilla Matters: Sync the grid coordinates of these potential swappees with the on screen draw coordinates.
 function bool SyncSwapOtherCoordinates() {
 	local int i;
 	local float relX, relY;
@@ -161,7 +161,7 @@ event InitWindow()
     //Force an update
     SignalRefresh();
 
-	// Vanilla Matters: Inits swap values.
+	// Vanilla Matters: Init swap values.
 	InitSwapOriginal();
 	InitSwapOtherCoordinates();
 	InitSwapOtherSlots();
@@ -824,7 +824,7 @@ function UseSelectedItem()
 
 		cpickup = ChargedPickup( inv );
 
-		// Vanilla Matters: Prevents the player from activating two charged pickups of the same type at the same time. Copied from ParseLeftClick().
+		// Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time. Copied from ParseLeftClick().
 		if ( cpickup != None ) {
 			if ( player.UsingChargedPickup( cpickup.class ) ) {
 				// VM: The player is already using a charged pickup, only let them "activate" it if it's the charged pickup being used, which turns it off.
@@ -847,7 +847,7 @@ function UseSelectedItem()
 		// the count
 		if ((inv.IsA('DeusExPickup')) && (DeusExPickup(inv).bCanHaveMultipleCopies))
 			//numCopies = DeusExPickup(inv).NumCopies - 1;
-			// Vanilla Matters: Fixes a problem with updating info after using a stack of items.
+			// Vanilla Matters: Fix a problem with updating info after using a stack of items.
 			numCopies = DeusExPickup( inv ).NumCopies;
 		else
 			numCopies = 0;
@@ -859,7 +859,7 @@ function UseSelectedItem()
 		if (numCopies > 0)
 			UpdateWinInfo(inv);
 
-		// Vanilla Matters: Updates item info properly.
+		// Vanilla Matters: Update item info properly.
 		if ( numCopies > 0 ) {
 			inv.UpdateInfo( winInfo );
 		}
@@ -973,7 +973,7 @@ function WeaponChangeAmmo()
 	{
 		aWeapon.CycleAmmo();	
 
-		// Vanilla Matters: Updates weapon info properly.
+		// Vanilla Matters: Update weapon info properly.
 		aWeapon.UpdateInfo( winInfo );
 
 		// Send status message and update info window
@@ -1007,7 +1007,7 @@ function Class<DeusExAmmo> LoadAmmo()
 		{
 			aWeapon.LoadAmmoClass(ammo);
 
-			// Vanilla Matters: Updates weapon info properly.
+			// Vanilla Matters: Update weapon info properly.
 			aWeapon.UpdateInfo( winInfo );
 			
 			// Send status message
@@ -1342,11 +1342,11 @@ function UpdateDragMouse(float newX, float newY)
 	local Inventory buttonInv;
 	local int i;
 
-	// Vanilla Matters: Saves mouse position for later use.
+	// Vanilla Matters: Save mouse position for later use.
 	VM_mouseX = newX;
 	VM_mouseY = newY;
 
-	// Vanilla Matters: Resets swapping indicators.
+	// Vanilla Matters: Reset swapping indicators.
 	for ( i = 0; i < VM_swapOtherCount; i++ ) {
 		VM_swapOthers[i].ResetFill();
 	}
@@ -1360,7 +1360,7 @@ function UpdateDragMouse(float newX, float newY)
 
 	if (dragButton.IsA('PersonaInventoryItemButton'))
 	{
-		// Vanilla Matters: Gets the inventory item of this button for swapping checks.
+		// Vanilla Matters: Get the inventory item of this button for swapping checks.
 		buttonInv = Inventory( dragButton.GetClientObject() );
 
 		invButton = PersonaInventoryItemButton(dragButton);
@@ -1443,25 +1443,25 @@ function UpdateDragMouse(float newX, float newY)
 			}
 		}
 
-		// Vanilla Matters: Gathers all item buttons in the drop area so check for swapping capabilities. We're only gonna do this if the item hasn't found a suitable drop place yet.
+		// Vanilla Matters: Gather all item buttons in the drop area so check for swapping capabilities. We're only gonna do this if the item hasn't found a suitable drop place yet.
 		if ( !bValidDrop ) {
-			// VM: Converts the coordinates from mouse location to grid position. This is where the dragged item will land.
+			// VM: Convert the coordinates from mouse location to grid position. This is where the dragged item will land.
 			ConvertCoordinates( self, VM_mouseX, VM_mouseY, winItems, relX, relY );
 			bValidDrop = CalculateItemPosition( buttonInv, relX, relY, slotX, slotY );
 
-			// VM: Only checks if the mouse has moved over to a new slot.
+			// VM: Only check if the mouse has moved over to a new slot.
 			if ( bValidDrop && ( slotX != VM_lastMouseSlotX || slotY != VM_lastMouseSlotY ) ) {
-				// VM: Fills the list with all item buttons under the mouse, excluding the dragged item or any duplicate.
+				// VM: Fill the list with all item buttons under the mouse, excluding the dragged item or any duplicate.
 				PopulateSwapOthers( buttonInv, slotX, slotY );
 
-				// VM: Performs this check everytime the player moves to a new slot, incase there's at least one position in a big item where a swap is possible.
+				// VM: Perform this check everytime the player moves to a new slot, incase there's at least one position in a big item where a swap is possible.
 				VM_bValidSwap = CheckSwapOtherSlots();
 
 				if ( VM_bValidSwap ) {
-					// VM: Syncs draw coordinates for swappees.
+					// VM: Sync draw coordinates for swappees.
 					SyncSwapOtherCoordinates();
 
-					// VM: Saves the grid position since it's valid.
+					// VM: Save the grid position since it's valid.
 					VM_swapOriginalSlotX = slotX;
 					VM_swapOriginalSlotY = slotY;
 				}
@@ -1469,13 +1469,13 @@ function UpdateDragMouse(float newX, float newY)
 
 			VM_bSwapping = VM_bValidSwap;
 
-			// VM: Fills the draw coordinates of all swapOthers (to draw the yellow indicator), also saves the grid position of swapOriginal, if a swap is possible, also makes the item to be swapped glows green.
+			// VM: Fill the draw coordinates of all swapOthers (to draw the yellow indicator), also saves the grid position of swapOriginal, if a swap is possible, also makes the item to be swapped glows green.
 			if ( VM_bSwapping ) {
 				bOverrideButtonColor = true;
 				invButton.ResetFill();
 				invButton.bDimIcon = false;
 
-				// VM: Makes swappees glow green.
+				// VM: Make swappees glow green.
 				for ( i = 0; i < VM_swapOtherCount; i++ ) {
 					VM_swapOthers[i].SetDropFill( true );
 				}
@@ -1490,7 +1490,7 @@ function UpdateDragMouse(float newX, float newY)
 				bValidDrop = false;
 			}
 
-			// VM: Calculates draw coordinates for the item being dragged, by converting it from grid coordinates.
+			// VM: Calculate draw coordinates for the item being dragged, by converting it from grid coordinates.
 			ConvertCoordinates( winItems, FClamp( slotX, 0, player.maxInvCols - Inventory( VM_swapOriginal.GetClientObject() ).invSlotsX ) * invButtonWidth, FClamp( slotY, 0, player.maxInvRows - Inventory( VM_swapOriginal.GetClientObject() ).invSlotsY ) * invButtonHeight, self, relX, relY );
 
 			VM_swapOriginalX = relX;
@@ -1517,7 +1517,7 @@ function UpdateDragMouse(float newX, float newY)
 
 		// Can only be dragged over another object slot
 		//if (findWin.IsA('HUDObjectSlot'))
-		// Vanilla Matters: Fixes an accessed none when dragging a belt item too far outside of the inventory window.
+		// Vanilla Matters: Fix an accessed none when dragging a belt item too far outside of the inventory window.
 		if ( findWin != None && HUDObjectSlot( findWin ) != None )
 		{
 			if (HUDObjectSlot(findWin).item != None) 
@@ -1562,18 +1562,18 @@ event DrawWindow( GC gc ) {
 
 	Super.DrawWindow( gc );
 
-	// VM: Returns because we're only drawing when we drag a PersonaInventoryItemButton and nothing else.
+	// VM: Return because we're only drawing when we drag a PersonaInventoryItemButton and nothing else.
 	if ( VM_swapOriginal == None ) {
 		return;
 	}
 
 	gc.SetStyle( DSTY_Translucent );
-	// VM: Draws swapping indicators.
+	// VM: Draw swapping indicators.
 	if ( VM_bSwapping ) {
 		gc.SetTileColor( VM_swapOriginal.colDropGood );
 		gc.DrawPattern( VM_swapOriginalX + 1, VM_swapOriginalY + 1, VM_swapOriginal.width - 2, VM_swapOriginal.height - 2, 0, 0, VM_swapOriginal.fillTexture );
 
-		// VM: Draws the yellow indicators.
+		// VM: Draw the yellow indicators.
 		gc.SetTileColor( VM_colSwap );
 
 		for ( i = 0; i < VM_swapOtherCount; i++ ) {
@@ -1583,7 +1583,7 @@ event DrawWindow( GC gc ) {
 			gc.SetStyle( DSTY_Translucent );
 		}
 	}
-	// VM: Draws bad location indicator.
+	// VM: Draw bad location indicator.
 	else if ( bDragging && !VM_swapOriginal.bValidSlot && VM_swapOriginal.fillMode == VM_swapOriginal.FillModes.FM_DropBad ) {
 		gc.SetTileColor( VM_swapOriginal.colDropBad );
 		gc.DrawPattern( VM_swapOriginalX + 1, VM_swapOriginalY + 1, VM_swapOriginal.width - 2, VM_swapOriginal.height - 2, 0, 0, VM_swapOriginal.fillTexture );
@@ -1613,7 +1613,7 @@ function bool CalculateItemPosition(
 	local int adjustY;
 	local bool bResult;
 
-	// Vanilla Matters: Fixes some accessed none.
+	// Vanilla Matters: Fix some accessed none.
 	if ( item == None ) {
 		return false;
 	}
@@ -1684,7 +1684,7 @@ function StartButtonDrag(ButtonWindow newDragButton)
 		// still place the button here. 
 		player.SetInvSlots(Inventory(dragButton.GetClientObject()), 0);
 
-		// Vanilla Matters: Makes this the original swap button.
+		// Vanilla Matters: Make this the original swap button.
 		VM_swapOriginal = PersonaInventoryItemButton( dragButton );
 		VM_bSwapping = false;
 		VM_bValidSwap = false;
@@ -1731,7 +1731,7 @@ function FinishButtonDrag()
 
 	if (dragButton.IsA('PersonaInventoryItemButton'))
 	{	
-		// Vanilla Matters: Gets our inventory button.
+		// Vanilla Matters: Get our inventory button.
 		invButton = PersonaInventoryItemButton( dragButton );
 
 		dragInv    = Inventory(dragButton.GetClientObject());
@@ -1814,7 +1814,7 @@ function FinishButtonDrag()
 			// Vanilla Matters: We don't need this check anymore since we're gonna handle it ourselves.
 		}
 
-		// Vanilla Matters: Swaps the items if possible, otherwise resorts to vanilla behaviors.
+		// Vanilla Matters: Swap the items if possible, otherwise resorts to vanilla behaviors.
 		if ( dragButton != None ) {
 			if ( VM_bSwapping ) {
 				// VM: Moves one by one to their respective location.
@@ -1879,7 +1879,7 @@ function FinishButtonDrag()
     EndDragMode();
 }
 
-// Vanilla Matters: Fills the array with item buttons in the potential space occupied of an item.
+// Vanilla Matters: Fill the array with item buttons in the potential space occupied of an item.
 function PopulateSwapOthers( Inventory item, int slotX, int slotY ) {
 	local Window win;
 	local int x, y;
@@ -1899,7 +1899,7 @@ function PopulateSwapOthers( Inventory item, int slotX, int slotY ) {
 				AddSwapOther( PersonaInventoryItemButton( win ) );
 			}
 
-			// VM: Clears it just for sure.
+			// VM: Clear it just for sure.
 			win = None;
 		}
 	}
@@ -1914,14 +1914,14 @@ function bool CheckSwapOtherSlots() {
 	local float relX, relY;
 	local bool bValid;
 
-	// VM: Just returns false straight out if the list is empty.
+	// VM: Just return false straight out if the list is empty.
 	if ( VM_swapOthers[0] == None || VM_swapOtherCount <= 0 ) {
 		return false;
 	}
 
 	bValid = true;
 
-	// VM: Saves the grid coordinates since we're gonna do some intricate stuff.
+	// VM: Save the grid coordinates since we're gonna do some intricate stuff.
 	for ( i = 0; i < VM_swapOtherCount; i++ ) {
 		otherInv = Inventory( VM_swapOthers[i].GetClientObject() );
 
@@ -1933,11 +1933,11 @@ function bool CheckSwapOtherSlots() {
 
 	originalInv = Inventory( VM_swapOriginal.GetClientObject() );
 
-	// VM: Grabs a slot from mouse coordinates. This is where the dragged item will land. We're also aborting the check if we can't convert the coordinates to any inventory slot.
+	// VM: Grab a slot from mouse coordinates. This is where the dragged item will land. We're also aborting the check if we can't convert the coordinates to any inventory slot.
 	ConvertCoordinates( self, VM_mouseX, VM_mouseY, winItems, relX, relY );
 	bValid = CalculateItemPosition( originalInv, relX, relY, slotXMouse, slotYMouse );
 
-	// VM: Grabs the first potential item to be swapped from the list.
+	// VM: Grab the first potential item to be swapped from the list.
 	otherInv = Inventory( VM_swapOthers[0].GetClientObject() );
 
 	// VM: Here's how we decide where to swap to, first, we have to take an "anchor", this thing will be the basis of where all the swapOther items go.
@@ -1967,12 +1967,12 @@ function bool CheckSwapOtherSlots() {
 		slotX = slotXAnchor;
 		slotY = slotYAnchor;
 
-		// VM: Resets spills, these are how we fit the items into the area.
+		// VM: Reset spills, these are how we fit the items into the area.
 		spillX = 0;
 		spillY = 0;
 		// VM: Here we'll check if the item can fit into the anchored area, and also if the dragged item can still fit into all that.
 		while ( bValid ) {
-			// VM: Removes the item from the inventory grid (not on screen) to simulate available space.
+			// VM: Remove the item from the inventory grid (not on screen) to simulate available space.
 			player.SetInvSlots( otherInv, 0 );
 
 			// VM: If it fits into the slot, actually places the item there, so that we can simulate potential occupation.
@@ -2009,7 +2009,7 @@ function bool CheckSwapOtherSlots() {
 		}
 	}
 
-	// VM: Cleans stuff up, sets the items back to its original places.
+	// VM: Clean stuff up, sets the items back to its original places.
 	for ( i = 0; i < VM_swapOtherCount; i++ ) {
 		otherInv = Inventory( VM_swapOthers[i].GetClientObject() );
 
@@ -2020,7 +2020,7 @@ function bool CheckSwapOtherSlots() {
 	return bValid;
 }
 
-// Vanilla Matters: Sorts the swapOthers list by space occupied from highest to lowest.
+// Vanilla Matters: Sort the swapOthers list by space occupied from highest to lowest.
 function SortsBySpace() {
 	local int i, j;
 	local PersonaInventoryItemButton tempButton;

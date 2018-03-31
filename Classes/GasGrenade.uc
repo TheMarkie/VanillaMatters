@@ -17,8 +17,8 @@ simulated function PreBeginPlay()
 		blastRadius=mpBlastRadius;
 		proxRadius=mpProxRadius;
 		//Damage=mpGasDamage;
-          // Vanilla Matters: Makes mpDamage have a consistent name.
-          Damage = mpDamage;
+		// Vanilla Matters: Make mpDamage have a consistent name.
+		Damage = mpDamage;
 		fuseLength=mpFuseLength;
 		bIgnoresNanoDefense=True;
 	}
@@ -37,7 +37,7 @@ defaultproperties
      DamageType=TearGas
      spawnWeaponClass=Class'DeusEx.WeaponGasGrenade'
      ItemName="Gas Grenade"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      mpDamage=20.000000
      speed=1000.000000
      MaxSpeed=1000.000000

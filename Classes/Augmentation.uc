@@ -141,7 +141,7 @@ function Activate()
 	}
 }
 
-// Vanilla Matters: Pretends to activate the aug on the HUD.
+// Vanilla Matters: Pretend to activate the aug on the HUD.
 function FakeActivate() {
 	Player.PlaySound(ActivateSound, SLOT_None);
 
@@ -184,7 +184,7 @@ function Deactivate()
 	}
 }
 
-// Vanilla Matters: Pretends to deactivate the aug on the HUD.
+// Vanilla Matters: Pretend to deactivate the aug on the HUD.
 function FakeDeactivate() {
 	Player.ClientMessage( Sprintf( AugDeactivated, AugmentationName ) );
 
@@ -250,7 +250,7 @@ simulated function bool CanBeUpgraded()
 		// if (augCan != None)
 		// 	bCanUpgrade = True;
 
-		// Vanilla Matters: Makes upgrade independent from the upgrade cannister.
+		// Vanilla Matters: Make upgrade independent from the upgrade cannister.
 		bCanUpgrade = true;
 	}
 
@@ -295,7 +295,7 @@ simulated function bool UpdateInfo(Object winObject)
 	// Energy Rate
 	//winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ Sprintf(EnergyRateLabel, Int(EnergyRate)));
 
-	// Vanilla Matters: Updates the correct energy rate with increase.
+	// Vanilla Matters: Update the correct energy rate with increase.
 	winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, Int( EnergyRate + Default.VM_EnergyRateAddition[CurrentLevel] ) ) );
 
 	// Current Level
@@ -362,11 +362,11 @@ simulated function float GetEnergyRate()
 {
 	//return energyRate;
 
-	// Vanilla Matters: Makes it use the added energy rate.
+	// Vanilla Matters: Make it use the added energy rate.
 	return energyRate + VM_EnergyRateAddition[CurrentLevel];
 }
 
-// Vanilla Matters: Gets the amount of energy that has to be immediately drained.
+// Vanilla Matters: Get the amount of energy that has to be immediately drained.
 function float GetImmediateEnergyRate() {
 	local float iER;
 

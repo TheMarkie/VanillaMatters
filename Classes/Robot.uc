@@ -254,7 +254,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	}
 	MakeNoise(1.0);
 
-	// Vanilla Matters: Adds in FP rate for damage dealth, based on health loss.
+	// Vanilla Matters: Add in FP rate for damage dealth, based on health loss.
 	if ( DeusExPlayer( instigatedBy ) != None ) {
 		if ( damageType == 'EMP' ) {
 			DeusExPlayer( instigatedBy ).AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );

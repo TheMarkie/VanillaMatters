@@ -7,11 +7,11 @@ var float mpAugValue;
 var float mpEnergyDrain;
 
 // Vanilla Matters
-var float standingTimer;		// Checks how much time the player has been standing still.
+var float standingTimer;		// How much time the player has been standing still.
 
 state Active
 {
-	// Vanilla Matters: Makes the aug heals every second AFTER you've been standing still for at least 2 seconds.
+	// Vanilla Matters: Make the aug heals every second AFTER you've been standing still for at least 2 seconds.
 	function Tick( float deltaTime ) {
 		if ( VSize( Player.Velocity ) < 10 ) {
 			standingTimer = standingTimer + deltaTime;

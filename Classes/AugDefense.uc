@@ -161,7 +161,7 @@ state Active {
 			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
 		}
 		else if ( ScriptedPawn( target ) != None ) {
-			// VM: Adds 0.1 extra because the aug only checks every 0.1 second.
+			// VM: Add 0.1 extra because the aug only checks every 0.1 second.
 			defenseWeaponTime = defenseWeaponTime + 0.1 + deltaTime;
 
 			if ( defenseWeaponTime >= defenseWeaponDelay ) {
@@ -183,7 +183,7 @@ state Active {
 					target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0], Player, HitLocation, vect( 0, 0, 0 ), 'Exploded' );
 					w.Destroy();
 
-					// VM: Replicates what happens to projectiles detonated by the aug.
+					// VM: Replicate what happens to projectiles detonated by the aug.
 					light = Spawn( class'ExplosionLight',,, HitLocation );
 					if ( light != None ) {
 						light.RemoteRole = ROLE_None;
@@ -390,7 +390,7 @@ simulated function Actor FindNearestTarget() {
 
 // }
 
-// Vanilla Matters: Changes it to use actor.
+// Vanilla Matters: Change it to use actor.
 simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget ) {
 	if ( Player == None || Player.rootWindow == None ) {
 		return;

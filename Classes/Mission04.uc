@@ -67,6 +67,28 @@ function FirstFrame()
 
 function PreTravel()
 {
+	// Vanilla Matters
+	local ScriptedPawn sp;
+
+	local bool raidCleared;
+
+	// Vanilla Matters: Keep track of Paul's actual status to set flags appropriately.
+	if ( localURL == "04_NYC_HOTEL" ) {
+		raidCleared = true;
+		foreach AllActors( class'ScriptedPawn', sp ) {
+			if ( sp.IsA( 'UNATCOTroop' ) || sp.IsA( 'MIB' ) ) {
+				raidCleared = false;
+			}
+		}
+
+		if ( raidCleared ) {
+			flags.SetBool( 'VM_RaidCleared', true, true, 5 );
+		}
+		else {
+			flags.SetBool( 'VM_RaidCleared', false, true, 5 );
+		}
+	}
+
 	Super.PreTravel();
 }
 
@@ -291,6 +313,13 @@ function Timer()
 			// if two or less are still alive
 			if (count <= 2)
 				flags.SetBool('MostWarehouseTroopsDead', True);
+		}
+	}
+	// Vanilla Matters: Deletes vanilla flags if Paul is indicated to be safe.
+	else if ( localURL == "04_NYC_STREET" ) {
+		if ( flags.GetBool( 'VM_RaidCleared' ) ) {
+			flags.DeleteFlag( 'PaulDenton_Dead', FLAG_Bool );
+			flags.DeleteFlag( 'PlayerBailedOutWindow', FLAG_Bool );
 		}
 	}
 }

@@ -28,7 +28,7 @@ function UpdateHUDDisplay(DeusExPlayer Player)
 	// DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 0;
 	// DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = 0;
 
-     // Vanilla Matters: Makes the goggles up the vision type with levels.
+     // Vanilla Matters: Make the goggles up the vision type with levels.
      DeusExRootWindow( Player.rootWindow ).hud.augDisplay.visionLevel = Player.SkillSystem.GetSkillLevel( class'SkillEnviro' );
      
      if ( DeusExRootWindow( Player.rootWindow ).hud.augDisplay.visionLevel > 2 ) {

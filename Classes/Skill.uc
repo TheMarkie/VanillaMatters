@@ -151,7 +151,7 @@ function bool IncLevel(optional DeusExPlayer usePlayer)
 				localPlayer.SkillPointsAvail -= GetCost();
 				CurrentLevel++;
 
-				// Vanilla Matters: Syncs subSkill if applicable.
+				// Vanilla Matters: Sync subSkill if applicable.
 				if ( VM_subSkill != None ) {
 					VM_subSkill.CurrentLevel = CurrentLevel;
 				}
@@ -163,7 +163,7 @@ function bool IncLevel(optional DeusExPlayer usePlayer)
 		{
 			CurrentLevel++;
 
-			// Vanilla Matters: Syncs subSkill if applicable.
+			// Vanilla Matters: Sync subSkill if applicable.
 			if ( VM_subSkill != None ) {
 				VM_subSkill.CurrentLevel = CurrentLevel;
 			}
@@ -209,7 +209,7 @@ function bool DecLevel(
 		if (( bGiveUserPoints ) && (localPlayer != None))
 			localPlayer.SkillPointsAvail += GetCost();
 
-		// Vanilla Matters: Syncs subSkill if applicable.
+		// Vanilla Matters: Sync subSkill if applicable.
 		if ( VM_subSkill != None ) {
 			VM_subSkill.CurrentLevel = CurrentLevel;
 		}

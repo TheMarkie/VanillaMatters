@@ -183,7 +183,7 @@ state On
             GotoState('Off');
          }
          //else if (VSize(curFrobber.Location - Location) > 1500)
-         // Vanilla Matters: Reduces the distance to prevent activating then running away.
+         // Vanilla Matters: Reduce the distance to prevent activating then running away.
          else if ( VSize( curFrobber.Location - Location ) > ( curFrobber.MaxFrobDistance + CollisionRadius + VSize( Vector( curFrobber.ViewRotation ) ) ) )
          {
             // log("Disabling computer "$Self$" because user "$curFrobber$" was too far away");

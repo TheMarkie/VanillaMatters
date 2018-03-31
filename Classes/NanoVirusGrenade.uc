@@ -47,7 +47,7 @@ defaultproperties
      DamageType=NanoVirus
      spawnWeaponClass=Class'DeusEx.WeaponNanoVirusGrenade'
      ItemName="Scramble Grenade"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      speed=1000.000000
      MaxSpeed=1000.000000
      Damage=100.000000

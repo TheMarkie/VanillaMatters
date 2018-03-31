@@ -357,9 +357,7 @@ function Frob(Actor Frobber, Inventory frobWith)
       // and since the PutInHand propagation doesn't just work, this is work we don't need to do.
       // Were you to do it, you'd need to check the respawning issue, destroy the POVcorpse it creates and point to the
       // one in inventory (like I did when giving the player starting inventory).
-	// 	//if ((Inventory == None) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
-	// 	// Vanilla Matters: Allows picking up the body without going through inventory.
-	// 	if ( ( Inventory == None || bIgnoresInventory ) && player != None && player.inHand == None && Level.NetMode == NM_Standalone )
+	// 	if ((Inventory == None) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
 	// 	{
 	// 		if (!bInvincible)
 	// 		{
@@ -483,7 +481,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 						if ((W != None) || ((W == None) && (!player.FindInventorySlot(item, True))))
 						{
-							// Vanilla Matters: Fixes the bug where the player isn't able to pick up ammo properly due to hacky vanilla coding.
+							// Vanilla Matters: Fix the bug where the player isn't able to pick up ammo properly due to hacky vanilla coding.
 							tempW = Weapon( item );
 							if ( tempW.AmmoType == None && tempW.AmmoName != None && tempW.AmmoName != class'AmmoNone' ) {
 								tempW.AmmoType = Spawn( tempW.AmmoName );
@@ -498,7 +496,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 							{
 								AmmoType = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
 
-								// Vanilla Matters: Fixes the bug where you can pick up ammo of "ammo-weapons".
+								// Vanilla Matters: Fix the bug where you can pick up ammo of "ammo-weapons".
 								if ( AmmoType.PickupViewMesh == Mesh'TestBox' && W == None ) {
 									AmmoType = None;
 								}
@@ -520,10 +518,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 									// Mark it as 0 to prevent it from being added twice
 									Weapon(item).AmmoType.AmmoAmount = 0;
 								}
-								// Vanilla Matters: Lets the player know if they can't have anymore of something.
+								// Vanilla Matters: Let the player know if they can't have anymore of something.
 								else if ( !VM_bSearchedOnce && AmmoType != None ) {
 									if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
-										// VM: Makes absolute sure the player already has this weapon.
+										// VM: Make absolute sure the player already has this weapon.
 										if ( W != None ) {
 											P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, item.itemName ) );
 										}
@@ -533,7 +531,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 									}
 								}
 							}
-							// Vanilla Matters: Reports empty weapons so the player gets the proper feedback.
+							// Vanilla Matters: Report empty weapons so the player gets the proper feedback.
 							else {
 								P.ClientMessage( Sprintf( VM_msgNoAmmo, item.itemName ) );
 							}
@@ -604,7 +602,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 								{
 									//P.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName));
 
-									// Vanilla Matters: Lets the player grab the corpse on second try, while saving the inventory info, if the item still can't be picked up.
+									// Vanilla Matters: Let the player grab the corpse on second try, while saving the inventory info, if the item still can't be picked up.
 									if ( !bHeldAlready && player.TakeHold( item ) ) {
 										P.ClientMessage( Sprintf( msgCannotPickup, item.itemName ) );
 
@@ -668,7 +666,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 							// 	item = None;
 							// }
 
-							// Vanilla Matters: Cleans up all this part to fit in with the quick use functionality.
+							// Vanilla Matters: Clean up all this part to fit in with the quick use functionality.
 							if ( P.Inventory == None || Level.Game.PickupQuery( P, item ) ) {
 								player.FrobTarget = item;
 
@@ -738,7 +736,7 @@ function Frob(Actor Frobber, Inventory frobWith)
    }
 }
 
-// Vanilla Matters: Moves the POVCorpse spawning out of Frob() to have better control over it.
+// Vanilla Matters: Move the POVCorpse spawning out of Frob() to have better control over it.
 function bool spawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool bIgnoresInventory ) {
 	local DeusExPlayer player;
 	local POVCorpse corpse;
@@ -769,7 +767,7 @@ function bool spawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
 			corpse.CorpseItemName = itemName;
 			corpse.CarcassName = CarcassName;
 
-			// Vanilla Matters: Saves inventory information in case the frob ignores inventory.
+			// Vanilla Matters: Save inventory information in case the frob ignores inventory.
 			item = Inventory;
 
 			while ( item != None ) {
@@ -817,7 +815,7 @@ function AddReceivedItem(DeusExPlayer player, Inventory item, int count)
 	// 	bSearchMsgPrinted = True;
 	// }
 
-	// Vanilla Matters: Omits the message because it's pretty useless anyhow.
+	// Vanilla Matters: Omit the message because it's pretty useless anyhow.
 
    DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
 
@@ -898,7 +896,7 @@ function bool DeleteInventory( inventory Item )
 	}
    //Item.SetOwner(None);
 
-   // Vanilla Matters: Makes sure we don't just set the ownership to None when it's not necessary.
+   // Vanilla Matters: Make sure we don't just set the ownership to None when it's not necessary.
    if ( Item.Owner == self ) {
    	Item.SetOwner( None );
    }

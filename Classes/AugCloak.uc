@@ -6,12 +6,12 @@ class AugCloak extends Augmentation;
 var float mpAugValue;
 var float mpEnergyDrain;
 
-// Vanilla Matters: Keeps track of the player's last in hand item.
+// Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory lastInHand;
 
 state Active
 {
-	// Vanilla Matters: Applies and removes transparency accordingly, applies to newly equipped items and removes from unequipped ones.
+	// Vanilla Matters: Apply and remove transparency accordingly, applies to newly equipped items and removes from unequipped ones.
 	function Tick( float deltaTime ) {
 		if ( lastInHand == None ) {
 			if ( Player.inHand != None ) {
@@ -38,7 +38,7 @@ Begin:
 		Player.ServerConditionalNotifyMsg( Player.MPMSG_NoCloakWeapon );
 	Player.PlaySound(Sound'CloakUp', SLOT_Interact, 0.85, ,768,1.0);
 
-	// Vanilla Matters: Cloaks the player in third person.
+	// Vanilla Matters: Cloak the player in third person.
 	Player.SetSkinStyle( STY_Translucent, Texture'WhiteStatic', 0.05 );
 	Player.KillShadow();
 	Player.MultiSkins[6] = Texture'BlackMaskTex';
@@ -50,7 +50,7 @@ function Deactivate()
 	Player.PlaySound(Sound'CloakDown', SLOT_Interact, 0.85, ,768,1.0);
 	Super.Deactivate();
 
-	// Vanilla Matters: Cleans up transparency.
+	// Vanilla Matters: Clean up transparency.
 	ToggleTransparency( lastInHand, false );
 	lastInHand = None;
 

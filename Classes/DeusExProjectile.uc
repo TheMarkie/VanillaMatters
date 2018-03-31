@@ -42,11 +42,12 @@ var localized string itemName;		// human readable name
 var localized string	itemArticle;	// article much like those for weapons
 
 // Vanilla Matters
-var() bool			VM_overridesDamage;	// Does it override weapon damage?
+var() bool			VM_bOverridesDamage;	// Does it override weapon damage?
+var() bool			VM_bBreaksGlass;		// Can it break through glass?
 
-var DeusExWeapon	VM_fromWeapon;		// Just something to store useful info like from what weapon was the projectile fired and with what ammo type.
-var DeusExAmmo		VM_withAmmo;		// Can't fetch these later on because the player can change weapon/ammo type.
-var float			mpDamage;			// Puts this here so we can fetch from outside.
+var DeusExWeapon	VM_fromWeapon;			// Just something to store useful info like from what weapon was the projectile fired and with what ammo type.
+var DeusExAmmo		VM_withAmmo;			// Can't fetch these later on because the player can change weapon/ammo type.
+var float			mpDamage;				// Put this here so we can fetch from outside.
 
 // network replication
 replication
@@ -508,6 +509,12 @@ auto simulated state Flying
 	}
 	simulated function HitWall(vector HitNormal, actor Wall)
 	{
+		// Vanilla Matters: Allow certain projectiles to break through glass during travel.
+		if ( Wall.IsA( 'BreakableGlass' ) && VM_bBreaksGlass ) {
+			Wall.TakeDamage( Speed, Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), 'Shot' );
+			return;
+		}
+
 		if (bStickToWall)
 		{
 			Velocity = vect(0,0,0);
@@ -532,7 +539,7 @@ auto simulated state Flying
 		if (Wall.IsA('BreakableGlass'))
 			bDebris = False;
 
-		// Vanilla Matters: Hurts the mover on contact with a multiplier.
+		// Vanilla Matters: Hurt the mover on contact with a multiplier.
 		if ( !bExplodes && Wall.IsA( 'Mover' ) && DeusExPlayer( Pawn( Owner ) ) != None && VM_fromWeapon != None ) {
 			Wall.TakeDamage( Damage * VM_fromWeapon.VM_ShotBreaksStuff[VM_fromWeapon.GetWeaponSkillLevel()], Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), damageType );
 		}
@@ -574,7 +581,7 @@ auto simulated state Flying
 					}
 					damagee.TakeDamage(Damage, Pawn(Owner), HitLocation, MomentumTransfer*Normal(Velocity), damageType);
 
-					// Vanilla Matters: Ignites enemies on explode aka hit.
+					// Vanilla Matters: Ignite enemies on explode aka hit.
 					if ( DeusExPlayer( Pawn( Owner ) ) != None && ScriptedPawn( damagee ) != None && VM_fromWeapon != None && VM_withAmmo != None ) {
 						if ( VM_withAmmo.VM_IgnitesOnHit >= 0.0 && VM_fromWeapon.GetWeaponSkillLevel() >= VM_withAmmo.VM_IgnitesOnHit ) {
 							ScriptedPawn( damagee ).CatchFire();

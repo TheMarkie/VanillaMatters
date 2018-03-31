@@ -50,7 +50,7 @@ simulated function PreBeginPlay()
       speed = 2000.0000;
       SetTimer(5,false);
       //Damage = mpExplodeDamage;
-      // Vanilla Matters: Makes mpDamage have a consistent name.
+      // Vanilla Matters: Make mpDamage have a consistent name.
       Damage = mpDamage;
 		blastRadius = mpBlastRadius;
 		SoundRadius=76;
@@ -65,7 +65,7 @@ defaultproperties
      blastRadius=512.000000
      DamageType=Flamed
      ItemName="WP Rocket"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      mpDamage=75.000000
      ImpactSound=Sound'DeusExSounds.Generic.SmallExplosion2'
      Mesh=LodMesh'DeusExItems.RocketHE'

@@ -4,8 +4,8 @@
 class Cigarettes extends DeusExPickup;
 
 // Vanilla Matters
-var travel int timesPuffed;		// Checks for how many times the smoke puff has appeared.
-var travel Actor user;		// The pawn who used this because we're gonna make it disappear.
+var travel int timesPuffed;		// Check for how many times the smoke puff has appeared.
+var travel Actor user;			// The pawn who used this because we're gonna make it disappear.
 
 var localized string VM_msgCantSmoke;
 
@@ -45,7 +45,7 @@ state Activated
 	// 	UseOnce();
 	// }
 
-	// Vanilla Matters: Makes the smoke puff appear over time and do damage.
+	// Vanilla Matters: Make the smoke puff appear over time and do damage.
 	function Timer() {
 		local Pawn P;
 		local DeusExPlayer player;
@@ -98,7 +98,7 @@ state Activated
 		player = DeusExPlayer( Owner );
 
 		if ( player != None ) {
-			// VM: Prevents smoking while swimming or using Rebreather.
+			// VM: Prevent smoking while swimming or using Rebreather.
 			if ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) {
 				player.ClientMessage( VM_msgCantSmoke );
 

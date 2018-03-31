@@ -9,7 +9,7 @@ function Timer()
 {
 	//Destroy();
 
-	// Vanilla Matters: Does UseOnce() to make it more consistent with the rest.
+	// Vanilla Matters: Do UseOnce() to make it more consistent with the rest.
 	UseOnce();
 }
 

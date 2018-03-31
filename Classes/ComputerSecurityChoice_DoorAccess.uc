@@ -50,7 +50,7 @@ function bool ButtonActivated( Window buttonPressed )
 	Super.ButtonActivated(buttonPressed);
 	securityWindow.ToggleDoorLock();
 
-	// Vanilla Matters: Makes each access toggle cost an amount of time.
+	// Vanilla Matters: Make each access toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
@@ -70,7 +70,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	Super.ButtonActivated(buttonPressed);
 	securityWindow.ToggleDoorLock();
 
-	// Vanilla Matters: Makes each access toggle cost an amount of time.
+	// Vanilla Matters: Make each access toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );

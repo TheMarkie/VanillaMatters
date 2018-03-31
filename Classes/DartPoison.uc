@@ -18,7 +18,7 @@ defaultproperties
      DamageType=Poison
      spawnAmmoClass=Class'DeusEx.AmmoDartPoison'
      ItemName="Tranquilizer Dart"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      mpDamage=10.000000
      Damage=8.000000
 }

@@ -93,7 +93,7 @@ function bool ButtonActivated(Window buttonPressed)
 	Super.ButtonActivated(buttonPressed);
 	SetTurretState();
 
-	// Vanilla Matters: Makes each turret toggle cost an amount of time.
+	// Vanilla Matters: Make each turret toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 7.5 );
@@ -113,7 +113,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	Super.ButtonActivated(buttonPressed);
 	SetTurretState();
 
-	// Vanilla Matters: Makes each turret toggle cost an amount of time.
+	// Vanilla Matters: Make each turret toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 7.5 );

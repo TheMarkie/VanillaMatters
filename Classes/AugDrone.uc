@@ -23,7 +23,7 @@ Begin:
 	// 	Player.spyDroneLevel = CurrentLevel;
 	// 	Player.spyDroneLevelValue = LevelValues[CurrentLevel];
 	// }
-	// Vanilla Matters: Allows updating the drone even when it's functioning.
+	// Vanilla Matters: Allow updating the drone even when it's functioning.
 	else {
 		if ( Player.aDrone != None ) {
 			Player.aDrone.Speed = 75 + ( 25 * CurrentLevel );

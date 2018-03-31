@@ -56,7 +56,7 @@ function bool ButtonActivated( Window buttonPressed )
 	Super.ButtonActivated(buttonPressed);
 	securityWindow.ToggleCameraState();
 
-	// Vanilla Matters: Makes each camera toggle cost an amount of time.
+	// Vanilla Matters: Make each camera toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
@@ -76,7 +76,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	Super.ButtonActivated(buttonPressed);
 	securityWindow.ToggleCameraState();
 
-	// Vanilla Matters: Makes each camera toggle cost an amount of time.
+	// Vanilla Matters: Make each camera toggle cost an amount of time.
 	if ( securityWindow.winTerm.bHacked ) {
 		if ( !VM_bHackedAlready ) {
 			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );

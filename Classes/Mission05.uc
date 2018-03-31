@@ -76,7 +76,7 @@ function FirstFrame()
 					{
 						nextItem = item.Inventory;
 
-						// Vanilla Matters: Fixes a bug where grenades would have their count reset to 1.
+						// Vanilla Matters: Fix a bug where grenades would have their count reset to 1.
 						if ( Weapon( item ) != None && Weapon( item ).AmmoType != None ) {
 							if ( Weapon( item ).AmmoName != class'AmmoNone' && Weapon( item ).AmmoType.PickupViewMesh == Mesh'TestBox' && !DeusExWeapon( item ).bInstantHit ) {
 								Weapon( item ).PickupAmmoCount = Weapon( item ).AmmoType.AmmoAmount;

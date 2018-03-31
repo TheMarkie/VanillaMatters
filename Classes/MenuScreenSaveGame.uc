@@ -485,7 +485,7 @@ function PerformSave()
 	localPlayer   = player;
 	localRoot     = root;
 
-	// Vanilla Matters: Resets the forward pressure.
+	// Vanilla Matters: Reset the forward pressure.
 	player.ResetForwardPressure();
 
 	localRoot.ClearWindowStack();

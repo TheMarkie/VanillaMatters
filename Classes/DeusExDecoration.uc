@@ -218,7 +218,7 @@ function Landed(vector HitNormal)
 	bWasCarried = false;
 	bBobbing    = false;
 
-	// Vanilla Matters: Resets bPowerthrown.
+	// Vanilla Matters: Reset bPowerthrown.
 	if ( VM_bPowerthrown ) {
 		TakeDamage( 0.5 * Mass * ( VSize( Velocity ) / 52.5 ), Pawn( VM_powerThrower ), Location, Velocity, 'Exploded' );
 
@@ -439,9 +439,9 @@ function Bump(actor Other)
 //			return;
 	}
 
-	// Vanilla Matters: Adds in impact damage if powerthrown.
+	// Vanilla Matters: Add in impact damage if powerthrown.
 	if ( VM_bPowerthrown ) {
-		// VM: Makes the thrower immune to their own powerthrow, to prevent wonky hitbox.
+		// VM: Make the thrower immune to their own powerthrow, to prevent wonky hitbox.
 		if ( Other == VM_powerThrower ) {
 			return;
 		}
@@ -867,7 +867,7 @@ auto state Active
 				Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
 		}
 
-		// VM: Adds FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
 		if ( DeusExPlayer( EventInstigator ) != None ) {
 			DeusExPlayer( EventInstigator ).AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( DeusExPlayer( EventInstigator ).VM_fpDamage + DeusExPlayer( EventInstigator ).VM_fpDamageS ) );
 		}
@@ -957,7 +957,7 @@ state Burning
 			}
 		}
 
-		// VM: Adds FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
 		if ( DeusExPlayer( EventInstigator ) != None ) {
 			DeusExPlayer( EventInstigator ).AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( DeusExPlayer( EventInstigator ).VM_fpDamage + DeusExPlayer( EventInstigator ).VM_fpDamageS ) );
 		}

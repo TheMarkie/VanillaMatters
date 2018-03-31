@@ -9,7 +9,7 @@ var ComputerSecurityCameraWindow winCamera;
 var ComputerScreenSecurity       securityWindow;
 
 // Vanilla Matters
-var bool VM_bHackedAlready;		// Keeps track if this option has been "hacked" aka used while hacking at least once.
+var bool VM_bHackedAlready;		// Keep track if this option has been "hacked" aka used while hacking at least once.
 
 // ----------------------------------------------------------------------
 // SetCameraView()

@@ -556,7 +556,7 @@ function int HealPart(PersonaHealthRegionWindow region, optional float pointsToH
 	if (!bLeaveMedKit)
 		UseMedKit(medkit);
 
-	// Vanilla Matters: Adds in FP rate for health restored.
+	// Vanilla Matters: Add in FP rate for health restored.
 	player.AddForwardPressure( FMax( healthAdded, 0 ) * ( player.VM_fpHeal + player.VM_fpHealS ) );
 
 	return healthAdded;

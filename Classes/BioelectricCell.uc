@@ -53,7 +53,7 @@ state Activated
 			// if (player.Energy > player.EnergyMax)
 			// 	player.Energy = player.EnergyMax;
 
-			// Vanilla Matters: Makes SkillMedicine affect recharge amount.
+			// Vanilla Matters: Make SkillMedicine affect recharge amount.
 			skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillMedicine' );
 			if ( skillLevelValue == -1.0 ) {
 				skillLevelValue = 0;

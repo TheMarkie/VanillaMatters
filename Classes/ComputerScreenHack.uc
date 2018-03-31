@@ -307,7 +307,7 @@ function SetDetectionTime(Float newDetectionTime, Float newHackTime)
 	saveHackTime  = hackTime;
 }
 
-// Vanilla Matters: Adds in how much time has to be drained from the detectionTime.
+// Vanilla Matters: Add in how much time has to be drained from the detectionTime.
 function AddTimeCost( float timeCost ) {
 	VM_actionCost = VM_actionCost + timeCost;
 	VM_actionCount = VM_actionCount + 1;
@@ -479,7 +479,7 @@ function Tick(float deltaTime)
 		// manage detection
 		//detectionTime -= deltaTime;
 
-		// Vanilla Matters: Calculates stuff and deducts detectionTime properly.
+		// Vanilla Matters: Calculate stuff and deducts detectionTime properly.
 		if ( bHacked ) {
 			if ( VM_actionCost > 0 ) {
 				if ( VM_actionCost >= detectionTime ) {
@@ -497,7 +497,7 @@ function Tick(float deltaTime)
 					VM_actionCount = 0;
 				}
 
-				// Vanilla Matters: Adds FP rate for hacking.
+				// Vanilla Matters: Add FP rate for hacking.
 				player.AddForwardPressure( timeCost * ( player.VM_fpUtility + player.VM_fpUtilityHS ) );
 			}
 			else {

@@ -221,7 +221,7 @@ function DrawWindow(GC gc)
 					else
 						strInfo = strInfo $ msgInf;
 
-					// Vanilla Matters: Adds in minDamageThreshold.
+					// Vanilla Matters: Add in minDamageThreshold.
 					strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
 					if ( dxMover.bBreakable ) {
 						minDamageThreshold = dxMover.minDamageThreshold / 100.0;
@@ -261,15 +261,15 @@ function DrawWindow(GC gc)
 					col = GetColorScaled(dxMover.lockStrength);
 					gc.SetTileColor(col);
 					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+(infoH-8)/3, barLength*dxMover.lockStrength, ((infoH-8)/3)-2, 0, 0, Texture'ConWindowBackground');
-					// Vanilla Matters: Fixes the position to account for the new line.
+					// Vanilla Matters: Fix the position to account for the new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + ( ( infoH - 8 ) / 4 ), barLength * dxMover.lockStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
 					col = GetColorScaled(dxMover.doorStrength);
 					gc.SetTileColor(col);
 					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+2*(infoH-8)/3, barLength*dxMover.doorStrength, ((infoH-8)/3)-2, 0, 0, Texture'ConWindowBackground');
-					// Vanilla Matters: Fixes the position to account for the new line.
+					// Vanilla Matters: Fix the position to account for the new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 2 * ( ( infoH - 8 ) / 4 ), barLength * dxMover.doorStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
 
-					// Vanilla Matters: Adds in bar for minDamageThreshold.
+					// Vanilla Matters: Add in bar for minDamageThreshold.
 					col = GetColorScaled( minDamageThreshold );
 					gc.SetTileColor( col );
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 3 * ( ( infoH - 8 ) / 4 ), barLength * minDamageThreshold, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
@@ -295,7 +295,7 @@ function DrawWindow(GC gc)
 					else
 						strInfo = numTools @ msgPicks;
 					//gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/3, barLength, ((infoH-8)/3)-2, strInfo);
-					// Vanilla Matters: Relocates the text to accomodate a new bar.
+					// Vanilla Matters: Relocate the text to accomodate a new bar.
 					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + 4 + ( infoH - 8 ) / 4, barLength, ( ( infoH - 8 ) / 4 ) - 1, strInfo);
 				}
 			}
@@ -314,7 +314,7 @@ function DrawWindow(GC gc)
 				else
 					strInfo = strInfo $ msgInf;
 
-				// Vanilla Matters: Adds minDamageThreshold for these too.
+				// Vanilla Matters: Add minDamageThreshold for these too.
 				strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
 				if ( !device.bInvincible ) {
 					minDamageThreshold = device.minDamageThreshold / 100.0;
@@ -349,10 +349,10 @@ function DrawWindow(GC gc)
 					col = GetColorScaled(device.hackStrength);
 					gc.SetTileColor(col);
 					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/2, barLength*device.hackStrength, infoH/2-6, 0, 0, Texture'ConWindowBackground');
-					// Vanilla Matters: Fixes location to account for new line.
+					// Vanilla Matters: Fix location to account for new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + ( infoH / 3 ) - 1, barLength * device.hackStrength, ( infoH / 3 ) - 3, 0, 0, Texture'ConWindowBackground' );
 
-					// Vanilla Matters: Draws a bar for minDamageStrength too.
+					// Vanilla Matters: Draw a bar for minDamageStrength too.
 					col = GetColorScaled( minDamageThreshold );
 					gc.SetTileColor( col );
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 2 * ( infoH / 3 ) - 3, barLength * minDamageThreshold, ( infoH / 3 ) - 2, 0, 0, Texture'ConWindowBackground' );
@@ -378,7 +378,7 @@ function DrawWindow(GC gc)
 					else
 						strInfo = numTools @ msgTools;
 					//gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/2, barLength, infoH/2-6, strInfo);
-					// Vanilla Matters: Relocates to accomodate a new bar.
+					// Vanilla Matters: Relocate to accomodate a new bar.
 					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + ( infoH / 3 ), barLength, infoH / 2 - 4, strInfo);
 				}
 			}

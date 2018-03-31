@@ -14,7 +14,7 @@ var travel bool bIsActive;
 var localized String ChargeRemainingLabel;
 
 // Vanilla Matters
-var() bool	VM_bQuiet;				// Makes the LoopSound not played.
+var() bool	VM_bQuiet;				// Make the LoopSound not played.
 var() bool	VM_bDraining;			// Does it slowly drain?
 var() float	VM_DamageResistance;	// How much base resistance it provides, doesn't do anything without proper checks.
 
@@ -54,7 +54,7 @@ simulated function bool UpdateInfo(Object winObject)
 		outText = ChargeRemainingLabel @ Int(GetCurrentCharge()) $ "%";
 		winInfo.AppendText(outText);
 
-		// Vanilla Matters: Adds in damage resistance value if there's any.
+		// Vanilla Matters: Add in damage resistance value if there's any.
 		if ( VM_DamageResistance != 0.0 ) {
 			winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - VM_DamageResistance ) * 100, 0.1 ) $ "% " );
 
@@ -67,7 +67,7 @@ simulated function bool UpdateInfo(Object winObject)
 			}
 		}
 
-		// Vanilla Matters: Adds in whether the charged pickup is toggleable.
+		// Vanilla Matters: Add in whether the charged pickup is toggleable.
 		if ( bOneUseOnly ) {
 			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoNo );
 		}
@@ -75,7 +75,7 @@ simulated function bool UpdateInfo(Object winObject)
 			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoYes );
 		}
 
-		// Vanilla Matters: Adds in whether the charged pickup is currently active.
+		// Vanilla Matters: Add in whether the charged pickup is currently active.
 		if ( bIsActive ) {
 			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoYes );
 		}
@@ -95,7 +95,7 @@ simulated function Float GetCurrentCharge()
 {
 	//return (Float(Charge) / Float(Default.Charge)) * 100.0;
 
-	// Vanilla Matters: Uses actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
+	// Vanilla Matters: Use actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
 	if ( VM_actualCharge > 0 ) {
 		return ( float( Charge ) / float( VM_actualCharge ) ) * 100.0;
 	}
@@ -115,7 +115,7 @@ function ChargedPickupBegin(DeusExPlayer Player)
 	// if (LoopSound != None)
 	// 	AmbientSound = LoopSound;
 
-	// Vanilla Matters: Doesn't interrupt ambient if quiet.
+	// Vanilla Matters: Don't interrupt ambient if quiet.
 	if ( LoopSound != None && !VM_bQuiet ) {
 		AmbientSound = LoopSound;
 	}
@@ -131,7 +131,7 @@ function ChargedPickupBegin(DeusExPlayer Player)
       BeltPos=default.BeltPos;
    }
 
-	// Vanilla Matters: Makes the charged pickup in player's view invisible.
+	// Vanilla Matters: Make the charged pickup in player's view invisible.
 	Style = STY_Translucent;
 	ScaleGlow = 0.0;
 	bUnlit = True;
@@ -194,7 +194,7 @@ simulated function int CalcChargeDrain(DeusExPlayer Player)
 	local float skillValue;
 	local float drain;
 
-	// Vanilla Matters: Returns nothing so that no charge is deducted from the pool.
+	// Vanilla Matters: Return nothing so that no charge is deducted from the pool.
 	if ( !VM_bDraining ) {
 		return 0;
 	}
@@ -209,7 +209,7 @@ simulated function int CalcChargeDrain(DeusExPlayer Player)
 	return Int(drain);
 }
 
-// Vanilla Matters: Drains charge and returns amount actually drained.
+// Vanilla Matters: Drain charge and returns amount actually drained.
 function float DrainCharge( float drainAmount ) {
 	// VM: There's more charge than the drainAmount, so the actual drained amount is the same.
 	if ( Charge >= drainAmount ) {
@@ -252,7 +252,7 @@ function UsedUp()
 
 	//Destroy();
 
-	// Vanilla Matters: Does UseOnce() to be consistent with the rest.
+	// Vanilla Matters: Do UseOnce() to be consistent with the rest.
 	UseOnce();
 }
 
@@ -288,6 +288,11 @@ state Activated
 			if (Charge <= 0)
 				UsedUp();
 		}
+
+		// Vanilla Matters: Make sure the chargedpickup is turned off when no one can be using it.
+		if ( Owner == None ) {
+			super.Activate();
+		}
 	}
 
 	function BeginState()
@@ -310,7 +315,7 @@ state Activated
 				// Remove from player's hand
 				//Player.PutInHand(None);
 
-				// Vanilla Matters: Removes the one-use item from the belt to make it less clunky when it can't be selected again.
+				// Vanilla Matters: Remove the one-use item from the belt to make it less clunky when it can't be selected again.
 				if ( DeusExRootWindow(Player.rootWindow) != None ) {
 					DeusExRootWindow( Player.rootWindow ).DeleteInventory( self );
 				}
@@ -337,14 +342,14 @@ state Activated
 					VM_actualCharge = newCharge;
 					Charge = newCharge;
 				}
-				// VM: Scales up Charge proportionally.
+				// VM: Scale up Charge proportionally.
 				else {
 					Charge = Charge * ( float( newCharge ) / float ( VM_actualCharge ) );
 					VM_actualCharge = newCharge;
 				}
 			}
 
-			// VM: Still deselects the charged pickup to prevent double-clicking.
+			// VM: Still deselect the charged pickup to prevent double-clicking.
 			Player.PutInHand( None );
 
 			ChargedPickupBegin(Player);

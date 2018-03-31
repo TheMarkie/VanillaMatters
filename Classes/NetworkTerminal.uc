@@ -76,7 +76,7 @@ event DestroyWindow()
          // if (bHacked)
          //    player.SetComputerHackTime(Computers(compOwner),player.level.TimeSeconds, player.level.TimeSeconds);
 
-         // Vanilla Matters: Allows the saving of remaining detectionTime.
+         // Vanilla Matters: Allow the saving of remaining detectionTime.
          if ( bHacked ) {
          	player.SetComputerHackTime( Computers( compOwner ), player.level.TimeSeconds, player.level.TimeSeconds );
          	Computers( compOwner ).VM_lastRemainingDetectionTime = winHack.detectionTime;
@@ -114,7 +114,7 @@ event DestroyWindow()
 function Tick(float deltaTime)
 {
 	//if ((player != None) && (player.IsInState('Dying')))
-	// Vanilla Matters: Reduces the distance to 80 to disallow activating then running away.
+	// Vanilla Matters: Reduce the distance to 80 to disallow activating then running away.
 	if ( ( player != None && player.IsInState( 'Dying' ) ) || ( Computers( compOwner ) != None && Computers( compOwner ).IsInState( 'Off' ) ) )
 	{
 		bTickEnabled = False;
@@ -460,13 +460,13 @@ function UpdateHackDetectionTime()
 	// 		winHack.UpdateDetectionTime(diff + 0.5);
 	// }
 
-	// Vanilla Matters: Updates detectionTime depending on level time in seconds.
+	// Vanilla Matters: Update detectionTime depending on level time in seconds.
 	if ( winHack != None && !winhack.bHacking && compOwner != None && !bHacked ) {
 		saveDetectionTime = winHack.GetSaveDetectionTime();
 
 		if ( compOwner.IsA( 'Computers' ) ) {
 			diff = ( ( player.Level.TimeSeconds - Computers( compOwner ).lastHackTime ) / 900.0 ) * saveDetectionTime;
-			// VM: Adds in last remaining detectionTime, we're gonna do this only for Computers because ATMs get locked out regardless.
+			// VM: Add in last remaining detectionTime, we're gonna do this only for Computers because ATMs get locked out regardless.
 			diff = diff + Computers( compOwner ).VM_lastRemainingDetectionTime;
 		}
 		// VM: No idea if I should keep this since ATM gets locked out after being hacked regardless.
@@ -587,7 +587,7 @@ function HackDetected(optional bool bDamageOnly)
    {
       //player.TakeDamage(200 - 50 * skillLevel, None, vect(0,0,0), vect(0,0,0), 'EMP');	
 
-      // Vanilla Matters: Changes the formula for a smoother progression. Player takes 100 damage on trained, 50 on advanced, and 0 on master.
+      // Vanilla Matters: Change the formula for a smoother progression. Player takes 100 damage on trained, 50 on advanced, and 0 on master.
       player.TakeDamage( 150 - ( 50 * skillLevel ), None, vect( 0,0,0 ), vect( 0,0,0 ), 'EMP' );
 
       PlaySound(sound'ProdFire');
@@ -596,7 +596,7 @@ function HackDetected(optional bool bDamageOnly)
    {
       //player.PunishDetection(200 - 50 * skillLevel);
 
-      // Vanilla Matters: Syncs the formula with multiplayer.
+      // Vanilla Matters: Sync the formula with multiplayer.
       player.PunishDetection( 150 - ( 50 * skillLevel ) );
 
       PlaySound(sound'ProdFire');

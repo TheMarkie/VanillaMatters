@@ -367,11 +367,11 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 //		else
 //			doorStrength -= Damage * 0.001;		// damage below the threshold does 1/10th the damage
 
-		// Vanilla Matters: Moves the above down here so we can add in FP stuff.
+		// Vanilla Matters: Move the above down here so we can add in FP stuff.
 		if ( Damage >= minDamageThreshold ) {
 			doorStrength = doorStrength - ( Damage * 0.01 );
 
-			// VM: Adds FP rate for damage dealt. Caps at max doorStrength.
+			// VM: Add FP rate for damage dealt. Caps at max doorStrength.
 			if ( DeusExPlayer( instigatedBy ) != None ) {
 				DeusExPlayer( instigatedBy ).AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
 			}
@@ -398,7 +398,7 @@ function Timer()
 	  // LastTickTime = Level.TimeSeconds;
       //TicksSinceLastPick = TicksSinceLastPick + 1;
 
-      // Vanilla Matters: Fixes the infinite lockpick bug.
+      // Vanilla Matters: Fix the infinite lockpick bug.
       TicksSinceLastPick = TicksSinceLastPick + ( LastTickTime * 10 );
 	  LastTickTime = 0;
 
@@ -411,7 +411,7 @@ function Timer()
          TicksSinceLastPick = TicksSinceLastPick - TicksPerPick;      
          lockStrength = FClamp(lockStrength, 0.0, 1.0);
 
-		// Vanilla Matters: Adds in FP for lockpicking.
+		// Vanilla Matters: Add in FP for lockpicking.
 		pickPlayer.AddForwardPressure( pickPlayer.VM_fpUtility + pickPlayer.VM_fpUtilityLBS );
       }
 
@@ -481,7 +481,7 @@ function Tick(float deltaTime)
    if ((Level.NetMode != NM_Standalone) && (bLocked) && (KeyNum != 0))
 	   DoClose();
 
-	// Vanilla Matters: Makes it use deltaTime instead of level time.
+	// Vanilla Matters: Make it use deltaTime instead of level time.
 	LastTickTime = LastTickTime + deltaTime;
 
    Super.Tick(deltaTime);

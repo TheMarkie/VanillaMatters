@@ -82,7 +82,7 @@ function Timer()
 	  // LastTickTime = Level.TimeSeconds;
       //TicksSinceLastHack = TicksSinceLastHack + 1;
 
-      // Vanilla Matters: Fixes the infinite multitool bug.
+      // Vanilla Matters: Fix the infinite multitool bug.
       TicksSinceLastHack = TicksSinceLastHack + ( LastTickTime * 10 );
 	  LastTickTime = 0;
 
@@ -95,7 +95,7 @@ function Timer()
          TicksSinceLastHack = TicksSinceLastHack - TicksPerHack;
          hackStrength = FClamp(hackStrength, 0.0, 1.0);
 
-		// Vanilla Matters: Adds in FP rate for bypassing.
+		// Vanilla Matters: Add in FP rate for bypassing.
 		hackPlayer.AddForwardPressure( hackPlayer.VM_fpUtility + hackPlayer.VM_fpUtilityLBS );
       }
 

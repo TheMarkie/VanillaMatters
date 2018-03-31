@@ -218,7 +218,7 @@ function CalculateWindowSizes()
 		// else
 		// 	root.SetRenderViewport(0, upperHeight, width, cinHeight);
 
-		// Vanilla Matters: Fixes the cutscene subtitles for widescreen.
+		// Vanilla Matters: Fix the cutscene subtitles for widescreen.
 		cinHeight = min( root.height - int( height * lowerFinalHeightPercent ), root.width * 0.5625 );
 		upperCurrentPos = 0;
 		upperHeight     = int( 0.5 * ( root.height - cinHeight ) );

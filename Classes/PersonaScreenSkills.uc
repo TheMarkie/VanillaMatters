@@ -70,7 +70,7 @@ function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
 	//winStatus.SetPos(356, 329);
-	// Vanilla Matters: Moves the status bar up to fit the new shortened menu.
+	// Vanilla Matters: Move the status bar up to fit the new shortened menu.
 	winStatus.SetPos( 356, 275 );
 }
 
@@ -84,7 +84,7 @@ function CreateSkillsTileWindow()
 
 	winTile.SetPos(12, 39);
 	//winTile.SetSize(302, 297);
-	// Vanilla Matters: Reduces the skills tile window size to fit the shortened menu.
+	// Vanilla Matters: Reduce the skills tile window size to fit the shortened menu.
 	winTile.SetSize( 302, 243 );
 	winTile.SetMinorSpacing(0);
 	winTile.SetMargins(0, 0);
@@ -100,7 +100,7 @@ function CreateInfoWindow()
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
 	winInfo.SetPos(356, 22);
 	//winInfo.SetSize(238, 299);
-	// Vanilla Matters: Reduces the info window size to fit the shortened menu.
+	// Vanilla Matters: Reduce the info window size to fit the shortened menu.
 	winInfo.SetSize( 238, 245 );
 }
 
@@ -114,7 +114,7 @@ function CreateButtons()
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
 	//winActionButtons.SetPos(10, 338);
-	// Vanilla Matters: Moves the button up to fit the new shortened menu.
+	// Vanilla Matters: Move the button up to fit the new shortened menu.
 	winActionButtons.SetPos( 10, 284 );
 	winActionButtons.SetWidth(149);
 	winActionButtons.FillAllSpace(False);
@@ -182,14 +182,14 @@ function CreateSkillPointsWindow()
 
 	winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
 	//winText.SetPos(180, 341);
-	// Vanilla Matters: Moves the skill points text up to fit the new shortened menu.
+	// Vanilla Matters: Move the skill points text up to fit the new shortened menu.
 	winText.SetPos( 180, 287 );
 	winText.SetHeight(15);
 	winText.SetText(SkillPointsHeaderText);
 
 	winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
 	//winSkillPoints.SetPos(250, 341);
-	// Vanilla Matters: Moves the skill points text up to fit the new shortened menu.
+	// Vanilla Matters: Move the skill points text up to fit the new shortened menu.
 	winSkillPoints.SetPos( 250, 287 );
 	winSkillPoints.SetSize(54, 15);
 	winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);

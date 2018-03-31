@@ -59,7 +59,7 @@ function bool HandlePickupQuery( inventory Item )
 			// 	return True;
 			// }
 
-			// Vanilla Matters: Lets the player fill up the stack and allows a chance to quick use the remaining copies.
+			// Vanilla Matters: Let the player fill up the stack and allows a chance to quick use the remaining copies.
 			NumCopies = NumCopies + DeusExPickup( item ).NumCopies;
 			if ( MaxCopies > 0 && NumCopies > MaxCopies ) {
 				player.ClientMessage(msgTooMany);
@@ -129,7 +129,7 @@ function UseOnce()
 		// if (player.inHand == Self)
 		// 	player.PutInHand(None);
 
-		// Vanilla Matters: Clears HeldInHand then makes the pickup destroy itself.
+		// Vanilla Matters: Clear HeldInHand then makes the pickup destroy itself.
 		if ( player.IsHolding( self ) ) {
 			player.VM_HeldInHand = None;
 		}

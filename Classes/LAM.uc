@@ -46,8 +46,8 @@ simulated function PreBeginPlay()
 		blastRadius=mpBlastRadius;
 		proxRadius=mpProxRadius;
 		//Damage=mpLAMDamage;
-        // Vanilla Matters: Makes mpDamage have a consistent name.
-        Damage = mpDamage;
+		// Vanilla Matters: Make mpDamage have a consistent name.
+		Damage = mpDamage;
 		fuseLength=mpFuselength;
 		bIgnoresNanoDefense=True;
 	}
@@ -63,7 +63,7 @@ defaultproperties
      blastRadius=384.000000
      spawnWeaponClass=Class'DeusEx.WeaponLAM'
      ItemName="Lightweight Attack Munition (LAM)"
-     VM_overridesDamage=True
+     VM_bOverridesDamage=True
      mpDamage=250.000000
      speed=1000.000000
      MaxSpeed=1000.000000

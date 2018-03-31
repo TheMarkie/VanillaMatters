@@ -35,7 +35,7 @@ simulated function PlayHitSound(actor destActor, Actor hitActor)
 	// if ((damageType != 'Shot') && (damageType != 'Sabot'))
 	// 	return;
 
-	// Vanilla Matters: Fixes a bug with ricochet sounds not playing correctly.
+	// Vanilla Matters: Fix a bug with ricochet sounds not playing correctly.
 
 	rnd = FRand();
 

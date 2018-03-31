@@ -13,7 +13,7 @@ var bool bShowInfo;
 var int MPMaxAmmo; //Max Ammo in multiplayer.
 
 // Vanilla Matters
-var() float	VM_IgnitesOnHit; 	// Sets enemies on fire. Used for Flare Darts, which only set objects on fire. -1.0 to disable, 0.0 to enable at Untrained, 1.0 = Trained,...
+var() float	VM_IgnitesOnHit; 	// Set enemies on fire. Used for Flare Darts, which only set objects on fire. -1.0 to disable, 0.0 to enable at Untrained, 1.0 = Trained,...
 
 // ----------------------------------------------------------------------
 // PostBeginPlay()

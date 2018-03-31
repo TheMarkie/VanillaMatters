@@ -97,7 +97,7 @@ event InitWindow()
 	damageFlash = 0.4;  // seconds
 	healFlash   = 1.0;  // seconds
 
-	// Vanilla Matters: Creates bar for forward pressure.
+	// Vanilla Matters: Create bar for forward pressure.
 	VM_winFP = ProgressBarWindow( NewChild( Class'ProgressBarWindow' ) );
 	VM_winFP.UseScaledColor( true );
 	VM_winFP.SetSize( 50, 5 );
@@ -256,7 +256,7 @@ event DrawWindow(GC gc)
 		gc.DrawText(61, 74, 8, 8, O2Text);
 	}
 
-	// Vanilla Matters: Draws the FP text only if the player enables FP.
+	// Vanilla Matters: Draw the FP text only if the player enables FP.
 	if ( player.VM_bEnableFP ) {
 		gc.SetFont( Font'FontTiny' );
 		gc.SetTextColor( VM_winFP.GetBarColor() );
@@ -291,7 +291,7 @@ function DrawBorder(GC gc)
 		gc.SetTileColor(colBorder);
 		//gc.DrawTexture(0, 0, 84, 106, 0, 0, texBorder);
 
-		// Vanilla Matters: Picks the appropriate border for FP.
+		// Vanilla Matters: Pick the appropriate border for FP.
 		if ( player.VM_bEnableFP ) {
 			gc.DrawTexture( 0, 0, 84, 106, 0, 0, Texture'DeusEx.VMUI.HUDHitDisplayBorder_1' );
 		}
@@ -366,7 +366,7 @@ event Tick(float deltaSeconds)
 				winBreath.Hide();
 		}
 
-		// Vanilla Matters: Updates FP value only if it's enabled, otherwise hide the bar.
+		// Vanilla Matters: Update FP value only if it's enabled, otherwise hide the bar.
 		if ( player.VM_bEnableFP ) {
 			if ( !VM_winFP.IsVisible() ) {
 				VM_winFP.Show();
