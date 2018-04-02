@@ -6,6 +6,9 @@ class AugMuscle extends Augmentation;
 var float mpAugValue;
 var float mpEnergyDrain;
 
+// Vanilla Matters
+var() float VM_muscleCost;
+
 state Active
 {
 Begin:
@@ -51,5 +54,6 @@ defaultproperties
      LevelValues(2)=2.500000
      LevelValues(3)=3.000000
      AugmentationLocation=LOC_Arm
-     MPConflictSlot=8
+	 MPConflictSlot=8
+	 VM_muscleCost=10.000000
 }

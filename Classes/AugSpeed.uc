@@ -51,20 +51,20 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      mpAugValue=2.000000
-     mpEnergyDrain=120.000000
-     EnergyRate=40.000000
+     mpEnergyDrain=300.000000
+     EnergyRate=30.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
      AugmentationName="Speed Enhancement"
-     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run and climb, the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE:|n+20% movement speed and jump height.|n- Falling damage reduced by 20 points.|n|nTECH TWO:|n+40% movement speed and jump height.|n- Falling damage reduced by 40 points.|n|nTECH THREE:|n+60% movement speed and jump height.|n- Falling damage reduced by 60 points.|n|nTECH FOUR: An agent can run like the wind and leap from the tallest building.|n+80% movement speed and jump height.|n- Falling damage reduced by 80 points.|n|nProduces noises over a larger area when moving."
+     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run and climb, the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE:|n+20% movement speed and jump height.|n- Falling damage reduced by 20 points.|n|nTECH TWO:|n+40% movement speed and jump height.|n- Falling damage reduced by 40 points.|n|nTECH THREE:|n+60% movement speed and jump height.|n- Falling damage reduced by 60 points.|n|nTECH FOUR: An agent can run like the wind and leap from the tallest building.|n+80% movement speed and jump height.|n- Falling damage reduced by 80 points.|n|nProduces noises over a large area when moving."
      MPInfo="When active, you move twice as fast and jump twice as high.  Energy Drain: Very High"
-     LevelValues(0)=1.200000
-     LevelValues(1)=1.400000
-     LevelValues(2)=1.600000
-     LevelValues(3)=1.800000
+     LevelValues(0)=1.100000
+     LevelValues(1)=1.250000
+     LevelValues(2)=1.450000
+     LevelValues(3)=1.700000
      AugmentationLocation=LOC_Leg
      MPConflictSlot=5
-     VM_EnergyRateAddition(1)=20.000000
-     VM_EnergyRateAddition(2)=40.000000
-     VM_EnergyRateAddition(3)=60.000000
+     VM_EnergyRateAddition(1)=30.000000
+     VM_EnergyRateAddition(2)=60.000000
+     VM_EnergyRateAddition(3)=90.000000
 }

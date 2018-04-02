@@ -550,6 +550,12 @@ function CopySkills()
 	while(aSkill != None)
 	{
 		localSkills[skillIndex] = player.Spawn(aSkill.Class);
+
+		// Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
+		if ( localSkills[skillIndex].class == class'SkillWeaponPistol' ) {
+			localSkills[skillIndex].IncLevel( player );
+		}
+
 		skillIndex++;
 		aSkill = aSkill.next;
 	}

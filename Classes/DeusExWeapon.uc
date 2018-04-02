@@ -471,8 +471,24 @@ function bool PutDown()
 	return Super.PutDown();
 }
 
-function ReloadAmmo()
-{
+// function ReloadAmmo()
+// {
+// 	// single use or hand to hand weapon if ReloadCount == 0
+// 	if (ReloadCount == 0)
+// 	{
+// 		Pawn(Owner).ClientMessage(msgCannotBeReloaded);
+// 		return;
+// 	}
+
+// 	if (!IsInState('Reload'))
+// 	{
+// 		TweenAnim('Still', 0.1);
+// 		GotoState('Reload');
+// 	}
+// }
+
+// Vanilla Matters: Rewrite this function to handle different cases of reload.
+function ReloadAmmo( optional bool bForce ) {
 	// single use or hand to hand weapon if ReloadCount == 0
 	if (ReloadCount == 0)
 	{
@@ -481,7 +497,7 @@ function ReloadAmmo()
 	}
 
 	// Vanilla Matters: Fix the bug where player can reload with a full clip. Also the exploit where triggering a reload animation can quicken equip animation.
-	if ( ClipCount <= 0 ) {
+	if ( !bForce && ClipCount <= 0 ) {
 		Pawn( Owner ).ClientMessage( VM_msgFullClip );
 
 		return;
@@ -779,7 +795,10 @@ function bool LoadAmmo(int ammoNum)
 			if (DeusExPlayer(P) != None)
 				DeusExPlayer(P).UpdateBeltText(Self);
 
-			ReloadAmmo();
+			//ReloadAmmo();
+
+			// Vanilla Matters: Force the reload with our own reload function, to prevent a situation where changing ammo would skip reloading.
+			ReloadAmmo( true );
 
 			P.ClientMessage(Sprintf(msgNowHas, ItemName, newAmmoClass.Default.ItemName));
 			return True;
@@ -893,14 +912,28 @@ function CycleAmmo()
 
 	last = i;
 
-	do
-	{
-		if (++i >= 3)
-			i = 0;
+	// do
+	// {
+	// 	if (++i >= 3)
+	// 		i = 0;
 
-		if (LoadAmmo(i))
+	// 	if (LoadAmmo(i))
+	// 		break;
+	// } until (last == i);
+
+	// Vanilla Matters: Rewrite this part to stop the weapon from trying to cycle to its current ammo.
+	i = last + 1;
+	while ( i != last ) {
+		if ( LoadAmmo( i ) ) {
 			break;
-	} until (last == i);
+		}
+
+		i = i + 1;
+
+		if ( i >= ArrayCount( AmmoNames ) ) {
+			i = 0;
+		}
+	}
 }
 
 simulated function bool CanReload()

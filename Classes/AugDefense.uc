@@ -10,11 +10,15 @@ var float mpEnergyDrain;
 var float defenseSoundTime;
 const defenseSoundDelay = 2;
 
-var float timePassed;
+// Vanilla Matters
+var() float VM_defenseBaseCost;
+var() float VM_defenseWeaponBaseDelay;
+var() float VM_defenseWeaponDamageMult;
 
-var ScriptedPawn currentSP;
-var float defenseWeaponTime;
-const defenseWeaponDelay = 1.5;
+var ScriptedPawn VM_currentSP;
+var float VM_targetDistance;
+var float VM_defenseWeaponTime;
+var float VM_defenseWeaponDelay;
 
 // ----------------------------------------------------------------------------
 // Networking Replication
@@ -29,13 +33,6 @@ replication
    // //server to client function call
    // reliable if (Role == ROLE_Authority)
    //    TriggerDefenseAugHUD, SetDefenseAugStatus;
-
-	// Vanilla Matters: Replicate new values.
-	reliable if ( Role == ROLE_Authority )
-		timePassed, defenseWeaponTime;
-
-	reliable if ( Role == ROLE_Authority )
-		SetDefenseAugStatus;
 }
 
 // state Active
@@ -112,27 +109,19 @@ replication
 
 // Vanilla Matters: Gonna rewrite all that stuff above to optimize things and add new features.
 state Active {
-	simulated function Tick( float deltaTime ) {
+	function Timer() {
 		local Actor target;
-
 		local DeusExWeapon w;
+
+		local float cost;
+		local bool enoughEnergy;
+
 		local Vector HitLocation, X, Y, Z;
 		local ExplosionLight light;
 		local SphereEffect sphere;
 
-		Super.Tick( deltaTime );
-
-		timePassed = timePassed + deltaTime;
-
-		if ( timePassed >= 0.1 ) {
-			timePassed = timePassed - 0.1;
-		}
-		else {
-			return;
-		}
-
 		if ( Level.NetMode != NM_Standalone ) {
-			defenseSoundTime = defenseSoundTime + deltaTime;
+			defenseSoundTime = defenseSoundTime + 0.1;
 
 			if ( defenseSoundTime >= defenseSoundDelay ) {
 				Player.PlaySound( Sound'AugDefenseOn', SLOT_Interact, 1.0,, LevelValues[CurrentLevel] * 1.33, 0.75 );
@@ -143,29 +132,48 @@ state Active {
 		target = FindNearestTarget();
 
 		if ( target != None ) {
-			SetDefenseAugStatus( true, CurrentLevel, target );
+			// VM: Calculate cost based on distance, and check if the player has enough energy.
+			cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
+			enoughEnergy = Player.CanDrain( cost );
+
+			SetDefenseAugStatus( true, CurrentLevel, target, enoughEnergy );
 			Player.PlaySound( Sound'GEPGunLock', SLOT_None,,,, 2.0 );
 		}
 		else {
 			SetDefenseAugStatus( false, CurrentLevel, none );
-			defenseWeaponTime = 0;
+			VM_defenseWeaponTime = 0;
+
+			return;
+		}
+
+		if ( !enoughEnergy ) {
 			return;
 		}
 
 		if ( DeusExProjectile( target ) != None ) {
-			defenseWeaponTime = 0;
+			VM_defenseWeaponTime = 0;
+			VM_currentSP = none;
 
 			DeusExProjectile( target ).bAggressiveExploded= true;
 			DeusExProjectile( target ).Explode( target.Location, vect( 0, 0, 1 ) );
 
+			Player.DrainEnergy( self, cost );
+
 			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
 		}
 		else if ( ScriptedPawn( target ) != None ) {
-			// VM: Add 0.1 extra because the aug only checks every 0.1 second.
-			defenseWeaponTime = defenseWeaponTime + 0.1 + deltaTime;
+			VM_defenseWeaponTime = VM_defenseWeaponTime + 0.1;
 
-			if ( defenseWeaponTime >= defenseWeaponDelay ) {
-				defenseWeaponTime = 0;
+			if ( target != VM_currentSP ) {
+				VM_defenseWeaponTime = 0;
+				VM_defenseWeaponDelay = VM_defenseWeaponBaseDelay + ( ( VM_targetDistance / LevelValues[0] ) * VM_defenseWeaponBaseDelay );
+				VM_currentSP = ScriptedPawn( target );
+
+				return;
+			}
+
+			if ( VM_defenseWeaponTime >= VM_defenseWeaponDelay ) {
+				VM_defenseWeaponTime = 0;
 
 				w = DeusExWeapon( Pawn( target ).Weapon );
 				if ( w != None ) {
@@ -180,7 +188,7 @@ state Active {
 					}
 
 					ScriptedPawn( target ).DropWeapon();
-					target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0], Player, HitLocation, vect( 0, 0, 0 ), 'Exploded' );
+					target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0] * VM_defenseWeaponDamageMult, Player, HitLocation, vect( 0, 0, 0 ), 'Shot' );
 					w.Destroy();
 
 					// VM: Replicate what happens to projectiles detonated by the aug.
@@ -204,25 +212,34 @@ state Active {
 						sphere.RemoteRole = ROLE_None;
 						sphere.size = 0.5;
 					}
-				}
 
-				Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
-				target.PlaySound( Sound'SmallExplosion1', SLOT_None, 1.0,, LevelValues[CurrentLevel], 0.75 );
+					Player.DrainEnergy( self, cost );
+
+					Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
+					target.PlaySound( Sound'SmallExplosion1', SLOT_None, 1.0,, LevelValues[CurrentLevel], 0.75 );
+				}
 			}
 		}
 	}
+
+	function EndState() {
+		SetTimer( 0.1, false );
+	}
+
 Begin:
-	timePassed = 0;
 	defenseSoundTime = 0;
-	defenseWeaponTime = 0;
+	VM_defenseWeaponTime = 0;
+	VM_defenseWeaponDelay = 0;
+	SetTimer( 0.1, true );
 }
 
 state Inactive {
 Begin:
 	SetDefenseAugStatus( false, CurrentLevel, none );
-	timePassed = 0;
 	defenseSoundTime = 0;
-	defenseWeaponTime = 0;
+	VM_defenseWeaponTime = 0;
+	VM_defenseWeaponDelay = 0;
+	VM_currentSP = none;
 }
 
 // ------------------------------------------------------------------------------
@@ -310,6 +327,8 @@ simulated function Actor FindNearestTarget() {
 	}
 
 	if ( target != None ) {
+		VM_targetDistance = mindist;
+
 		return target;
 	}
 
@@ -339,6 +358,8 @@ simulated function Actor FindNearestTarget() {
 			}
 		}
 	}
+
+	VM_targetDistance = mindist;
 
 	return target;
 }
@@ -391,7 +412,7 @@ simulated function Actor FindNearestTarget() {
 // }
 
 // Vanilla Matters: Change it to use actor.
-simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget ) {
+function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget, optional bool enoughEnergy ) {
 	if ( Player == None || Player.rootWindow == None ) {
 		return;
 	}
@@ -399,6 +420,8 @@ simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, A
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.bDefenseActive = bDefenseActive;
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseLevel = defenseLevel;
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseTarget = defenseTarget;
+	// VM: Pass this to the hud so it won't have to do the calculation again.
+	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughEnergy = enoughEnergy;
 }
 
 simulated function PreBeginPlay()
@@ -418,18 +441,17 @@ defaultproperties
 {
      mpAugValue=500.000000
      mpEnergyDrain=10.000000
-     EnergyRate=15.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
-     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Takes 1.5 seconds to detonate a weapon.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range."
+     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Takes 1.5 seconds to detonate a weapon.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nDetonation cost is based on target type and distance."
      MPInfo="When active, enemy rockets detonate when they get close, doing reduced damage.  Some large rockets may still be close enough to do damage when they explode.  Energy Drain: Very Low"
      LevelValues(0)=240.000000
      LevelValues(1)=480.000000
      LevelValues(2)=720.000000
      LevelValues(3)=960.000000
      MPConflictSlot=7
-     VM_EnergyRateAddition(1)=15.000000
-     VM_EnergyRateAddition(2)=30.000000
-     VM_EnergyRateAddition(3)=45.000000
+     VM_defenseBaseCost=15.000000
+     VM_defenseWeaponBaseDelay=1.000000
+     VM_defenseWeaponDamageMult=0.500000
 }

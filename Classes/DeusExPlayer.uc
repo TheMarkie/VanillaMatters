@@ -2963,7 +2963,7 @@ simulated function PlayFootStep()
   //radius      = 375.0;
 
 	// Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
-	radius = 375.0 * Abs( AugmentationSystem.GetAugLevelValue( class'AugSpeed' ) );
+	radius = 375.0 * Abs( AugmentationSystem.GetClassLevel( class'AugSpeed' ) + 1 );
 	
 	volume      = (speedFactor+0.2) * massFactor;
 	range       = radius * volume;
@@ -3656,6 +3656,11 @@ function float GetCurrentGroundSpeed()
 
 	if (augValue == -1.0)
 		augValue = 1.0;
+
+	// Vanilla Matters: Disable augspeed effects when crouching.
+	if ( bIsCrouching || bForceDuck ) {
+		augValue = 1.0;
+	}
 
 	if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
 		speed = Human(Self).mpGroundSpeed * augValue;
@@ -4863,7 +4868,7 @@ exec function ParseLeftClick()
 			aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
 
 			if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-				if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * 15 ) ) {
+				if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
 					ClientMessage( VM_msgMuscleCost );
 				}
 				else if ( DeusExDecoration( CarriedDecoration ) != None ) {
@@ -6254,7 +6259,7 @@ function PutCarriedDecorationInHand()
 			if ( CarriedDecoration.Mass > 50 && AugmentationSystem != None ) {
 				aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
 
-				aug.EnergyRate = ( CarriedDecoration.Mass / 50 ) * 15;
+				aug.EnergyRate = ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost;
 
 				aug.FakeActivate();
 			}
@@ -6282,7 +6287,11 @@ function DropDecoration()
 	local Actor hitActor;
 
 	// Vanilla Matters
+	local DeusExDecoration deco;
 	local Augmentation aug;
+	local float boost;
+
+	deco = DeusExDecoration( CarriedDecoration );
 
 	bSuccess = False;
 
@@ -6305,22 +6314,33 @@ function DropDecoration()
 		}
 		else
 		{
+			// Vanilla Matters: Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
+			boost = 500;
+
 			// throw velocity is based on augmentation
 			if (AugmentationSystem != None)
 			{
 				mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
 				if (mult == -1.0)
 					mult = 1.0;
-				// Vanilla Matters: If being powerthrown, quadruples the mult.
-				else if ( DeusExDecoration( CarriedDecoration ) != None && DeusExDecoration( CarriedDecoration ).VM_bPowerthrown ) {
-					mult = mult * 4.0;
+
+				// Vanilla Matters: Calculate the velocity boost from AugMuscle.
+				boost = boost + ( boost * mult );
+
+				// Vanilla Matters: Add some more boost if the deco is powerthrown.
+				if ( deco != none && deco.VM_bPowerthrown ) {
+					boost = boost + ( 1500 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
 				}
 			}
 
 			if (IsLeaning())
 				CarriedDecoration.Velocity = vect(0,0,0);
-			else
-				CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
+			// else
+			// 	CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
+			// Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency to powerthrow damage and just because.
+			else {
+				CarriedDecoration.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
+			}
 
 			// scale it based on the mass
 			velscale = FClamp(CarriedDecoration.Mass / 20.0, 1.0, 40.0);
@@ -6376,8 +6396,8 @@ function DropDecoration()
 				}
 
 				// VM: Drain energy for powerthrow.
-				if ( DeusExDecoration( CarriedDecoration ) != None && DeusExDecoration( CarriedDecoration ).VM_bPowerthrown ) {
-					DrainEnergy( aug, ( CarriedDecoration.Mass / 50 ) * 15 );
+				if ( deco != None && deco.VM_bPowerthrown ) {
+					DrainEnergy( aug, ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost );
 				}
 			}
 
@@ -6420,6 +6440,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 
 	// Vanilla Matters
 	local int saveNumCopies;
+	local float boost;
 
 	local Inventory corpseInv;
 	local Inventory nextCorpseInv;
@@ -6565,12 +6586,18 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 		}
 		else
 		{
+			// Vanilla Matters: Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
+			boost = 300;
+
 			// throw velocity is based on augmentation
 			if (AugmentationSystem != None)
 			{
 				mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
 				if (mult == -1.0)
 					mult = 1.0;
+
+				// Vanilla Matters: Calculate the velocity boost from AugMuscle.
+				boost = boost + ( boost * mult );
 			}
 
 			if (bDrop)
@@ -6582,7 +6609,10 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			}
 			else
 			{
-				item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
+				//item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
+
+				// Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency and just because.
+				CarriedDecoration.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
 
 				// play a throw anim
 				PlayAnim('Attack',,0.1);
@@ -11801,6 +11831,13 @@ exec function DXDumpInfo()
 // Vanilla Matters: Simple command to turn on cheats.
 exec function sv_cheats( bool enabled ) {
 	bCheatsEnabled = enabled;
+
+	if ( enabled ) {
+		ClientMessage( "Cheats enabled" );
+	}
+	else {
+		ClientMessage( "Cheats disabled" );
+	}
 }
 
 // ----------------------------------------------------------------------

@@ -2782,6 +2782,27 @@ function Carcass SpawnCarcass()
 			}
 		}
 
+		// Vanilla Matters: Deals with our inventory if we gib.
+		item = Inventory;
+		while ( item != none ) {
+			nextItem = item.Inventory;
+
+			DeleteInventory( item );
+
+			if ( DeusExWeapon( item ) != none && DeusExWeapon( item ).bNativeAttack ) {
+				item.Destroy();
+			}
+			else {
+				loc = Location;
+				loc.x = loc.x + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );
+				loc.y = loc.y + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );
+
+				item.DropFrom( loc );
+			}
+			
+			item = nextItem;
+		}
+
 		return None;
 	}
 

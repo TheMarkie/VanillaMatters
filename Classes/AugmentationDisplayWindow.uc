@@ -11,8 +11,9 @@ var bool bDefenseActive;
 var int defenseLevel;
 // var DeusExProjectile defenseTarget;
 
-// Vanilla Matters: AugDefense now deals with more than projectiles.
-var Actor defenseTarget;
+// Vanilla Matters
+var Actor defenseTarget;				// AugDefense now deals with more than projectiles.
+var bool VM_bDefenseEnoughEnergy;		// AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
 
 var ViewportWindow winDrone;
 var bool bDroneCreated;
@@ -117,6 +118,7 @@ var Color	colRed, colGreen, colWhite;
 
 // Vanilla Matters
 var localized String VM_msgUndefined;
+var localized String VM_msgADSNotEnoughEnergy;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -431,9 +433,6 @@ function DrawDefenseAugmentation(GC gc)
 			bDrawLine = true;
 		}
 
-		mult = VSize( defenseTarget.Location - Player.Location );
-		str = msgRange @ Int( mult / 16 ) @ msgRangeUnits;
-
 		if ( ScriptedPawn( defenseTarget ) != None ) {
 			targetWeapon = DeusExWeapon( Pawn( defenseTarget ).Weapon );
 
@@ -455,8 +454,16 @@ function DrawDefenseAugmentation(GC gc)
 			targetLocation = defenseTarget.Location;
 		}
 
-		if ( !ConvertVectorToCoordinates( targetLocation, boxCX, boxCY ) ) {
-			str = str @ msgBehind;
+		// VM: If the player has enough energy to detonation, display range, otherwise, say so.
+		if ( VM_bDefenseEnoughEnergy ) {
+			str = msgRange @ Int( VSize( defenseTarget.Location - Player.Location ) / 16 ) @ msgRangeUnits;
+
+			if ( !ConvertVectorToCoordinates( targetLocation, boxCX, boxCY ) ) {
+				str = str @ msgBehind;
+			}
+		}
+		else {
+			str = VM_msgADSNotEnoughEnergy;
 		}
 
 		gc.GetTextExtent( 0, w, h, str );
@@ -1700,4 +1707,5 @@ defaultproperties
      colGreen=(G=255)
      colWhite=(R=255,G=255,B=255)
      VM_msgUndefined="Undefined"
+     VM_msgADSNotEnoughEnergy="* NOT ENOUGH ENERGY *"
 }
