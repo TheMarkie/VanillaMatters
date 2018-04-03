@@ -15,6 +15,9 @@ function FirstFrame()
 	local UNATCOTroop troop;
 	local TerroristCommander cmdr;
 
+	// Vanilla Matters
+	local Newspaper np;
+
 	Super.FirstFrame();
 
 	if (localURL == "01_NYC_UNATCOISLAND")
@@ -28,6 +31,16 @@ function FirstFrame()
 				troop.Destroy();
 			foreach AllActors(class'TerroristCommander', cmdr, 'TerroristCommander')
 				cmdr.Destroy();
+		}
+	}
+	// Vanilla Matters: Fix a newspaper that gets destroyed when you open the door to your office.
+	else if ( localURL == "01_NYC_UNATCOHQ" ) {
+		foreach AllActors( class'Newspaper', np ) {
+			if ( np.Name == 'Newspaper1' ) {
+				// VM: Move it to your desk.
+				np.SetLocation( vect( -215, 1240, 287.5 ) );
+				break;
+			}
 		}
 	}
 }

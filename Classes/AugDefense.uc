@@ -157,7 +157,7 @@ state Active {
 			DeusExProjectile( target ).bAggressiveExploded= true;
 			DeusExProjectile( target ).Explode( target.Location, vect( 0, 0, 1 ) );
 
-			Player.DrainEnergy( self, cost );
+			Player.DrainEnergy( self, cost / 2 );
 
 			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
 		}

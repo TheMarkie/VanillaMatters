@@ -2759,6 +2759,9 @@ function Carcass SpawnCarcass()
 	local int i;
 	local float size;
 
+	// Vanilla Matters
+	local DeusExWeapon w;
+
 	// if we really got blown up good, gib us and don't display a carcass
 	if ((Health < -100) && !IsA('Robot'))
 	{
@@ -2789,10 +2792,19 @@ function Carcass SpawnCarcass()
 
 			DeleteInventory( item );
 
-			if ( DeusExWeapon( item ) != none && DeusExWeapon( item ).bNativeAttack ) {
+			w = DeusExWeapon( item );
+
+			if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) ) {
 				item.Destroy();
 			}
 			else {
+				if ( w.IsA( 'WeaponGasGrenade' ) || w.IsA( 'WeaponLAM' ) || w.IsA( 'WeaponEMPGrenade' ) || w.IsA( 'WeaponNanoVirusGrenade' ) ) {
+					w.PickupAmmoCount = 1;
+				}
+				else if ( w != none && Level.NetMode == NM_Standalone ) {
+					w.PickupAmmoCount = Rand( 4 ) + 1;
+				}
+
 				loc = Location;
 				loc.x = loc.x + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );
 				loc.y = loc.y + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );

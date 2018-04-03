@@ -56,12 +56,12 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
      AugmentationName="Speed Enhancement"
-     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run and climb, the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE:|n+20% movement speed and jump height.|n- Falling damage reduced by 20 points.|n|nTECH TWO:|n+40% movement speed and jump height.|n- Falling damage reduced by 40 points.|n|nTECH THREE:|n+60% movement speed and jump height.|n- Falling damage reduced by 60 points.|n|nTECH FOUR: An agent can run like the wind and leap from the tallest building.|n+80% movement speed and jump height.|n- Falling damage reduced by 80 points.|n|nProduces noises over a large area when moving."
+     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run and climb, the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE:|n+15% movement speed and jump height.|n- Falling damage reduced by 20 points.|n|nTECH TWO:|n+30% movement speed and jump height.|n- Falling damage reduced by 40 points.|n|nTECH THREE:|n+50% movement speed and jump height.|n- Falling damage reduced by 60 points.|n|nTECH FOUR: An agent can run like the wind and leap from the tallest building.|n+75% movement speed and jump height.|n- Falling damage reduced by 80 points.|n|nProduces noises over a large area when moving."
      MPInfo="When active, you move twice as fast and jump twice as high.  Energy Drain: Very High"
-     LevelValues(0)=1.100000
-     LevelValues(1)=1.250000
-     LevelValues(2)=1.450000
-     LevelValues(3)=1.700000
+     LevelValues(0)=1.150000
+     LevelValues(1)=1.300000
+     LevelValues(2)=1.500000
+     LevelValues(3)=1.750000
      AugmentationLocation=LOC_Leg
      MPConflictSlot=5
      VM_EnergyRateAddition(1)=30.000000
