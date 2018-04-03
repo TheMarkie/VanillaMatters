@@ -138,7 +138,7 @@ state Active {
 
 			// VM: Calculate cost based on distance, and check if the player has enough energy.
 			if ( proj != none ) {
-				cost = VM_defenseBaseCost / 2;
+				cost = 2;
 			}
 			else {
 				cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
