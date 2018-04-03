@@ -111,10 +111,12 @@ replication
 state Active {
 	function Timer() {
 		local Actor target;
+		local DeusExProjectile proj;
 		local DeusExWeapon w;
 
 		local float cost;
 		local bool enoughEnergy;
+		local bool enoughDistance;
 
 		local Vector HitLocation, X, Y, Z;
 		local ExplosionLight light;
@@ -132,11 +134,21 @@ state Active {
 		target = FindNearestTarget();
 
 		if ( target != None ) {
+			proj = DeusExProjectile( target );
+
 			// VM: Calculate cost based on distance, and check if the player has enough energy.
-			cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
+			if ( proj != none ) {
+				cost = VM_defenseBaseCost / 2;
+			}
+			else {
+				cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
+			}
+
 			enoughEnergy = Player.CanDrain( cost );
 
-			SetDefenseAugStatus( true, CurrentLevel, target, enoughEnergy );
+			enoughDistance = ( VM_targetDistance <= LevelValues[CurrentLevel] );
+
+			SetDefenseAugStatus( true, CurrentLevel, target, enoughEnergy, enoughDistance );
 			Player.PlaySound( Sound'GEPGunLock', SLOT_None,,,, 2.0 );
 		}
 		else {
@@ -146,18 +158,18 @@ state Active {
 			return;
 		}
 
-		if ( !enoughEnergy ) {
+		if ( !enoughEnergy || !enoughDistance ) {
 			return;
 		}
 
-		if ( DeusExProjectile( target ) != None ) {
+		if ( proj != None ) {
 			VM_defenseWeaponTime = 0;
 			VM_currentSP = none;
 
-			DeusExProjectile( target ).bAggressiveExploded= true;
-			DeusExProjectile( target ).Explode( target.Location, vect( 0, 0, 1 ) );
+			proj.bAggressiveExploded= true;
+			proj.Explode( target.Location, vect( 0, 0, 1 ) );
 
-			Player.DrainEnergy( self, cost / 2 );
+			AddImmediateEnergyRate( cost );
 
 			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
 		}
@@ -182,12 +194,12 @@ state Active {
 					HitLocation = target.Location + ( w.FireOffset.X * X ) + ( w.FireOffset.Y * Y ) + ( w.FireOffset.Z * Z );
 
 					// VM: Some hacky calculations for the weapon location while the pawn is crouching.
-					if ( ScriptedPawn( target ).bCrouching ) {
+					if ( VM_currentSP.bCrouching ) {
 						HitLocation.Z = HitLocation.Z + ( HitLocation.Z * 0.175 );
 						HitLocation.Y = HitLocation.Y + ( HitLocation.Y * 0.0008 );
 					}
 
-					ScriptedPawn( target ).DropWeapon();
+					VM_currentSP.DropWeapon();
 					target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0] * VM_defenseWeaponDamageMult, Player, HitLocation, vect( 0, 0, 0 ), 'Shot' );
 					w.Destroy();
 
@@ -213,7 +225,7 @@ state Active {
 						sphere.size = 0.5;
 					}
 
-					Player.DrainEnergy( self, cost );
+					AddImmediateEnergyRate( cost );
 
 					Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
 					target.PlaySound( Sound'SmallExplosion1', SLOT_None, 1.0,, LevelValues[CurrentLevel], 0.75 );
@@ -300,7 +312,7 @@ simulated function Actor FindNearestTarget() {
 	local Actor target;
 
 	target = None;
-	mindist = LevelValues[CurrentLevel];
+	mindist = LevelValues[CurrentLevel] * 3;
 	foreach AllActors( class'DeusExProjectile', proj ) {
 		dist = VSize( Player.Location - proj.Location );
 		if ( dist > mindist ) {
@@ -311,7 +323,7 @@ simulated function Actor FindNearestTarget() {
 			bValid = !proj.bIgnoresNanoDefense;
 		}
 		else {
-			bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) );
+			bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) && proj.bExplodes );
 		}
 
 		bValid = bValid && ( proj.Owner != Player && !( TeamDMGame( Player.DXGame ) != None && TeamDMGame( Player.DXGame ).ArePlayersAllied( DeusExPlayer( proj.Owner ), Player ) ) );
@@ -333,7 +345,7 @@ simulated function Actor FindNearestTarget() {
 	}
 
 	bValid = false;
-	mindist = LevelValues[CurrentLevel];
+	mindist = LevelValues[CurrentLevel] * 3;
 	foreach AllActors( class'ScriptedPawn', sp ) {
 		dist = VSize( Player.Location - sp.Location );
 		if ( dist > mindist ) {
@@ -412,7 +424,7 @@ simulated function Actor FindNearestTarget() {
 // }
 
 // Vanilla Matters: Change it to use actor.
-function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget, optional bool enoughEnergy ) {
+function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget, optional bool enoughEnergy, optional bool enoughDistance ) {
 	if ( Player == None || Player.rootWindow == None ) {
 		return;
 	}
@@ -420,8 +432,9 @@ function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defen
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.bDefenseActive = bDefenseActive;
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseLevel = defenseLevel;
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseTarget = defenseTarget;
-	// VM: Pass this to the hud so it won't have to do the calculation again.
+	// VM: Pass this to the hud so it won't have to do the calculations again.
 	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughEnergy = enoughEnergy;
+	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughDistance = enoughDistance;
 }
 
 simulated function PreBeginPlay()
@@ -444,14 +457,14 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
-     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Takes 1.5 seconds to detonate a weapon.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nDetonation cost is based on target type and distance."
+     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Weapon detonation has a delay based on distance.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nProjectile detonation cost is 2 points of energy.|nWeapon detonation cost is based on distance."
      MPInfo="When active, enemy rockets detonate when they get close, doing reduced damage.  Some large rockets may still be close enough to do damage when they explode.  Energy Drain: Very Low"
-     LevelValues(0)=240.000000
-     LevelValues(1)=480.000000
-     LevelValues(2)=720.000000
-     LevelValues(3)=960.000000
+     LevelValues(0)=200.000000
+     LevelValues(1)=400.000000
+     LevelValues(2)=600.000000
+     LevelValues(3)=800.000000
      MPConflictSlot=7
-     VM_defenseBaseCost=15.000000
-     VM_defenseWeaponBaseDelay=1.000000
+     VM_defenseBaseCost=5.000000
+     VM_defenseWeaponBaseDelay=0.750000
      VM_defenseWeaponDamageMult=0.500000
 }
