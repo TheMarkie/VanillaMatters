@@ -25,6 +25,7 @@ defaultproperties
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      reloadTime=0.000000
+     HitDamage=15
      maxRange=64
      AccurateRange=64
      BaseAccuracy=1.000000

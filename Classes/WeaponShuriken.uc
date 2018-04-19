@@ -29,7 +29,7 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.200000
      reloadTime=0.200000
-     HitDamage=15
+     HitDamage=40
      maxRange=1280
      AccurateRange=640
      BaseAccuracy=0.900000

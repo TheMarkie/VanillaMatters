@@ -27,6 +27,7 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.600000
      reloadTime=2.000000
+     HitDamage=15
      maxRange=4800
      AccurateRange=2400
      BaseAccuracy=0.700000
@@ -44,6 +45,10 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     VM_HeadshotMult(0)=-0.250000
+     VM_HeadshotMult(1)=-0.250000
+     VM_HeadshotMult(2)=-0.250000
+     VM_HeadshotMult(3)=-0.250000
      AmmoName=Class'DeusEx.Ammo10mm'
      ReloadCount=6
      PickupAmmoCount=6
