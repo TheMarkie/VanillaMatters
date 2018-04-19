@@ -24,7 +24,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      reloadTime=0.000000
-     HitDamage=7
+     HitDamage=15
      maxRange=80
      AccurateRange=80
      BaseAccuracy=1.000000
@@ -37,10 +37,14 @@ defaultproperties
      mpBaseAccuracy=1.000000
      mpAccurateRange=96
 	 mpMaxRange=96
-	 VM_ShotBreaksStuff(0)=5.000000
-     VM_ShotBreaksStuff(1)=5.000000
-     VM_ShotBreaksStuff(2)=5.000000
-     VM_ShotBreaksStuff(3)=5.000000
+	 VM_ShotBreaksStuff(0)=2.000000
+     VM_ShotBreaksStuff(1)=2.000000
+     VM_ShotBreaksStuff(2)=2.000000
+     VM_ShotBreaksStuff(3)=2.000000
+     VM_HeadshotMult(0)=-0.500000
+     VM_HeadshotMult(1)=-0.500000
+     VM_HeadshotMult(2)=-0.500000
+     VM_HeadshotMult(3)=-0.500000
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True
@@ -63,7 +67,7 @@ defaultproperties
      largeIconWidth=101
      largeIconHeight=43
      invSlotsX=2
-     Description="A crowbar. Hit someone or something with it. Repeat.|nExtremely effective against the inanimate kinds.|n|n<UNATCO OPS FILE NOTE GH010-BLUE> Many crowbars we call 'murder of crowbars.'  Always have one for kombat. Ha. -- Gunther Hermann <END NOTE>"
+     Description="A crowbar. Hit someone or something with it. Repeat.|nTwice as effective against the inanimate kinds.|n|n<UNATCO OPS FILE NOTE GH010-BLUE> Many crowbars we call 'murder of crowbars.'  Always have one for kombat. Ha. -- Gunther Hermann <END NOTE>"
      beltDescription="CROWBAR"
      Mesh=LodMesh'DeusExItems.CrowbarPickup'
      CollisionRadius=19.000000

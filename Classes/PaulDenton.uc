@@ -98,10 +98,10 @@ defaultproperties
      Health=200
      HealthHead=200
      HealthTorso=200
-     HealthLegLeft=200
-     HealthLegRight=200
-     HealthArmLeft=200
-     HealthArmRight=200
+     HealthLegLeft=100
+     HealthLegRight=100
+     HealthArmLeft=100
+     HealthArmRight=100
      Mesh=LodMesh'DeusExCharacters.GM_Trench'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.PaulDentonTex0'
      MultiSkins(1)=Texture'DeusExCharacters.Skins.PaulDentonTex2'

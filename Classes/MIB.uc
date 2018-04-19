@@ -79,10 +79,10 @@ defaultproperties
      Health=350
      HealthHead=350
      HealthTorso=350
-     HealthLegLeft=350
-     HealthLegRight=350
-     HealthArmLeft=350
-     HealthArmRight=350
+     HealthLegLeft=175
+     HealthLegRight=175
+     HealthArmLeft=175
+     HealthArmRight=175
      Mesh=LodMesh'DeusExCharacters.GM_Suit'
      DrawScale=1.100000
      MultiSkins(0)=Texture'DeusExCharacters.Skins.MIBTex0'

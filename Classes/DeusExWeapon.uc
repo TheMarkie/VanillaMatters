@@ -2722,15 +2722,26 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 
 			// Vanilla Matters: Make the mover take damage with a multiplier.
 			if ( Role == ROLE_Authority ) {
-				Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn(Owner), HitLocation, 1000.0 * X, damageType );
+				Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
 			}
 
 			SelectiveSpawnEffects( HitLocation, HitNormal, Other, HitDamage * mult);
 		}
 		else if ((Other != self) && (Other != Owner))
 		{
-			if ( Role == ROLE_Authority )
-				Other.TakeDamage(HitDamage * mult, Pawn(Owner), HitLocation, 1000.0*X, damageType);
+			// if ( Role == ROLE_Authority )
+			// 	Other.TakeDamage(HitDamage * mult, Pawn(Owner), HitLocation, 1000.0*X, damageType);
+
+			// Vanilla Matters: Let ShotBreaksStuff work against containers and decorations.
+			if ( Role == ROLE_Authority ) {
+				if ( Other.IsA( 'Containers' ) || Other.IsA( 'Decoration' ) ) {
+					Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+				}
+				else {
+					Other.TakeDamage( HitDamage * mult, Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+				}
+			}
+
 			if (bHandToHand)
 				SelectiveSpawnEffects( HitLocation, HitNormal, Other, HitDamage * mult);
 
@@ -3189,13 +3200,14 @@ simulated function bool UpdateInfo(Object winObject)
 	}
 	winInfo.AddInfoItem(msgInfoMaxRange, str);
 
-	// Vanilla Matters: Display headshot multiplier, since vanilla multiplier is hardcoded 8 for all, we can just print it so.
-	str = "x8.0";
+	// Vanilla Matters: Display headshot multiplier, we'll take into account any HeadshotMult.
+	mod = 8 * ( 1 + Default.VM_HeadshotMult[0] );
+	str = "x" $ FormatFloatString( mod, 0.1 );
 
-	if ( Default.VM_HeadshotMult[weaponSkillLevel] != 0.0 ) {
-		str = str @ BuildPercentString( Default.VM_HeadshotMult[weaponSkillLevel] ) @ "=" @ "x" $ FormatFloatString( 8 * ( 1 + Default.VM_HeadshotMult[weaponSkillLevel] ), 0.1 );
+	if ( weaponSkillLevel > 0.0 ) {
+		str = str @ BuildPercentString( Default.VM_HeadshotMult[weaponSkillLevel] ) @ "=" @ "x" $ FormatFloatString( mod * ( 1 + Default.VM_HeadshotMult[weaponSkillLevel] ), 0.1 );
 	}
-	winInfo.AddInfoItem( VM_msgInfoHeadshot, str, ( Default.VM_HeadshotMult[weaponSkillLevel] != 0.0 ) );
+	winInfo.AddInfoItem( VM_msgInfoHeadshot, str, ( weaponSkillLevel > 0.0 ) );
 
 	// mass
 	winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);

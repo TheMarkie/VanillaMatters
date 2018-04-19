@@ -175,10 +175,10 @@ defaultproperties
      Health=400
      HealthHead=600
      HealthTorso=400
-     HealthLegLeft=400
-     HealthLegRight=400
-     HealthArmLeft=400
-     HealthArmRight=400
+     HealthLegLeft=250
+     HealthLegRight=250
+     HealthArmLeft=250
+     HealthArmRight=250
      Texture=Texture'DeusExItems.Skins.BlackMaskTex'
      Mesh=LodMesh'DeusExCharacters.GM_DressShirt_B'
      DrawScale=1.100000

@@ -18,10 +18,10 @@ defaultproperties
      AttitudeToPlayer=ATTITUDE_Fear
      HealthHead=20
      HealthTorso=20
-     HealthLegLeft=20
-     HealthLegRight=20
-     HealthArmLeft=20
-     HealthArmRight=20
+     HealthLegLeft=10
+     HealthLegRight=10
+     HealthArmLeft=10
+     HealthArmRight=10
      Alliance=Pigeon
      DrawType=DT_Mesh
      Mesh=LodMesh'DeusExCharacters.Pigeon'

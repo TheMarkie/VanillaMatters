@@ -64,10 +64,10 @@ defaultproperties
      Health=600
      HealthHead=900
      HealthTorso=600
-     HealthLegLeft=600
-     HealthLegRight=600
-     HealthArmLeft=600
-     HealthArmRight=600
+     HealthLegLeft=300
+     HealthLegRight=300
+     HealthArmLeft=300
+     HealthArmRight=300
      Mesh=LodMesh'DeusExCharacters.GM_Trench'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.WaltonSimonsTex0'
      MultiSkins(1)=Texture'DeusExCharacters.Skins.WaltonSimonsTex2'

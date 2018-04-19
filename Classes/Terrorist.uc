@@ -16,10 +16,10 @@ defaultproperties
      Health=75
      HealthHead=75
      HealthTorso=75
-     HealthLegLeft=75
-     HealthLegRight=75
-     HealthArmLeft=75
-     HealthArmRight=75
+     HealthLegLeft=35
+     HealthLegRight=35
+     HealthArmLeft=35
+     HealthArmRight=35
      Texture=Texture'DeusExItems.Skins.PinkMaskTex'
      Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'

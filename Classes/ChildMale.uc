@@ -12,10 +12,10 @@ defaultproperties
      BaseEyeHeight=26.000000
      HealthHead=50
      HealthTorso=50
-     HealthLegLeft=50
-     HealthLegRight=50
-     HealthArmLeft=50
-     HealthArmRight=50
+     HealthLegLeft=25
+     HealthLegRight=25
+     HealthArmLeft=25
+     HealthArmRight=25
      Mesh=LodMesh'DeusExCharacters.GMK_DressShirt'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.ChildMaleTex0'
      MultiSkins(1)=Texture'DeusExCharacters.Skins.ChildMaleTex1'

@@ -62,6 +62,10 @@ defaultproperties
      ScopeFOV=15
      bCanHaveLaser=True
      bHasSilencer=True
+     VM_HeadshotMult(0)=-0.500000
+     VM_HeadshotMult(1)=-0.500000
+     VM_HeadshotMult(2)=-0.500000
+     VM_HeadshotMult(3)=-0.500000
      AmmoNames(0)=Class'DeusEx.AmmoDartPoison'
      AmmoNames(1)=Class'DeusEx.AmmoDart'
      AmmoNames(2)=Class'DeusEx.AmmoDartFlare'

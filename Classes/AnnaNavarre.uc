@@ -114,10 +114,10 @@ defaultproperties
      Health=300
      HealthHead=400
      HealthTorso=300
-     HealthLegLeft=300
-     HealthLegRight=300
-     HealthArmLeft=300
-     HealthArmRight=300
+     HealthLegLeft=200
+     HealthLegRight=200
+     HealthArmLeft=200
+     HealthArmRight=200
      Mesh=LodMesh'DeusExCharacters.GFM_TShirtPants'
      DrawScale=1.100000
      MultiSkins(0)=Texture'DeusExCharacters.Skins.AnnaNavarreTex0'

@@ -5,7 +5,7 @@ class CrateBreakableMedGeneral extends Containers;
 
 defaultproperties
 {
-     HitPoints=10
+     HitPoints=30
      FragType=Class'DeusEx.WoodFragment'
      ItemName="General Supply Crate"
      contents=Class'DeusEx.Lockpick'

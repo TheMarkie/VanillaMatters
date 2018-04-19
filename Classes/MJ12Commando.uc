@@ -87,10 +87,10 @@ defaultproperties
      GroundSpeed=200.000000
      HealthHead=250
      HealthTorso=250
-     HealthLegLeft=250
-     HealthLegRight=250
-     HealthArmLeft=250
-     HealthArmRight=250
+     HealthLegLeft=125
+     HealthLegRight=125
+     HealthArmLeft=125
+     HealthArmRight=125
      Mesh=LodMesh'DeusExCharacters.GM_ScaryTroop'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.MJ12CommandoTex1'
      MultiSkins(1)=Texture'DeusExCharacters.Skins.MJ12CommandoTex1'
