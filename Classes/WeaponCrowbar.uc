@@ -36,7 +36,8 @@ defaultproperties
      mpHitDamage=12
      mpBaseAccuracy=1.000000
      mpAccurateRange=96
-     mpMaxRange=96
+	 mpMaxRange=96
+	 VM_ShotBreaksStuff(0)=5.000000
      VM_ShotBreaksStuff(1)=5.000000
      VM_ShotBreaksStuff(2)=5.000000
      VM_ShotBreaksStuff(3)=5.000000
@@ -62,7 +63,7 @@ defaultproperties
      largeIconWidth=101
      largeIconHeight=43
      invSlotsX=2
-     Description="A crowbar. Hit someone or something with it. Repeat.|n|n<UNATCO OPS FILE NOTE GH010-BLUE> Many crowbars we call 'murder of crowbars.'  Always have one for kombat. Ha. -- Gunther Hermann <END NOTE>"
+     Description="A crowbar. Hit someone or something with it. Repeat.|nExtremely effective against the inanimate kinds.|n|n<UNATCO OPS FILE NOTE GH010-BLUE> Many crowbars we call 'murder of crowbars.'  Always have one for kombat. Ha. -- Gunther Hermann <END NOTE>"
      beltDescription="CROWBAR"
      Mesh=LodMesh'DeusExItems.CrowbarPickup'
      CollisionRadius=19.000000

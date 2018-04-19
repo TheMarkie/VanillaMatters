@@ -323,7 +323,8 @@ simulated function Actor FindNearestTarget() {
 			bValid = !proj.bIgnoresNanoDefense;
 		}
 		else {
-			bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) && proj.bExplodes );
+			// VM: Gonna use a special condition for plasma bolts, because otherwise MIBs will be rendered useless.
+			bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) && ( proj.bExplodes && !proj.IsA( 'PlasmaBolt' ) ) );
 		}
 
 		bValid = bValid && ( proj.Owner != Player && !( TeamDMGame( Player.DXGame ) != None && TeamDMGame( Player.DXGame ).ArePlayersAllied( DeusExPlayer( proj.Owner ), Player ) ) );
@@ -457,7 +458,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
-     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile projectiles, explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Weapon detonation has a delay based on distance.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nProjectile detonation cost is 2 points of energy.|nWeapon detonation cost is based on distance."
+     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of hostile explosives or weapons to detonate them before they can cause serious harm.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n- Weapon detonation has a delay based on distance.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nProjectile detonation cost is 2 points of energy.|nWeapon detonation cost is based on distance."
      MPInfo="When active, enemy rockets detonate when they get close, doing reduced damage.  Some large rockets may still be close enough to do damage when they explode.  Energy Drain: Very Low"
      LevelValues(0)=200.000000
      LevelValues(1)=400.000000

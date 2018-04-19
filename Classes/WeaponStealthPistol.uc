@@ -45,8 +45,10 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
-     VM_HeadshotMult(2)=0.250000
-     VM_HeadshotMult(3)=0.500000
+     VM_HeadshotMult(0)=0.125000
+     VM_HeadshotMult(1)=0.125000
+     VM_HeadshotMult(2)=0.125000
+     VM_HeadshotMult(3)=0.125000
      AmmoName=Class'DeusEx.Ammo10mm'
      PickupAmmoCount=10
      bInstantHit=True

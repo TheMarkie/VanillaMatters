@@ -320,6 +320,13 @@ function Timer()
 						count++;
 				}
 
+				// Vanilla Matters: Also counts the Terrorist Leader. Code from Revision.
+				foreach AllActors( class'TerroristCarcass', carc, 'LeadTerrorist' ) {
+					if ( carc.KillerBindName == "JCDenton" && carc.itemName != "Unconscious" ) {
+						count = count + 1;
+					}
+				}
+
 				if (count >= 3)
 					flags.SetBool('TenderloinSlaughter', True,, 6);
 			}

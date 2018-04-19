@@ -11,16 +11,13 @@ defaultproperties
      Concealability=CONC_All
      ShotTime=0.300000
      reloadTime=0.000000
-     HitDamage=25
+     HitDamage=45
      maxRange=24000
      AccurateRange=14400
      BaseAccuracy=0.000000
      bHasMuzzleFlash=False
      bEmitWeaponDrawn=False
      bUseAsDrawnWeapon=False
-     VM_ShotBreaksStuff(1)=2.000000
-     VM_ShotBreaksStuff(2)=2.000000
-     VM_ShotBreaksStuff(3)=2.000000
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      FireOffset=(X=-20.000000,Y=10.000000,Z=16.000000)

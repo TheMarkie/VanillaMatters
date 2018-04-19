@@ -462,6 +462,28 @@ state Exploding
 			Destroy();
 	}
 
+	// Vanilla Matters: Function to damage movers seperately so they absorb the correct amount of damage.
+	function DamageMovers() {
+		local Vector dir;
+		local float dist, damageScale;
+
+		local Pawn PawnOwner;
+		local Mover M;
+
+		PawnOwner = Pawn( Owner );
+
+		foreach RadiusActors( class 'Mover', M, blastRadius, Location ) {
+			if( M != self ) {
+				dir = M.Location - Location;
+				dist = FMax( 1, VSize( dir ) );
+				dir = dir / dist; 
+				damageScale = 1 - FMax( 0, ( dist - M.CollisionRadius ) / blastRadius );
+
+				M.TakeDamage( damageScale * Damage, PawnOwner, M.Location - ( 0.5 * ( M.CollisionHeight + M.CollisionRadius ) * dir ), damageScale * MomentumTransfer * dir, damageType );
+			}
+		}
+	}
+
 Begin:
 	// stagger the HurtRadius outward using Timer()
 	// do five separate blast rings increasing in size
@@ -473,6 +495,9 @@ Begin:
 	SetCollision(False, False, False);
    DamageRing();
 	SetTimer(0.25/float(gradualHurtSteps), True);
+
+	// Vanilla Matters: Allow explosive projectiles to damage movers with their full damage instead of vanilla mechanics.
+	DamageMovers();
 }
 
 function PlayImpactSound()

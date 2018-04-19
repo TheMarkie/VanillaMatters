@@ -36,9 +36,11 @@ defaultproperties
      mpHitDamage=20
      mpBaseAccuracy=1.000000
      mpAccurateRange=96
-     mpMaxRange=96
+	 mpMaxRange=96
+     VM_HeadshotMult(0)=0.250000
+     VM_HeadshotMult(1)=0.250000
      VM_HeadshotMult(2)=0.250000
-     VM_HeadshotMult(3)=0.500000
+     VM_HeadshotMult(3)=0.250000
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True

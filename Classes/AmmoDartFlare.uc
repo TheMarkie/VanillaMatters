@@ -5,7 +5,6 @@ class AmmoDartFlare extends AmmoDart;
 
 defaultproperties
 {
-     VM_IgnitesOnHit=1.000000
      ItemName="Flare Darts"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoDartsFlare'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoDartsFlare'

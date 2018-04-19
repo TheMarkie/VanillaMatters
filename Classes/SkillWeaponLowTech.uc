@@ -37,7 +37,7 @@ defaultproperties
      mpLevel2=-0.370000
      mpLevel3=-0.500000
      SkillName="Weapons: Low-Tech"
-     Description="The use of melee weapons such as knives, throwing knives, swords, pepper guns, and prods.|n|nUNTRAINED: An agent can use melee weaponry.|n|nTRAINED:|n+20% damage and +5% accuracy.|n- Crowbar deals 500% damage to doors and lids.|n|nADVANCED:|n+50% damage and +12.5% accuracy.|n- Combat Knife's headshot damage increased by 25%.|n|nMASTER: An agent can render most opponents unconscious or dead with a single blow.|n+100% damage and +25% accuracy.|n- Combat Knife's headshot damage increased by 50%."
+     Description="The use of melee weapons such as knives, throwing knives, swords, pepper guns, and prods.|n|nUNTRAINED: An agent can use melee weaponry.|n|nTRAINED:|n+20% damage and +5% accuracy.|n|nADVANCED:|n+50% damage and +12.5% accuracy.|n|nMASTER: An agent can render most opponents unconscious or dead with a single blow.|n+100% damage and +25% accuracy."
      SkillIcon=Texture'DeusExUI.UserInterface.SkillIconWeaponLowTech'
      cost(0)=1350
      cost(1)=2700

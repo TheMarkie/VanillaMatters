@@ -10512,9 +10512,9 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// Vanilla Matters: Make Ballistic Armor absorbs the damage properly and deals with spillovers.
 		cpickup = GetActiveChargedPickup( class'BallisticArmor' );
 
-      if ( cpickup != None ) {
-        newDamage = newDamage - cpickup.DrainCharge( newDamage - ( newDamage * cpickup.VM_DamageResistance * SkillSystem.GetSkillLevelValue( class'SkillEnviro' ) ) );
-      }
+		if ( cpickup != None ) {
+			newDamage = newDamage - cpickup.DrainCharge( newDamage - ( newDamage * cpickup.VM_DamageResistance * SkillSystem.GetSkillLevelValue( class'SkillEnviro' ) ) );
+		}
 	}
 
 	// Vanilla Matters: Make HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
@@ -10543,12 +10543,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// if (augLevel >= 0.0)
 		// 	newDamage *= augLevel;
 
-    // Vanilla Matters: Make augballistic drain energy based on damage taken.
-    aug = AugmentationSystem.FindAugmentation( class'AugBallistic' );
+		// Vanilla Matters: Make augballistic drain energy based on damage taken.
+		aug = AugmentationSystem.FindAugmentation( class'AugBallistic' );
 
-    if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-      newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
-    }
+		if ( aug != None && aug.bHasIt && aug.bIsActive ) {
+			newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
+		}
 	}
 
 	if (damageType == 'EMP')
@@ -10569,12 +10569,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// if (augLevel >= 0.0)
 		// 	newDamage *= augLevel;
 
-	    // Vanilla Matters: Make augshield drain energy based on damage taken.
-	    aug = AugmentationSystem.FindAugmentation( class'AugShield' );
+		// Vanilla Matters: Make augshield drain energy based on damage taken.
+		aug = AugmentationSystem.FindAugmentation( class'AugShield' );
 
-	    if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-	      newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
-	    }
+		if ( aug != None && aug.bHasIt && aug.bIsActive ) {
+			newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
+		}
 	}
 
 	if (newDamage < Damage)

@@ -3101,7 +3101,10 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else  // sides of head treated as torso
 			{
-				HealthTorso -= actualDamage * 2;
+				//HealthTorso -= actualDamage * 2;
+
+				// Vanilla Matters: Make the torso receive only exactly the expected amount.
+				HealthTorso = HealthTorso - actualDamage;
 
 				if (offset.x < 0.0)
 					hitPos = HITLOC_TorsoBack;
@@ -3113,7 +3116,11 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 		{
 			if (offset.y > 0.0)
 			{
-				HealthLegRight -= actualDamage * 2;
+				//HealthLegRight -= actualDamage * 2;
+
+				// Vanilla Matters: Make the legs receive only exactly the expected amount.
+				HealthLegRight = HealthLegRight - actualDamage;
+
 				if (offset.x < 0.0)
 					hitPos = HITLOC_RightLegBack;
 				else
@@ -3121,7 +3128,11 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else
 			{
-				HealthLegLeft -= actualDamage * 2;
+				//HealthLegLeft -= actualDamage * 2;
+
+				// Vanilla Matters: Make the legs receive only exactly the expected amount.
+				HealthLegLeft = HealthLegLeft - actualDamage;
+
 				if (offset.x < 0.0)
 					hitPos = HITLOC_LeftLegBack;
 				else
@@ -3155,7 +3166,11 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 		{
 			if (offset.y > armOffset)
 			{
-				HealthArmRight -= actualDamage * 2;
+				//HealthArmRight -= actualDamage * 2;
+
+				// Vanilla Matters: Make the arms receive only exactly the expected amount.
+				HealthArmRight = HealthArmRight - actualDamage;
+
 				if (offset.x < 0.0)
 					hitPos = HITLOC_RightArmBack;
 				else
@@ -3163,7 +3178,11 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else if (offset.y < -armOffset)
 			{
-				HealthArmLeft -= actualDamage * 2;
+				//HealthArmLeft -= actualDamage * 2;
+
+				// Vanilla Matters: Make the arms receive only exactly the expected amount.
+				HealthArmLeft = HealthArmLeft - actualDamage;
+
 				if (offset.x < 0.0)
 					hitPos = HITLOC_LeftArmBack;
 				else
@@ -3173,13 +3192,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			{
 				//HealthTorso -= actualDamage * 2;
 
-				// Vanilla Matters: Makes Baton do twice the normal damage to the torso.
-				if ( damageType == 'KnockedOut' ) {
-					HealthTorso = HealthTorso - ( actualDamage * 4 );
-				}
-				else {
-					HealthTorso = HealthTorso - ( actualDamage * 2 );
-				}
+				// Vanilla Matters: Make the torso receive only exactly the expected amount.
+				HealthTorso = HealthTorso - actualDamage;
 
 				if (offset.x < 0.0)
 					hitPos = HITLOC_TorsoBack;
