@@ -71,7 +71,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconDrone'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDrone_Small'
      AugmentationName="Spy Drone"
-     Description="Advanced nanofactories can assemble a spy drone upon demand which can then be remotely controlled by the agent until released or destroyed, at which a point a new drone will be assembled. Further upgrades equip the spy drones with better armor and a one-shot EMP attack.|n|nTECH ONE: The drone can take little damage and has a very light EMP attack.|n|nTECH TWO:|n+33% drone speed.|n+100% EMP damage.|n+25% blast radius.|n|nTECH THREE:|n+67% drone speed.|n+300% EMP damage.|n+50% blast radius.|n|nTECH FOUR:|n+100% drone speed.|n+700% EMP damage.|n+75% blast radius.|n|nDrone detonation costs one minute worth of energy drain."
+     Description="Advanced nanofactories can assemble a spy drone upon demand which can then be remotely controlled by the agent until released or destroyed, at which a point a new drone will be assembled. Further upgrades equip the spy drones with better armor and a one-shot EMP attack.|n|nTECH ONE: The drone can take little damage and has a very light EMP attack.|n|nTECH TWO:|n+33% drone speed.|n+100% EMP damage.|n+25% blast radius.|n|nTECH THREE:|n+67% drone speed.|n+300% EMP damage.|n+50% blast radius.|n|nTECH FOUR:|n+100% drone speed.|n+700% EMP damage.|n+75% blast radius.|n|nDrone detonation costs one minute worth of energy drain.|n|nDrones take 30 seconds to be reconstructed."
      MPInfo="Activation creates a remote-controlled spy drone.  Deactivation disables the drone.  Firing while active detonates the drone in a massive EMP explosion.  Energy Drain: Low"
      LevelValues(0)=20.000000
      LevelValues(1)=40.000000

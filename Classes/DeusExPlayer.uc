@@ -359,47 +359,14 @@ var Computers ActiveComputer;
 // Vanilla Matters
 var globalconfig bool VM_bEnableFP;
 
+var travel ForwardPressure FPSystem;			// Forward Pressure system.
+
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
 var travel Inventory VM_HeldInHand;				// Item being held.
 var travel Inventory VM_lastHeldInHand;			// Some temporary place to keep track of HeldInHand.
 
-var travel float VM_forwardPressure;			// The forward pressure meter.
-
-var() travel float VM_fpCritical;				// FP rate for every critical event like objectives received/completed, mission transitions.
-var() travel float VM_fpConversation;			// FP rate for conversations and datalinks.
-var() travel float VM_fpNoteAdded;				// FP rate for every note added.
-var() travel float VM_fpSPAwarded;				// FP rate for every skill point awarded.
-var() travel float VM_fpTraveling;				// FP rate for moving.
-var() travel float VM_fpStealth;				// FP rate for various stealth-related actions.
-var() travel float VM_fpDamage;					// FP rate for damage dealt/received.
-var() travel float VM_fpDamageBonus;			// FP rate bonus that scales with difficulty.
-var() travel float VM_fpHeal;					// FP rate for healing.
-var() travel float VM_fpHealBonus;
-var() travel float VM_fpEnergy;					// FP rate for energy used.
-var() travel float VM_fpEnergyBonus;
-var() travel float VM_fpRecharge;				// FP rate for recharging.
-var() travel float VM_fpRechargeBonus;
-var() travel float VM_fpUtility;				// FP rate for other activities like lockpicking, bypassing or hacking.
-var() travel float VM_fpUtilityLB;				// FP rate bonus that scales, used for lockpicking and bypassing.
-var() travel float VM_fpUtilityH;				// FP rate bonus that scales, used for hacking.
-
-var travel float VM_fpDamageS;					// FP rate bonus after scaling.
-var travel float VM_fpHealS;
-var travel float VM_fpEnergyS;
-var travel float VM_fpRechargeS;
-var travel float VM_fpUtilityLBS;
-var travel float VM_fpUtilityHS;
-
-var Vector VM_lastLocation;						// Used for building forward pressure through movement.
-var Vector VM_fpZone1;
-var Vector VM_fpZone2;
-var bool VM_lastLocationEmpty;					// Used to know if any of the 3 vectors above is empty.
-var bool VM_fpZone1Empty;
-var bool VM_fpZone2Empty;
-var float VM_fpZoneDeposit1;					// How much pressure you can harvest out of the current zones.
-var float VM_fpZoneDeposit2;
-var() float VM_fpZoneRadius;					// How large these zones are.
-var() float VM_fpStealthRadius;					// How large the stealth radius is, to check for enemy pawns that the player is sneaking around.
+var travel float VM_Shield;						// Current shield health.
+var travel float VM_CurrentMaxShield;			// Just here to make things easier to fetch for the HUD.
 
 var travel int VM_lastMission;					// Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool VM_mapTravel;					// Denote if a travel is a normal map travel or game load.
@@ -411,7 +378,8 @@ var localized String VM_msgDroneCost;
 var localized String VM_msgTooMuchAmmo;
 var localized String VM_msgMuscleCost;
 var localized String VM_msgChargedPickupAlready;
-var localized String VM_msgNotEnoughPressure;
+var localized String VM_msgShieldBroken;
+var localized String VM_msgShieldRegen;
 
 // native Functions
 native(1099) final function string GetDeusExVersion();
@@ -598,6 +566,17 @@ function InitializeSubSystems()
 	else
 	{
 		SkillSystem.SetPlayer(Self);
+	}
+
+	// Vanilla Matters: Initiate the FP system if not found, doesn't matter if FP is enabled or not.
+	if ( FPSystem == none ) {
+		FPSystem = Spawn( class'ForwardPressure', self );
+		FPSystem.InitializeFP( self );
+		FPSystem.SetOwner( self );
+	}
+	else {
+		FPSystem.SetPlayer( self );
+		FPSystem.SetOwner( self );
 	}
 
    if ((Level.Netmode == NM_Standalone) || (!bBeltIsMPInventory))
@@ -814,22 +793,31 @@ event TravelPostAccept()
 	if ( info != None ) {
 		// VM: Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
 		if ( VM_lastMission != -3 && info.MissionNumber > VM_lastMission ) {
-			AddForwardPressure( VM_fpCritical );
+			if ( FPSystem != none ) {
+				FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
+			}
 		}
 	}
 
-	// VM: If a save was loaded, discard the whole thing.
+	// VM: If a save was loaded, reset forward pressure if the FP system exists, otherwise initialize it because probably a save from pre-FPSystem update was loaded.
 	if ( !VM_mapTravel ) {
-		ResetForwardPressure();
-		// VM: Triggers scaling stuff for FP rates.
-		ScaleForwardPressureValues();
+		if ( FPSystem != none ) {
+			FPSystem.ResetForwardPressure();
+		}
+		else {
+			FPSystem = Spawn( class'ForwardPressure', self );
+			FPSystem.InitializeFP( self );
+			FPSystem.SetOwner( self );
+		}
 	}
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
 
 	// VM: Reset the vectors manually instead of letting the game sets them to vect( 0, 0, 0 ).
-	ResetFPZoneInfo();
+	if ( FPSystem != none ) {
+		FPSystem.ResetFPZoneInfo();
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -1027,14 +1015,16 @@ exec function QuickSave()
 	}
 
 	// Vanilla Matters: Disable quicksaving depending on Forward Pressure.
-	if ( VM_bEnableFP ) {
-		if ( !EnoughPressure( 100 ) ) {
-			return;
+	if ( FPSystem != none ) {
+		if ( VM_bEnableFP ) {
+			if ( !FPSystem.EnoughPressure( 100 ) ) {
+				return;
+			}
 		}
-	}
 
-	// Vanilla Matters: Reset the forward pressure.
-	ResetForwardPressure();
+		// Vanilla Matters: Reset the forward pressure.
+		FPSystem.ResetForwardPressure();
+	}
 
 	SaveGame(-1, QuickSaveGameTitle);
 }
@@ -1063,138 +1053,6 @@ function QuickLoadConfirmed()
    if (Level.Netmode != NM_Standalone)
       return;
 	LoadGame(-1);
-}
-
-// Vanilla Matters: Function to add/remove forward pressure.
-exec function AddForwardPressure( float amount ) {
-	VM_forwardPressure = FClamp( VM_forwardPressure + amount, 0, 100 );
-}
-exec function ResetForwardPressure(){
-	VM_forwardPressure = 0;
-}
-
-function bool EnoughPressure( float amount ) {
-	return ( VM_forwardPressure >= amount );
-}
-
-// Vanilla Matters: Scale all rates to the current difficulty.
-function ScaleForwardPressureValues( optional float difficulty ) {
-	local float diff;
-
-	if ( difficulty <= 0 ) {
-		diff = CombatDifficulty;
-	}
-	else {
-		diff = difficulty;
-	}
-
-	VM_fpDamageS = VM_fpDamageBonus / diff;
-	VM_fpHealS = VM_fpHealBonus / diff;
-	VM_fpEnergyS = VM_fpEnergyBonus / diff;
-	VM_fpRechargeS = VM_fpRechargeBonus / diff;
-	VM_fpUtilityLBS = VM_fpUtilityLB / diff;
-	VM_fpUtilityHS = VM_fpUtilityH / diff;
-}
-
-// Vanilla Matters: Build pressure passively during various activities.
-function BuildForwardPressure( float deltaTime ) {
-	local float diff, dist;
-
-	local float pressure;
-
-	local float stealthCount;
-	local ScriptedPawn sp;
-
-	// VM: There's no way to check if a vector is "empty" or hasn't been set so we use bools.
-	if ( VM_fpZone1Empty ) {
-		VM_fpZone1 = Location;
-		VM_fpZone1Empty = false;
-		return;
-	}
-
-	if ( VM_lastLocationEmpty ) {
-		VM_lastLocation = Location;
-		VM_lastLocationEmpty = false;
-		return;
-	}
-
-	diff = VSize( Location - VM_lastLocation );
-
-	// Vanilla Matters: Here's how the whole travelling FP gain thing works:
-	// VM: We set up an "initial" zone right at the player's location when they spawn into a map, it's basically a circle.
-	// VM: As long as the player moves in this circle, they gain FP. However, there's a maximum amount of FP the player can "harvest", if it's "exhausted", the zone no longer provides any FP.
-	// VM: If the player walks out of the first circle, a second zone is established at the player's location, allowing the player to now harvest FP from up to TWO zones.
-	// VM: If both zones are established, and the player walks into a position that's outside of BOTH current zones, then the first zone disappears and is replaced by this new zone.
-	// VM: This mechanics is designed to prevent walking back and forth to reap free FP.
-	dist = VSize( Location - VM_fpZone1 );
-	if ( dist > VM_fpZoneRadius ) {
-		if ( !VM_fpZone2Empty ) {
-			VM_fpZone1 = VM_fpZone2;
-			VM_fpZoneDeposit1 = VM_fpZoneDeposit2;
-		}
-
-		VM_fpZone2 = Location;
-		VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 160 ) * VM_fpTraveling;
-		VM_fpZone2Empty = false;
-	}
-	else {
-		dist = VSize( VM_lastLocation - VM_fpZone1 );
-		if ( dist <= VM_fpZoneRadius ) {
-			pressure = FMin( ( diff / 160 ) * VM_fpTraveling, VM_fpZoneDeposit1 );
-
-			AddForwardPressure( pressure );
-
-			VM_fpZoneDeposit1 = VM_fpZoneDeposit1 - pressure;
-		}
-	}
-
-	if ( !VM_fpZone2Empty ) {
-		dist = VSize( Location - VM_fpZone2 );
-		if ( dist > VM_fpZoneRadius ) {
-			VM_fpZone1 = VM_fpZone2;
-			VM_fpZoneDeposit1 = VM_fpZoneDeposit2;
-
-			VM_fpZone2 = Location;
-			VM_fpZoneDeposit2 = ( VM_fpZoneRadius / 160 ) * VM_fpTraveling;
-		}
-		else {
-			dist = VSize( VM_lastLocation - VM_fpZone2 );
-			if ( dist <= VM_fpZoneRadius ) {
-				pressure = FMin( ( diff / 160 ) * VM_fpTraveling, VM_fpZoneDeposit2 );
-
-				AddForwardPressure( pressure );
-
-				VM_fpZoneDeposit2 = VM_fpZoneDeposit2 - pressure;
-			}
-		}
-	}
-
-	// Vanilla Matters: Stealth FP rate, we simply check in a radius around the player for enemies who have not spotted the player.
-	dist = 0;
-	stealthCount = 0;
-	foreach AllActors( class'ScriptedPawn', sp ) {
-		dist = VSize( sp.Location - Location );
-		if ( dist <= VM_fpStealthRadius ) {
-			if ( sp.IsValidEnemy( self ) && sp.Enemy == None ) {
-				stealthCount = stealthCount + ( VM_fpStealthRadius - dist );
-			}
-		}
-	}
-
-	// VM: Moving stealthily should give more FP than standing still.
-	pressure = ( stealthCount / ( VM_fpStealthRadius / 2 ) ) * ( ( ( diff / 160 ) + deltaTime ) * VM_fpStealth );
-
-	AddForwardPressure( pressure );
-
-	VM_lastLocation = Location;
-}
-
-// Vanilla Matters: Function to mark all zone related vectors "empty".
-function ResetFPZoneInfo() {
-	// VM: This should be far enough so the player can't reach it in any way.
-	VM_lastLocationEmpty = true;
-	VM_fpZone1Empty = true;
-	VM_fpZone2Empty = true;
 }
 
 // ----------------------------------------------------------------------
@@ -1826,7 +1684,9 @@ function MaintainEnergy(float deltaTime)
          Energy -= EnergyUse;
 
 		// Vanilla Matters: Add in FP rate for energy used.
-		AddForwardPressure( FMin( energyUse, 0 ) * ( VM_fpEnergy + VM_fpEnergyS ) );
+		if ( FPSystem != none ) {
+			FPSystem.AddForwardPressure( FMin( energyUse, 0 ) * ( FPSystem.VM_fpEnergy + FPSystem.fpEnergyS ) );
+		}
          
          // Calculate the energy drain due to EMP attacks
          if (EnergyDrain > 0)
@@ -1841,7 +1701,9 @@ function MaintainEnergy(float deltaTime)
             }
 
 			// Vanilla Matters: Adds FP rate for EMP damage received.
-			AddForwardPressure( FMin( energyUse, 0 ) * ( VM_fpDamage + VM_fpDamageS ) );
+			if ( FPSystem != none ) {
+				FPSystem.AddForwardPressure( FMin( energyUse, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
+			}
          }
       }
 
@@ -3381,7 +3243,9 @@ function int ChargePlayer(int baseChargePoints)
 	Energy += chargedPoints;
 
 	// Vanilla Matters: Add in FP rate for energy recharged.
-	AddForwardPressure( FMax( chargedPoints, 0 ) * ( VM_fpRecharge + VM_fpRechargeS ) );
+	if ( FPSystem != none ) {
+		FPSystem.AddForwardPressure( FMax( chargedPoints, 0 ) * ( FPSystem.VM_fpRecharge + FPSystem.fpRechargeS ) );
+	}
 
 	return chargedPoints;	
 }
@@ -3426,7 +3290,9 @@ function HealPart(out int points, out int amt)
 		spill = 0;
 
 	// Vanilla Matters: Add in FP rate for health restored.
-	AddForwardPressure( FMax( amt - spill, 0 ) * ( VM_fpHeal + VM_fpHealS ) );
+	if ( FPSystem != none ) {
+		FPSystem.AddForwardPressure( FMax( amt - spill, 0 ) * ( FPSystem.VM_fpHeal + FPSystem.fpHealS ) );
+	}
 
 	amt = spill;
 }
@@ -4078,7 +3944,9 @@ state PlayerWalking
 		UpdateTimePlayed(deltaTime);
 
 		// Vanilla Matters: Build forward pressure as you move.
-		BuildForwardPressure( deltaTime );
+		if ( FPSystem != none ) {
+			FPSystem.BuildForwardPressure( deltaTime );
+		}
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -4125,7 +3993,9 @@ state PlayerFlying
 		UpdateTimePlayed(deltaTime);
 
 		// Vanilla Matters: Build forward pressure as you move.
-		BuildForwardPressure( deltaTime );
+		if ( FPSystem != none ) {
+			FPSystem.BuildForwardPressure( deltaTime );
+		}
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -4270,7 +4140,9 @@ state PlayerSwimming
 		UpdateTimePlayed(deltaTime);
 
 		// Vanilla Matters: Build forward pressure as you move.
-		BuildForwardPressure( deltaTime );
+		if ( FPSystem != none ) {
+			FPSystem.BuildForwardPressure( deltaTime );
+		}
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -9089,7 +8961,9 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
 	}
 
 	// Vanilla Matters: Add FP points for receiving notes.
-	AddForwardPressure( VM_fpNoteAdded );
+	if ( FPSystem != none ) {
+		FPSystem.AddForwardPressure( FPSystem.VM_fpNoteAdded );
+	}
 
 	return newNote;
 }
@@ -9230,7 +9104,9 @@ function DeusExGoal AddGoal( Name goalName, bool bPrimaryGoal )
 		DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 
 		// Vanilla Matters: Add FP rate for objectives received.
-		AddForwardPressure( VM_fpCritical );
+		if ( FPSystem != none ) {
+			FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
+		}
 	}
 
 	return newGoal;	
@@ -9322,7 +9198,9 @@ function GoalCompleted( Name goalName )
 				ClientMessage(SecondaryGoalCompleted);
 
 			// Vanilla Matters: Add FP rate for objective completion.
-			AddForwardPressure( VM_fpCritical );
+			if ( FPSystem != none ) {
+				FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
+			}
 		}
 	}
 }
@@ -10061,13 +9939,28 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	// 	StartPoison( instigatedBy, Damage );
 	// }
 
-	// Vanilla Matters: Add in new Rebreather behaviors to multiplayer.
-	if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
-		if ( Level.NetMode != NM_Standalone ) {
-			ServerConditionalNotifyMsg( MPMSG_FirstPoison );
+	// Vanilla Matters: Add new Energy Shield behaviours, it will now prevent poisoning and catching on fire if the contact damage is fully negated by shield.
+	if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' || damageType == 'Exploded'
+		|| damageType == 'Flamed' || damageType == 'Shocked' || damageType == 'Poison' ) {
+		Damage = int( DrainShield( Damage ) );
+	}
+
+	if ( Damage > 0 ) {
+		if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
+			if ( Level.NetMode != NM_Standalone ) {
+				ServerConditionalNotifyMsg( MPMSG_FirstPoison );
+			}
+
+			StartPoison( instigatedBy, Damage );
 		}
 
-		StartPoison( instigatedBy, Damage );
+		if ( damageType == 'Flamed' && !bOnFire ) {
+			if ( Level.NetMode != NM_Standalone ) {
+				ServerConditionalNotifyMsg( MPMSG_FirstBurn );
+			}
+
+			CatchFire( instigatedBy );
+		}
 	}
 
 	// reduce our damage correctly
@@ -10365,16 +10258,18 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	MakeNoise(1.0); 
 
 	// Vanilla Matters: Add in FP rate for damage received, based on health loss.
-	AddForwardPressure( FMax( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0 ) * ( VM_fpDamage + VM_fpDamageS ) );
-
-	if ((DamageType == 'Flamed') && !bOnFire)
-	{
-		// Notify player if they're getting burned for the first time
-		if ( Level.NetMode != NM_Standalone )
-			ServerConditionalNotifyMsg( MPMSG_FirstBurn );
-
-		CatchFire( instigatedBy );
+	if ( FPSystem != none ) {
+		FPSystem.AddForwardPressure( FMax( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
 	}
+
+	// if ((DamageType == 'Flamed') && !bOnFire)
+	// {
+	// 	// Notify player if they're getting burned for the first time
+	// 	if ( Level.NetMode != NM_Standalone )
+	// 		ServerConditionalNotifyMsg( MPMSG_FirstBurn );
+
+	// 	CatchFire( instigatedBy );
+	// }
 	myProjKiller = None;
 }
 
@@ -10441,6 +10336,23 @@ simulated function int GetMPHitLocation(Vector HitLocation)
 	return 0;
 }
 
+// Vanilla Matters: Drain shield and return the undrained amount properly.
+function float DrainShield( float amount ) {
+	local float remaining;
+
+	remaining = 0;
+
+	remaining = FMax( amount - VM_Shield, 0 );
+	VM_Shield = FMax( VM_Shield - amount, 0 );
+
+	// Vanilla Matters: Add in FP rate for damage absorbed by shield.
+	if ( FPSystem != none ) {
+		FPSystem.AddForwardPressure( FMax( amount - remaining, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
+	}
+
+	return remaining;
+}
+
 // ----------------------------------------------------------------------
 // DXReduceDamage()
 //
@@ -10456,15 +10368,18 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 	local BallisticArmor armor;
 	local bool bReduced;
 
-  // Vanilla Matters
-  local Augmentation aug;
-  local ChargedPickup cpickup;
+	// Vanilla Matters
+	local Augmentation aug;
+	local ChargedPickup cpickup;
 
 	bReduced = False;
 	newDamage = Float(Damage);
 
-	if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-		(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
+	// if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
+	// 	(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
+	// Vanilla Matters: Let AugEnviro block more forms of damage.
+	if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas'
+		|| damageType == 'PoisonEffect' || damageType == 'Poison' || damageType == 'Burned' || damageType == 'Flamed' )
 	{
 		if (AugmentationSystem != None)
 			augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
@@ -10492,11 +10407,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			// 	skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
 			// 	newDamage *= 0.75 * skillLevel;
 			// }
+	}
 
-		// Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
-		if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
-			newDamage = 0.0;
-		}
+	// Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
+	if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
+		newDamage = 0.0;
 	}
 
 	if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
@@ -10519,7 +10434,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 	// Vanilla Matters: Make HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
 	if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas' 
-		|| damageType == 'PoisonEffect' || damageType == 'Poison' || damageType == 'Flamed' || damageType == 'Burned' 
+		|| damageType == 'PoisonEffect' || damageType == 'Flamed' || damageType == 'Burned' 
 			|| damageType == 'Shocked' || damageType == 'EMP' ) {
 
 		cpickup = GetActiveChargedPickup( class'HazMatSuit' );
@@ -10537,18 +10452,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 	if ((damageType == 'Shot') || (damageType == 'AutoShot'))
 	{
-		// if (AugmentationSystem != None)
-		// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
+		if (AugmentationSystem != None)
+			augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
 
-		// if (augLevel >= 0.0)
-		// 	newDamage *= augLevel;
-
-		// Vanilla Matters: Make augballistic drain energy based on damage taken.
-		aug = AugmentationSystem.FindAugmentation( class'AugBallistic' );
-
-		if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-			newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
-		}
+		if (augLevel >= 0.0)
+			newDamage *= augLevel;
 	}
 
 	if (damageType == 'EMP')
@@ -10560,22 +10468,15 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			newDamage *= augLevel;
 	}
 
-	if ((damageType == 'Burned') || (damageType == 'Flamed') ||
-		(damageType == 'Exploded') || (damageType == 'Shocked'))
-	{
-		// if (AugmentationSystem != None)
-		// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
+	// if ((damageType == 'Burned') || (damageType == 'Flamed') ||
+	// 	(damageType == 'Exploded') || (damageType == 'Shocked'))
+	// {
+	// 	if (AugmentationSystem != None)
+	// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
 
-		// if (augLevel >= 0.0)
-		// 	newDamage *= augLevel;
-
-		// Vanilla Matters: Make augshield drain energy based on damage taken.
-		aug = AugmentationSystem.FindAugmentation( class'AugShield' );
-
-		if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-			newDamage = newDamage - DrainEnergy( aug, newDamage - ( newDamage * aug.LevelValues[aug.CurrentLevel] ), aug.CurrentLevel + 1 );
-		}
-	}
+	// 	if (augLevel >= 0.0)
+	// 		newDamage *= augLevel;
+	// }
 
 	if (newDamage < Damage)
 	{
@@ -10903,7 +10804,9 @@ function SkillPointsAdd(int numPoints)
 		}
 
 		// Vanilla Matters: Add FP rate per skill point added.
-		AddForwardPressure( numPoints * VM_fpSPAwarded );
+		if ( FPSystem != none ) {
+			FPSystem.AddForwardPressure( numPoints * FPSystem.VM_fpSPAwarded );
+		}
 	}
 }
 
@@ -13042,25 +12945,6 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
-     VM_fpCritical=100.000000
-     VM_fpConversation=20.000000
-     VM_fpNoteAdded=25.000000
-     VM_fpSPAwarded=0.500000
-     VM_fpTraveling=0.500000
-     VM_fpStealth=1.000000
-     VM_fpDamage=0.400000
-     VM_fpDamageBonus=0.600000
-     VM_fpHeal=0.500000
-     VM_fpHealBonus=0.600000
-     VM_fpEnergy=0.400000
-     VM_fpEnergyBonus=0.600000
-     VM_fpRecharge=0.500000
-     VM_fpRechargeBonus=0.600000
-     VM_fpUtility=1.500000
-     VM_fpUtilityLB=1.500000
-     VM_fpUtilityH=6.000000
-     VM_fpZoneRadius=800.000000
-     VM_fpStealthRadius=800.000000
      VM_msgTakeHold="You took hold of the %s"
      VM_msgTakeHoldInstead="You took hold of the %s instead"
      VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"
@@ -13068,7 +12952,6 @@ defaultproperties
      VM_msgTooMuchAmmo="You already have enough %s"
      VM_msgMuscleCost="You don't have enough energy to do a powerthrow"
      VM_msgChargedPickupAlready="You are already using that type of equipment"
-     VM_msgNotEnoughPressure="You don't have enough pressure to save"
      bCanStrafe=True
      MeleeRange=50.000000
      AccelRate=2048.000000
@@ -13081,5 +12964,9 @@ defaultproperties
      RotationRate=(Pitch=3072,Yaw=65000,Roll=2048)
      BindName="JCDenton"
      FamiliarName="JC Denton"
-     UnfamiliarName="JC Denton"
+	 UnfamiliarName="JC Denton"
+
+     VM_CurrentMaxShield=100.000000
+     VM_msgShieldBroken="Your energy shield has been broken"
+     VM_msgShieldRegen="Regenerating energy shield..."
 }

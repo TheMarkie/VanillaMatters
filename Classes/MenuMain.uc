@@ -63,8 +63,8 @@ function UpdateButtonStatus()
 		winButtons[1].SetSensitivity(False);
 
 	// Vanilla Matters: Disallow saving if not enough forward pressure.
-	if ( Player.VM_bEnableFP ) {
-		if ( !Player.EnoughPressure( 100 ) ) {
+	if ( Player.VM_bEnableFP && Player.FPSystem != none ) {
+		if ( !Player.FPSystem.EnoughPressure( 100 ) ) {
 			winButtons[1].SetSensitivity( false );
 		}
 	}

@@ -134,8 +134,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	local int oldEMPHitPoints;
 
 	// Vanilla Matters
+	local DeusExPlayer player;
+
 	local float origHealth;
 
+	player = DeusExPlayer( instigatedBy );
 	origHealth = Health;
 
 	// Robots are invincible to EMP in multiplayer as well
@@ -255,12 +258,14 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	MakeNoise(1.0);
 
 	// Vanilla Matters: Add in FP rate for damage dealth, based on health loss.
-	if ( DeusExPlayer( instigatedBy ) != None ) {
-		if ( damageType == 'EMP' ) {
-			DeusExPlayer( instigatedBy ).AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
-		}
-		else {
-			DeusExPlayer( instigatedBy ).AddForwardPressure( FMax( origHealth - Health, 0 ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
+	if ( player != None ) {
+		if ( player.FPSystem != none ) {
+			if ( damageType == 'EMP' ) {
+				player.FPSystem.AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
+			else {
+				player.FPSystem.AddForwardPressure( FMax( origHealth - Health, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
 		}
 	}
 

@@ -30,11 +30,11 @@ defaultproperties
      HitDamage=7
      maxRange=2400
      AccurateRange=1200
-     BaseAccuracy=0.800000
+     BaseAccuracy=0.700000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
-     recoilStrength=0.700000
+     recoilStrength=0.500000
      mpReloadTime=0.500000
      mpHitDamage=7
      mpBaseAccuracy=0.200000

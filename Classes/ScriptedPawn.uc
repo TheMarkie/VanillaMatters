@@ -711,7 +711,9 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
 		// Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
 		player = DeusExPlayer( Enemy );
 		if ( newEnemy == None && player != None ) {
-			player.AddForwardPressure( player.VM_fpStealth * 10 );
+			if ( player.FPSystem != none ) {
+				player.FPSystem.AddForwardPressure( player.FPSystem.VM_fpStealth * 10 );
+			}
 		}
 
 		if (newEnemy != Enemy)
@@ -3236,8 +3238,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	local float        shieldMult;
 
 	// Vanilla Matters
+	local DeusExPlayer player;
+
 	local float origHT;
 
+	player = DeusExPlayer( instigatedBy );
 	origHT = HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight;
 
 	// use the hitlocation to determine where the pawn is hit
@@ -3297,12 +3302,14 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 		StartPoison(Damage, instigatedBy);
 
 	// Vanilla Matters: Add FP rate for damage dealt, based on health loss.
-	if ( DeusExPlayer( instigatedBy ) != None ) {
-		if ( self.IsA( 'Animal' ) ) {
-			DeusExPlayer( instigatedBy ).AddForwardPressure( FClamp( origHealth - Health, 0, Default.Health ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
-		}
-		else {
-			DeusExPlayer( instigatedBy ).AddForwardPressure( FClamp( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0, Default.Health ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
+	if ( player != None ) {
+		if ( player.FPSystem != none ) {
+			if ( self.IsA( 'Animal' ) ) {
+				player.FPSystem.AddForwardPressure( FClamp( origHealth - Health, 0, Default.Health ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
+			else {
+				player.FPSystem.AddForwardPressure( FClamp( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0, Default.Health ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
 		}
 	}
 

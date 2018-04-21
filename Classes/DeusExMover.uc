@@ -347,6 +347,11 @@ singular function SupportActor(Actor standingActor)
 //
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
+	// Vanilla Matters
+	local DeusExPlayer player;
+
+	player = DeusExPlayer( instigatedBy );
+
 	if (bDestroyed)
 		return;
 
@@ -372,8 +377,10 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 			doorStrength = doorStrength - ( Damage * 0.01 );
 
 			// VM: Add FP rate for damage dealt. Caps at max doorStrength.
-			if ( DeusExPlayer( instigatedBy ) != None ) {
-				DeusExPlayer( instigatedBy ).AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( DeusExPlayer( instigatedBy ).VM_fpDamage + DeusExPlayer( instigatedBy ).VM_fpDamageS ) );
+			if ( player != None ) {
+				if ( player.FPSystem != none ) {
+					player.FPSystem.AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+				}
 			}
 		}
 
@@ -412,7 +419,9 @@ function Timer()
          lockStrength = FClamp(lockStrength, 0.0, 1.0);
 
 		// Vanilla Matters: Add in FP for lockpicking.
-		pickPlayer.AddForwardPressure( pickPlayer.VM_fpUtility + pickPlayer.VM_fpUtilityLBS );
+		if ( pickPlayer.FPSystem != none ) {
+			pickPlayer.FPSystem.AddForwardPressure( pickPlayer.FPSystem.VM_fpUtility + pickPlayer.FPSystem.fpUtilityLBS );
+		}
       }
 
 		// pick all like-tagged movers at once (for double doors and such)

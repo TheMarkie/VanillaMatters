@@ -205,6 +205,9 @@ function ProcessLogin()
 
 	bSuccessfulLogin = False;
 
+	// Vanilla Matters: Fix a bug where an invalid account number can qualify login.
+	accountIndex = -1;
+
 	for (accountIndex=0; accountIndex<atmOwner.NumUsers(); accountIndex++)
 	{
 		if (Caps(editAccount.GetText()) == atmOwner.GetAccountNumber(accountIndex))

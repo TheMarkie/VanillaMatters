@@ -3,6 +3,9 @@
 //=============================================================================
 class WeaponAssaultGun extends DeusExWeapon;
 
+// Vanilla Matters: Import custom fire sound to accomodate 3-round burst.
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire.wav"		NAME="AssaultGunFire"		GROUP="VMSounds"
+
 var float	mpRecoilStrength;
 
 simulated function PreBeginPlay()
@@ -59,7 +62,7 @@ defaultproperties
      bInstantHit=True
      FireOffset=(X=-16.000000,Y=5.000000,Z=11.500000)
      shakemag=200.000000
-     FireSound=Sound'DeusExSounds.Weapons.AssaultGunFire'
+     FireSound=Sound'DeusEx.VMSounds.AssaultGunFire'
      AltFireSound=Sound'DeusExSounds.Weapons.AssaultGunReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.AssaultGunReload'
      SelectSound=Sound'DeusExSounds.Weapons.AssaultGunSelect'

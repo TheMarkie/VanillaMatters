@@ -96,7 +96,9 @@ function Timer()
          hackStrength = FClamp(hackStrength, 0.0, 1.0);
 
 		// Vanilla Matters: Add in FP rate for bypassing.
-		hackPlayer.AddForwardPressure( hackPlayer.VM_fpUtility + hackPlayer.VM_fpUtilityLBS );
+		if ( hackPlayer.FPSystem != none ) {
+			hackPlayer.FPSystem.AddForwardPressure( hackPlayer.FPSystem.VM_fpUtility + hackPlayer.FPSystem.fpUtilityLBS );
+		}
       }
 
 		// did we hack it?

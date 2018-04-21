@@ -812,8 +812,11 @@ auto state Active
 		local float avg;
 
 		// Vanilla Matters
+		local DeusExPlayer player;
+
 		local int origHP;
 
+		player = DeusExPlayer( EventInstigator );
 		origHP = HitPoints;
 
 		if (bStatic || bInvincible)
@@ -894,8 +897,10 @@ auto state Active
 		}
 
 		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		if ( DeusExPlayer( EventInstigator ) != None ) {
-			DeusExPlayer( EventInstigator ).AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( DeusExPlayer( EventInstigator ).VM_fpDamage + DeusExPlayer( EventInstigator ).VM_fpDamageS ) );
+		if ( player != None ) {
+			if ( player.FPSystem != none ) {
+				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
 		}
 	}
 }
@@ -930,8 +935,11 @@ state Burning
 		local float avg;
 
 		// Vanilla Matters
+		local DeusExPlayer player;
+
 		local int origHP;
 
+		player = DeusExPlayer( EventInstigator );
 		origHP = HitPoints;
 
 		if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
@@ -984,8 +992,10 @@ state Burning
 		}
 
 		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		if ( DeusExPlayer( EventInstigator ) != None ) {
-			DeusExPlayer( EventInstigator ).AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( DeusExPlayer( EventInstigator ).VM_fpDamage + DeusExPlayer( EventInstigator ).VM_fpDamageS ) );
+		if ( player != None ) {
+			if ( player.FPSystem != none ) {
+				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+			}
 		}
 	}
 
