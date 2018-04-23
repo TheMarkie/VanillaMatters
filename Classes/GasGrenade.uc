@@ -26,14 +26,15 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-     mpBlastRadius=512.000000
+     mpBlastRadius=320.000000
      mpProxRadius=128.000000
      mpFuselength=1.500000
      fuseLength=3.000000
      proxRadius=128.000000
      AISoundLevel=0.000000
      bBlood=False
-     bDebris=False
+	 bDebris=False
+     blastRadius=320.000000
      DamageType=TearGas
      spawnWeaponClass=Class'DeusEx.WeaponGasGrenade'
      ItemName="Gas Grenade"
@@ -41,7 +42,7 @@ defaultproperties
      mpDamage=20.000000
      speed=1000.000000
      MaxSpeed=1000.000000
-     Damage=10.000000
+     Damage=15.000000
      MomentumTransfer=50000
      ImpactSound=Sound'DeusExSounds.Weapons.GasGrenadeExplode'
      LifeSpan=0.000000

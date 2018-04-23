@@ -23,10 +23,10 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     VM_HeadshotMult(0)=-0.500000
-     VM_HeadshotMult(1)=-0.500000
-     VM_HeadshotMult(2)=-0.500000
-     VM_HeadshotMult(3)=-0.500000
+     VM_HeadshotMult(0)=4
+     VM_HeadshotMult(1)=4
+     VM_HeadshotMult(2)=4
+     VM_HeadshotMult(3)=4
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True

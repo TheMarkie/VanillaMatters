@@ -29,6 +29,7 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=1.000000
      reloadTime=3.000000
+     HitDamage=10
      maxRange=80
      AccurateRange=80
      bPenetrating=False
@@ -40,10 +41,10 @@ defaultproperties
      mpAccurateRange=80
      mpMaxRange=80
      mpReloadCount=4
-     VM_HeadshotMult(0)=-0.500000
-     VM_HeadshotMult(1)=-0.500000
-     VM_HeadshotMult(2)=-0.500000
-     VM_HeadshotMult(3)=-0.500000
+     VM_HeadshotMult(0)=4
+     VM_HeadshotMult(1)=4
+     VM_HeadshotMult(2)=4
+     VM_HeadshotMult(3)=4
      AmmoName=Class'DeusEx.AmmoBattery'
      ReloadCount=4
      PickupAmmoCount=4

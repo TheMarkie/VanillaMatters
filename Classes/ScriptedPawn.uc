@@ -415,6 +415,14 @@ var      int      NumCarcasses;     // number of carcasses seen
 var      float    walkAnimMult;
 var      float    runAnimMult;
 
+// Vanilla Matters
+var DeusExWeapon VM_hitBy;			// The weapon that the pawn was hit by. Only used by the player.
+
+var float VM_damageToReactTo;		// The damage that will be used in GotoDisabledState because ReactToInjury does not get any damage passed in and neither does GotoDisabledState.
+
+var float VM_stunDuration;			// Time being stunned.
+var float VM_gasDuration;			// Time standing and rubbing eyes.
+
 native(2102) final function ConBindEvents();
 
 native(2105) final function bool IsValidEnemy(Pawn TestEnemy, optional bool bCheckAlliance);
@@ -2918,7 +2926,8 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	// 		actualDamage  *= 10;
 
 	// Vanilla Matters: Fix the bug where stunned enemies can't receive point-blank damage bonus from behind.
-	if ( bStunned ) {
+	// VM: Stunned enemies can't receive damage bonus from damage types that stun, to prevent damage stacking.
+	if ( bStunned && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' ) {
 		actualDamage = actualDamage * 4;
 	}
 	
@@ -2926,19 +2935,6 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 		// VM: Boost the range from 64 to 80 to make baton/melee knockouts more reliable.
 		if ( ( instigatedBy != None ) && ( VSize( instigatedBy.Location - Location ) < 80 ) ) {
 			actualDamage = actualDamage * 10;
-		}
-	}
-
-	// Vanilla Matters: Hacky way to modify headshot multiplier without editing the actual hardcoded part. All the checks are for the head hitbox and headshot conditions, look in HandleDamage to find out more.
-	if ( DeusExPlayer( instigatedBy ) != None ) {
-		if ( offset.z > headOffsetZ ) {
-			if ( ( Abs( offset.x ) < headOffsetY ) || ( Abs( offset.y ) < headOffsetY) ) {
-				instigatorWeapon = DeusExWeapon( instigatedBy.Weapon );
-
-				if ( instigatorWeapon != None ) {
-					actualDamage = actualDamage * ( 1 + instigatorWeapon.VM_HeadshotMult[instigatorWeapon.GetWeaponSkillLevel()] );
-				}
-			}
 		}
 	}
 
@@ -3073,6 +3069,9 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 	local EHitLocation hitPos;
 	local float        headOffsetZ, headOffsetY, armOffset;
 
+	// Vanilla Matters
+	local float headshotMult;
+
 	// calculate our hit extents
 	headOffsetZ = CollisionHeight * 0.7;
 	headOffsetY = CollisionRadius * 0.3;
@@ -3094,7 +3093,15 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 				// 	HealthHead -= actualDamage * 8;
 
 				// Vanilla Matters: Allow all weapons to be able to headshot equally.
-				HealthHead = HealthHead - ( actualDamage * 8 );
+				// VM: Use custom headshot multiplier property.
+				if ( VM_hitBy != none ) {
+					headshotMult = VM_hitBy.VM_HeadshotMult[VM_hitBy.GetWeaponSkillLevel()];
+				}
+				else {
+					headshotMult = 8.0;
+				}
+
+				HealthHead = HealthHead - ( actualDamage * headshotMult );
 
 				if (offset.x < 0.0)
 					hitPos = HITLOC_HeadBack;
@@ -3313,6 +3320,9 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 		}
 	}
 
+	// Vanilla Matters: Reset VM_hitBy because we don't need it anymore.
+	VM_hitBy = none;
+
 	if (Health <= 0)
 	{
 		ClearNextState();
@@ -3346,6 +3356,9 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
 	if ((DamageType == 'Flamed') && !bOnFire)
 		CatchFire();
+
+	// Vanilla Matters: Set the temporary damage value here because ReactToInjury doesn't get damage passed in.
+	VM_damageToReactTo = actualDamage;
 
 	ReactToInjury(instigatedBy, damageType, hitPos);
 }
@@ -3529,18 +3542,48 @@ function bool FrobDoor(actor Target)
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
-		GotoState('RubbingEyes');
-	else if (damageType == 'Stunned')
-		GotoState('Stunned');
-	else if (CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
-}
+	// if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+	// 	return;
+	// else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
+	// 	GotoState('RubbingEyes');
+	// else if (damageType == 'Stunned')
+	// 	GotoState('Stunned');
+	// else if (CanShowPain())
+	// 	TakeHit(hitPos);
+	// else
+	// 	GotoNextState();
 
+	// Vanilla Matters: Use damage taken as a basis for stun durations.
+	if ( !bCollideActors && !bBlockActors && !bBlockPlayers ) {
+		return;
+	}
+	else if ( damageType == 'TearGas' || damageType == 'HalonGas' ) {
+		VM_gasDuration = VM_damageToReactTo;
+
+		if ( !IsInState( 'RubbingEyes' ) ) {
+			GotoState( 'RubbingEyes' );
+		}
+	}
+	else if ( damageType == 'Stunned' ) {
+		VM_stunDuration = VM_damageToReactTo;
+
+		if ( !IsInState( 'Stunned' ) ) {
+			GotoState( 'Stunned' );
+		}
+	}
+	else if ( IsInState( 'Stunned' ) || IsInState( 'RubbingEyes' ) ) {
+		return;
+	}
+	else if ( CanShowPain() ) {
+		TakeHit(hitPos);
+	}
+	else {
+		GotoNextState();
+	}
+
+	// VM: Reset temporary damage value.
+	VM_damageToReactTo = 0;
+}
 
 // ----------------------------------------------------------------------
 // PlayAnimPivot()
@@ -5080,8 +5123,10 @@ function PlayDying(name damageType, vector hitLoc)
 	}
 
 	// don't scream if we are stunned
-	if ((damageType == 'Stunned') || (damageType == 'KnockedOut') ||
-	    (damageType == 'Poison') || (damageType == 'PoisonEffect'))
+	// if ((damageType == 'Stunned') || (damageType == 'KnockedOut') ||
+	//     (damageType == 'Poison') || (damageType == 'PoisonEffect'))
+	// Vanilla Matters: Add in TearGas as a non-lethal damage source.
+	if ( damageType == 'Stunned' || damageType == 'KnockedOut' || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'TearGas' )
 	{
 		bStunned = True;
 		if (bIsFemale)
@@ -13749,7 +13794,10 @@ Begin:
 
 state RubbingEyes
 {
-	ignores seeplayer, hearnoise, bump, hitwall;
+	//ignores seeplayer, hearnoise, bump, hitwall;
+
+	// Vanilla Matters: Fix a bug where a pawn would regain conciousness prematurely if it's stunned while opening a door.
+	ignores seeplayer, hearnoise, bump, hitwall, stopwaiting;
 
 	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, 
 						Vector momentum, name damageType)
@@ -13757,10 +13805,28 @@ state RubbingEyes
 		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
 	}
 
-	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
-	{
-		if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
-			Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	// function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
+	// {
+	// 	if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
+	// 		Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	// }
+	
+	// Vanilla Matters: Pawns can now be stunned again while already being stunned.
+
+	// Vanilla Mattters: Handle stun duration with ticks to be cleaner.
+	function Tick( float deltaTime ) {
+		if ( VM_gasDuration <= 0 ) {
+			PlayRubbingEyesEnd();
+
+			if ( HasNextState() ) {
+				GotoNextState();
+			}
+			else {
+				GotoState( 'Wandering' );
+			}
+		}
+
+		VM_gasDuration = VM_gasDuration - deltaTime;
 	}
 
 	function SetFall()
@@ -13810,13 +13876,13 @@ RubEyes:
 	PlayRubbingEyesStart();
 	FinishAnim();
 	PlayRubbingEyes();
-	Sleep(15);
-	PlayRubbingEyesEnd();
-	FinishAnim();
-	if (HasNextState())
-		GotoNextState();
-	else
-		GotoState('Wandering');
+	// Sleep(15);
+	// PlayRubbingEyesEnd();
+	// FinishAnim();
+	// if (HasNextState())
+	// 	GotoNextState();
+	// else
+	// 	GotoState('Wandering');
 }
 
 
@@ -13839,10 +13905,26 @@ state Stunned
 		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
 	}
 
-	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
-	{
-		if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
-			Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	// function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
+	// {
+	// 	if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
+	// 		Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	// }
+
+	// Vanilla Matters: Pawns can now be stunned again while already being stunned.
+
+	// Vanilla Mattters: Handle stun duration with ticks to be cleaner.
+	function Tick( float deltaTime ) {
+		if ( VM_stunDuration <= 0 ) {
+			if ( HasNextState() ) {
+				GotoNextState();
+			}
+			else {
+				GotoState( 'Wandering' );
+			}
+		}
+
+		VM_stunDuration = VM_stunDuration - deltaTime;
 	}
 
 	function SetFall()
@@ -13887,11 +13969,11 @@ state Stunned
 Begin:
 	Acceleration = vect(0, 0, 0);
 	PlayStunned();
-	Sleep(15);
-	if (HasNextState())
-		GotoNextState();
-	else
-		GotoState('Wandering');
+	// Sleep(15);
+	// if (HasNextState())
+	// 	GotoNextState();
+	// else
+	// 	GotoState('Wandering');
 }
 
 
@@ -14340,5 +14422,11 @@ defaultproperties
      bForceStasis=True
      BindName="ScriptedPawn"
      FamiliarName="DEFAULT FAMILIAR NAME - REPORT THIS AS A BUG"
-     UnfamiliarName="DEFAULT UNFAMILIAR NAME - REPORT THIS AS A BUG"
+	 UnfamiliarName="DEFAULT UNFAMILIAR NAME - REPORT THIS AS A BUG"
+     HealthHead=100
+     HealthTorso=100
+     HealthLegLeft=50
+     HealthLegRight=50
+     HealthArmLeft=50
+     HealthArmRight=50
 }

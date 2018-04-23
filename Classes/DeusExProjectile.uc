@@ -578,6 +578,9 @@ auto simulated state Flying
 		local bool bDestroy;
 		local float rad;
 
+		// Vanilla Matters
+		local ScriptedPawn sp;
+
       // Reduce damage on nano exploded projectiles
       if ((bAggressiveExploded) && (Level.NetMode != NM_Standalone))
          Damage = Damage/6;
@@ -604,6 +607,13 @@ auto simulated state Flying
 						if ( damagee.IsA('DeusExPlayer') )
 							DeusExPlayer(damagee).myProjKiller = Self;
 					}
+
+					// Vanilla Matters: Pass this in so the pawn knows what hit it.
+					sp = ScriptedPawn( damagee );
+					if ( sp != none ) {
+						sp.VM_hitBy = VM_fromWeapon;
+					}
+
 					damagee.TakeDamage(Damage, Pawn(Owner), HitLocation, MomentumTransfer*Normal(Velocity), damageType);
 
 					// Vanilla Matters: Ignite enemies on explode aka hit.

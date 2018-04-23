@@ -211,7 +211,7 @@ var() float		VM_SpreadVerWithShotCount;		// Apply for projectile weapons only. I
 
 var() float		VM_ShotBreaksStuff[4];			// Make projectiles break doors/lids with a multiplier. Trace weapons already do, but use this for multiplier.
 
-var() float		VM_HeadshotMult[4];				// Vanilla headshot multiplier is 8. This multiplies that. So 0.25 makes it 10, -0.25 makes it 6.
+var() float		VM_HeadshotMult[4];
 
 var float			VM_modTimer;					// Timer before laser/scope mods become effective.
 var() travel float	VM_modTimerMax;					// The max duration before they become effective. Scales with CombatDifficulty: modTimerMax * CombatDifficulty.
@@ -2685,6 +2685,9 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 	local name         damageType;
 	local DeusExPlayer dxPlayer;
 
+	// Vanilla Matters
+	local ScriptedPawn sp;
+
 	if (Other != None)
 	{
 		// AugCombat increases our damage if hand to hand
@@ -2738,6 +2741,12 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 					Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
 				}
 				else {
+					// Vanilla Matters: Pass this in so the pawn knows what hit it.
+					sp = ScriptedPawn( Other );
+					if ( sp != none ) {
+						sp.VM_hitBy = self;
+					}
+
 					Other.TakeDamage( HitDamage * mult, Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
 				}
 			}
@@ -3200,12 +3209,12 @@ simulated function bool UpdateInfo(Object winObject)
 	}
 	winInfo.AddInfoItem(msgInfoMaxRange, str);
 
-	// Vanilla Matters: Display headshot multiplier, we'll take into account any HeadshotMult.
-	mod = 8 * ( 1 + Default.VM_HeadshotMult[0] );
-	str = "x" $ FormatFloatString( mod, 0.1 );
+	// Vanilla Matters: Display headshot multiplier.
+	str = "x" $ FormatFloatString( Default.VM_HeadshotMult[0], 0.1 );
+	mod = ( Default.VM_HeadshotMult[weaponSkillLevel] / Default.VM_HeadshotMult[0] ) - 1;
 
 	if ( weaponSkillLevel > 0.0 ) {
-		str = str @ BuildPercentString( Default.VM_HeadshotMult[weaponSkillLevel] ) @ "=" @ "x" $ FormatFloatString( mod * ( 1 + Default.VM_HeadshotMult[weaponSkillLevel] ), 0.1 );
+		str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult[weaponSkillLevel], 0.1 );
 	}
 	winInfo.AddInfoItem( VM_msgInfoHeadshot, str, ( weaponSkillLevel > 0.0 ) );
 
@@ -4204,5 +4213,9 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropSmallWeapon'
      bNoSmooth=False
      Mass=10.000000
-     Buoyancy=5.000000
+	 Buoyancy=5.000000
+     VM_HeadshotMult(0)=8.000000
+     VM_HeadshotMult(1)=8.000000
+     VM_HeadshotMult(2)=8.000000
+     VM_HeadshotMult(3)=8.000000
 }

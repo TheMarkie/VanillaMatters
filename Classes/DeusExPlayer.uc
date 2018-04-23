@@ -9941,7 +9941,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
 	// Vanilla Matters: Add new Energy Shield behaviours, it will now prevent poisoning and catching on fire if the contact damage is fully negated by shield.
 	if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' || damageType == 'Exploded'
-		|| damageType == 'Flamed' || damageType == 'Shocked' || damageType == 'Poison' ) {
+		|| damageType == 'Flamed' || damageType == 'Shocked' || damageType == 'Poison' || damageType == 'KnockedOut' ) {
 		Damage = int( DrainShield( Damage ) );
 	}
 
@@ -10170,7 +10170,11 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 			}
 			else
 			{
-				HealthTorso -= actualDamage * 2;
+				//HealthTorso -= actualDamage * 2;
+
+				// Vanilla Matters: Make the torso receive only exactly the expected amount.
+				HealthTorso = HealthTorso - actualDamage;
+
 				if (bPlayAnim)
 					PlayAnim('HitTorso', , 0.1);
 			}
@@ -10459,14 +10463,14 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			newDamage *= augLevel;
 	}
 
-	if (damageType == 'EMP')
-	{
-		if (AugmentationSystem != None)
-			augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
+	// if (damageType == 'EMP')
+	// {
+	// 	if (AugmentationSystem != None)
+	// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
 
-		if (augLevel >= 0.0)
-			newDamage *= augLevel;
-	}
+	// 	if (augLevel >= 0.0)
+	// 		newDamage *= augLevel;
+	// }
 
 	// if ((damageType == 'Burned') || (damageType == 'Flamed') ||
 	// 	(damageType == 'Exploded') || (damageType == 'Shocked'))

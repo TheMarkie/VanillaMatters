@@ -29,7 +29,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.075000
      reloadTime=4.000000
-     HitDamage=0
+     HitDamage=7
      maxRange=100
      AccurateRange=100
      BaseAccuracy=0.700000
@@ -40,7 +40,11 @@ defaultproperties
      mpReloadTime=4.000000
      mpBaseAccuracy=0.700000
      mpAccurateRange=100
-     mpMaxRange=100
+	 mpMaxRange=100
+     VM_HeadshotMult(0)=1
+     VM_HeadshotMult(1)=1
+     VM_HeadshotMult(2)=1
+     VM_HeadshotMult(3)=1
      AmmoName=Class'DeusEx.AmmoPepper'
      ReloadCount=100
      PickupAmmoCount=100

@@ -79,7 +79,7 @@ state Activated
 			}
 
 			if ( timesPuffed % 2 == 0 ) {
-				P.TakeDamage( 1, P, P.Location, vect( 0,0,0 ), 'PoisonGas' );
+				P.TakeDamage( 2, P, P.Location, vect( 0,0,0 ), 'PoisonGas' );
 			}
 
 			if ( Rand( 3 ) > 0 ) {

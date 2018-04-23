@@ -11,6 +11,8 @@ var travel float VM_ShieldRegenAmount;
 var travel bool VM_bShieldDown;
 var travel bool VM_bShieldRegen;
 
+var travel float VM_lastShieldAmount;
+
 var() travel float VM_ShieldCooldown;
 var() travel float VM_ShieldRegenTime;
 
@@ -90,6 +92,18 @@ state Active
 Begin:
 }
 
+// Vanilla Matters: Just handle a situation where the aug is off but the shield is broken.
+state Inactive {
+	function Tick( float deltaTime ) {
+		if ( Player.VM_Shield <= 0 && Player.VM_Shield < VM_lastShieldAmount ) {
+			Player.ClientMessage( Player.VM_msgShieldBroken );
+				Player.PlaySound( class'ChargedPickup'.default.DeactivateSound, SLOT_None );
+		}
+
+		VM_lastShieldAmount = Player.VM_Shield;
+	}
+}
+
 function Deactivate()
 {
 	Super.Deactivate();
@@ -114,7 +128,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconShield'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
      AugmentationName="Energy Shield"
-     Description="Electrokinetic capacitors below the skin form an energy shield over an agent, protecting against physical harms.|n|nTECH ONE: Shield can only withstand a small amount of damage.|n|nTECH TWO:|n+100% shield durability.|n|nTECH THREE:|n+200% shield durability.|n|nTECH FOUR: An agent bathes in protective energy.|n+300% shield durability.|n|nShield suffers 5 seconds of downtime when broken, and will always fully regenerate over 4 seconds.|n|nCosts energy per regeneration."
+     Description="Electrokinetic capacitors below the skin form an energy shield over an agent, protecting against physical harms.|n|nTECH ONE: Shield can withstand up to 30 damage.|n|nTECH TWO:|n+100% shield durability.|n|nTECH THREE:|n+200% shield durability.|n|nTECH FOUR: An agent bathes in protective energy.|n+300% shield durability.|n|nShield suffers 5 seconds of downtime when broken, and will always fully regenerate over 4 seconds.|n|nDrains 1 energy per 2 shield health regeneration."
      MPInfo="When active, you only take 50% damage from flame and plasma attacks.  Energy Drain: Low"
      LevelValues(0)=30.00000
      LevelValues(1)=60.00000
