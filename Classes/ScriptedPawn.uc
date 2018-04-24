@@ -421,7 +421,6 @@ var DeusExWeapon VM_hitBy;			// The weapon that the pawn was hit by. Only used b
 var float VM_damageToReactTo;		// The damage that will be used in GotoDisabledState because ReactToInjury does not get any damage passed in and neither does GotoDisabledState.
 
 var float VM_stunDuration;			// Time being stunned.
-var float VM_gasDuration;			// Time standing and rubbing eyes.
 
 native(2102) final function ConBindEvents();
 
@@ -2539,17 +2538,31 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 // TakeHit()
 // ----------------------------------------------------------------------
 
-function TakeHit(EHitLocation hitPos)
-{
-	if (hitPos != HITLOC_None)
-	{
-		PlayTakingHit(hitPos);
-		GotoState('TakingHit');
-	}
-	else
-		GotoNextState();
-}
+// function TakeHit(EHitLocation hitPos)
+// {
+// 	if (hitPos != HITLOC_None)
+// 	{
+// 		PlayTakingHit(hitPos);
+// 		GotoState('TakingHit');
+// 	}
+// 	else
+// 		GotoNextState();
+// }
 
+// Vanilla Matters: Rewrite the above to take into account stunned states.
+function TakeHit( EHitLocation hitPos ) {
+	// VM: Looks like WET but it's actually overoptimized to have only 3 comparisons instead of at least 4 :)
+	if ( hitPos != HITLOC_None ) {
+		PlayTakingHit( hitPos );
+
+		if ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) ) {
+			GotoState( 'TakingHit' );
+		}
+	}
+	else if ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) ) {
+		GotoNextState();
+	}
+}
 
 // ----------------------------------------------------------------------
 // ComputeFallDirection()
@@ -3358,7 +3371,12 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 		CatchFire();
 
 	// Vanilla Matters: Set the temporary damage value here because ReactToInjury doesn't get damage passed in.
-	VM_damageToReactTo = actualDamage;
+	if ( damageType != 'TearGas' ) {
+		VM_damageToReactTo = actualDamage;
+	}
+	else {
+		VM_damageToReactTo = Damage;
+	}
 
 	ReactToInjury(instigatedBy, damageType, hitPos);
 }
@@ -3558,7 +3576,7 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
 		return;
 	}
 	else if ( damageType == 'TearGas' || damageType == 'HalonGas' ) {
-		VM_gasDuration = VM_damageToReactTo;
+		VM_stunDuration = VM_damageToReactTo;
 
 		if ( !IsInState( 'RubbingEyes' ) ) {
 			GotoState( 'RubbingEyes' );
@@ -3571,13 +3589,10 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
 			GotoState( 'Stunned' );
 		}
 	}
-	else if ( IsInState( 'Stunned' ) || IsInState( 'RubbingEyes' ) ) {
-		return;
-	}
 	else if ( CanShowPain() ) {
 		TakeHit(hitPos);
 	}
-	else {
+	else if ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) ) {
 		GotoNextState();
 	}
 
@@ -13815,7 +13830,13 @@ state RubbingEyes
 
 	// Vanilla Mattters: Handle stun duration with ticks to be cleaner.
 	function Tick( float deltaTime ) {
-		if ( VM_gasDuration <= 0 ) {
+		if ( !bStunned ) {
+			return;
+		}
+
+		VM_stunDuration = VM_stunDuration - deltaTime;
+
+		if ( VM_stunDuration <= 0 ) {
 			PlayRubbingEyesEnd();
 
 			if ( HasNextState() ) {
@@ -13825,8 +13846,6 @@ state RubbingEyes
 				GotoState( 'Wandering' );
 			}
 		}
-
-		VM_gasDuration = VM_gasDuration - deltaTime;
 	}
 
 	function SetFall()
@@ -13915,6 +13934,12 @@ state Stunned
 
 	// Vanilla Mattters: Handle stun duration with ticks to be cleaner.
 	function Tick( float deltaTime ) {
+		if ( !bStunned ) {
+			return;
+		}
+
+		VM_stunDuration = VM_stunDuration - deltaTime;
+
 		if ( VM_stunDuration <= 0 ) {
 			if ( HasNextState() ) {
 				GotoNextState();

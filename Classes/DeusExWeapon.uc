@@ -3043,7 +3043,7 @@ simulated function bool UpdateInfo(Object winObject)
 		if ( Level.NetMode != NM_Standalone ) {
 			dmg = class<DeusExProjectile>( ProjectileClass ).Default.mpDamage;
 
-			// Vanilla Matters: Slight hack, mpDamage has a default property value of -1, to denote whether it has a real value defined. If it doesn't, use the normal damage value.
+			// VM: Slight hack, mpDamage has a default property value of -1, to denote whether it has a real value defined. If it doesn't, use the normal damage value.
 			if ( dmg == -1 ) {
 				dmg = ProjectileClass.Default.Damage;
 			}

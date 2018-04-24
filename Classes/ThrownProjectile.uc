@@ -356,7 +356,7 @@ function SpawnTearGas()
 				gas.Instigator = Instigator;
 
 				// Vanilla Matters: Use damage to scale lifespan, which in turn equals to total stun duration.
-				gas.LifeSpan = Damage;
+				gas.LifeSpan = Damage - gas.Damage;
 			}
 		//}
 

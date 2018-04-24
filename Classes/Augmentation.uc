@@ -143,11 +143,11 @@ function Activate()
 
 // Vanilla Matters: Pretend to activate the aug on the HUD.
 function FakeActivate() {
-	Player.PlaySound(ActivateSound, SLOT_None);
+	Player.PlaySound( ActivateSound, SLOT_None );
 
 	Player.ClientMessage( Sprintf( AugActivated, AugmentationName ) );
 
-	Player.AddAugmentationDisplay(Self);
+	Player.AddAugmentationDisplay( self );
 }
 
 // ----------------------------------------------------------------------
@@ -188,7 +188,7 @@ function Deactivate()
 function FakeDeactivate() {
 	Player.ClientMessage( Sprintf( AugDeactivated, AugmentationName ) );
 
-	Player.RemoveAugmentationDisplay( Self );
+	Player.RemoveAugmentationDisplay( self );
 
 	Player.PlaySound( DeactivateSound, SLOT_None );
 }
@@ -378,7 +378,7 @@ function float GetImmediateEnergyRate() {
 }
 
 // Vanilla Matters: Something to add immediateEnergyRate.
-function  float AddImmediateEnergyRate( float iER ) {
+function AddImmediateEnergyRate( float iER ) {
 	VM_immediateEnergyRate = VM_immediateEnergyRate + iER;
 }
 
