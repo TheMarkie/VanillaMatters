@@ -52,9 +52,9 @@ defaultproperties
      mpMaxRange=320
      mpReloadCount=100
      bCanHaveModAccurateRange=True
-	 bCanHaveModReloadTime=True
-	 VM_ShotCount(0)=2
-	 VM_ShotCount(1)=2
+     bCanHaveModReloadTime=True
+     VM_ShotCount(0)=2
+     VM_ShotCount(1)=2
      VM_ShotCount(2)=2
      VM_ShotCount(3)=2
      VM_bSlowWithShotCount=True

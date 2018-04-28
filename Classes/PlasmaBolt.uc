@@ -95,8 +95,8 @@ simulated function Destroyed()
 
 defaultproperties
 {
-     bExplodes=True
      mpBlastRadius=300.000000
+     bExplodes=True
      blastRadius=128.000000
      DamageType=Burned
      AccurateRange=14400

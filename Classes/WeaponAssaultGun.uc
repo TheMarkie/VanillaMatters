@@ -36,7 +36,6 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.200000
      reloadTime=3.000000
-     HitDamage=10
      BaseAccuracy=0.700000
      bCanHaveLaser=True
      bCanHaveSilencer=True

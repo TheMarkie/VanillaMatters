@@ -423,5 +423,5 @@ defaultproperties
      O2Text="O2"
      EnergyText="BE"
      VM_ForwardPressureText="FP"
-	 VM_ForwardPressureFullText="OK"
+     VM_ForwardPressureFullText="OK"
 }

@@ -201,8 +201,7 @@ defaultproperties
      VM_fpUtilityH=6.000000
      VM_fpZoneRadius=800.000000
      VM_fpStealthRadius=800.000000
-	 VM_msgNotEnoughPressure="You don't have enough pressure to save"
-
-	 bHidden=True
+     VM_msgNotEnoughPressure="You don't have enough pressure to save"
+     bHidden=True
      bTravel=True
 }

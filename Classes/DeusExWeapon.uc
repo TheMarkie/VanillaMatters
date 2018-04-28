@@ -4281,6 +4281,10 @@ defaultproperties
      VM_ShotBreaksStuff(1)=1.000000
      VM_ShotBreaksStuff(2)=1.000000
      VM_ShotBreaksStuff(3)=1.000000
+     VM_HeadshotMult(0)=4.000000
+     VM_HeadshotMult(1)=4.000000
+     VM_HeadshotMult(2)=4.000000
+     VM_HeadshotMult(3)=4.000000
      VM_modTimerMax=0.250000
      VM_msgInfoIgnite="Ignites enemies:"
      VM_msgInfoHeadshot="Headshot:"
@@ -4296,9 +4300,5 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropSmallWeapon'
      bNoSmooth=False
      Mass=10.000000
-	 Buoyancy=5.000000
-     VM_HeadshotMult(0)=4.000000
-     VM_HeadshotMult(1)=4.000000
-     VM_HeadshotMult(2)=4.000000
-     VM_HeadshotMult(3)=4.000000
+     Buoyancy=5.000000
 }

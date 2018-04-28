@@ -43,6 +43,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      mpAugValue=2.000000
+     VM_muscleCost=10.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconMuscle'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
      bAlwaysActive=True
@@ -54,6 +55,5 @@ defaultproperties
      LevelValues(2)=2.500000
      LevelValues(3)=3.000000
      AugmentationLocation=LOC_Arm
-	 MPConflictSlot=8
-	 VM_muscleCost=10.000000
+     MPConflictSlot=8
 }

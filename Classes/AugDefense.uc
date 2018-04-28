@@ -452,6 +452,7 @@ defaultproperties
 {
      mpAugValue=500.000000
      mpEnergyDrain=10.000000
+     VM_defenseBaseCost=2.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
@@ -462,5 +463,4 @@ defaultproperties
      LevelValues(2)=600.000000
      LevelValues(3)=800.000000
      MPConflictSlot=7
-     VM_defenseBaseCost=2.000000
 }

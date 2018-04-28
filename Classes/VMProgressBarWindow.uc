@@ -22,5 +22,5 @@ function SetForegroundTexture( Texture tex ) {
 
 defaultproperties
 {
-     texForeground=Texture'Solid'
+     texForeground=Texture'Extension.Solid'
 }

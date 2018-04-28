@@ -40,11 +40,11 @@ defaultproperties
      mpReloadTime=4.000000
      mpBaseAccuracy=0.700000
      mpAccurateRange=100
-	 mpMaxRange=100
-     VM_HeadshotMult(0)=1
-     VM_HeadshotMult(1)=1
-     VM_HeadshotMult(2)=1
-     VM_HeadshotMult(3)=1
+     mpMaxRange=100
+     VM_HeadshotMult(0)=1.000000
+     VM_HeadshotMult(1)=1.000000
+     VM_HeadshotMult(2)=1.000000
+     VM_HeadshotMult(3)=1.000000
      AmmoName=Class'DeusEx.AmmoPepper'
      ReloadCount=100
      PickupAmmoCount=100

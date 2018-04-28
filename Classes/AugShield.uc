@@ -126,7 +126,7 @@ defaultproperties
 {
      mpAugValue=0.400000
      Icon=Texture'DeusExUI.UserInterface.AugIconShield'
-	 smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
+     smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
      bAlwaysActive=True
      AugmentationName="Energy Shield"
      Description="Polyanilene capacitors below the skin absorb heat and electricity, reducing the damage received from flame, electrical, emp and plasma attacks.|n|nTECH ONE: Damage from energy attacks is reduced by 15%.|n|nTECH TWO: Damage from energy attacks is reduced by 30%.|n|nTECH THREE: Damage from energy attacks is reduced by 50%.|n|nTECH FOUR: An agent is nearly invulnerable energy attacks. Damage from energy attacks is reduced by 75%."
@@ -136,5 +136,5 @@ defaultproperties
      LevelValues(2)=0.500000
      LevelValues(3)=0.250000
      AugmentationLocation=LOC_Subdermal
-	 MPConflictSlot=1
+     MPConflictSlot=1
 }

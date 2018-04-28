@@ -14446,16 +14446,14 @@ defaultproperties
      MinHitWall=9999999827968.000000
      HearingThreshold=0.150000
      Skill=2.000000
+     HealthLegLeft=50
+     HealthLegRight=50
+     HealthArmLeft=50
+     HealthArmRight=50
      AIHorizontalFov=160.000000
      AspectRatio=2.300000
      bForceStasis=True
      BindName="ScriptedPawn"
      FamiliarName="DEFAULT FAMILIAR NAME - REPORT THIS AS A BUG"
-	 UnfamiliarName="DEFAULT UNFAMILIAR NAME - REPORT THIS AS A BUG"
-     HealthHead=100
-     HealthTorso=100
-     HealthLegLeft=50
-     HealthLegRight=50
-     HealthArmLeft=50
-     HealthArmRight=50
+     UnfamiliarName="DEFAULT UNFAMILIAR NAME - REPORT THIS AS A BUG"
 }

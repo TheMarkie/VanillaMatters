@@ -67,10 +67,10 @@ defaultproperties
      VM_ShotCount(1)=2
      VM_ShotCount(2)=2
      VM_ShotCount(3)=2
-     VM_HeadshotMult(0)=2
-     VM_HeadshotMult(1)=2
-     VM_HeadshotMult(2)=2
-     VM_HeadshotMult(3)=2
+     VM_HeadshotMult(0)=2.000000
+     VM_HeadshotMult(1)=2.000000
+     VM_HeadshotMult(2)=2.000000
+     VM_HeadshotMult(3)=2.000000
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True

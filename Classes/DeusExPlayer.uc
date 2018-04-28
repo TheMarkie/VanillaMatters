@@ -12894,7 +12894,6 @@ defaultproperties
      bNPCHighlighting=True
      bSubtitles=True
      bAlwaysRun=True
-     bToggleCrouch=True
      logTimeout=3.000000
      maxLogLines=4
      bHelpMessages=True
@@ -12955,6 +12954,7 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
+     VM_CurrentMaxShield=100.000000
      VM_msgTakeHold="You took hold of the %s"
      VM_msgTakeHoldInstead="You took hold of the %s instead"
      VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"
@@ -12962,6 +12962,8 @@ defaultproperties
      VM_msgTooMuchAmmo="You already have enough %s"
      VM_msgMuscleCost="You don't have enough energy to do a powerthrow"
      VM_msgChargedPickupAlready="You are already using that type of equipment"
+     VM_msgShieldBroken="Your energy shield has been broken"
+     VM_msgShieldRegen="Regenerating energy shield..."
      bCanStrafe=True
      MeleeRange=50.000000
      AccelRate=2048.000000
@@ -12974,9 +12976,5 @@ defaultproperties
      RotationRate=(Pitch=3072,Yaw=65000,Roll=2048)
      BindName="JCDenton"
      FamiliarName="JC Denton"
-	 UnfamiliarName="JC Denton"
-
-     VM_CurrentMaxShield=100.000000
-     VM_msgShieldBroken="Your energy shield has been broken"
-     VM_msgShieldRegen="Regenerating energy shield..."
+     UnfamiliarName="JC Denton"
 }
