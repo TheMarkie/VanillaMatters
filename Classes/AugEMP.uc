@@ -35,7 +35,7 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconEMP_Small'
      bAlwaysActive=True
      AugmentationName="EMP Shield"
-     Description="Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.|n|nTECH ONE: Absorbs 25% EMP damage.|n|nTECH TWO: Absorbs 50% EMP damage.|n|nTECH THREE: Absorbs 75% EMP damage.|n|nTECH FOUR: An agent is invulnerable to damage from EMP attacks."
+     Description="Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.|n|nTECH ONE: Damage from EMP attacks is reduced by 25%.|n|nTECH TWO: Damage from EMP attacks is reduced by 50%.|n|nTECH THREE: Damage from EMP attacks is reduced by 75%.|n|nTECH FOUR: An agent is invulnerable to damage from EMP attacks."
      MPInfo="When active, you only take 5% damage from EMP attacks.  Energy Drain: None"
      LevelValues(0)=0.750000
      LevelValues(1)=0.500000

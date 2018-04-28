@@ -6,7 +6,7 @@ class WeaponGraySwipe extends WeaponNPCMelee;
 defaultproperties
 {
      ShotTime=0.500000
-     HitDamage=6
+     HitDamage=12
      maxRange=120
      AccurateRange=120
      BaseAccuracy=0.000000

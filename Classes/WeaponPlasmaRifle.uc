@@ -25,7 +25,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=2.000000
-     HitDamage=35
+     HitDamage=50
      maxRange=24000
      AccurateRange=14400
      BaseAccuracy=0.600000

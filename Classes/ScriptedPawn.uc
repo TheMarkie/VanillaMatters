@@ -2817,7 +2817,8 @@ function Carcass SpawnCarcass()
 
 			w = DeusExWeapon( item );
 
-			if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) ) {
+			// VM: Also add a 80% chance to destroy a combat knife if present on the pawn.
+			if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) || ( w.IsA( 'WeaponCombatKnife' ) && FRand() > 0.2 ) ) {
 				item.Destroy();
 			}
 			else {
@@ -2869,7 +2870,10 @@ function Carcass SpawnCarcass()
 					item = Inventory;
 					nextItem = item.Inventory;
 					DeleteInventory(item);
-					if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
+					//if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
+					// Vanilla Matters: Add a 80% chance to destroy a combat knife if present on the pawn.
+					w = DeusExWeapon( item );
+					if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) || ( w.IsA( 'WeaponCombatKnife' ) && FRand() > 0.2 ) )
 						item.Destroy();
 					else
 						carc.AddInventory(item);

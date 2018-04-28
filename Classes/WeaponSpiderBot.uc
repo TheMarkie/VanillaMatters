@@ -79,9 +79,9 @@ function PostBeginPlay()
 
 defaultproperties
 {
-     shockDamage=15
+     shockDamage=40
      ShotTime=1.500000
-     HitDamage=25
+     HitDamage=40
      maxRange=1280
      AccurateRange=640
      BaseAccuracy=0.000000

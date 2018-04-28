@@ -5,9 +5,9 @@ class WeaponSpiderBot2 extends WeaponSpiderBot;
 
 defaultproperties
 {
-     shockDamage=8
+     shockDamage=20
      ShotTime=1.000000
-     HitDamage=5
+     HitDamage=20
      maxRange=640
      AccurateRange=320
 }

@@ -219,6 +219,7 @@ var() travel float	VM_modTimerMax;					// The max duration before they become ef
 var localized String VM_msgInfoIgnite;				// If an ammo type has the VM_IgnitesOnHit property then it's displayed to notify players.
 var localized String VM_msgInfoHeadshot;			// Label the headshot multipler section.
 var localized String VM_msgFullClip;
+var localized String VM_msgNoAmmo;
 
 //
 // network replication
@@ -503,6 +504,13 @@ function ReloadAmmo( optional bool bForce ) {
 		return;
 	}
 
+	// Vanilla Matters: Fix the bug where player can reload with no ammo left in storage.
+	if ( !bForce && ( AmmoType.AmmoAmount - ( ReloadCount - ClipCount ) ) <= 0 ) {
+		Pawn( Owner ).ClientMessage( VM_msgNoAmmo );
+
+		return;
+	}
+
 	if (!IsInState('Reload'))
 	{
 		TweenAnim('Still', 0.1);
@@ -746,18 +754,21 @@ function bool LoadAmmo(int ammoNum)
 				ShotTime = Default.ShotTime;
 				if ( Level.NetMode != NM_Standalone )
 				{
-					if (HasReloadMod())
-						ReloadTime = mpReloadTime * (1.0+ModReloadTime);
-					else
+					// if (HasReloadMod())
+					// 	ReloadTime = mpReloadTime * (1.0+ModReloadTime);
+					// else
 						ReloadTime = mpReloadTime;
 				}
 				else
 				{
-					if (HasReloadMod())
-						ReloadTime = Default.ReloadTime * (1.0+ModReloadTime);
-					else
+					// if (HasReloadMod())
+					// 	ReloadTime = Default.ReloadTime * (1.0+ModReloadTime);
+					// else
 						ReloadTime = Default.ReloadTime;
 				}
+
+				// Vanilla Matters: Handles reload time bonus from mods in GetReloadTime.
+
 				FireSound = Default.FireSound;
 				ProjectileClass = None;
 			}
@@ -767,10 +778,13 @@ function bool LoadAmmo(int ammoNum)
 				bInstantHit = False;
 				bAutomatic = False;
 				ShotTime = 1.0;
-				if (HasReloadMod())
-					ReloadTime = 2.0 * (1.0+ModReloadTime);
-				else
-					ReloadTime = 2.0;
+				// if (HasReloadMod())
+				// 	ReloadTime = 2.0 * (1.0+ModReloadTime);
+				// else
+				// 	ReloadTime = 2.0;
+
+				// Vanilla Matters: Handles reload time bonus from mods in GetReloadTime.
+
 				FireSound = None;		// handled by the projectile
 				ProjectileClass = ProjectileNames[ammoNum];
 				ProjectileSpeed = ProjectileClass.Default.Speed;
@@ -2279,7 +2293,10 @@ function ServerGotoFinishFire()
 
 function ServerDoneReloading()
 {
-	ClipCount = 0;
+	// ClipCount = 0;
+
+	// Vanilla Matters: Correctly represent the amount of ammo in clip.
+	ClipCount = FMax( 0, ReloadCount - AmmoType.AmmoAmount );
 }
 
 function ServerGenerateBullet()
@@ -2587,6 +2604,9 @@ simulated function TraceFire( float Accuracy )
 	local int i, numSlugs;
 	local float volume, radius;
 
+	local LaserSpot sp;
+	local int j;
+
 	// make noise if we are not silenced
 	if (!bHasSilencer && !bHandToHand)
 	{
@@ -2635,10 +2655,10 @@ simulated function TraceFire( float Accuracy )
          StartTrace = StartTrace + (numSlugs/2 - i) * SwingOffset;
       }
 
-      EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
-      EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
+    //   EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
+    //   EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
       
-      Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
+    //   Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
 
 		// randomly draw a tracer for relevant ammo types
 		// don't draw tracers if we're zoomed in with a scope - looks stupid
@@ -2660,20 +2680,37 @@ simulated function TraceFire( float Accuracy )
 			}
 		}
 
-		// check our range
-		dist = Abs(VSize(HitLocation - Owner.Location));
+		// // check our range
+		// dist = Abs(VSize(HitLocation - Owner.Location));
 
-		if (dist <= AccurateRange)		// we hit just fine
-			ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
-		else if (dist <= MaxRange)
-		{
-			// simulate gravity by lowering the bullet's hit point
-			// based on the owner's distance from the ground
-			alpha = (dist - AccurateRange) / (MaxRange - AccurateRange);
-			degrade = 0.5 * Square(alpha);
-			HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
-			ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+		// if (dist <= AccurateRange)		// we hit just fine
+		// 	ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+		// else if (dist <= MaxRange)
+		// {
+		// 	// simulate gravity by lowering the bullet's hit point
+		// 	// based on the owner's distance from the ground
+		// 	alpha = (dist - AccurateRange) / (MaxRange - AccurateRange);
+		// 	degrade = 0.5 * Square(alpha);
+		// 	HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
+		// 	ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+		// }
+
+		EndTrace = StartTrace + ( AccurateRange * vector( AdjustedAim ) ) + ( Accuracy * ( FRand() - 0.5 ) * Y * 1000 ) + ( Accuracy * ( FRand() - 0.5 ) * Z * 1000 );
+
+		Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
+
+		if ( Other == none && MaxRange > AccurateRange ) {
+			dist = MaxRange - AccurateRange;
+
+			HitLocation = EndTrace - StartTrace;
+			HitLocation.Z = HitLocation.Z - ( dist / 32 );
+			StartTrace = EndTrace;
+			EndTrace = EndTrace + ( Normal( HitLocation ) * dist );
+
+			Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
 		}
+
+		ProcessTraceHit( Other, HitLocation, HitNormal, vector( AdjustedAim ), Y, Z );
 	}
 
 	// otherwise we don't hit the target at all
@@ -2805,7 +2842,11 @@ simulated function SimFinish()
 	{
 		if ( (SimClipCount >= ReloadCount) && CanReload() )
 		{
-			SimClipCount = 0;
+			//SimClipCount = 0;
+
+			// Vanilla Matters: Correctly represent the amount of ammo in clip.
+			SimClipCount = FMax( 0, ReloadCount - AmmoType.AmmoAmount );
+
 			bClientReadyToFire = False;
 			bInProcess = False;
 			if ((AmmoType.AmmoAmount == 0) && (AmmoName != AmmoNames[0]))
@@ -3084,6 +3125,16 @@ simulated function bool UpdateInfo(Object winObject)
 
 	winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
 
+	// Vanilla Matters: Display headshot multiplier.
+	str = "x" $ FormatFloatString( Default.VM_HeadshotMult[0], 0.1 );
+	mod = ( Default.VM_HeadshotMult[weaponSkillLevel] / Default.VM_HeadshotMult[0] ) - 1;
+
+	if ( mod != 0 ) {
+		str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult[weaponSkillLevel], 0.1 );
+	}
+
+	winInfo.AddInfoItem( VM_msgInfoHeadshot, str, mod != 0 );
+
 	// clip size
 	if ((Default.ReloadCount == 0) || bHandToHand)
 		str = msgInfoNA;
@@ -3128,23 +3179,49 @@ simulated function bool UpdateInfo(Object winObject)
 	winInfo.AddInfoItem(msgInfoROF, str);
 
 	// reload time
-	if ((Default.ReloadCount == 0) || bHandToHand)
-		str = msgInfoNA;
-	else
-	{
-		if (Level.NetMode != NM_Standalone )
-			str = FormatFloatString(Default.mpReloadTime, 0.1) @ msgTimeUnit;
-		else
-			str = FormatFloatString(Default.ReloadTime, 0.1) @ msgTimeUnit;
-	}
+	// if ((Default.ReloadCount == 0) || bHandToHand)
+	// 	str = msgInfoNA;
+	// else
+	// {
+	// 	if (Level.NetMode != NM_Standalone )
+	// 		str = FormatFloatString(Default.mpReloadTime, 0.1) @ msgTimeUnit;
+	// 	else
+	// 		str = FormatFloatString(Default.ReloadTime, 0.1) @ msgTimeUnit;
+	// }
 
-	if (HasReloadMod())
-	{
-		str = str @ BuildPercentString(ModReloadTime);
-		str = str @ "=" @ FormatFloatString(ReloadTime, 0.1) @ msgTimeUnit;
-	}
+	// if (HasReloadMod())
+	// {
+	// 	str = str @ BuildPercentString(ModReloadTime);
+	// 	str = str @ "=" @ FormatFloatString(ReloadTime, 0.1) @ msgTimeUnit;
+	// }
 
 	winInfo.AddInfoItem(msgInfoReload, str, HasReloadMod());
+
+	//  Vanilla Matters: Add in reload time bonus from skills.
+	mod = 0;
+
+	if ( Default.ReloadCount == 0 || bHandToHand) {
+		str = msgInfoNA;
+	}
+	else {
+		if (Level.NetMode != NM_Standalone ) {
+			str = FormatFloatString( default.mpReloadTime, 0.1 );
+		}
+		else {
+			str = FormatFloatString( default.ReloadTime, 0.1 );
+		}
+
+		mod = GetWeaponSkill() + ModReloadTime;
+
+		if ( mod != 0 ) {
+			str = str @ BuildPercentString( mod );
+			str = str @ "=" @ FormatFloatString( default.ReloadTime + ( mod * default.ReloadTime ), 0.1 );
+		}
+
+		str = str @ msgTimeUnit;
+	}
+
+	winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
 
 	// recoil
 	str = FormatFloatString(Default.recoilStrength, 0.01);
@@ -3208,15 +3285,6 @@ simulated function bool UpdateInfo(Object winObject)
 			str = FormatFloatString(Default.MaxRange/16.0, 1.0) @ msgRangeUnit;
 	}
 	winInfo.AddInfoItem(msgInfoMaxRange, str);
-
-	// Vanilla Matters: Display headshot multiplier.
-	str = "x" $ FormatFloatString( Default.VM_HeadshotMult[0], 0.1 );
-	mod = ( Default.VM_HeadshotMult[weaponSkillLevel] / Default.VM_HeadshotMult[0] ) - 1;
-
-	if ( weaponSkillLevel > 0.0 ) {
-		str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult[weaponSkillLevel], 0.1 );
-	}
-	winInfo.AddInfoItem( VM_msgInfoHeadshot, str, ( weaponSkillLevel > 0.0 ) );
 
 	// mass
 	winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
@@ -3673,8 +3741,12 @@ ignores Fire, AltFire;
 		else if (DeusExPlayer(Owner) != None)
 		{
 			// check for skill use if we are the player
-			val = GetWeaponSkill();
-			val = ReloadTime + (val*ReloadTime);
+			// val = GetWeaponSkill();
+			// val = ReloadTime + (val*ReloadTime);
+
+			// Vanilla Matters: Handle all forms of bonuses here.
+			val = GetWeaponSkill() + ModReloadTime;
+			val = ReloadTime + ( val * ReloadTime );
 		}
 
 		return val;
@@ -3738,7 +3810,10 @@ Begin:
 			if (bWasZoomed)
 				ScopeOn();
 
-			ClipCount = 0;
+			//ClipCount = 0;
+
+			// Vanilla Matters: Correctly represent the amount of ammo in clip.
+			ClipCount = FMax( 0, ReloadCount - AmmoType.AmmoAmount );
 		}
 	}
 	GotoState('Idle');
@@ -3939,8 +4014,12 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
 		else if (DeusExPlayer(Owner) != None)
 		{
 			// check for skill use if we are the player
-			val = GetWeaponSkill();
-			val = ReloadTime + (val*ReloadTime);
+			// val = GetWeaponSkill();
+			// val = ReloadTime + (val*ReloadTime);
+
+			// Vanilla Matters: Handle all forms of bonuses here.
+			val = GetWeaponSkill() + ModReloadTime;
+			val = ReloadTime + ( val * ReloadTime );
 		}
 		return val;
 	}
@@ -4117,7 +4196,10 @@ Begin:
 
 	if ( Level.NetMode != NM_Standalone )
 	{
-		ClipCount = 0;	// Auto-reload in multiplayer (when putting away)
+		//ClipCount = 0;	// Auto-reload in multiplayer (when putting away)
+
+		// Vanilla Matters: Correctly represent the amount of ammo in clip.
+		ClipCount = FMax( 0, ReloadCount - AmmoType.AmmoAmount );
 	}
 	bOnlyOwnerSee = false;
 	if (Pawn(Owner) != None)
@@ -4203,6 +4285,7 @@ defaultproperties
      VM_msgInfoIgnite="Ignites enemies:"
      VM_msgInfoHeadshot="Headshot:"
      VM_msgFullClip="You are already fully loaded"
+     VM_msgNoAmmo="No ammo left to reload"
      ReloadCount=10
      shakevert=10.000000
      Misc1Sound=Sound'DeusExSounds.Generic.DryFire'
@@ -4214,8 +4297,8 @@ defaultproperties
      bNoSmooth=False
      Mass=10.000000
 	 Buoyancy=5.000000
-     VM_HeadshotMult(0)=8.000000
-     VM_HeadshotMult(1)=8.000000
-     VM_HeadshotMult(2)=8.000000
-     VM_HeadshotMult(3)=8.000000
+     VM_HeadshotMult(0)=4.000000
+     VM_HeadshotMult(1)=4.000000
+     VM_HeadshotMult(2)=4.000000
+     VM_HeadshotMult(3)=4.000000
 }

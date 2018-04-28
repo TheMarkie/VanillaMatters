@@ -745,7 +745,7 @@ defaultproperties
      maxRange=512
      fireRate=0.250000
      gunAccuracy=0.500000
-     gunDamage=5
+     gunDamage=10
      AmmoAmount=1000
      confusionDuration=10.000000
      pitchLimit=11000.000000

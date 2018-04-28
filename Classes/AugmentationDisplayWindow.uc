@@ -394,8 +394,10 @@ function DrawDefenseAugmentation(GC gc)
 	local bool bDrawLine;
 
 	// Vanilla Matters
-	local DeusExWeapon targetWeapon;
-	local Vector targetLocation, vX, vY, vZ;
+	// local DeusExWeapon targetWeapon;
+	// local ScriptedPawn sp;
+	// local Vector vX, vY, vZ;
+	local Vector targetLocation;
 
 	if (defenseTarget != None)
 	{
@@ -439,30 +441,27 @@ function DrawDefenseAugmentation(GC gc)
 			str = msgADSTracking;
 		}
 
-		if ( ScriptedPawn( defenseTarget ) != None ) {
-			targetWeapon = DeusExWeapon( Pawn( defenseTarget ).Weapon );
+		// sp = ScriptedPawn( defenseTarget );
 
-			if ( targetWeapon != None ) {
-				targetWeapon.GetAxes( Pawn( defenseTarget ).ViewRotation, vX, vY, vZ );
-				targetLocation = defenseTarget.Location + ( targetWeapon.FireOffset.X * vX ) + ( targetWeapon.FireOffset.Y * vY ) + ( targetWeapon.FireOffset.Z * vZ );
+		// if ( sp != None ) {
+		// 	targetWeapon = DeusExWeapon( sp.Weapon );
 
-				// VM: Some hacky calculations for the weapon location while the pawn is crouching.
-				if ( ScriptedPawn( defenseTarget ).bCrouching ) {
-					targetLocation.Z = targetLocation.Z + ( targetLocation.Z * 0.175 );
-					targetLocation.Y = targetLocation.Y + ( targetLocation.Y * 0.0008 );
-				}
-			}
-			else {
-				targetLocation = defenseTarget.Location;
-			}
-		}
-		else {
-			targetLocation = defenseTarget.Location;
-		}
+		// 	if ( targetWeapon != None ) {
+		// 		targetLocation = defenseTarget.Location - ( ( sp.default.CollisionHeight - sp.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( targetWeapon.FireOffset >> sp.ViewRotation );
+		// 	}
+		// 	else {
+		// 		targetLocation = defenseTarget.Location;
+		// 	}
+		// }
+		// else {
+		// 	targetLocation = defenseTarget.Location;
+		// }
+
+		targetLocation = defenseTarget.Location;
 
 		// VM: If the player has enough energy to detonation, display range, otherwise, say so.
 		if ( VM_bDefenseEnoughEnergy ) {
-			str = str $ CR() $ msgRange @ Int( VSize( defenseTarget.Location - Player.Location ) / 16 ) @ msgRangeUnits;
+			str = str $ CR() $ msgRange @ Int( VSize( targetLocation - Player.Location ) / 16 ) @ msgRangeUnits;
 
 			if ( !ConvertVectorToCoordinates( targetLocation, boxCX, boxCY ) ) {
 				str = str @ msgBehind;
@@ -485,17 +484,17 @@ function DrawDefenseAugmentation(GC gc)
 			gc.SetTileColor( colHeaderText );
 
 			// VM: Draw four corners of the box.
-			gc.DrawPattern( boxCX - 10, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-			gc.DrawPattern( boxCX - 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX - 10, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX - 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
 
-			gc.DrawPattern( boxCX + 5, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-			gc.DrawPattern( boxCX + 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX + 5, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX + 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
 
-			gc.DrawPattern( boxCX - 10, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-			gc.DrawPattern( boxCX - 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX - 10, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX - 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
 
-			gc.DrawPattern( boxCX + 5, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-			gc.DrawPattern( boxCX + 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX + 5, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
+			// gc.DrawPattern( boxCX + 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
 		}
 	}
 }

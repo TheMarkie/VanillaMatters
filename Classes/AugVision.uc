@@ -125,7 +125,7 @@ defaultproperties
 {
      mpAugValue=1000.000000
      mpEnergyDrain=60.000000
-     EnergyRate=10.000000
+     EnergyRate=15.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconVision'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconVision_Small'
      AugmentationName="Vision Enhancement"

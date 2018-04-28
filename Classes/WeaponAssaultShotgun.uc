@@ -27,7 +27,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.700000
      reloadTime=4.500000
-     HitDamage=7
+     HitDamage=10
      maxRange=2400
      AccurateRange=1200
      BaseAccuracy=0.700000
@@ -44,10 +44,6 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
-     VM_ShotCount(0)=4
-     VM_ShotCount(1)=4
-     VM_ShotCount(2)=4
-     VM_ShotCount(3)=4
      AmmoName=Class'DeusEx.AmmoShell'
      ReloadCount=12
      PickupAmmoCount=12
@@ -78,4 +74,8 @@ defaultproperties
      CollisionRadius=15.000000
      CollisionHeight=8.000000
      Mass=30.000000
+     VM_ShotCount(0)=4
+     VM_ShotCount(1)=4
+     VM_ShotCount(2)=4
+     VM_ShotCount(3)=4
 }

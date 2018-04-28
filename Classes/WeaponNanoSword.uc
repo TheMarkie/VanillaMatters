@@ -49,7 +49,7 @@ defaultproperties
 {
      LowAmmoWaterMark=0
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
-     NoiseLevel=0.050000
+     NoiseLevel=0.400000
      reloadTime=0.000000
      HitDamage=35
      maxRange=96

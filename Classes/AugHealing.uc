@@ -22,7 +22,7 @@ state Active
 
 		if ( standingTimer >= 2.0 ) {
 			if ( Player.Health < 100 ) {
-				AddImmediateEnergyRate( float( Player.HealPlayer( int( LevelValues[CurrentLevel] ), false ) ) / float( CurrentLevel + 1 ) );
+				AddImmediateEnergyRate( float( Player.HealPlayer( int( LevelValues[CurrentLevel] ), false ) ) / 5 );
 			}
 			else {
 				Deactivate();
@@ -75,7 +75,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconHealing'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconHealing_Small'
      AugmentationName="Regeneration"
-     Description="Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent to full health over time.|n|nTECH ONE: Heals 5 points per second.|n- Drains energy per amount healed.|n|nTECH TWO: Heals 10 points per second.|n+100% drain efficiency.|n|nTECH THREE: Heals 15 points per second.|n+200% drain efficiency.|n|nTECH FOUR: Heals 20 points per second.|n+300% drain efficiency.|n|nStarts healing when the agent has remained still for at least 2 seconds."
+     Description="Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent to full health over time.|n|nTECH ONE: Heals 5 points per second.|n|nTECH TWO: Heals 10 points per second.|n|nTECH THREE: Heals 15 points per second.|n|nTECH FOUR: Heals 20 points per second.|n|nStarts healing when the agent has remained still for at least 2 seconds.|nDrains 1 energy per 5 points healed."
      MPInfo="When active, you heal, but at a rate insufficient for healing in combat.  Energy Drain: High"
      LevelValues(0)=5.000000
      LevelValues(1)=10.000000

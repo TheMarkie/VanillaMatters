@@ -25,6 +25,7 @@ defaultproperties
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      Concealability=CONC_Visual
+     ShotTime=0.300000
      reloadTime=0.000000
      HitDamage=10
      maxRange=80

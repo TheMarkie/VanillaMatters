@@ -23,6 +23,7 @@ defaultproperties
      LowAmmoWaterMark=0
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
+     ShotTime=0.700000
      reloadTime=0.000000
      HitDamage=15
      maxRange=80
@@ -41,10 +42,6 @@ defaultproperties
      VM_ShotBreaksStuff(1)=2.000000
      VM_ShotBreaksStuff(2)=2.000000
      VM_ShotBreaksStuff(3)=2.000000
-     VM_HeadshotMult(0)=4
-     VM_HeadshotMult(1)=4
-     VM_HeadshotMult(2)=4
-     VM_HeadshotMult(3)=4
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True

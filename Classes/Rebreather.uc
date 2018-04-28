@@ -11,7 +11,7 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 
 	// Vanilla Matters: Fix an exploit where you can use Rebreather for at least one tick to get full oxygen.
 	// VM: Since we know the timer only runs every 0.1 second, we can hardcode this to be double that amount. I'd rather rewrite the callback to include passin in interval however.
-	Player.swimTimer = Player.swimTimer + 0.2;
+	Player.swimTimer = FMin( Player.swimTimer + 0.2, Player.swimDuration );
 }
 
 defaultproperties

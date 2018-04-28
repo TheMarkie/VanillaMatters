@@ -33,9 +33,9 @@ defaultproperties
      EnviroEffective=ENVEFF_Air
      ShotTime=1.500000
      reloadTime=2.000000
-     HitDamage=25
-     maxRange=48000
-     AccurateRange=28800
+     HitDamage=50
+     maxRange=19200
+     AccurateRange=9600
      bCanHaveScope=True
      bHasScope=True
      bCanHaveLaser=True

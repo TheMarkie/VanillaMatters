@@ -14,7 +14,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      reloadTime=0.000000
-     HitDamage=5
+     HitDamage=8
      maxRange=80
      AccurateRange=80
      BaseAccuracy=1.000000
@@ -23,10 +23,6 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     VM_HeadshotMult(0)=4
-     VM_HeadshotMult(1)=4
-     VM_HeadshotMult(2)=4
-     VM_HeadshotMult(3)=4
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True

@@ -770,6 +770,9 @@ event TravelPostAccept()
 	// make sure the player's eye height is correct
 	BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
 
+	// Vanilla Matters: Clear any change to underwatertime since we don't directly modify it anymore.
+	UnderWaterTime = default.UnderWaterTime;
+
 	// Vanilla Matters: Repair the held item since it's fucked up by vanilla coding.
 	if ( VM_HeldInHand != None ) {
 		VM_lastHeldInHand = VM_HeldInHand;
@@ -787,6 +790,12 @@ event TravelPostAccept()
 			VM_lastHeldInHand.Destroy();
 			VM_lastHeldInHand = None;
 		}
+	}
+
+	// VM: Set the player for any existing FP system and also notify that the vectors are supposed to be reset.
+	if ( FPSystem != none ) {
+		FPSystem.SetPlayer( self );
+		FPSystem.ResetFPZoneInfo();
 	}
 
 	// Vanilla Matters: If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
@@ -813,11 +822,6 @@ event TravelPostAccept()
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
-
-	// VM: Reset the vectors manually instead of letting the game sets them to vect( 0, 0, 0 ).
-	if ( FPSystem != none ) {
-		FPSystem.ResetFPZoneInfo();
-	}
 }
 
 // ----------------------------------------------------------------------
@@ -2825,7 +2829,7 @@ simulated function PlayFootStep()
   //radius      = 375.0;
 
 	// Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
-	radius = 375.0 * Abs( AugmentationSystem.GetClassLevel( class'AugSpeed' ) + 1 );
+	radius = 375.0 * ( AugmentationSystem.GetClassLevel( class'AugSpeed' ) + 2 );
 	
 	volume      = (speedFactor+0.2) * massFactor;
 	range       = radius * volume;
@@ -4032,18 +4036,22 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 		Acceleration = vect(0,0,0);
 		mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
 
-		swimDuration = UnderWaterTime * mult;
+		// swimDuration = UnderWaterTime * mult;
+
+		// Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
+		swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
+
 		swimTimer = swimDuration;
-		if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-		{
-			// if ( AugmentationSystem != None )
-			// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-			if ( augLevel == -1.0 )
-				WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
-			else
-				WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
-		}
-		else
+		// if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
+		// {
+		// 	// if ( AugmentationSystem != None )
+		// 	// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
+		// 	if ( augLevel == -1.0 )
+		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
+		// 	else
+		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
+		// }
+		// else
 			WaterSpeed = Default.WaterSpeed * mult;
 	}
 
@@ -4154,23 +4162,32 @@ state PlayerSwimming
 		// set us to be two feet high
 		SetBasedPawnSize(Default.CollisionRadius, 16);
 
+		// Vanilla Matters: Move out of the if so we can use it twice.
+		if ( AugmentationSystem != None ) {
+			augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
+		}
+
 		// get our skill info
 		mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
 
-		swimDuration = UnderWaterTime * mult;
+		// swimDuration = UnderWaterTime * mult;
+
+		// Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
+		swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
+
 		swimTimer = swimDuration;
 		swimBubbleTimer = 0;
 
-		if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-		{
-			if ( AugmentationSystem != None )
-				augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-			if ( augLevel == -1.0 )
-				WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
-			else
-				WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
-		}
-		else
+		// if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
+		// {
+		// 	if ( AugmentationSystem != None )
+		// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
+		// 	if ( augLevel == -1.0 )
+		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
+		// 	else
+		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
+		// }
+		// else
 			WaterSpeed = Default.WaterSpeed * mult;
 
 		Super.BeginState();
@@ -9939,28 +9956,13 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	// 	StartPoison( instigatedBy, Damage );
 	// }
 
-	// Vanilla Matters: Add new Energy Shield behaviours, it will now prevent poisoning and catching on fire if the contact damage is fully negated by shield.
-	if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' || damageType == 'Exploded'
-		|| damageType == 'Flamed' || damageType == 'Shocked' || damageType == 'Poison' || damageType == 'KnockedOut' ) {
-		Damage = int( DrainShield( Damage ) );
-	}
-
-	if ( Damage > 0 ) {
-		if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
-			if ( Level.NetMode != NM_Standalone ) {
-				ServerConditionalNotifyMsg( MPMSG_FirstPoison );
-			}
-
-			StartPoison( instigatedBy, Damage );
+	// Vanilla Matters: Add rebreather behaviors to mp poisoning rules.
+	if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
+		if ( Level.NetMode != NM_Standalone ) {
+			ServerConditionalNotifyMsg( MPMSG_FirstPoison );
 		}
 
-		if ( damageType == 'Flamed' && !bOnFire ) {
-			if ( Level.NetMode != NM_Standalone ) {
-				ServerConditionalNotifyMsg( MPMSG_FirstBurn );
-			}
-
-			CatchFire( instigatedBy );
-		}
+		StartPoison( instigatedBy, Damage );
 	}
 
 	// reduce our damage correctly
@@ -10266,14 +10268,14 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 		FPSystem.AddForwardPressure( FMax( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
 	}
 
-	// if ((DamageType == 'Flamed') && !bOnFire)
-	// {
-	// 	// Notify player if they're getting burned for the first time
-	// 	if ( Level.NetMode != NM_Standalone )
-	// 		ServerConditionalNotifyMsg( MPMSG_FirstBurn );
+	if ((DamageType == 'Flamed') && !bOnFire)
+	{
+		// Notify player if they're getting burned for the first time
+		if ( Level.NetMode != NM_Standalone )
+			ServerConditionalNotifyMsg( MPMSG_FirstBurn );
 
-	// 	CatchFire( instigatedBy );
-	// }
+		CatchFire( instigatedBy );
+	}
 	myProjKiller = None;
 }
 
@@ -10379,11 +10381,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 	bReduced = False;
 	newDamage = Float(Damage);
 
-	// if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-	// 	(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
-	// Vanilla Matters: Let AugEnviro block more forms of damage.
-	if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas'
-		|| damageType == 'PoisonEffect' || damageType == 'Poison' || damageType == 'Burned' || damageType == 'Flamed' )
+	if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
+		(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
 	{
 		if (AugmentationSystem != None)
 			augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
@@ -10454,13 +10453,17 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			ExtinguishFire();
 	}
 
-	if ((damageType == 'Shot') || (damageType == 'AutoShot'))
+	// if ((damageType == 'Shot') || (damageType == 'AutoShot'))
+	// Vanilla Matters: Add sabot to augballistic.
+	if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' )
 	{
 		if (AugmentationSystem != None)
 			augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
 
 		if (augLevel >= 0.0)
-			newDamage *= augLevel;
+			//newDamage *= augLevel;
+			// Vanilla Matters: AugBallistic now adds a flat damage reduction.
+			newDamage = newDamage - augLevel;
 	}
 
 	// if (damageType == 'EMP')
@@ -10474,13 +10477,16 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 	// if ((damageType == 'Burned') || (damageType == 'Flamed') ||
 	// 	(damageType == 'Exploded') || (damageType == 'Shocked'))
-	// {
-	// 	if (AugmentationSystem != None)
-	// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
+	// Vanilla Matters: Add EMP to augshield.
+	if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
+		damageType == 'Exploded' || damageType == 'Shocked' )
+	{
+		if (AugmentationSystem != None)
+			augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
 
-	// 	if (augLevel >= 0.0)
-	// 		newDamage *= augLevel;
-	// }
+		if (augLevel >= 0.0)
+			newDamage *= augLevel;
+	}
 
 	if (newDamage < Damage)
 	{

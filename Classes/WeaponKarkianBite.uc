@@ -6,7 +6,7 @@ class WeaponKarkianBite extends WeaponNPCMelee;
 defaultproperties
 {
      ShotTime=0.100000
-     HitDamage=15
+     HitDamage=25
      maxRange=120
      AccurateRange=120
      BaseAccuracy=0.000000

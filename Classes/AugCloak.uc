@@ -60,6 +60,10 @@ function Deactivate()
 
 // Vanilla Matters: Functions to set and reset item transparency.
 function ToggleTransparency( Inventory item, bool transparent, optional float newScaleGlow ) {
+	if ( item == none ) {
+		return;
+	}
+
 	if ( transparent ) {
 		item.Style = STY_Translucent;
 		item.ScaleGlow = newScaleGlow;

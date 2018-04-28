@@ -5,7 +5,7 @@ class HUDHitDisplay expands HUDBaseWindow;
 
 // Vanilla Matters: Custom border for FP bar and a window for shield compatible HUD.
 #exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBorder_1.pcx"		NAME="HUDHitDisplayBorder_1"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBody.pcx"		NAME="HUDHitDisplay_Body"		GROUP="VMUI" MIPS=Off
+// #exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBody.pcx"		NAME="HUDHitDisplay_Body"		GROUP="VMUI" MIPS=Off
 
 struct BodyPart
 {
@@ -55,10 +55,10 @@ var localized string O2Text;
 var localized string EnergyText;
 
 // Vanilla Matters
-var VMProgressBarWindow VM_winShield;
 var ProgressBarWindow VM_winFP;
 
-var Color VM_colShield;
+// var VMProgressBarWindow VM_winShield;
+// var Color VM_colShield;
 
 var localized string VM_ForwardPressureText;
 var localized string VM_ForwardPressureFullText;
@@ -96,15 +96,15 @@ event InitWindow()
 	bodyWin.Lower();
 
 	// Vanilla Matters: Create bar for energy shield.
-	VM_winShield = VMProgressBarWindow( NewChild( Class'VMProgressBarWindow' ) );
-	VM_winShield.UseScaledColor( false );
-	VM_winShield.SetBackgroundStyle( DSTY_Translucent );
-	VM_winShield.SetForegroundTexture( Texture'DeusEx.VMUI.HUDHitDisplay_Body' );
-	VM_winShield.SetSize( 34, 68 );
-	VM_winShield.SetPos( 24, 15 );
-	VM_winShield.SetValues( 0, 100 );
-	VM_winShield.SetCurrentValue( 0 );
-	VM_winShield.SetVertical( true );
+	// VM_winShield = VMProgressBarWindow( NewChild( Class'VMProgressBarWindow' ) );
+	// VM_winShield.UseScaledColor( false );
+	// VM_winShield.SetBackgroundStyle( DSTY_Translucent );
+	// VM_winShield.SetForegroundTexture( Texture'DeusEx.VMUI.HUDHitDisplay_Body' );
+	// VM_winShield.SetSize( 34, 68 );
+	// VM_winShield.SetPos( 24, 15 );
+	// VM_winShield.SetValues( 0, 100 );
+	// VM_winShield.SetCurrentValue( 0 );
+	// VM_winShield.SetVertical( true );
 
 	winEnergy = CreateProgressBar(15, 20);
 	winBreath = CreateProgressBar(61, 20);
@@ -382,8 +382,8 @@ event Tick(float deltaSeconds)
 		}
 
 		// Vanilla Matters: Update shield value.
-		VM_winShield.SetCurrentValue( ( player.VM_Shield / player.VM_CurrentMaxShield ) * 100 );
-		VM_winShield.SetColors( VM_winShield.colBackground, VM_colShield );
+		// VM_winShield.SetCurrentValue( ( player.VM_Shield / player.VM_CurrentMaxShield ) * 100 );
+		// VM_winShield.SetColors( VM_winShield.colBackground, VM_colShield );
 
 		// Vanilla Matters: Update FP value only if it's enabled, otherwise hide the bar.
 		if ( player.VM_bEnableFP && player.FPSystem != none ) {
@@ -424,5 +424,4 @@ defaultproperties
      EnergyText="BE"
      VM_ForwardPressureText="FP"
 	 VM_ForwardPressureFullText="OK"
-	 VM_colShield=(R=0,G=0,B=255)
 }

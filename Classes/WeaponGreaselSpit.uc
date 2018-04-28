@@ -6,7 +6,7 @@ class WeaponGreaselSpit extends WeaponNPCRanged;
 defaultproperties
 {
      ShotTime=1.500000
-     HitDamage=15
+     HitDamage=25
      maxRange=450
      AccurateRange=300
      bHandToHand=True

@@ -8,6 +8,9 @@ var() travel Name AddAugs[2];
 var localized string AugsAvailable;
 var localized string MustBeUsedOn;
 
+// Vanilla Matters
+var travel bool VM_augReplaced;
+
 // ----------------------------------------------------------------------
 // Network Replication
 // ---------------------------------------------------------------------
@@ -17,6 +20,26 @@ replication
    //server to client variables
    reliable if ((Role == ROLE_Authority) && (bNetOwner))
       AddAugs;
+}
+
+// Vanilla Matters: Replace EMP Shield with Energy Shield.
+function PostBeginPlay() {
+	local int i;
+
+	super.PostBeginPlay();
+
+	if ( !VM_augReplaced ) {
+		for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
+			if ( AddAugs[i] == 'AugShield' ) {
+				AddAugs[i] = 'AugEnviro';
+			}
+			else if ( AddAugs[i] == 'AugEMP' ) {
+				AddAugs[i] = 'AugShield';
+			}
+		}
+
+		VM_augReplaced = true;
+	}
 }
 
 // ----------------------------------------------------------------------

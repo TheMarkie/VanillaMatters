@@ -57,7 +57,7 @@ defaultproperties
 {
      mpAugValue=-0.160000
      mpEnergyDrain=40.000000
-     EnergyRate=10.000000
+     EnergyRate=15.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconTarget'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconTarget_Small'
      AugmentationName="Targeting"

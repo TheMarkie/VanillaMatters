@@ -6,7 +6,7 @@ class WeaponKarkianBump extends WeaponNPCMelee;
 defaultproperties
 {
      ShotTime=0.100000
-     HitDamage=15
+     HitDamage=25
      maxRange=80
      AccurateRange=80
      BaseAccuracy=0.000000

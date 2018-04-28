@@ -6,7 +6,7 @@ class WeaponDogBite extends WeaponNPCMelee;
 defaultproperties
 {
      ShotTime=0.500000
-     HitDamage=5
+     HitDamage=10
      maxRange=80
      AccurateRange=80
      Misc1Sound=Sound'DeusExSounds.Animal.DogAttack1'

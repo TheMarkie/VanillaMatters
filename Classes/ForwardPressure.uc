@@ -124,7 +124,6 @@ function BuildForwardPressure( float deltaTime ) {
 	else {
 		dist = VSize( lastLocation - fpZone1 );
 		if ( dist <= VM_fpZoneRadius ) {
-			log( "TEST3" );
 			pressure = FMin( ( diff / 160 ) * VM_fpTraveling, fpZoneDeposit1 );
 
 			AddForwardPressure( pressure );
@@ -144,11 +143,8 @@ function BuildForwardPressure( float deltaTime ) {
 		}
 		else {
 			dist = VSize( lastLocation - fpZone2 );
-			log( "TEST4" );
 			if ( dist <= VM_fpZoneRadius ) {
-				log( "TEST5" );
 				pressure = FMin( ( diff / 160 ) * VM_fpTraveling, fpZoneDeposit2 );
-				log( "TEST6" );
 
 				AddForwardPressure( pressure );
 

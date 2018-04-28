@@ -24,6 +24,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
+     ShotTime=0.600000
      reloadTime=0.000000
      HitDamage=20
      maxRange=64

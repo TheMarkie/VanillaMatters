@@ -5,7 +5,7 @@ class WeaponGraySpit extends WeaponNPCRanged;
 
 defaultproperties
 {
-     HitDamage=8
+     HitDamage=15
      maxRange=450
      AccurateRange=300
      AreaOfEffect=AOE_Cone

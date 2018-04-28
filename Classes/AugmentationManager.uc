@@ -25,6 +25,8 @@ var localized String NoAugInSlot;
 // Vanilla Matters
 var() travel float VM_energyMult;
 
+var travel int VM_realAugCount[7];		// Count of only the activatable augs in an aug location. For hotkey assignment purposes.
+
 // ----------------------------------------------------------------------
 // Network Replication
 // ----------------------------------------------------------------------
@@ -442,13 +444,26 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 
 	// Manage our AugLocs[] array
 	AugLocs[anAug.AugmentationLocation].augCount++;
+
+	// Vanilla Matters: Count this aug if it's not always active.
+	if ( anAug.bAlwaysActive ) {
+		VM_realAugCount[anAug.AugmentationLocation] = VM_realAugCount[anAug.AugmentationLocation] + 1;
+	}
 	
 	// Assign hot key to new aug 
 	// (must be after before augCount is incremented!)
-   if (Level.NetMode == NM_Standalone)	
-      anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
-   else
-      anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+//    if (Level.NetMode == NM_Standalone)	
+//       anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
+//    else
+//       anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+
+	// Vanilla Matters: Assign hotkeys using our method so we don't get always active augs taking up hotkey slots.
+	if ( Level.NetMode == NM_Standalone ) {
+		anAug.HotKeyNum = VM_realAugCount[anAug.AugmentationLocation] + AugLocs[anAug.AugmentationLocation].KeyBase;
+	}
+	else {
+		anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+	}
 
 	if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
 	    Player.AddAugmentationDisplay(anAug);
@@ -700,7 +715,10 @@ function ResetAugmentations()
     //Must also clear auglocs.
     for (LocIndex = 0; LocIndex < 7; LocIndex++)
     {
-        AugLocs[LocIndex].AugCount = 0;
+		AugLocs[LocIndex].AugCount = 0;
+		
+		// Vanilla Matters: Reset activatable aug count.
+		VM_realAugCount[LocIndex] = 0;
     }
    
 }
