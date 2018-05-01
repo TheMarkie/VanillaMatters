@@ -12916,7 +12916,7 @@ defaultproperties
      AugPrefs(3)=AugDefense
      AugPrefs(4)=AugBallistic
      AugPrefs(5)=AugShield
-     AugPrefs(6)=AugEMP
+     AugPrefs(6)=AugEnviro
      AugPrefs(7)=AugStealth
      AugPrefs(8)=AugAqualung
      MenuThemeName="Default"

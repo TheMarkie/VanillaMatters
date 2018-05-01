@@ -12,7 +12,7 @@ defaultproperties
      SpeechScanning=Sound'DeusExSounds.Robot.SecurityBot3Scanning'
      WalkingSpeed=1.000000
      bEmitDistress=True
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponRobotMachinegun')
+     InitialInventory(0)=(Inventory=Class'DeusEx.VMWeaponRobotMachinegun2')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=50)
      GroundSpeed=95.000000
      WaterSpeed=50.000000

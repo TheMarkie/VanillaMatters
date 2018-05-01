@@ -4,6 +4,31 @@
 class WeaponNPCRanged extends DeusExWeapon
 	abstract;
 
+// Vanilla Matters: Override Fire to handle muzzle flash.
+function Fire( float value ) {
+	local rotator rot;
+	local VMMuzzleFlash muzzleFlash;
+
+	PlayerViewOffset = - FireOffset;
+
+	super.Fire( value );
+
+	// VM: Only do muzzle flashes with instant hit weapons.
+	if ( bInstantHit && bHasMuzzleFlash ) {
+		rot = Pawn( Owner ).ViewRotation;
+		rot.Pitch = 0;
+
+		muzzleFlash = Spawn( class'VMMuzzleFlash', Owner,, Owner.Location + ( ( Owner.default.CollisionHeight - Owner.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( FireOffset >> rot ), rot );
+		if ( muzzleFlash != none ) {
+			muzzleFlash.DrawScale = muzzleFlash.default.DrawScale * ( ( Owner.CollisionHeight + Owner.CollisionRadius ) / 120 );
+
+			muzzleFlash.SetBase( Owner );
+		}
+
+		MuzzleFlashLight();
+	}
+}
+
 defaultproperties
 {
      LowAmmoWaterMark=0

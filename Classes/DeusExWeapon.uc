@@ -2658,7 +2658,23 @@ simulated function TraceFire( float Accuracy )
     //   EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
     //   EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
       
-    //   Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
+	//   Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
+	
+		// Vanilla Matters: Replace the vanilla "bullet drop" simulation with a more proper tracc format.
+		EndTrace = StartTrace + ( AccurateRange * vector( AdjustedAim ) ) + ( Accuracy * ( FRand() - 0.5 ) * Y * 1000 ) + ( Accuracy * ( FRand() - 0.5 ) * Z * 1000 );
+
+		Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
+
+		if ( Other == none && MaxRange > AccurateRange ) {
+			dist = MaxRange - AccurateRange;
+
+			HitLocation = EndTrace - StartTrace;
+			HitLocation.Z = HitLocation.Z - ( dist / 32 );
+			StartTrace = EndTrace;
+			EndTrace = EndTrace + ( Normal( HitLocation ) * dist );
+
+			Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
+		}
 
 		// randomly draw a tracer for relevant ammo types
 		// don't draw tracers if we're zoomed in with a scope - looks stupid
@@ -2680,6 +2696,9 @@ simulated function TraceFire( float Accuracy )
 			}
 		}
 
+		// Vanilla Matters: Process the trace hit after firing visual tracer.
+		ProcessTraceHit( Other, HitLocation, HitNormal, vector( AdjustedAim ), Y, Z );
+
 		// // check our range
 		// dist = Abs(VSize(HitLocation - Owner.Location));
 
@@ -2694,23 +2713,6 @@ simulated function TraceFire( float Accuracy )
 		// 	HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
 		// 	ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
 		// }
-
-		EndTrace = StartTrace + ( AccurateRange * vector( AdjustedAim ) ) + ( Accuracy * ( FRand() - 0.5 ) * Y * 1000 ) + ( Accuracy * ( FRand() - 0.5 ) * Z * 1000 );
-
-		Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
-
-		if ( Other == none && MaxRange > AccurateRange ) {
-			dist = MaxRange - AccurateRange;
-
-			HitLocation = EndTrace - StartTrace;
-			HitLocation.Z = HitLocation.Z - ( dist / 32 );
-			StartTrace = EndTrace;
-			EndTrace = EndTrace + ( Normal( HitLocation ) * dist );
-
-			Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
-		}
-
-		ProcessTraceHit( Other, HitLocation, HitNormal, vector( AdjustedAim ), Y, Z );
 	}
 
 	// otherwise we don't hit the target at all

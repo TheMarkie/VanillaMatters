@@ -9,7 +9,6 @@ defaultproperties
      reloadTime=1.000000
      HitDamage=15
      BaseAccuracy=0.600000
-     bHasMuzzleFlash=True
      AmmoName=Class'DeusEx.Ammo762mm'
      PickupAmmoCount=50
      bInstantHit=True
