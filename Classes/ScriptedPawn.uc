@@ -3115,7 +3115,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 					headshotMult = VM_hitBy.VM_HeadshotMult[VM_hitBy.GetWeaponSkillLevel()];
 				}
 				else {
-					headshotMult = 8.0;
+					// Vanilla Matters: Reduces base headshot mult to 4 to make it consistent with the mults to other bodyparts.
+					headshotMult = 4.0;
 				}
 
 				HealthHead = HealthHead - ( actualDamage * headshotMult );

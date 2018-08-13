@@ -30,7 +30,7 @@ defaultproperties
      reloadTime=3.000000
      maxRange=2400
      AccurateRange=1200
-     BaseAccuracy=1.000000
+     BaseAccuracy=0.900000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
@@ -45,10 +45,10 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
-     VM_ShotCount(0)=8
-     VM_ShotCount(1)=8
-     VM_ShotCount(2)=8
-     VM_ShotCount(3)=8
+     VM_ShotCount(0)=6
+     VM_ShotCount(1)=6
+     VM_ShotCount(2)=6
+     VM_ShotCount(3)=6
      AmmoName=Class'DeusEx.AmmoShell'
      ReloadCount=4
      PickupAmmoCount=4
