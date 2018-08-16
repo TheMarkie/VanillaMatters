@@ -13,7 +13,7 @@ function Fire(float Value)
 defaultproperties
 {
      ShotTime=0.500000
-     HitDamage=50
+     HitDamage=75
      AIMinRange=500.000000
      AIMaxRange=2000.000000
      AmmoName=Class'DeusEx.AmmoRocketMini'

@@ -446,7 +446,7 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 	AugLocs[anAug.AugmentationLocation].augCount++;
 
 	// Vanilla Matters: Count this aug if it's not always active.
-	if ( anAug.bAlwaysActive ) {
+	if ( !anAug.bAlwaysActive ) {
 		VM_realAugCount[anAug.AugmentationLocation] = VM_realAugCount[anAug.AugmentationLocation] + 1;
 	}
 	
