@@ -59,6 +59,10 @@ function RefreshesAugs() {
 			anAug.bIsActive = true;
 		}
 
+		if ( anAug.bAlwaysActive ) {
+			anAug.HotKeyNum = -1;
+		}
+
 		anAug = anAug.next;
 	}
 }
@@ -459,7 +463,12 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 
 	// Vanilla Matters: Assign hotkeys using our method so we don't get always active augs taking up hotkey slots.
 	if ( Level.NetMode == NM_Standalone ) {
-		anAug.HotKeyNum = VM_realAugCount[anAug.AugmentationLocation] + AugLocs[anAug.AugmentationLocation].KeyBase;
+		if ( !anAug.bAlwaysActive ) {
+			anAug.HotKeyNum = VM_realAugCount[anAug.AugmentationLocation] + AugLocs[anAug.AugmentationLocation].KeyBase;
+		}
+		else {
+			anAug.HotKeyNum = -1;
+		}
 	}
 	else {
 		anAug.HotKeyNum = anAug.MPConflictSlot + 2;

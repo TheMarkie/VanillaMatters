@@ -9,7 +9,7 @@ class MenuChoice_Cheats extends MenuChoice_EnabledDisabled;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	SetValue( int( !player.bCheatsEnabled ) );
+	SetValue( int( !player.VM_bCheatsEnabled ) );
 }
 
 // ----------------------------------------------------------------------
@@ -17,14 +17,14 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	player.bCheatsEnabled = !bool( GetValue() );
+	player.VM_bCheatsEnabled = !bool( GetValue() );
 }
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( int( !player.Default.bCheatsEnabled ) );
+	SetValue( int( !player.Default.VM_bCheatsEnabled ) );
 }
 
 // ----------------------------------------------------------------------

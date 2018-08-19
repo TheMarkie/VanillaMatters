@@ -31,6 +31,7 @@ defaultproperties
      reloadTime=3.000000
      maxRange=80
      AccurateRange=80
+     VM_bAlwaysAccurate=True
      bPenetrating=False
      StunDuration=10.000000
      bHasMuzzleFlash=False

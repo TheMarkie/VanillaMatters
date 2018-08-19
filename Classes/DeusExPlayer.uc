@@ -358,6 +358,7 @@ var Computers ActiveComputer;
 
 // Vanilla Matters
 var globalconfig bool VM_bEnableFP;
+var globalconfig bool VM_bCheatsEnabled;
 
 var travel ForwardPressure FPSystem;			// Forward Pressure system.
 
@@ -822,6 +823,11 @@ event TravelPostAccept()
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
+
+	// Vanilla Matters: Apply cheating status.
+	if ( Level.NetMode == NM_Standalone ) {
+		bCheatsEnabled = VM_bCheatsEnabled;
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -6328,6 +6334,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	local int  itemPosX, itemPosY;
 
 	// Vanilla Matters
+	local DeusExPickup pickup;
 	local int saveNumCopies;
 	local float boost;
 
@@ -6396,8 +6403,9 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			}
 
 			// VM: Gotta save NumCopies then set the item's NumCopies to 1 to avoid wonky behaviors
-			saveNumCopies = DeusExPickup( item ).NumCopies;
-			DeusExPickup( item ).NumCopies = 1;
+			pickup = DeusExPickup( item );
+			saveNumCopies = pickup.NumCopies;
+			pickup.NumCopies = 1;
 		}
 
 		// take it out of our hand
@@ -6501,7 +6509,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 				//item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
 
 				// Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency and just because.
-				CarriedDecoration.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
+				item.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
 
 				// play a throw anim
 				PlayAnim('Attack',,0.1);
@@ -6535,7 +6543,6 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 
 							// Vanilla Matters: Pass the inventory back in to allow recollecting the items.
 							corpseInv = POVCorpse( item ).VM_corpseInventory;
-
 							while ( corpseInv != None ) {
 								nextCorpseInv = corpseInv.Inventory;
 
@@ -6613,18 +6620,18 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	// Vanilla Matters: If you drop a lastInHand item, clear lastInHand.
 	if ( bDropped ) {
 		if ( item == VM_lastInHand ) {
-		  VM_lastInHand = None;
+			VM_lastInHand = None;
 		}
 
 		// VM: If dropped correctly, clear TakeHold.
 		if ( IsHolding( item ) ) {
-	    	VM_HeldInHand = None;
+			VM_HeldInHand = None;
 	    }
 	}
 
 	// VM: Restore NumCopies.
-	if ( saveNumCopies > 0 && saveNumCopies != DeusExPickup( item ).NumCopies ) {
-    	DeusExPickup( item ).NumCopies = saveNumCopies;
+	if ( pickup != none && saveNumCopies > 0 && saveNumCopies != pickup.NumCopies ) {
+		pickup.NumCopies = saveNumCopies;
     }
 
 	return bDropped;

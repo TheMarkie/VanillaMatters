@@ -155,6 +155,8 @@ function PreTravel()
 		if ( rescued ) {
 			flags.SetBool('FordSchickRescued', True,, 9);
 			flags.SetBool('FordSchickRescueDone', True,, 9);
+
+			Player.GoalCompleted( 'RescueFordSchick' );
 		}
 		else {
 			flags.SetBool('FordSchickRescued', False,, 9);
@@ -189,6 +191,9 @@ function Timer()
 	local SandraRenton Sandra;
 	local int count;
 
+	// Vanilla Matters
+	local int n;
+
 	Super.Timer();
 
 	if (localURL == "02_NYC_BATTERYPARK")
@@ -198,23 +203,43 @@ function Timer()
 		{
 			count = 0;
 
-			// count the number of living terrorists
-			foreach AllActors(class'Terrorist', T, 'ClintonTerrorist')
-				count++;
+			// // count the number of living terrorists
+			// foreach AllActors(class'Terrorist', T, 'ClintonTerrorist')
+			// 	count++;
 
-			// count the number of unconscious terrorists
-			foreach AllActors(class'TerroristCarcass', carc, 'ClintonTerrorist')
-				if (carc.itemName == "Unconscious")
-					count++;
+			// // count the number of unconscious terrorists
+			// foreach AllActors(class'TerroristCarcass', carc, 'ClintonTerrorist')
+			// 	if (carc.itemName == "Unconscious")
+			// 		count++;
 
-			// there are 5 total, player must have killed 2 or more, so
-			// check to see if there are fewer than 3 still alive or unconscious
-			if (count <= 3)
-			{
-				foreach AllActors(class'UNATCOTroop', guard, 'ClintonGuard')
-					guard.SetOrders('Wandering', '', True);
+			// // there are 5 total, player must have killed 2 or more, so
+			// // check to see if there are fewer than 3 still alive or unconscious
+			// if (count <= 3)
+			// {
+			// 	foreach AllActors(class'UNATCOTroop', guard, 'ClintonGuard')
+			// 		guard.SetOrders('Wandering', '', True);
 
-				flags.SetBool('BatteryParkSlaughter', True,, 6);
+			// 	flags.SetBool('BatteryParkSlaughter', True,, 6);
+			// }
+
+			// Vanilla Matters: Fix the slaughter flag being true even if the player does nothing.
+			n = 0;
+			foreach AllActors( class'TerroristCarcass', carc, 'ClintonTerrorist' ) {
+				count = count + 1;
+
+				if ( carc.KillerBindName == "JCDenton" && carc.itemName != "Unconscious" ) {
+					n = n + 1;
+				}
+			}
+
+			if ( count >= 2 ) {
+				foreach AllActors( class'UNATCOTroop', guard, 'ClintonGuard' ) {
+					guard.SetOrders( 'Wandering', '', True );
+				}
+			}
+
+			if ( n >= 2 ) {
+				flags.SetBool( 'BatteryParkSlaughter', True,, 6 );
 			}
 		}
 

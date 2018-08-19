@@ -204,6 +204,7 @@ var int		SimClipCount, flameShotCount, SimAmmoAmount;
 var float	TimeLockSet;
 
 // Vanilla Matters
+var() bool		VM_bAlwaysAccurate;				// Accuracy does not affect this weapon if set to true.
 var() int		VM_ShotCount[4];				// How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
 var() bool		VM_bSlowWithShotCount;			// Does the firing speed slow down as the count goes up? New firing speed is shot count * vanilla formula.
 var() float		VM_SpreadHorWithShotCount;		// Spread the shots as count goes up. Vanilla already does but relies on accuracy, meaning high accuracy would cram all the shots into one place.
@@ -2604,6 +2605,8 @@ simulated function TraceFire( float Accuracy )
 	local int i, numSlugs;
 	local float volume, radius;
 
+	// Vanilla Matters
+	local vector start;
 	local LaserSpot sp;
 	local int j;
 
@@ -2617,9 +2620,17 @@ simulated function TraceFire( float Accuracy )
 			Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
 	}
 
+	// Vanilla Matters: Set accuracy to 0 (full accuracy) if the weapon is always accurate.
+	if ( VM_bAlwaysAccurate ) {
+		Accuracy = 0.0;
+	}
+
 	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
 	StartTrace = ComputeProjectileStart(X, Y, Z);
 	AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 2.75*AimError, False, False);
+
+	// Vanilla Matters: Save the start of the trace.
+	start = StartTrace;
 
 	// check to see if we are a shotgun-type weapon
 	// if (AreaOfEffect == AOE_Cone)
@@ -2660,10 +2671,18 @@ simulated function TraceFire( float Accuracy )
       
 	//   Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
 	
-		// Vanilla Matters: Replace the vanilla "bullet drop" simulation with a more proper tracc format.
-		EndTrace = StartTrace + ( AccurateRange * vector( AdjustedAim ) ) + ( Accuracy * ( FRand() - 0.5 ) * Y * 1000 ) + ( Accuracy * ( FRand() - 0.5 ) * Z * 1000 );
+		// Vanilla Matters: Replace the vanilla "bullet drop" simulation with a more proper trace format.
+		StartTrace = start;
+		EndTrace = StartTrace + ( Accuracy * ( FRand() - 0.5 ) * Y * 1000 ) + ( Accuracy * ( FRand() - 0.5 ) * Z * 1000 ) + ( AccurateRange * vector( AdjustedAim ) );
 
 		Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
+
+	  	// Vanilla Matters: Debug particles to display the initial trace.
+		// dist = VSize( EndTrace - StartTrace );
+		// rot = rotator( EndTrace - StartTrace );
+		// for ( j = 0; j < dist / 16; j++ ) {
+		// 	Spawn( Class'LaserSpot',,, StartTrace + ( 16 * j * vector( rot ) ), );
+		// }
 
 		if ( Other == none && MaxRange > AccurateRange ) {
 			dist = MaxRange - AccurateRange;
@@ -2674,6 +2693,16 @@ simulated function TraceFire( float Accuracy )
 			EndTrace = EndTrace + ( Normal( HitLocation ) * dist );
 
 			Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
+
+			// Vanilla Matters: Debug particles to display the second "bullet drop" trace.
+			// dist = VSize( EndTrace - StartTrace );
+			// rot = Rotator( EndTrace - StartTrace );
+			// for ( j = 0; j < dist / 16; j++ ) {
+			// 	sp = Spawn( Class'LaserSpot',,, StartTrace + ( 16 * j * Vector( rot ) ), );
+			// 	if ( sp != none ) {
+			// 		sp.Skin = Texture'LaserSpot2';
+			// 	}
+			// }
 		}
 
 		// randomly draw a tracer for relevant ammo types

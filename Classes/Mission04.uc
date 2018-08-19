@@ -9,6 +9,8 @@ class Mission04 expands MissionScript;
 // Stuff to check at first frame
 // ----------------------------------------------------------------------
 
+var int ffcount;
+
 function FirstFrame()
 {
 	local ScriptedPawn pawn;
@@ -26,6 +28,12 @@ function FirstFrame()
 			foreach AllActors(class'ScriptedPawn', pawn)
 				if (pawn.IsA('UNATCOTroop') || pawn.IsA('SecurityBot2'))
 					pawn.EnterWorld();
+		}
+
+		// Vanilla Matters: Deletes vanilla flags if Paul is indicated to be safe.
+		if ( flags.GetBool( 'VM_RaidCleared' ) ) {
+			flags.DeleteFlag( 'PaulDenton_Dead', FLAG_Bool );
+			flags.DeleteFlag( 'PlayerBailedOutWindow', FLAG_Bool );
 		}
 	}
 	else if (localURL == "04_NYC_FREECLINIC")
@@ -156,28 +164,30 @@ function Timer()
 			}
 		}
 
-		if (!flags.GetBool('M04RaidTeleportDone') &&
-			flags.GetBool('ApartmentEntered'))
-		{
-			if (flags.GetBool('NSFSignalSent'))
-			{
-				foreach AllActors(class'ScriptedPawn', pawn)
-				{
-					if (pawn.IsA('UNATCOTroop') || pawn.IsA('MIB'))
-						pawn.EnterWorld();
-					else if (pawn.IsA('SandraRenton') || pawn.IsA('GilbertRenton') || pawn.IsA('HarleyFilben'))
-						pawn.LeaveWorld();
-				}
+		// if (!flags.GetBool('M04RaidTeleportDone') &&
+		// 	flags.GetBool('ApartmentEntered'))
+		// {
+		// 	if (flags.GetBool('NSFSignalSent'))
+		// 	{
+		// 		foreach AllActors(class'ScriptedPawn', pawn)
+		// 		{
+		// 			if (pawn.IsA('UNATCOTroop') || pawn.IsA('MIB'))
+		// 				pawn.EnterWorld();
+		// 			else if (pawn.IsA('SandraRenton') || pawn.IsA('GilbertRenton') || pawn.IsA('HarleyFilben'))
+		// 				pawn.LeaveWorld();
+		// 		}
 
-				foreach AllActors(class'PaulDenton', Paul)
-				{
-					Player.StartConversationByName('TalkedToPaulAfterMessage', Paul, False, False);
-					break;
-				}
+		// 		foreach AllActors(class'PaulDenton', Paul)
+		// 		{
+		// 			Player.StartConversationByName('TalkedToPaulAfterMessage', Paul, False, False);
+		// 			break;
+		// 		}
 
-				flags.SetBool('M04RaidTeleportDone', True,, 5);
-			}
-		}
+		// 		flags.SetBool('M04RaidTeleportDone', True,, 5);
+		// 	}
+		// }
+
+		// Vanilla Matters: Moved the raid start check to Tick.
 
 		// make the MIBs mortal
 		if (!flags.GetBool('MS_MIBMortal'))
@@ -315,11 +325,31 @@ function Timer()
 				flags.SetBool('MostWarehouseTroopsDead', True);
 		}
 	}
-	// Vanilla Matters: Deletes vanilla flags if Paul is indicated to be safe.
-	else if ( localURL == "04_NYC_STREET" ) {
-		if ( flags.GetBool( 'VM_RaidCleared' ) ) {
-			flags.DeleteFlag( 'PaulDenton_Dead', FLAG_Bool );
-			flags.DeleteFlag( 'PlayerBailedOutWindow', FLAG_Bool );
+}
+
+// Vanilla Matters: Fix a problem with Paul's raid-starting conversation being triggered inconsistently.
+function Tick( float deltaTime ) {
+	local ScriptedPawn pawn;
+	local PaulDenton Paul;
+
+	if ( localURL == "04_NYC_HOTEL" ) {
+		if ( flags != none && !flags.GetBool( 'M04RaidTeleportDone' ) && flags.GetBool( 'ApartmentEntered' ) && flags.GetBool( 'NSFSignalSent' ) ) {
+			foreach AllActors( class'ScriptedPawn', pawn ) {
+				if ( pawn.IsA( 'UNATCOTroop' ) || pawn.IsA( 'MIB' ) ) {
+					pawn.EnterWorld();
+				}
+				else if ( pawn.IsA( 'SandraRenton' ) || pawn.IsA( 'GilbertRenton' ) || pawn.IsA( 'HarleyFilben' ) ) {
+					pawn.LeaveWorld();
+				}
+			}
+
+			foreach AllActors( class'PaulDenton', Paul ) {
+				Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
+
+				break;
+			}
+
+			flags.SetBool( 'M04RaidTeleportDone', True,, 5 );
 		}
 	}
 }

@@ -30,7 +30,7 @@ defaultproperties
      reloadTime=3.000000
      maxRange=2400
      AccurateRange=1200
-     BaseAccuracy=0.900000
+     BaseAccuracy=0.800000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
