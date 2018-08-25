@@ -39,6 +39,7 @@ function FirstFrame()
 			if ( np.Name == 'Newspaper1' ) {
 				// VM: Move it to your desk.
 				np.SetLocation( vect( -215, 1240, 287.5 ) );
+				
 				break;
 			}
 		}

@@ -104,6 +104,11 @@ function GetScreenResolutions()
 	CurrentRes   = player.ConsoleCommand("GetCurrentRes");
 	AvailableRes = player.ConsoleCommand("GetRes");
 
+	// Vanilla Matters: Use a custom command specific to the VM launcher to fetch default resolutions if none is found.
+	if ( AvailableRes == "" ) {
+		AvailableRes = player.ConsoleCommand( "GetDefaultRes" );
+	}
+
 	resNum = 0;
 	choiceCount = 0;
 	ParseString = AvailableRes;

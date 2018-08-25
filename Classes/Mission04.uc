@@ -3,20 +3,24 @@
 //=============================================================================
 class Mission04 expands MissionScript;
 
+// Vanilla Matters
+var() int VM_raidReward;
+var() string VM_raidRewardMsg;
+
 // ----------------------------------------------------------------------
 // FirstFrame()
 // 
 // Stuff to check at first frame
 // ----------------------------------------------------------------------
 
-var int ffcount;
-
 function FirstFrame()
 {
 	local ScriptedPawn pawn;
 
-	// Vanilla Matters: Used to spawn Ford.
+	// Vanilla Matters
+	local FlagTrigger ft;
 	local FordSchick Ford;
+	local PaulDenton Paul;
 
 	Super.FirstFrame();
 
@@ -34,6 +38,13 @@ function FirstFrame()
 		if ( flags.GetBool( 'VM_RaidCleared' ) ) {
 			flags.DeleteFlag( 'PaulDenton_Dead', FLAG_Bool );
 			flags.DeleteFlag( 'PlayerBailedOutWindow', FLAG_Bool );
+
+			if ( !flags.GetBool( 'VM_RaidRewarded' ) ) {
+				Player.SkillPointsAdd( VM_raidReward );
+				Player.ClientMessage( VM_raidRewardMsg );
+
+				flags.SetBool( 'VM_RaidRewarded', true );
+			}
 		}
 	}
 	else if (localURL == "04_NYC_FREECLINIC")
@@ -55,6 +66,15 @@ function FirstFrame()
 			if (!flags.GetBool('JoJoFine_Dead'))
 				foreach AllActors(class'ScriptedPawn', pawn, 'JoJoInLobby')
 					pawn.EnterWorld();
+		}
+
+		// Vanilla Matters: Fix Paul sometime disappearing.
+		foreach AllActors( class'FlagTrigger', ft ) {
+			if ( ft.Name == 'FlagTrigger17' ) {
+				ft.Event = '';
+
+				break;
+			}
 		}
 	}
 	// Vanilla Matters: There's no code to spawn Ford in vanilla though he's still in the map, maybe he was never intended to be spawned? But he's functional so let's do it anyway.
@@ -331,6 +351,7 @@ function Timer()
 function Tick( float deltaTime ) {
 	local ScriptedPawn pawn;
 	local PaulDenton Paul;
+	local FlagTrigger ft;
 
 	if ( localURL == "04_NYC_HOTEL" ) {
 		if ( flags != none && !flags.GetBool( 'M04RaidTeleportDone' ) && flags.GetBool( 'ApartmentEntered' ) && flags.GetBool( 'NSFSignalSent' ) ) {
@@ -349,6 +370,15 @@ function Tick( float deltaTime ) {
 				break;
 			}
 
+			// Vanilla Matters: Make Paul walk all the way to the door instead of just the lobby, by moving the Leaving trigger to near the door.
+			foreach AllActors( class'FlagTrigger', ft ) {
+				if ( ft.Name == 'FlagTrigger2' ) {
+					ft.SetLocation( vect( -413, 0, -49 ) );
+
+					break;
+				}
+			}
+
 			flags.SetBool( 'M04RaidTeleportDone', True,, 5 );
 		}
 	}
@@ -359,4 +389,6 @@ function Tick( float deltaTime ) {
 
 defaultproperties
 {
+     VM_raidReward=150
+     VM_raidRewardMsg="You helped Paul to safety"
 }

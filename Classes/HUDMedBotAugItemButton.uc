@@ -25,7 +25,7 @@ event DrawWindow(GC gc)
 	// 	colIcon = colIconNormal;
 
 	// Vanilla Matters: We can reinstall the same aug again to upgrade it so it shouldn't be grayed out.
-	if ( ( bSlotFull && !bHasIt ) || !Augmentation( GetClientObject() ).CanBeUpgraded() ) {
+	if ( ( bSlotFull && !bHasIt ) || ( !Augmentation( GetClientObject() ).CanBeUpgraded() && Augmentation( GetClientObject() ).MaxLevel > 1 ) ) {
 		colIcon = colIconDisabled;
 	}
 	else {

@@ -5,6 +5,10 @@ class Mission06 expands MissionScript;
 
 var float fireTime;
 
+// Vanilla Matters
+var() int VM_miguelReward;
+var() string VM_miguelRewardMsg;
+
 // ----------------------------------------------------------------------
 // FirstFrame()
 // 
@@ -279,6 +283,13 @@ function FirstFrame()
 				flags.SetBool('GothAtButcher', False,, 8);
 				flags.SetBool('GothAtVase', True,, 8);
 			}
+		}
+	}
+	// Vanilla Matters: Award SPs for rescuing Miguel, we'll do it here so that the player sees it.
+	else if ( localURL == "06_HONGKONG_HELIBASE" ) {
+		if ( !flags.GetBool( 'Miguel_Dead' ) && flags.GetBool( 'MiguelWandering' ) ) {
+			Player.SkillPointsAdd( VM_miguelReward );
+			Player.ClientMessage( VM_miguelRewardMsg );
 		}
 	}
 }
@@ -669,4 +680,6 @@ function TeleportPawn(ScriptedPawn pawn, name patrolTag, name orders, optional b
 
 defaultproperties
 {
+     VM_miguelReward=100
+     VM_miguelRewardMsg="You helped Miguel to safety"
 }

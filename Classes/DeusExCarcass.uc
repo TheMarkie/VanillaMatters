@@ -421,19 +421,23 @@ function Frob(Actor Frobber, Inventory frobWith)
 				}
 				else if ( (item.IsA('DeusExWeapon')) )
 				{
-               // Any weapons have their ammo set to a random number of rounds (1-4)
-               // unless it's a grenade, in which case we only want to dole out one.
-               // DEUS_EX AMSD In multiplayer, give everything away.
-               W = DeusExWeapon(item);
-               
-               // Grenades and LAMs always pickup 1
-               if (W.IsA('WeaponNanoVirusGrenade') || 
-                  W.IsA('WeaponGasGrenade') || 
-                  W.IsA('WeaponEMPGrenade') ||
-                  W.IsA('WeaponLAM'))
-                  W.PickupAmmoCount = 1;
-               else if (Level.NetMode == NM_Standalone)
-                  W.PickupAmmoCount = Rand(4) + 1;
+					// Any weapons have their ammo set to a random number of rounds (1-4)
+					// unless it's a grenade, in which case we only want to dole out one.
+					// DEUS_EX AMSD In multiplayer, give everything away.
+					W = DeusExWeapon(item);
+
+					// Grenades and LAMs always pickup 1
+					if (W.IsA('WeaponNanoVirusGrenade') || 
+						W.IsA('WeaponGasGrenade') || 
+						W.IsA('WeaponEMPGrenade') ||
+						W.IsA('WeaponLAM'))
+						W.PickupAmmoCount = 1;
+					// else if (Level.NetMode == NM_Standalone)
+					// 	W.PickupAmmoCount = Rand(4) + 1;
+					// Vanilla Matters: Prevent giving weapons more ammo after repeated loot attempts.
+					else if ( Level.NetMode == NM_Standalone && !VM_bSearchedOnce ) {
+						W.PickupAmmoCount = Rand( 4 ) + 1;
+					}
 				}
 
 				if (item != None)
@@ -517,6 +521,9 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 									// Mark it as 0 to prevent it from being added twice
 									Weapon(item).AmmoType.AmmoAmount = 0;
+
+									// Vanilla Matters
+									Weapon( item ).PickUpAmmoCount = 0;
 								}
 								// Vanilla Matters: Let the player know if they can't have anymore of something.
 								else if ( !VM_bSearchedOnce && AmmoType != None ) {
@@ -544,7 +551,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 							// 	P.ClientMessage(Sprintf(Player.InventoryFull, item.itemName));
 
 							// Vanilla Matters: If the player can't pick it up on their second try, they're to grab the corpse instead.
-							if ( W == None && !player.FindInventorySlot( item, true ) ) {
+							if ( ( W == None && !player.FindInventorySlot( item, true ) ) || ( W != none && Weapon( item ).AmmoType.AmmoAmount <= 0 ) ) {
 								if ( VM_bSearchedOnce ) {
 									if ( nextItem == None ) {
 										spawnPOVCorpse( Frobber, frobWith, true );
@@ -558,13 +565,15 @@ function Frob(Actor Frobber, Inventory frobWith)
 							}
 
 							// Only destroy the weapon if the player already has it.
-							if (W != None)
-							{
-								// Destroy the weapon, baby!
-								DeleteInventory(item);
-								item.Destroy();
-								item = None;
-							}
+							// if (W != None)
+							// {
+							// 	// Destroy the weapon, baby!
+							// 	DeleteInventory(item);
+							// 	item.Destroy();
+							// 	item = None;
+							// }
+
+							// Vanilla Matters: Allow the player to pick it up again at another time.
 
 							bPickedItemUp = True;
 						}
