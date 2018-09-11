@@ -5,12 +5,12 @@
 class PersonaScreenSkills extends PersonaScreenBaseWindow;
 
 // Vanilla Matters: Custom background and border to fix the empty spot of the removed skills.
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.pcx"		NAME="SkillsBackground_4"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.pcx"		NAME="SkillsBackground_5"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.pcx"		NAME="SkillsBackground_6"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_4.pcx"		NAME="SkillsBorder_4"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_5.pcx"		NAME="SkillsBorder_5"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_6.pcx"		NAME="SkillsBorder_6"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.bmp"		NAME="SkillsBackground_4"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.bmp"		NAME="SkillsBackground_5"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.bmp"		NAME="SkillsBackground_6"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_4.bmp"		NAME="SkillsBorder_4"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_5.bmp"		NAME="SkillsBorder_5"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_6.bmp"		NAME="SkillsBorder_6"		GROUP="VMUI" MIPS=Off
 
 var PersonaActionButtonWindow btnUpgrade;
 var TileWindow                winTile;

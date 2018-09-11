@@ -334,6 +334,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 	// Vanilla Matters
 	local bool bHeldAlready;		// Just something to make sure no two pickups are taken held in the same search.
 	local Weapon tempW;				// So we don't have to keep casting.
+	local bool isGrenade;
 
 //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -344,48 +345,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 	if (bQueuedDestroy)
 		return;
 
-	// Vanilla Matters: We don't need this whole chunk below now that we have our own function.
-	if ( spawnPOVCorpse( Frobber, frobWith ) ) {
+	// Vanilla Matters: We have our own function to handle corpse spawning.
+	if ( SpawnPOVCorpse( Frobber, frobWith ) ) {
 		return;
 	}
-
-	// if we've already been searched, let the player pick us up
-	// don't pick up animal carcii
-	// if (!bAnimalCarcass)
-	// {
-      // DEUS_EX AMSD Since we don't have animations for carrying corpses, and since it has no real use in multiplayer,
-      // and since the PutInHand propagation doesn't just work, this is work we don't need to do.
-      // Were you to do it, you'd need to check the respawning issue, destroy the POVcorpse it creates and point to the
-      // one in inventory (like I did when giving the player starting inventory).
-	// 	if ((Inventory == None) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
-	// 	{
-	// 		if (!bInvincible)
-	// 		{
-	// 			corpse = Spawn(class'POVCorpse');
-	// 			if (corpse != None)
-	// 			{
-	// 				// destroy the actual carcass and put the fake one
-	// 				// in the player's hands
-	// 				corpse.carcClassString = String(Class);
-	// 				corpse.KillerAlliance = KillerAlliance;
-	// 				corpse.KillerBindName = KillerBindName;
-	// 				corpse.Alliance = Alliance;
-	// 				corpse.bNotDead = bNotDead;
-	// 				corpse.bEmitCarcass = bEmitCarcass;
-	// 				corpse.CumulativeDamage = CumulativeDamage;
-	// 				corpse.MaxDamage = MaxDamage;
-	// 				corpse.CorpseItemName = itemName;
-	// 				corpse.CarcassName = CarcassName;
-	// 				corpse.Frob(player, None);
-	// 				corpse.SetBase(player);
-	// 				player.PutInHand(corpse);
-	// 				bQueuedDestroy=True;
-	// 				Destroy();
-	// 				return;
-	// 			}
-	// 		}
-	// 	}
-	// }
 
 	bFoundSomething = False;
 	bSearchMsgPrinted = False;
@@ -427,14 +390,12 @@ function Frob(Actor Frobber, Inventory frobWith)
 					W = DeusExWeapon(item);
 
 					// Grenades and LAMs always pickup 1
-					if (W.IsA('WeaponNanoVirusGrenade') || 
-						W.IsA('WeaponGasGrenade') || 
-						W.IsA('WeaponEMPGrenade') ||
-						W.IsA('WeaponLAM'))
-						W.PickupAmmoCount = 1;
-					// else if (Level.NetMode == NM_Standalone)
-					// 	W.PickupAmmoCount = Rand(4) + 1;
 					// Vanilla Matters: Prevent giving weapons more ammo after repeated loot attempts.
+					if ( W.IsA( 'WeaponNanoVirusGrenade' ) || W.IsA( 'WeaponGasGrenade' ) || W.IsA( 'WeaponEMPGrenade' ) || W.IsA( 'WeaponLAM' ) ) {
+						W.PickupAmmoCount = 1;
+
+						isGrenade = true;
+					}
 					else if ( Level.NetMode == NM_Standalone && !VM_bSearchedOnce ) {
 						W.PickupAmmoCount = Rand( 4 ) + 1;
 					}
@@ -505,11 +466,11 @@ function Frob(Actor Frobber, Inventory frobWith)
 									AmmoType = None;
 								}
 
-                       if ((AmmoType != None) && (AmmoType.AmmoAmount < AmmoType.MaxAmmo))
+								if ((AmmoType != None) && (AmmoType.AmmoAmount < AmmoType.MaxAmmo))
 								{
-                           AmmoType.AddAmmo(Weapon(item).PickupAmmoCount);
-                           AddReceivedItem(player, AmmoType, Weapon(item).PickupAmmoCount);
-                           
+									AmmoType.AddAmmo(Weapon(item).PickupAmmoCount);
+									AddReceivedItem(player, AmmoType, Weapon(item).PickupAmmoCount);
+
 									// Update the ammo display on the object belt
 									player.UpdateAmmoBeltText(AmmoType);
 
@@ -547,8 +508,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 							// and the player can't pickup this weapon, so the player at least knows
 							// if he empties some inventory he can get something potentially cooler
 							// than he already has. 
-							// if ((W == None) && (!player.FindInventorySlot(item, True)))
-							// 	P.ClientMessage(Sprintf(Player.InventoryFull, item.itemName));
 
 							// Vanilla Matters: If the player can't pick it up on their second try, they're to grab the corpse instead.
 							if ( ( W == None && !player.FindInventorySlot( item, true ) ) || ( W != none && Weapon( item ).AmmoType.AmmoAmount <= 0 ) ) {
@@ -564,16 +523,15 @@ function Frob(Actor Frobber, Inventory frobWith)
 								}
 							}
 
-							// Only destroy the weapon if the player already has it.
-							// if (W != None)
-							// {
-							// 	// Destroy the weapon, baby!
-							// 	DeleteInventory(item);
-							// 	item.Destroy();
-							// 	item = None;
-							// }
-
 							// Vanilla Matters: Allow the player to pick it up again at another time.
+							
+							// Vanilla Matters: Get rid of the grenade weapon if its ammo's been looted.
+							if ( isGrenade && Weapon( item ).PickUpAmmoCount <= 0 ) {
+								DeleteInventory( item );
+								item.Destroy();
+
+								item = none;
+							}
 
 							bPickedItemUp = True;
 						}
@@ -609,8 +567,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 								}
 								else
 								{
-									//P.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName));
-
 									// Vanilla Matters: Let the player grab the corpse on second try, while saving the inventory info, if the item still can't be picked up.
 									if ( !bHeldAlready && player.TakeHold( item ) ) {
 										P.ClientMessage( Sprintf( msgCannotPickup, item.itemName ) );
@@ -647,33 +603,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 						else
 						{
 							// check if the pawn is allowed to pick this up
-							// if ((P.Inventory == None) || (Level.Game.PickupQuery(P, item)))
-							// {
-							// 	DeusExPlayer(P).FrobTarget = item;
-							// 	if (DeusExPlayer(P).HandleItemPickup(Item) != False)
-							// 	{
-       //                     DeleteInventory(item);
-
-       //                     // DEUS_EX AMSD Belt info isn't always getting cleaned up.  Clean it up.
-       //                     item.bInObjectBelt=False;
-       //                     item.BeltPos=-1;
-									
-       //                     item.SpawnCopy(P);
-
-							// 		// Show the item received in the ReceivedItems window and also 
-							// 		// display a line in the Log
-							// 		AddReceivedItem(player, item, 1);
-									
-							// 		P.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
-							// 		PlaySound(Item.PickupSound);
-							// 	}
-							// }
-							// else
-							// {
-							// 	DeleteInventory(item);
-							// 	item.Destroy();
-							// 	item = None;
-							// }
 
 							// Vanilla Matters: Clean up all this part to fit in with the quick use functionality.
 							if ( P.Inventory == None || Level.Game.PickupQuery( P, item ) ) {
@@ -746,7 +675,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 }
 
 // Vanilla Matters: Move the POVCorpse spawning out of Frob() to have better control over it.
-function bool spawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool bIgnoresInventory ) {
+function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool bIgnoresInventory ) {
 	local DeusExPlayer player;
 	local POVCorpse corpse;
 	local Inventory item;

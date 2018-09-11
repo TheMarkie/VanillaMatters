@@ -3,10 +3,10 @@
 //=============================================================================
 
 // Vanilla Matters: Custom textures for new menu slot.
-#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_1.pcx"		NAME="MenuOptionsBackground_1"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_2.pcx"		NAME="MenuOptionsBackground_2"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_3.pcx"		NAME="MenuOptionsBackground_3"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_4.pcx"		NAME="MenuOptionsBackground_4"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_1.bmp"		NAME="MenuOptionsBackground_1"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_2.bmp"		NAME="MenuOptionsBackground_2"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_3.bmp"		NAME="MenuOptionsBackground_3"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuOptionsBackground_4.bmp"		NAME="MenuOptionsBackground_4"		GROUP="VMUI" MIPS=Off
 
 class MenuSettings expands MenuUIMenuWindow;
 

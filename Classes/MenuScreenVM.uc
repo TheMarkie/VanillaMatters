@@ -3,9 +3,9 @@
 //=============================================================================
 
 // // Vanilla Matters: Custom textures for this menu.
-#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_1.pcx"		NAME="MenuVMBackground_1"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_2.pcx"		NAME="MenuVMBackground_2"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_3.pcx"		NAME="MenuVMBackground_3"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_1.bmp"		NAME="MenuVMBackground_1"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_2.bmp"		NAME="MenuVMBackground_2"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_3.bmp"		NAME="MenuVMBackground_3"		GROUP="VMUI" MIPS=Off
 
 class MenuScreenVM expands MenuUIScreenWindow;
 

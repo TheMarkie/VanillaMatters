@@ -4,8 +4,8 @@
 class HUDHitDisplay expands HUDBaseWindow;
 
 // Vanilla Matters: Custom border for FP bar and a window for shield compatible HUD.
-#exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBorder_1.pcx"		NAME="HUDHitDisplayBorder_1"		GROUP="VMUI" MIPS=Off
-// #exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBody.pcx"		NAME="HUDHitDisplay_Body"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBorder_1.bmp"		NAME="HUDHitDisplayBorder_1"		GROUP="VMUI" MIPS=Off
+// #exec TEXTURE IMPORT FILE="Textures\HUDHitDisplayBody.bmp"		NAME="HUDHitDisplay_Body"		GROUP="VMUI" MIPS=Off
 
 struct BodyPart
 {

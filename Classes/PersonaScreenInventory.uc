@@ -1291,6 +1291,10 @@ function EnableButtons()
 				btnUse.DisableWindow();
 				btnEquip.DisableWindow();
 			}
+			// Vanilla Matters: Disable use button on medkits and bioelectric cells if the player has full health or full energy respectively.
+			else if ( ( MedKit( inv ) != none && Player.Health >= Player.default.Health ) || ( BioelectricCell( inv ) != none && Player.Energy >= Player.EnergyMax ) ) {
+				btnUse.DisableWindow();
+			}
 			else 
 			{
 				if ((inv == player.inHand ) || (inv == player.inHandPending))
@@ -1371,26 +1375,7 @@ function UpdateDragMouse(float newX, float newY)
 		bValidDrop = False;
 		bOverrideButtonColor = False;
 
-		// if ((findWin == winItems) || (findWin == dragButton ))
-		// {
-		// 	if ( findWin == dragButton )
-		// 		ConvertCoordinates(Self, newX, newY, winItems, relX, relY);
-
-		// 	bValidDrop = CalculateItemPosition(
-		// 		Inventory(dragButton.GetClientObject()), 
-		// 		relX, relY, 
-		// 		slotX, slotY);
-
-		// 	// If the mouse is still in the window, don't actually hide the 
-		// 	// button just yet.
-
-		// 	if (bValidDrop && (player.IsEmptyItemSlot(Inventory(invButton.GetClientObject()), slotX, slotY)))
-		// 		SetItemButtonPos(invButton, slotX, slotY);
-		// }
-
-		// Check to see if we're over the Object Belt
-		//else if (HUDObjectSlot(findWin) != None)
-		// Vanilla Matters: We're gonna cut the mess above to do our own indicator handling.
+		// Vanilla Matters
 		if ( HUDObjectSlot( findWin ) != None )
 		{
 			bValidDrop = True;
@@ -1515,8 +1500,6 @@ function UpdateDragMouse(float newX, float newY)
 		objSlot = HUDObjectSlot(dragButton);
 		bValidDrop = False;
 
-		// Can only be dragged over another object slot
-		//if (findWin.IsA('HUDObjectSlot'))
 		// Vanilla Matters: Fix an accessed none when dragging a belt item too far outside of the inventory window.
 		if ( findWin != None && HUDObjectSlot( findWin ) != None )
 		{
@@ -1557,7 +1540,7 @@ function UpdateDragMouse(float newX, float newY)
 }
 
 // Vanilla Matters: We're gonna do our custom DrawWindow here incase we need to draw swap indicators.
-event DrawWindow( GC gc ) {
+function DrawWindow( GC gc ) {
 	local int i;
 
 	Super.DrawWindow( gc );
@@ -1787,12 +1770,7 @@ function FinishButtonDrag()
 		}
 		else
 		{	
-			// if (dragTarget == dragButton)
-			// {
-			// 	MoveItemButton(PersonaInventoryItemButton(dragButton), PersonaInventoryItemButton(dragButton).dragPosX, PersonaInventoryItemButton(dragButton).dragPosY );
-			// }
-			// else if ( HUDObjectSlot(lastDragOverButton) != None )
-			// Vanilla Matters: We're gonna handle the above by ourselves.
+			// Vanilla Matters
 			if ( HUDObjectSlot( lastDragOverButton ) != None )
 			{
 				beltSlot = HUDObjectSlot(lastDragOverButton).objectNum;
@@ -1806,12 +1784,6 @@ function FinishButtonDrag()
 				// Restore item to original slot
 				ReturnButton(PersonaInventoryItemButton(dragButton));
 			}
-			// else if (lastDragOverButton != dragButton)
-			// {
-			// 	//move back to original spot
-			// 	ReturnButton(PersonaInventoryItemButton(dragButton));
-			// }
-			// Vanilla Matters: We don't need this check anymore since we're gonna handle it ourselves.
 		}
 
 		// Vanilla Matters: Swap the items if possible, otherwise resorts to vanilla behaviors.

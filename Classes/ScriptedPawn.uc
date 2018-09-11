@@ -5145,8 +5145,8 @@ function PlayDying(name damageType, vector hitLoc)
 	// don't scream if we are stunned
 	// if ((damageType == 'Stunned') || (damageType == 'KnockedOut') ||
 	//     (damageType == 'Poison') || (damageType == 'PoisonEffect'))
-	// Vanilla Matters: Add in TearGas as a non-lethal damage source.
-	if ( damageType == 'Stunned' || damageType == 'KnockedOut' || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'TearGas' )
+	// Vanilla Matters: Add in HalonGas as a non-lethal damage source.
+	if ( damageType == 'Stunned' || damageType == 'KnockedOut' || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas' )
 	{
 		bStunned = True;
 		if (bIsFemale)

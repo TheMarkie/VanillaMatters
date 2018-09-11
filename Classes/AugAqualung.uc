@@ -22,40 +22,11 @@ state Active
 	}
 
 Begin:
-	// mult = Player.SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-	// pct = Player.swimTimer / Player.swimDuration;
-	// Player.UnderWaterTime = LevelValues[CurrentLevel];
-	// Player.swimDuration = Player.UnderWaterTime * mult;
-	// Player.swimTimer = Player.swimDuration * pct;
-
-	// if (( Level.NetMode != NM_Standalone ) && Player.IsA('Human') )
-	// {
-	// 	mult = Player.SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-	// 	Player.WaterSpeed = Human(Player).Default.mpWaterSpeed * 2.0 * mult;
-	// }
-
 	// Vanilla Matters: Bonus is now all handled in deusexplayer.
 	// VM: We're gonna deal with the last aug level by a timer.
 	if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
 		SetTimer( 1, true );
 	}
-}
-
-function Deactivate()
-{
-	Super.Deactivate();
-	
-	// mult = Player.SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-	// pct = Player.swimTimer / Player.swimDuration;
-	// Player.UnderWaterTime = Player.Default.UnderWaterTime;
-	// Player.swimDuration = Player.UnderWaterTime * mult;
-	// Player.swimTimer = Player.swimDuration * pct;
-
-	// if (( Level.NetMode != NM_Standalone ) && Player.IsA('Human') )
-	// {
-	// 	mult = Player.SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-	// 	Player.WaterSpeed = Human(Player).Default.mpWaterSpeed * mult;
-	// }
 }
 
 simulated function PreBeginPlay()

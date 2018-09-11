@@ -37,78 +37,6 @@ replication
    //    TriggerDefenseAugHUD, SetDefenseAugStatus;
 }
 
-// state Active
-// {
-// 	function Timer()
-// 	{
-// 		local DeusExProjectile minproj;
-// 		local float mindist;
-
-// 		minproj = None;
-
-//       // DEUS_EX AMSD Multiplayer check
-//       if (Player == None)
-//       {
-//          SetTimer(0.1,False);
-//          return;
-//       }
-
-// 		// In multiplayer propagate a sound that will let others know their in an aggressive defense field
-// 		// with range slightly greater than the current level value of the aug
-// 		if ( (Level.NetMode != NM_Standalone) && ( Level.Timeseconds > defenseSoundTime ))
-// 		{
-// 			Player.PlaySound(Sound'AugDefenseOn', SLOT_Interact, 1.0, ,(LevelValues[CurrentLevel]*1.33), 0.75);
-// 			defenseSoundTime = Level.Timeseconds + defenseSoundDelay;
-// 		}
-
-//       //DEUS_EX AMSD Exported to function call for duplication in multiplayer.
-//       minproj = FindNearestProjectile();
-
-// 		// if we have a valid projectile, send it to the aug display window
-// 		if (minproj != None)
-// 		{
-//          bDefenseActive = True;
-//          mindist = VSize(Player.Location - minproj.Location);
-
-//          // DEUS_EX AMSD In multiplayer, let the client turn his HUD on here.
-//          // In singleplayer, turn it on normally.
-//          if (Level.Netmode != NM_Standalone)
-//             TriggerDefenseAugHUD();
-//          else
-//          {         
-//             SetDefenseAugStatus(True,CurrentLevel,minproj);
-//          }
-
-// 			// play a warning sound
-// 			Player.PlaySound(sound'GEPGunLock', SLOT_None,,,, 2.0);
-
-// 			if (mindist < LevelValues[CurrentLevel])
-// 			{
-//             minproj.bAggressiveExploded=True;
-// 				minproj.Explode(minproj.Location, vect(0,0,1));
-// 				Player.PlaySound(sound'ProdFire', SLOT_None,,,, 2.0);
-// 			}
-// 		}
-// 		else
-// 		{
-//          if ((Level.NetMode == NM_Standalone) || (bDefenseActive))
-//             SetDefenseAugStatus(False,CurrentLevel,None);
-//          bDefenseActive = false;
-// 		}
-// 	}
-
-// Begin:
-// 	SetTimer(0.1, True);
-// }
-
-// function Deactivate()
-// {
-// 	Super.Deactivate();
-
-// 	SetTimer(0.1, False);
-//    SetDefenseAugStatus(False,CurrentLevel,None);
-// }
-
 // Vanilla Matters: Gonna rewrite all that stuff above to optimize things and add new features.
 state Active {
 	function Timer() {
@@ -257,47 +185,6 @@ Begin:
 // TriggerDefenseAugHUD;
 // ------------------------------------------------------------------------------
 
-// simulated function DeusExProjectile FindNearestProjectile()
-// {
-//    local DeusExProjectile proj, minproj;
-//    local float dist, mindist;
-//    local bool bValidProj;
-
-//    minproj = None;
-//    mindist = 999999;
-//    foreach AllActors(class'DeusExProjectile', proj)
-//    {
-//       if (Level.NetMode != NM_Standalone)
-//          bValidProj = !proj.bIgnoresNanoDefense;
-//       else
-//          bValidProj = (!proj.IsA('Cloud') && !proj.IsA('Tracer') && !proj.IsA('GreaselSpit') && !proj.IsA('GraySpit'));
-
-//       if (bValidProj)
-//       {
-//          // make sure we don't own it
-//          if (proj.Owner != Player)
-//          {
-// 			 // MBCODE : If team game, don't blow up teammates projectiles
-// 			if (!((TeamDMGame(Player.DXGame) != None) && (TeamDMGame(Player.DXGame).ArePlayersAllied(DeusExPlayer(proj.Owner),Player))))
-// 			{
-// 				// make sure it's moving fast enough
-// 				if (VSize(proj.Velocity) > 100)
-// 				{
-// 				   dist = VSize(Player.Location - proj.Location);
-// 				   if (dist < mindist)
-// 				   {
-// 					  mindist = dist;
-// 					  minproj = proj;
-// 				   }
-// 				}
-// 			}
-//          }
-//       }
-//    }
-
-//    return minproj;
-// }
-
 // Vanilla Matters: A new function that finds also ScriptedPawns attacking the player.
 simulated function Actor FindNearestTarget() {
 	local DeusExProjectile proj;
@@ -378,48 +265,9 @@ simulated function Actor FindNearestTarget() {
 // TriggerDefenseAugHUD()
 // ------------------------------------------------------------------------------
 
-// simulated function TriggerDefenseAugHUD()
-// {
-//    local DeusExProjectile minproj;
-   
-//    minproj = None;
-      
-//    minproj = FindNearestProjectile();
-   
-//    // if we have a valid projectile, send it to the aug display window
-//    // That's all we do.
-//    if (minproj != None)
-//    {
-//       SetDefenseAugStatus(True,CurrentLevel,minproj);      
-//    }
-// }
-
-// simulated function Tick(float DeltaTime)
-// {
-//    Super.Tick(DeltaTime);
-
-//    // DEUS_EX AMSD Make sure it gets turned off in multiplayer.
-//    if (Level.NetMode == NM_Client)
-//    {
-//       if (!bDefenseActive)
-//          SetDefenseAugStatus(False,CurrentLevel,None);
-//    }
-// }
-
 // ------------------------------------------------------------------------------
 // SetDefenseAugStatus()
 // ------------------------------------------------------------------------------
-// simulated function SetDefenseAugStatus(bool bDefenseActive, int defenseLevel, DeusExProjectile defenseTarget)
-// {
-//    if (Player == None)
-//       return;
-//    if (Player.rootWindow == None)
-//       return;
-//    DeusExRootWindow(Player.rootWindow).hud.augDisplay.bDefenseActive = bDefenseActive;
-//    DeusExRootWindow(Player.rootWindow).hud.augDisplay.defenseLevel = defenseLevel;
-//    DeusExRootWindow(Player.rootWindow).hud.augDisplay.defenseTarget = defenseTarget;
-
-// }
 
 // Vanilla Matters: Change it to use actor.
 simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget, optional bool enoughEnergy, optional bool enoughDistance ) {
@@ -463,4 +311,5 @@ defaultproperties
      LevelValues(2)=600.000000
      LevelValues(3)=800.000000
      MPConflictSlot=7
+     VM_dragIcon=Texture'DeusEx.VMUI.AugIconDefense'
 }

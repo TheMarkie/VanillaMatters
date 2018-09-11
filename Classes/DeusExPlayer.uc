@@ -936,16 +936,35 @@ function DeusExLevelInfo GetLevelInfo()
 //
 // If player chose to dual map the F keys
 //
-exec function DualmapF3() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(0); }
-exec function DualmapF4() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(1); }
-exec function DualmapF5() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(2); }
-exec function DualmapF6() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(3); }
-exec function DualmapF7() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(4); }
-exec function DualmapF8() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(5); }
-exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(6); }
-exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
-exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
-exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
+// exec function DualmapF3() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(0); }
+// exec function DualmapF4() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(1); }
+// exec function DualmapF5() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(2); }
+// exec function DualmapF6() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(3); }
+// exec function DualmapF7() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(4); }
+// exec function DualmapF8() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(5); }
+// exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(6); }
+// exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
+// exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
+// exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
+
+// Vanilla Matters: Rewrite aug activativation functions to be clearer.
+exec function AugSlot1() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 0 ); }
+exec function AugSlot2() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 1 ); }
+exec function AugSlot3() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 2 ); }
+exec function AugSlot4() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 3 ); }
+exec function AugSlot5() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 4 ); }
+exec function AugSlot6() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 5 ); }
+exec function AugSlot7() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 6 ); }
+exec function AugSlot8() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 7 ); }
+exec function AugSlot9() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 8 ); }
+exec function AugSlot10() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 9 ); }
+
+// Vanilla Matters: Flash light now has its own key and function.
+exec function ToggleFlashlight() {
+	if ( AugmentationSystem != none ) {
+		AugmentationSystem.ActivateAugByKey( 10 );
+	}
+}
 
 //
 // Team Say
@@ -1443,9 +1462,6 @@ simulated function DrugEffects(float deltaTime)
 
 		if ( Level.NetMode == NM_Standalone )
 		{
-			// fov = Default.DesiredFOV - drugEffectTimer + Rand(2);
-			// fov = FClamp(fov, 30, Default.DesiredFOV);
-
 			// Vanilla Matters: Should make the drugeffects base itself on ScopeFOV if applicable.
 			fov = supposedFOV - drugEffectTimer + Rand( 2 );
 			fov = FClamp( fov, 10, supposedFOV );
@@ -1453,7 +1469,6 @@ simulated function DrugEffects(float deltaTime)
 			DesiredFOV = fov;
 		}
 		else
-			//DesiredFOV = Default.DesiredFOV;
 			// Vanilla Matters: Fix a bug where drugs reset scope FOV.
 			DesiredFOV = supposedFOV;
 
@@ -1469,7 +1484,6 @@ simulated function DrugEffects(float deltaTime)
 			{
 				root.hud.SetBackground(None);
 				root.hud.SetBackgroundStyle(DSTY_Normal);
-				//DesiredFOV = Default.DesiredFOV;
 
 				// Vanilla Matters: Fix a bug where drugs reset scope FOV.
 				DesiredFOV = supposedFOV;
@@ -2832,7 +2846,6 @@ simulated function PlayFootStep()
 		speedFactor = VSize(Velocity)/180.0;
 
 	massFactor  = Mass/150.0;
-  //radius      = 375.0;
 
 	// Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
 	radius = 375.0 * ( AugmentationSystem.GetClassLevel( class'AugSpeed' ) + 2 );
@@ -3025,10 +3038,6 @@ function Landed(vector HitNormal)
 				augReduce = 0;
 				if (AugmentationSystem != None)
 				{
-					// augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-					// if (augLevel >= 0)
-					// 	augReduce = 15 * (augLevel+1);
-
 					// Vanilla Matters: Make AugStealth also reduce a smaller amount of fall damage, while scaling up AugSpeed reduction.
 					augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
 					if ( augLevel >= 0 ) {
@@ -3273,9 +3282,6 @@ function int CalculateSkillHealAmount(int baseHealPoints)
 	if (SkillSystem != None)
 	{
 		mult = SkillSystem.GetSkillLevelValue(class'SkillMedicine');
-
-		// // apply the skill
-		// adjustedHealAmount = baseHealPoints * mult;
 
 		// Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
 		adjustedHealAmount = baseHealPoints + mult;
@@ -3559,12 +3565,6 @@ function CreateDrone()
 	aDrone = Spawn(class'SpyDrone', Self,, loc, ViewRotation);
 	if (aDrone != None)
 	{
-		// aDrone.Speed = 3 * spyDroneLevelValue;
-		// aDrone.MaxSpeed = 3 * spyDroneLevelValue;
-		// aDrone.Damage = 5 * spyDroneLevelValue;
-		// aDrone.blastRadius = 8 * spyDroneLevelValue;
-		// window construction now happens in Tick()
-
 		// Vanilla Matters: Rescale everything.
 		aDrone.Speed = 75 + ( 25 * spyDroneLevel );
 		aDrone.MaxSpeed = aDrone.Speed;
@@ -3758,7 +3758,6 @@ state PlayerWalking
 			newSpeed -= CarriedDecoration.Mass * 2;
 		}
 		// don't slow the player down if he's skilled at the corresponding weapon skill  
-		//else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
 		// Vanilla Matters: Just changing it to detect weapon skill level instead.
 		else if ( ( DeusExWeapon( Weapon ) != None ) && ( Weapon.Mass > 30 ) && ( DeusExWeapon( Weapon ).GetWeaponSkillLevel() < 2.0 ) && ( Level.NetMode == NM_Standalone ) )
 		{
@@ -4042,23 +4041,13 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 		Acceleration = vect(0,0,0);
 		mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
 
-		// swimDuration = UnderWaterTime * mult;
-
 		// Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
 		swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
 
 		swimTimer = swimDuration;
-		// if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-		// {
-		// 	// if ( AugmentationSystem != None )
-		// 	// 	augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-		// 	if ( augLevel == -1.0 )
-		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
-		// 	else
-		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
-		// }
-		// else
-			WaterSpeed = Default.WaterSpeed * mult;
+
+		// Vanilla Matters
+		WaterSpeed = Default.WaterSpeed * mult;
 	}
 
 	Super.HeadZoneChange(newHeadZone);
@@ -4184,17 +4173,8 @@ state PlayerSwimming
 		swimTimer = swimDuration;
 		swimBubbleTimer = 0;
 
-		// if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-		// {
-		// 	if ( AugmentationSystem != None )
-		// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-		// 	if ( augLevel == -1.0 )
-		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * mult;
-		// 	else
-		// 		WaterSpeed = Human(Self).Default.mpWaterSpeed * 2.0 * mult;
-		// }
-		// else
-			WaterSpeed = Default.WaterSpeed * mult;
+		// Vanilla Matters
+		WaterSpeed = Default.WaterSpeed * mult;
 
 		Super.BeginState();
 	}
@@ -4694,9 +4674,6 @@ exec function ParseLeftClick()
 
 	if ((inHand != None) && !bInHandTransition)
 	{
-		// if (inHand.bActivatable)
-		// 	inHand.Activate();
-
 		// Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time.
 		if ( inHand.bActivatable ) {
 			if ( inHand.IsA( 'ChargedPickup' ) ) {
@@ -4903,9 +4880,6 @@ exec function ParseRightClick()
 			// TODO: This logic may have to get more involved if/when 
 			// we start allowing other types of objects to get stacked.
 
-			// if (HandleItemPickup(FrobTarget, True) == False)
-			// 	return;
-
 			// Vanilla Matters: Allow taking hold of an item if the player can't pick it up.
 			if ( !HandleItemPickup( FrobTarget, true ) ) {
 				if ( TakeHold( Inventory( FrobTarget ) ) ) {
@@ -4926,15 +4900,6 @@ exec function ParseRightClick()
          //is NOT the same as the frobtarget if I do a pickup.  So how do I tell that
          //I've successfully picked it up?  Well, if the first item in my inventory 
          //changed, I picked up a new item.
-			// if ( ((Level.NetMode == NM_Standalone) && (Inventory(FrobTarget).Owner == Self)) ||
-   //            ((Level.NetMode != NM_Standalone) && (oldFirstItem != Inventory)) )
-			// {
-   //          if (Level.NetMode == NM_Standalone)
-   //             FindInventorySlot(Inventory(FrobTarget));
-   //          else
-   //             FindInventorySlot(Inventory);
-			// 	FrobTarget = None;
-			// }
 
 			// Vanilla Matters: Fix some dumb accessed none due to the fact some inventory items just self-destruct on frob, haha very funny Ion Storm. Also the vanilla code looks ugly so.
 			if ( FrobTarget != None && ( ( Level.NetMode == NM_Standalone && FrobTarget.Owner == Self ) || ( Level.NetMode != NM_Standalone && oldFirstItem != Inventory ) ) ) {
@@ -5305,8 +5270,6 @@ exec function PutInHand(optional Inventory inv)
 			return;
 
 		// Can't put an active charged item in hand
-		// if ((inv.IsA('ChargedPickup')) && (ChargedPickup(inv).IsActive()))
-		// 	return;
 
 		// Vanilla Matters: Only non-toggleable charged pickups get the vanilla behaviors. Defined by the bOneUseOnly property.
 		if ( inv.IsA('ChargedPickup') && ChargedPickup( inv ).IsActive() && ChargedPickup( inv ).bOneUseOnly ) {
@@ -5430,8 +5393,6 @@ function UpdateInHand()
 		if (inHand != None)
 		{
 			// turn it off if it is on
-			// if (inHand.bActive)
-			// 	inHand.Activate();
 
 			// Vanilla Matters: Prevent toggleable charged pickups from being turned off upon deselection.
 			if ( inHand.bActive && !inHand.IsA( 'ChargedPickup' ) ) {
@@ -6053,7 +6014,7 @@ function bool CanBeLifted(Decoration deco)
 	local float maxLift;
 
 	maxLift = 50;
-	//if (AugmentationSystem != None)
+
 	// Vanilla Matters: Check if energy is depleted before using the aug, since it's always active.
 	if ( AugmentationSystem != None && !IsEnergyDepleted() )
 	{
@@ -6064,7 +6025,6 @@ function bool CanBeLifted(Decoration deco)
 		maxLift *= augMult;
 	}
 
-	//if (!deco.bPushable || (deco.Mass > maxLift) || (deco.StandingCount > 0))
 	// Vanilla Matters: Allow lifting decos with things on them.
 	if ( !deco.bPushable || deco.Mass > maxLift )
 	{
@@ -6230,8 +6190,6 @@ function DropDecoration()
 
 			if (IsLeaning())
 				CarriedDecoration.Velocity = vect(0,0,0);
-			// else
-			// 	CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
 			// Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency to powerthrow damage and just because.
 			else {
 				CarriedDecoration.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
@@ -6408,10 +6366,6 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			pickup.NumCopies = 1;
 		}
 
-		// take it out of our hand
-		// if (item == inHand)
-		// 	PutInHand(None);
-
 		// handle throwing pickups that stack
 		if (item.IsA('DeusExPickup'))
 		{
@@ -6506,8 +6460,6 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			}
 			else
 			{
-				//item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
-
 				// Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency and just because.
 				item.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
 
@@ -9954,14 +9906,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 		return;
 
 	// handle poison
-	// if ((damageType == 'Poison') || ((Level.NetMode != NM_Standalone) && (damageType=='TearGas')) )
-	// {
-	// 	// Notify player if they're getting burned for the first time
-	// 	if ( Level.NetMode != NM_Standalone )
-	// 		ServerConditionalNotifyMsg( MPMSG_FirstPoison );
-
-	// 	StartPoison( instigatedBy, Damage );
-	// }
 
 	// Vanilla Matters: Add rebreather behaviors to mp poisoning rules.
 	if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
@@ -10405,18 +10349,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			if (drugEffectTimer < 0)
 				drugEffectTimer = 0;
 		}
-
-		// go through the actor list looking for owned HazMatSuits
-		// since they aren't in the inventory anymore after they are used
-
-
-      //foreach AllActors(class'HazMatSuit', suit)
-//			if ((suit.Owner == Self) && suit.bActive)
-      //if (UsingChargedPickup(class'HazMatSuit'))
-			// {
-			// 	skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-			// 	newDamage *= 0.75 * skillLevel;
-			// }
 	}
 
 	// Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
@@ -10426,14 +10358,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 	if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
 	{
-		// go through the actor list looking for owned BallisticArmor
-		// since they aren't in the inventory anymore after they are used
-   //    if (UsingChargedPickup(class'BallisticArmor'))
-			// {
-			// 	skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-			// 	newDamage *= 0.5 * skillLevel;
-			// }
-
 		// Vanilla Matters: Make Ballistic Armor absorbs the damage properly and deals with spillovers.
 		cpickup = GetActiveChargedPickup( class'BallisticArmor' );
 
@@ -10460,7 +10384,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			ExtinguishFire();
 	}
 
-	// if ((damageType == 'Shot') || (damageType == 'AutoShot'))
 	// Vanilla Matters: Add sabot to augballistic.
 	if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' )
 	{
@@ -10473,17 +10396,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			newDamage = newDamage - augLevel;
 	}
 
-	// if (damageType == 'EMP')
-	// {
-	// 	if (AugmentationSystem != None)
-	// 		augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
-
-	// 	if (augLevel >= 0.0)
-	// 		newDamage *= augLevel;
-	// }
-
-	// if ((damageType == 'Burned') || (damageType == 'Flamed') ||
-	// 	(damageType == 'Exploded') || (damageType == 'Shocked'))
 	// Vanilla Matters: Add EMP to augshield.
 	if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
 		damageType == 'Exploded' || damageType == 'Shocked' )

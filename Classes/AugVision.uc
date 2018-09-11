@@ -17,41 +17,6 @@ replication
       SetVisionAugStatus;
 }
 
-// state Active
-// {
-// Begin:
-// }
-
-// function Activate()
-// {
-// 	local bool bWasActive;
-	
-// 	bWasActive = bIsActive;
-
-// 	Super.Activate();
-
-// 	if (!bWasActive && bIsActive)
-// 	{
-// 		SetVisionAugStatus(CurrentLevel,LevelValues[CurrentLevel],True);
-// 		Player.RelevantRadius = LevelValues[CurrentLevel];
-// 	}
-// }
-
-// function Deactivate()
-// {
-// 	local bool bWasActive;
-	
-// 	bWasActive = bIsActive;
-
-// 	Super.Deactivate();
-
-// 	if (bWasActive && !bIsActive)
-// 	{
-// 		SetVisionAugStatus(CurrentLevel,LevelValues[CurrentLevel],False);
-// 		Player.RelevantRadius = 0;
-// 	}
-// }
-
 // Vanilla Matters: I don't even know what the heck is going on here so I'm gonna rewrite this mess.
 state Active {
 	function BeginState() {
@@ -72,23 +37,6 @@ Begin:
 // ----------------------------------------------------------------------
 // SetVisionAugStatus()
 // ----------------------------------------------------------------------
-
-// simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
-// {
-//    if (IsActive)
-//    {
-//       if (++DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 1)      
-//          DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = True;
-//    }
-//    else
-//    {
-//       if (--DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0)
-//          DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = False;
-//       DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionBlinder = None;
-//    }
-// 	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = Level;
-//    DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = LevelValue;
-// }
 
 // Vanilla Matters: Gonna rewrite the mess above for readability.
 simulated function SetVisionAugStatus( int Level, float LevelValue, bool active ) {
@@ -139,4 +87,5 @@ defaultproperties
      VM_EnergyRateAddition(1)=10.000000
      VM_EnergyRateAddition(2)=20.000000
      VM_EnergyRateAddition(3)=30.000000
+     VM_dragIcon=Texture'DeusEx.VMUI.AugIconVision'
 }

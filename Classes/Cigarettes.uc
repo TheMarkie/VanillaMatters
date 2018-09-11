@@ -63,7 +63,18 @@ state Activated
 
 				bActive = false;
 
-				UseOnce();
+				NumCopies = NumCopies - 1;
+
+				if ( NumCopies <= 0 ) {
+					if ( player.IsHolding( self ) ) {
+						player.VM_HeldInHand = none;
+					}
+
+					Destroy();
+				}
+				else {
+					UpdateBeltText();
+				}
 			}
 
 			loc = user.Location;

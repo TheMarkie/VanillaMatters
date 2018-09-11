@@ -71,4 +71,5 @@ defaultproperties
      VM_EnergyRateAddition(1)=30.000000
      VM_EnergyRateAddition(2)=60.000000
      VM_EnergyRateAddition(3)=90.000000
+     VM_dragIcon=Texture'DeusEx.VMUI.AugIconSpeed'
 }

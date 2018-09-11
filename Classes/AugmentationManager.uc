@@ -27,6 +27,8 @@ var() travel float VM_energyMult;
 
 var travel int VM_realAugCount[7];		// Count of only the activatable augs in an aug location. For hotkey assignment purposes.
 
+var travel Augmentation VM_augSlots[11]; // Represent the "aug bar".
+
 // ----------------------------------------------------------------------
 // Network Replication
 // ----------------------------------------------------------------------
@@ -57,10 +59,6 @@ function RefreshesAugs() {
 			anAug.GoToState( 'Inactive' );
 			anAug.GoToState( 'Active' );
 			anAug.bIsActive = true;
-		}
-
-		if ( anAug.bAlwaysActive ) {
-			anAug.HotKeyNum = -1;
 		}
 
 		anAug = anAug.next;
@@ -131,7 +129,10 @@ function AddDefaultAugmentations()
 
 simulated function RefreshAugDisplay()
 {
-	local Augmentation anAug;
+	// local Augmentation anAug;
+
+	// Vanilla Matters
+	local int i;
 
 	if (player == None)
 		return;
@@ -139,29 +140,16 @@ simulated function RefreshAugDisplay()
 	// First make sure there are no augs visible in the display
 	player.ClearAugmentationDisplay();
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		// First make sure the aug is active if need be
-		if (anAug.bHasIt)
-		{
-			if (anAug.bIsActive)
-			{
-				anAug.GotoState('Active');
+	// Vanilla Matters: Show only augs from the aug bar that are active.
+	// VM: Always show flash light first.
+	if ( VM_augSlots[10] != none ) {
+		player.AddAugmentationDisplay( VM_augSlots[10] );
+	}
 
-				// Now, if this is an aug that isn't *always* active, then 
-				// make sure it's in the augmentation display
-
-				if (!anAug.bAlwaysActive)
-					player.AddAugmentationDisplay(anAug);
-			}
-			else if ((player.bHUDShowAllAugs) && (!anAug.bAlwaysActive))
-			{
-				player.AddAugmentationDisplay(anAug);		
-			}
+	for ( i = 0; i < 10; i++ ) {
+		if ( VM_augSlots[i] != none && ( VM_augSlots[i].bIsActive || player.bHUDShowAllAugs ) ) {
+			player.AddAugmentationDisplay( VM_augSlots[i] );
 		}
-
-		anAug = anAug.next;
 	}
 }
 
@@ -213,36 +201,6 @@ function SetPlayer(DeusExPlayer newPlayer)
 // ----------------------------------------------------------------------
 // BoostAugs()
 // ----------------------------------------------------------------------
-
-// function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
-// {
-// 	local Augmentation anAug;
-
-// 	anAug = FirstAug;
-// 	while(anAug != None)
-// 	{
-// 		// Don't boost the augmentation causing the boosting!
-// 		if (anAug != augBoosting)
-// 		{
-// 			if (bBoostEnabled)
-// 			{
-// 				if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
-// 				{
-// 					anAug.Deactivate();
-// 					anAug.CurrentLevel++;
-// 					anAug.bBoosted = True;
-// 					anAug.Activate();
-// 				}
-// 			}
-// 			else if (anAug.bBoosted)
-// 			{
-// 				anAug.CurrentLevel--;
-// 				anAug.bBoosted = False;
-// 			}
-// 		}
-// 		anAug = anAug.next;
-// 	}
-// }
 
 // Vanilla Matters: Improve the awful vanilla code which needs to be run periodically and costs performance.
 function BoostAugs( bool bBoostEnabled, Augmentation augBoosting ) {
@@ -450,21 +408,23 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 	AugLocs[anAug.AugmentationLocation].augCount++;
 
 	// Vanilla Matters: Count this aug if it's not always active.
-	if ( !anAug.bAlwaysActive ) {
-		VM_realAugCount[anAug.AugmentationLocation] = VM_realAugCount[anAug.AugmentationLocation] + 1;
-	}
-	
-	// Assign hot key to new aug 
-	// (must be after before augCount is incremented!)
-//    if (Level.NetMode == NM_Standalone)	
-//       anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
-//    else
-//       anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+	// if ( !anAug.bAlwaysActive ) {
+	// 	VM_realAugCount[anAug.AugmentationLocation] = VM_realAugCount[anAug.AugmentationLocation] + 1;
+	// }
 
 	// Vanilla Matters: Assign hotkeys using our method so we don't get always active augs taking up hotkey slots.
 	if ( Level.NetMode == NM_Standalone ) {
 		if ( !anAug.bAlwaysActive ) {
-			anAug.HotKeyNum = VM_realAugCount[anAug.AugmentationLocation] + AugLocs[anAug.AugmentationLocation].KeyBase;
+			if ( anAug.class != class'AugLight' ) {
+				anAug.HotKeyNum = GetEmptyAugSlot();
+				if ( anAug.HotKeyNum >= 0 ) {
+					VM_augSlots[anAug.HotKeyNum] = anAug;
+				}
+			}
+			else {
+				anAug.HotKeyNum = 10;
+				VM_augSlots[10] = anAug;
+			}
 		}
 		else {
 			anAug.HotKeyNum = -1;
@@ -474,10 +434,29 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 		anAug.HotKeyNum = anAug.MPConflictSlot + 2;
 	}
 
-	if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
-	    Player.AddAugmentationDisplay(anAug);
+	// if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
+	//     Player.AddAugmentationDisplay(anAug);
+
+	// Vanilla Matters: Augs are now displayed by their aug bar order.
 
 	return anAug;
+}
+
+// Vanilla Matters: Get a free slot on the aug bar.
+function int GetEmptyAugSlot() {
+	local int i;
+
+	for ( i = 0; i < 10; i++ ) {
+		if ( VM_augSlots[i] == none ) {
+			break;
+		}
+	}
+
+	if ( i >= 10 ) {
+		i = -1;
+	}
+
+	return i;
 }
 
 // ----------------------------------------------------------------------
@@ -531,51 +510,6 @@ simulated function Bool AreSlotsFull(Augmentation augToCheck)
 //
 // Calculates energy use for all active augmentations
 // ----------------------------------------------------------------------
-
-// simulated function Float CalcEnergyUse(float deltaTime)
-// {
-// 	local float energyUse, energyMult;
-// 	local Augmentation anAug;
-//    local Augmentation PowerAug;
-
-// 	energyUse = 0;
-// 	energyMult = 1.0;
-
-// 	anAug = FirstAug;
-// 	while(anAug != None)
-// 	{
-//       if (anAug.IsA('AugPower'))
-//          PowerAug = anAug;
-// 		if (anAug.bHasIt && anAug.bIsActive)
-// 		{
-// 			energyUse += ((anAug.GetEnergyRate()/60) * deltaTime);
-// 			if (anAug.IsA('AugPower'))
-//          {
-// 				energyMult = anAug.LevelValues[anAug.CurrentLevel];
-//          }
-// 		}
-// 		anAug = anAug.next;
-// 	}
-
-//    // DEUS_EX AMSD Manage the power aug automatically in multiplayer.
-//    if ( (Level.NetMode != NM_Standalone) && (PowerAug != None) && (PowerAug.bHasIt) )
-//    {
-//       //If using energy, turn on the power aug.
-//       if ((energyUse > 0) && (!PowerAug.bIsActive))
-//          ActivateAugByKey(PowerAug.HotKeyNum - 3);
-
-//       //If not using energy, turn off the power aug.
-//       if ((energyUse == 0) && (PowerAug.bIsActive))
-//          ActivateAugByKey(PowerAug.HotKeyNum - 3);
-
-//       if (PowerAug.bIsActive)				
-//          energyMult = PowerAug.LevelValues[PowerAug.CurrentLevel];
-//    }
-// 	// check for the power augmentation
-// 	energyUse *= energyMult;
-
-// 	return energyUse;
-// }
 
 // Vanilla Matters: Just rewriting the function to be less messy.
 simulated function Float CalcEnergyUse( float deltaTime )
@@ -671,31 +605,46 @@ function bool ActivateAugByKey(int keyNum)
 
 	bActivated = False;
 
-	if ((keyNum < 0) || (keyNum > 9))
-		return False;
+	// if ((keyNum < 0) || (keyNum > 9))
+	// 	return False;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
-			break;
+	// anAug = FirstAug;
+	// while(anAug != None)
+	// {
+	// 	if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
+	// 		break;
 
-		anAug = anAug.next;
-	}
+	// 	anAug = anAug.next;
+	// }
 
-	if (anAug == None)
-	{
-		player.ClientMessage(NoAugInSlot);
-	}
-	else
-	{
-		// Toggle
-		if (anAug.bIsActive)
-			anAug.Deactivate();
-		else
-			anAug.Activate();
+	// if (anAug == None)
+	// {
+	// 	player.ClientMessage(NoAugInSlot);
+	// }
+	// else
+	// {
+	// 	// Toggle
+	// 	if (anAug.bIsActive)
+	// 		anAug.Deactivate();
+	// 	else
+	// 		anAug.Activate();
 
-		bActivated = True;
+	// 	bActivated = True;
+	// }
+
+	// Vanilla Matters: Check the aug bar only instead of all augs.
+	if ( keyNum >= 0 && keyNum < 11 ) {
+		if ( VM_augSlots[keyNum] != none ) {
+			if ( VM_augSlots[keyNum].bIsActive ) {
+				VM_augSlots[keyNum].Deactivate();
+			}
+			else {
+				VM_augSlots[keyNum].Activate();
+			}
+		}
+		else {
+			player.ClientMessage( NoAugInSlot );
+		}
 	}
 
 	return bActivated;
@@ -728,8 +677,12 @@ function ResetAugmentations()
 		
 		// Vanilla Matters: Reset activatable aug count.
 		VM_realAugCount[LocIndex] = 0;
-    }
-   
+	}
+	
+	// Vanilla Matters: Clear aug bar.
+	for ( LocIndex = 0; LocIndex < 11; LocIndex++ ) {
+		VM_augSlots[LocIndex] = none;
+	}
 }
 
 // ----------------------------------------------------------------------

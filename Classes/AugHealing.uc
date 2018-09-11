@@ -83,4 +83,5 @@ defaultproperties
      LevelValues(3)=20.000000
      AugmentationLocation=LOC_Torso
      MPConflictSlot=2
+     VM_dragIcon=Texture'DeusEx.VMUI.AugIconHeal'
 }

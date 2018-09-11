@@ -355,31 +355,37 @@ function Tick( float deltaTime ) {
 
 	if ( localURL == "04_NYC_HOTEL" ) {
 		if ( flags != none && !flags.GetBool( 'M04RaidTeleportDone' ) && flags.GetBool( 'ApartmentEntered' ) && flags.GetBool( 'NSFSignalSent' ) ) {
-			foreach AllActors( class'ScriptedPawn', pawn ) {
-				if ( pawn.IsA( 'UNATCOTroop' ) || pawn.IsA( 'MIB' ) ) {
-					pawn.EnterWorld();
+			if ( flags.GetBool( 'TalkedToPaulAfterMessage_Played' ) ) {
+				foreach AllActors( class'ScriptedPawn', pawn ) {
+					if ( pawn.IsA( 'UNATCOTroop' ) || pawn.IsA( 'MIB' ) ) {
+						pawn.EnterWorld();
+					}
+					else if ( pawn.IsA( 'SandraRenton' ) || pawn.IsA( 'GilbertRenton' ) || pawn.IsA( 'HarleyFilben' ) ) {
+						pawn.LeaveWorld();
+					}
 				}
-				else if ( pawn.IsA( 'SandraRenton' ) || pawn.IsA( 'GilbertRenton' ) || pawn.IsA( 'HarleyFilben' ) ) {
-					pawn.LeaveWorld();
+
+				// Vanilla Matters: Make Paul walk all the way to the door instead of just the lobby, by moving the Leaving trigger to near the door.
+				foreach AllActors( class'FlagTrigger', ft ) {
+					if ( ft.Name == 'FlagTrigger2' ) {
+						ft.SetLocation( vect( -413, 0, -49 ) );
+
+						break;
+					}
 				}
+
+				flags.SetBool( 'M04RaidTeleportDone', True,, 5 );
 			}
-
-			foreach AllActors( class'PaulDenton', Paul ) {
-				Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
-
-				break;
-			}
-
-			// Vanilla Matters: Make Paul walk all the way to the door instead of just the lobby, by moving the Leaving trigger to near the door.
-			foreach AllActors( class'FlagTrigger', ft ) {
-				if ( ft.Name == 'FlagTrigger2' ) {
-					ft.SetLocation( vect( -413, 0, -49 ) );
+			else {
+				foreach AllActors( class'PaulDenton', Paul ) {
+					// VM: Only trigger the convo if within range.
+					if ( VSize( Paul.Location - Player.Location ) <= 70 ) {
+						Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
+					}
 
 					break;
 				}
 			}
-
-			flags.SetBool( 'M04RaidTeleportDone', True,, 5 );
 		}
 	}
 }

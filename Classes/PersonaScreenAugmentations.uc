@@ -4,6 +4,8 @@
 
 class PersonaScreenAugmentations extends PersonaScreenBaseWindow;
 
+#exec TEXTURE IMPORT FILE="Textures\AugmentationsBorder_6.bmp"		NAME="AugmentationsBorder_6"		GROUP="VMUI" MIPS=Off
+
 var PersonaActionButtonWindow			btnActivate;
 var PersonaActionButtonWindow			btnUpgrade;
 var PersonaActionButtonWindow			btnUseCell;
@@ -51,6 +53,14 @@ var Localized string AugLocationLegs;
 var Localized string AugLocationTorso;
 var Localized string AugLocationSubdermal;
 
+// Vanilla Matters
+var PersonaAugmentationBar VM_augBar;
+var PersonaAugmentationBarSlot VM_selectedSlot;
+
+var bool VM_dragging;
+var ButtonWindow VM_dragBtn;
+var PersonaAugmentationBarSlot VM_lastDragOverSlot;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -86,6 +96,9 @@ function CreateControls()
 	CreateStatusWindow();
 
 	PersonaNavBarWindow(winNavBar).btnAugs.SetSensitivity(False);
+
+	// Vanilla Matters
+	CreateAugmentationBar();
 }
 
 // ----------------------------------------------------------------------
@@ -334,7 +347,7 @@ function RefreshWindow(float DeltaTime)
     }
 
 
-    EnableButtons();
+	EnableButtons();
 
     Super.RefreshWindow(DeltaTime);
 }
@@ -463,7 +476,27 @@ function PersonaAugmentationItemButton CreateAugButton(Augmentation anAug, int a
 	newButton.SetActive(anAug.IsActive());
 	newButton.SetLevel(anAug.GetCurrentLevel());
 
+	// Vanilla Matters: Set up stuff for dragging.
+	newButton.VM_aug = anAug;
+	newButton.VM_augWnd = self;
+	newButton.VM_draggable = !( anAug.bAlwaysActive || anAug.class == class'AugLight' );
+	newButton.VM_dragIcon = anAug.VM_dragIcon;
+
 	return newButton;
+}
+
+// Vanilla Matters: Create augmentation hotbar.
+function CreateAugmentationBar() {
+	VM_augBar = PersonaAugmentationBar( NewChild( class'PersonaAugmentationBar' ) );
+	VM_augBar.SetWindowAlignments( HALIGN_Right, VALIGN_Bottom, 0, 0 );
+	VM_augBar.SetAugWnd( self );
+}
+
+// Vanilla Matters: Update the aug display on the HUD.
+function DestroyWindow() {
+	player.AugmentationSystem.RefreshAugDisplay();
+
+	super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -525,36 +558,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 	switch( key ) 
 	{	
-		case IK_F3:
-			SelectAugByKey(0);
-			break;
-		case IK_F4:
-			SelectAugByKey(1);
-			break;
-		case IK_F5:
-			SelectAugByKey(2);
-			break;
-		case IK_F6:
-			SelectAugByKey(3);
-			break;
-		case IK_F7:
-			SelectAugByKey(4);
-			break;
-		case IK_F8:
-			SelectAugByKey(5);
-			break;
-		case IK_F9:
-			SelectAugByKey(6);
-			break;
-		case IK_F10:
-			SelectAugByKey(7);
-			break;
-		case IK_F11:
-			SelectAugByKey(8);
-			break;
-		case IK_F12:
-			SelectAugByKey(9);
-			break;
+		// Vanilla Matters: Disable the F hotkeys because aug keys aren't hardcoded anymore.
 
 		// Enter will toggle an aug on/off
 		case IK_Enter:
@@ -582,7 +586,8 @@ function SelectAugByKey(int keyNum)
 	{
 		if (augItems[buttonIndex] != None)
 		{
-			anAug = Augmentation(augItems[buttonIndex].GetClientObject());
+			// Vanilla Matters
+			anAug = augItems[buttonIndex].VM_aug;
 		
 			if ((anAug != None) && (anAug.HotKeyNum - 3 == keyNum))
 			{
@@ -608,10 +613,15 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 			selectedAugButton.SelectButton(False);
 
 		selectedAugButton = buttonPressed;
-		selectedAug       = Augmentation(selectedAugButton.GetClientObject());
+
+		// Vanilla Matters
+		selectedAug = PersonaAugmentationItemButton( buttonPressed ).VM_aug;
 
 		selectedAug.UpdateInfo(winInfo);
 		selectedAugButton.SelectButton(True);
+
+		// Vanilla Matters: Highlight the slot that the aug is assigned to, if any.
+		VM_augBar.SelectAug( selectedAug, true );
 
 		EnableButtons();
 	}
@@ -703,11 +713,6 @@ function EnableButtons()
 	// AugmentationUpgradeCannister that allows this augmentation to 
 	// be upgraded
 
-	// if (selectedAug != None)
-	// 	btnUpgrade.EnableWindow(selectedAug.CanBeUpgraded());
-	// else
-	// 	btnUpgrade.EnableWindow(False);
-
 	// Vanilla Matters: We're gonna change this up a bit now that CanBeUpgraded doesn't check for the upgrade cannister.
 	if ( selectedAug != None && AugmentationUpgradeCannister( player.FindInventoryType( class'AugmentationUpgradeCannister' ) ) != None ) {
 		btnUpgrade.EnableWindow( selectedAug.CanBeUpgraded() );
@@ -740,6 +745,120 @@ function EnableButtons()
 	btnUseCell.EnableWindow(
 		(player.Energy < player.EnergyMax) && 
 		(player.FindInventoryType(Class'BioelectricCell') != None));
+}
+
+// Vanilla Matters: Add drag and drop support for aug icons.
+function StartButtonDrag( ButtonWindow dragBtn ) {
+	if ( dragBtn != none ) {
+		VM_dragging = true;
+		VM_dragBtn = dragBtn;
+	}
+}
+
+function UpdateDragMouse( float newX, float newY ) {
+	local PersonaAugmentationBarSlot slot;
+	local float relX, relY;
+	local int slotX, slotY;
+	local bool validDrop;
+	local bool overrideBtnColor;
+
+	slot = PersonaAugmentationBarSlot( FindWindow( newX, newY, relX, relY ) );
+	if ( slot != None ) {
+		slot.SetDropFill( true );
+	}
+
+	if ( VM_lastDragOverSlot != none && VM_lastDragOverSlot != slot ) {
+		VM_lastDragOverSlot.ResetFill();
+	}
+
+	VM_lastDragOverSlot = slot;
+}
+
+function FinishButtonDrag() {
+	local PersonaAugmentationBarSlot dragSlot, slot;
+
+	dragSlot = PersonaAugmentationBarSlot( VM_dragBtn );
+
+	if ( VM_lastDragOverSlot != none ) {
+		if ( dragSlot != none ) {
+			VM_augBar.SwapAug( dragSlot, VM_lastDragOverSlot );
+			VM_lastDragOverSlot.SetToggle( true );
+		}
+		else {
+			slot = VM_augBar.GetSlot( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug );
+
+			if ( slot != none ) {
+				VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
+			}
+			else {
+				VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
+			}
+		}
+	}
+	else {
+		if ( dragSlot != none ) {
+			VM_augBar.RemoveAug( dragSlot.aug );
+		}
+	}
+
+    EndDragMode();
+}
+
+function EndDragMode() {
+	local PersonaAugmentationItemButton button;
+
+	button = PersonaAugmentationItemButton( VM_dragBtn );
+	if ( button != none ) {
+		SelectAugmentation( button );
+	}
+
+	if ( VM_lastDragOverSlot != none ) {
+		VM_lastDragOverSlot.ResetFill();
+	}
+
+	VM_dragging = false;
+	VM_dragBtn = none;
+	VM_lastDragOverSlot = none;
+
+	RefreshAugBar();
+}
+
+function RefreshAugBar() {
+	VM_augBar.PopulateBar();
+}
+
+// Vanilla Matters: Select the appropriate aug when player clicks on a slot on the aug bar.
+function bool ToggleChanged( Window button, bool bNewToggle ) {
+	local PersonaAugmentationBarSlot slot;
+	local int i;
+
+	slot = PersonaAugmentationBarSlot( button );
+	if ( slot != none && bNewToggle ) {
+		if ( VM_selectedSlot != none && VM_selectedSlot != slot ) {
+			VM_selectedSlot.HighlightSelect( false );
+		}
+
+		if ( slot.aug != none ) {
+			slot.HighlightSelect( bNewToggle );
+			
+			if ( slot.aug != selectedAug ) {
+				for ( i = 0; i < 12; i++ ) {
+					if ( augItems[i].VM_aug == slot.aug ) {
+						SelectAugmentation( augItems[i] );
+
+						break;
+					}
+				}
+			}
+
+			VM_selectedSlot = slot;
+		}
+		else {
+			VM_selectedSlot = none;
+		}
+	}
+
+	return true;
 }
 
 // ----------------------------------------------------------------------
@@ -792,9 +911,10 @@ defaultproperties
      clientBorderTextures(2)=Texture'DeusExUI.UserInterface.AugmentationsBorder_3'
      clientBorderTextures(3)=Texture'DeusExUI.UserInterface.AugmentationsBorder_4'
      clientBorderTextures(4)=Texture'DeusExUI.UserInterface.AugmentationsBorder_5'
-     clientBorderTextures(5)=Texture'DeusExUI.UserInterface.AugmentationsBorder_6'
+     clientBorderTextures(5)=Texture'DeusEx.VMUI.AugmentationsBorder_6'
      clientTextureRows=2
      clientTextureCols=3
      clientBorderTextureRows=2
-     clientBorderTextureCols=3
+	 clientBorderTextureCols=3
+	 screenHeight=534
 }
