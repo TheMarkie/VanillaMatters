@@ -31,7 +31,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
-     ShotTime=1.500000
+     ShotTime=2.000000
      reloadTime=2.000000
      HitDamage=50
      maxRange=19200
@@ -41,7 +41,7 @@ defaultproperties
      bCanHaveLaser=True
      bCanHaveSilencer=True
      bHasMuzzleFlash=False
-     recoilStrength=0.400000
+     recoilStrength=1.500000
      bUseWhileCrouched=False
      mpReloadTime=2.000000
      mpHitDamage=25
@@ -58,7 +58,7 @@ defaultproperties
      PickupAmmoCount=6
      bInstantHit=True
      FireOffset=(X=-20.000000,Y=2.000000,Z=30.000000)
-     shakemag=50.000000
+     shakemag=200.000000
      FireSound=Sound'DeusExSounds.Weapons.RifleFire'
      AltFireSound=Sound'DeusExSounds.Weapons.RifleReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.RifleReload'

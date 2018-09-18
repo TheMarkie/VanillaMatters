@@ -75,7 +75,7 @@ defaultproperties
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-21.000000,Y=16.000000,Z=27.000000)
-     shakemag=20.000000
+     shakemag=100.000000
      FireSound=Sound'DeusExSounds.Weapons.NanoSwordFire'
      SelectSound=Sound'DeusExSounds.Weapons.NanoSwordSelect'
      Misc1Sound=Sound'DeusExSounds.Weapons.NanoSwordHitFlesh'

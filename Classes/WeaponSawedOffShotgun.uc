@@ -26,11 +26,11 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
-     ShotTime=0.300000
-     reloadTime=3.000000
+     ShotTime=0.500000
+     reloadTime=0.800000
      maxRange=2400
      AccurateRange=1200
-     BaseAccuracy=0.800000
+     BaseAccuracy=0.900000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
@@ -45,6 +45,7 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     VM_pumpAction=True
      VM_ShotCount(0)=6
      VM_ShotCount(1)=6
      VM_ShotCount(2)=6

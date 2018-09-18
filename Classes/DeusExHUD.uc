@@ -26,6 +26,10 @@ var HUDReceivedDisplay				receivedItems;
 
 var HUDMultiSkills					hms;
 
+// Vanilla Matters
+var DeusExPlayer VM_player;
+var DeusExRootWindow VM_rootWnd;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 // ----------------------------------------------------------------------
@@ -42,6 +46,12 @@ event InitWindow()
 
 	// Get a pointer to the player
 	player = DeusExPlayer(root.parentPawn);
+
+	// Vanilla Matters
+	VM_player = player;
+	VM_rootWnd = root;
+
+	bTickEnabled = true;
 
 	SetFont(Font'TechMedium');
 	SetSensitivity(false);
@@ -474,7 +484,14 @@ function UpdateSettings( DeusExPlayer player )
 	activeItems.SetVisibility(player.bAugDisplayVisible);
 	damageDisplay.SetVisibility(player.bHitDisplayVisible);
 	compass.SetVisibility(player.bCompassVisible);
-	cross.SetCrosshair(player.bCrosshairVisible);
+	// cross.SetCrosshair(player.bCrosshairVisible);
+
+	// Vanilla Matters: We handle this in Tick.
+}
+
+// Vanilla Matters: Handle crosshair visibility.
+function Tick( float deltaTime ) {
+	cross.SetCrosshair( !augDisplay.VM_recticleDrawn && frobDisplay.IsVisible() && !VM_rootWnd.scopeView.bActive && VM_player.bCrosshairVisible );
 }
 
 // ----------------------------------------------------------------------

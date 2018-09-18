@@ -25,7 +25,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
-     ShotTime=0.600000
+     ShotTime=0.350000
      reloadTime=2.000000
      HitDamage=20
      maxRange=4800
@@ -34,7 +34,7 @@ defaultproperties
      bCanHaveScope=True
      ScopeFOV=25
      bCanHaveLaser=True
-     recoilStrength=0.300000
+     recoilStrength=0.600000
      mpReloadTime=2.000000
      mpHitDamage=20
      mpBaseAccuracy=0.200000
@@ -50,7 +50,7 @@ defaultproperties
      PickupAmmoCount=6
      bInstantHit=True
      FireOffset=(X=-22.000000,Y=10.000000,Z=14.000000)
-     shakemag=50.000000
+     shakemag=100.000000
      FireSound=Sound'DeusExSounds.Weapons.PistolFire'
      CockingSound=Sound'DeusExSounds.Weapons.PistolReload'
      SelectSound=Sound'DeusExSounds.Weapons.PistolSelect'

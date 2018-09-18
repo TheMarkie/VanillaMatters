@@ -34,9 +34,9 @@ defaultproperties
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
      bAutomatic=True
-     ShotTime=0.200000
+     ShotTime=0.150000
      reloadTime=3.000000
-     BaseAccuracy=0.700000
+     BaseAccuracy=0.600000
      bCanHaveLaser=True
      bCanHaveSilencer=True
      AmmoNames(0)=Class'DeusEx.Ammo762mm'
@@ -60,7 +60,7 @@ defaultproperties
      PickupAmmoCount=30
      bInstantHit=True
      FireOffset=(X=-16.000000,Y=5.000000,Z=11.500000)
-     shakemag=200.000000
+     shakemag=150.000000
      FireSound=Sound'DeusEx.VMSounds.AssaultGunFire'
      AltFireSound=Sound'DeusExSounds.Weapons.AssaultGunReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.AssaultGunReload'

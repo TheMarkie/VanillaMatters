@@ -3,6 +3,10 @@
 //=============================================================================
 class DeusExScopeView expands Window;
 
+// Vanilla Matters: Import new sniper rifle scope view.
+#exec TEXTURE IMPORT FILE="Textures\HUDScopeCrosshair.bmp"	NAME="HUDScopeCrosshair"	GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\HUDScopeView.bmp"		NAME="HUDScopeView"			GROUP="VMUI" MIPS=Off
+
 var bool bActive;		// is this view actually active?
 
 var DeusExPlayer player;
@@ -35,19 +39,21 @@ event InitWindow()
 
 event Tick(float deltaSeconds)
 {
-	local Crosshair        cross;
-	local DeusExRootWindow dxRoot;
+	// local Crosshair        cross;
+	// local DeusExRootWindow dxRoot;
 
-	dxRoot = DeusExRootWindow(GetRootWindow());
-	if (dxRoot != None)
-	{
-		cross = dxRoot.hud.cross;
+	// dxRoot = DeusExRootWindow(GetRootWindow());
+	// if (dxRoot != None)
+	// {
+	// 	cross = dxRoot.hud.cross;
 
-		if (bActive)
-			cross.SetCrosshair(false);
-		else
-			cross.SetCrosshair(player.bCrosshairVisible);
-	}
+	// 	if (bActive)
+	// 		cross.SetCrosshair(false);
+	// 	else
+	// 		cross.SetCrosshair(player.bCrosshairVisible);
+	// }
+
+	// Vanilla Matters: We handle this in DeusExHUD.
 }
 
 // ----------------------------------------------------------------------
@@ -139,9 +145,15 @@ event DrawWindow(GC gc)
 	scopeHeight = 256;
 
 	fromX = (width-scopeWidth)/2;
-	fromY = (height-scopeHeight)/2;
+	// fromY = (height-scopeHeight)/2;
+
+	// Vanilla Matters: Offset it to fit the weapon recticle.
+	fromY = ( ( height-scopeHeight ) / 2 ) + 1;
+
 	toX   = fromX + scopeWidth;
 	toY   = fromY + scopeHeight;
+
+	
 
 	// Draw the black borders
 	gc.SetTileColorRGB(0, 0, 0);
@@ -174,10 +186,17 @@ event DrawWindow(GC gc)
 		if ( Player.Level.NetMode == NM_Standalone )
 		{
 			gc.SetStyle(DSTY_Modulated);
-			gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeView');
+			// gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeView');
+
+			// Vanilla Matters: Use our own fixed texture.
+			gc.DrawTexture( fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'DeusEx.VMUI.HUDScopeView' );
+
 			gc.SetTileColor(colLines);
 			gc.SetStyle(DSTY_Masked);
-			gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeCrosshair');
+			// gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeCrosshair');
+
+			// Vanilla Matters: Use our own fixed texture.
+			gc.DrawTexture( fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'DeusEx.VMUI.HUDScopeCrosshair' );
 		}
 		else
 		{

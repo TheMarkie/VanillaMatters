@@ -25,4 +25,5 @@ defaultproperties
      LightHue=16
      LightSaturation=192
      LightRadius=4
+     Damage=50.000000
 }

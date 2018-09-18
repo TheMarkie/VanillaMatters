@@ -16,13 +16,6 @@ Begin:
 
 function Deactivate()
 {
-	// Super.Deactivate();
-
-	// // check to see if the player is carrying something too heavy for him
-	// if (Player.CarriedDecoration != None)
-	// 	if (!Player.CanBeLifted(Player.CarriedDecoration))
-	// 		Player.DropDecoration();
-
     // Vanilla Matters: Don't need this anymore since it's all handled in DeusExPlayer.
 }
 
@@ -48,7 +41,7 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
      bAlwaysActive=True
      AugmentationName="Microfibral Muscle"
-     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased by 100%.|n- The agent can turn any object into a lethal missile with a powerthrow.|n|nTECH TWO: Strength is increased by 200%.|n+100% powerthrow damage.|n|nTECH THREE: Strength is increased by 300%.|n+300% powerthrow damage.|n|nTECH FOUR: An agent is inhumanly strong. Strength is increased by 400%.|n+700% powerthrow damage.|n|nStarts draining energy when a heavy object is held or a powerthrow is performed, drain rate depends on the object's mass."
+     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased by 100%.|n- The agent can turn any object into a lethal missile with a powerthrow.|n+25% thrown weapon speed and distance.|n-10% accuracy penalty from arm injuries.|n|nTECH TWO: Strength is increased by 200%.|n+100% powerthrow damage.|n+50% thrown weapon speed and distance.|n-20% accuracy penalty from arm injuries.|n|nTECH THREE: Strength is increased by 300%.|n+300% powerthrow damage.|n+75% thrown weapon speed and distance.|n-30% accuracy penalty from arm injuries.|n|nTECH FOUR: An agent is inhumanly strong. Strength is increased by 400%.|n+700% powerthrow damage.|n+100% thrown weapon speed and distance.|n-40% accuracy penalty from arm injuries.|n|nStarts draining energy when a heavy object is held or a powerthrow is performed, drain rate depends on the object's mass."
      MPInfo="When active, you can pick up large crates.  Energy Drain: Low"
      LevelValues(0)=1.500000
      LevelValues(1)=2.000000

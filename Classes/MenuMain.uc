@@ -69,6 +69,9 @@ function UpdateButtonStatus()
 		}
 	}
 
+	// Vanilla Matters: Disable multiplayer for now.
+	winButtons[8].SetSensitivity( false );
+
 	// DEUS_EX_DEMO - Uncomment when building demo
 	//
 	// Disable the "Play Intro" button for the demo

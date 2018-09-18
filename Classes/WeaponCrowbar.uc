@@ -46,7 +46,7 @@ defaultproperties
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-40.000000,Y=15.000000,Z=8.000000)
-     shakemag=20.000000
+     shakemag=80.000000
      FireSound=Sound'DeusExSounds.Weapons.CrowbarFire'
      SelectSound=Sound'DeusExSounds.Weapons.CrowbarSelect'
      Misc1Sound=Sound'DeusExSounds.Weapons.CrowbarHitFlesh'

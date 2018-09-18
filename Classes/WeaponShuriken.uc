@@ -32,7 +32,7 @@ defaultproperties
      HitDamage=40
      maxRange=1280
      AccurateRange=640
-     BaseAccuracy=0.900000
+     BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      bHandToHand=True
      mpReloadTime=0.200000

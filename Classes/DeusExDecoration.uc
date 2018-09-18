@@ -441,9 +441,7 @@ function Bump(actor Other)
 
 	// Vanilla Matters
 	local Vector HitLocation;
-	local float realVelocity;
-	local float kEnergy;
-	local float powerThrowDamage;
+	local float realVelocity, kEnergy, powerThrowDamage, mult;
 
 	player = DeusExPlayer(Other);
 
@@ -479,8 +477,9 @@ function Bump(actor Other)
 		// VM: Damage formula based on real physics formula for impact force.
 		realVelocity = ( VSize( Velocity ) / 16 ) * 0.3048;
 		kEnergy = 0.5 * ( Mass * 0.6 ) * ( realVelocity * realVelocity );
+		mult = GetPowerThrowMaterialMult();
 		// VM: Damage scales with deco material.
-		powerThrowDamage = kEnergy * 0.01 * GetPowerThrowMaterialMult();;
+		powerThrowDamage = kEnergy * 0.01 * mult;
 
 		if ( Pawn( Other ) != None ) {
 			Pawn( Other ).AdjustHitLocation( HitLocation, Velocity );
@@ -492,12 +491,12 @@ function Bump(actor Other)
 		Other.TakeDamage( powerThrowDamage, Pawn( VM_powerThrower ), HitLocation, Velocity, 'Shot' );
 
 		// VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
-		Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * GetPowerThrowMaterialMult() ) / ( Other.Mass * 0.3 ) ) );
+		Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
 
 		TakeDamage( powerThrowDamage, Pawn( Other ), Location, Velocity, 'Shot' );
 
 		VM_bPowerthrown = false;
-		VM_powerThrower = None;
+		VM_powerThrower = none;
 	}
 
 	if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))

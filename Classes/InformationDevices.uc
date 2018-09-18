@@ -40,11 +40,13 @@ function Destroyed()
 function DestroyWindow()
 {
 	// restore the crosshairs and the other hud elements
-	if (aReader != None)
-	{
-		DeusExRootWindow(aReader.rootWindow).hud.cross.SetCrosshair(aReader.bCrosshairVisible);
-		DeusExRootWindow(aReader.rootWindow).hud.frobDisplay.Show();
-	}
+	// if (aReader != None)
+	// {
+	// 	DeusExRootWindow(aReader.rootWindow).hud.cross.SetCrosshair(aReader.bCrosshairVisible);
+	// 	DeusExRootWindow(aReader.rootWindow).hud.frobDisplay.Show();
+	// }
+
+	// Vanilla Matters: We handle this in DeusExHUD.
 
 	if (infoWindow != None)
 	{
@@ -93,8 +95,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 			// hide the crosshairs if there's text to read, otherwise display a message
 			if (infoWindow != None)
 			{
-				DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshair(False);
-				DeusExRootWindow(player.rootWindow).hud.frobDisplay.Hide();
+				// DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshair(False);
+				// DeusExRootWindow(player.rootWindow).hud.frobDisplay.Hide();
+
+				// Vanilla Matters: We handle this in DeusExHUD.
 			}
 			else
 				player.ClientMessage(msgNoText);

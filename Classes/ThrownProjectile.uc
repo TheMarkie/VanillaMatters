@@ -327,38 +327,32 @@ function SpawnTearGas()
 	if ( Role < ROLE_Authority )
 		return;
 
-	//for (i=0; i<blastRadius/36; i++)
 	// Vanilla Matters: Use a better formula for gas cloud count.
 	for ( i = 0; i <= ( blastRadius / 16 ); i++ )
 	{
-		//if (FRand() < 0.9)
-		//{
-			loc = Location;
-			// loc.X += FRand() * blastRadius - blastRadius * 0.5;
-			// loc.Y += FRand() * blastRadius - blastRadius * 0.5;
+		loc = Location;
 
-			// Vanilla Matters: Use my RNG formulas for positioning.
-			loc.x = loc.x + ( FRand() * blastRadius ) - ( FRand() * blastRadius );
-			loc.y = loc.y + ( FRand() * blastRadius ) - ( FRand() * blastRadius );
+		// Vanilla Matters: Use my RNG formulas for positioning.
+		loc.x = loc.x + ( FRand() * blastRadius ) - ( FRand() * blastRadius );
+		loc.y = loc.y + ( FRand() * blastRadius ) - ( FRand() * blastRadius );
 
-			loc.Z += 32;
-			gas = spawn(class'TearGas', None,, loc);
-			if (gas != None)
-			{
-				gas.Velocity = vect(0,0,0);
-				gas.Acceleration = vect(0,0,0);
-				gas.DrawScale = FRand() * 0.5 + 2.0;
-				//gas.LifeSpan = FRand() * 10 + 30;
-				if ( Level.NetMode != NM_Standalone )
-					gas.bFloating = False;
-				else
-					gas.bFloating = True;
-				gas.Instigator = Instigator;
+		loc.Z += 32;
+		gas = spawn(class'TearGas', None,, loc);
+		if (gas != None)
+		{
+			gas.Velocity = vect(0,0,0);
+			gas.Acceleration = vect(0,0,0);
+			gas.DrawScale = FRand() * 0.5 + 2.0;
+			//gas.LifeSpan = FRand() * 10 + 30;
+			if ( Level.NetMode != NM_Standalone )
+				gas.bFloating = False;
+			else
+				gas.bFloating = True;
+			gas.Instigator = Instigator;
 
-				// Vanilla Matters: Use damage to scale lifespan, which in turn equals to total stun duration.
-				gas.LifeSpan = Damage - gas.Damage;
-			}
-		//}
+			// Vanilla Matters: Use damage to scale lifespan, which in turn equals to total stun duration.
+			gas.LifeSpan = Damage - gas.Damage;
+		}
 
 		// Vanilla Matters: Remove RNG from gas cloud spawning, making gas grenades always spawn the same amount of clouds based on blastRadius.
 	}
@@ -505,23 +499,20 @@ auto simulated state Flying
 
 		// Vanilla Matters: Fix some accessed nones.
 		if ( player != None ) {
+			dist = Abs(VSize(player.Location - Location));
 
-		dist = Abs(VSize(player.Location - Location));
+			// if you are at the same location, blind the player
+			if (dist ~= 0)
+				dist = 10.0;
+			else
+				dist = 2.0 * FClamp(blastRadius/dist, 0.0, 4.0);
 
-		// if you are at the same location, blind the player
-		if (dist ~= 0)
-			dist = 10.0;
-		else
-			dist = 2.0 * FClamp(blastRadius/dist, 0.0, 4.0);
-
-		if (damageType == 'EMP')
-			player.ClientFlash(dist, vect(0,200,1000));
-		else if (damageType == 'TearGas')
-			player.ClientFlash(dist, vect(0,1000,100));
-		else
-			player.ClientFlash(dist, vect(1000,1000,900));
-
-		// Vanilla Matters: Don't wanna touch vanilla indent for authenticity :)
+			if (damageType == 'EMP')
+				player.ClientFlash(dist, vect(0,200,1000));
+			else if (damageType == 'TearGas')
+				player.ClientFlash(dist, vect(0,1000,100));
+			else
+				player.ClientFlash(dist, vect(1000,1000,900));
 		}
 
       //DEUS_EX AMSD Only do visual effects if client or if destroyed via damage (since the client can't detect that)

@@ -6184,7 +6184,7 @@ function DropDecoration()
 
 				// Vanilla Matters: Add some more boost if the deco is powerthrown.
 				if ( deco != none && deco.VM_bPowerthrown ) {
-					boost = boost + ( 1500 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
+					boost = boost + ( 1000 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
 				}
 			}
 

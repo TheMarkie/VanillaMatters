@@ -184,29 +184,6 @@ function Timer()
 			}
 		}
 
-		// if (!flags.GetBool('M04RaidTeleportDone') &&
-		// 	flags.GetBool('ApartmentEntered'))
-		// {
-		// 	if (flags.GetBool('NSFSignalSent'))
-		// 	{
-		// 		foreach AllActors(class'ScriptedPawn', pawn)
-		// 		{
-		// 			if (pawn.IsA('UNATCOTroop') || pawn.IsA('MIB'))
-		// 				pawn.EnterWorld();
-		// 			else if (pawn.IsA('SandraRenton') || pawn.IsA('GilbertRenton') || pawn.IsA('HarleyFilben'))
-		// 				pawn.LeaveWorld();
-		// 		}
-
-		// 		foreach AllActors(class'PaulDenton', Paul)
-		// 		{
-		// 			Player.StartConversationByName('TalkedToPaulAfterMessage', Paul, False, False);
-		// 			break;
-		// 		}
-
-		// 		flags.SetBool('M04RaidTeleportDone', True,, 5);
-		// 	}
-		// }
-
 		// Vanilla Matters: Moved the raid start check to Tick.
 
 		// make the MIBs mortal

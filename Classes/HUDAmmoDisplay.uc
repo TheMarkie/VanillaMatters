@@ -103,16 +103,8 @@ event DrawWindow(GC gc)
 			ammoInClip = weapon.AmmoLeftInClip();
 			//clipsRemaining = weapon.NumClips();
 
-			if (weapon.IsInState('Reload'))
-				gc.DrawText(infoX, 26, 20, 9, msgReloading);
-			else
-				gc.DrawText(infoX, 26, 20, 9, ammoInClip);
-
-			// if there are no clips (or a partial clip) remaining, color me red
-			// if (( clipsRemaining == 0 ) || (( clipsRemaining == 1 ) && ( ammoRemaining < 2 * weapon.ReloadCount )))
-			// 	gc.SetTextColor(colAmmoLowText);
-			// else
-			// 	gc.SetTextColor(colAmmoText);
+			// Vanilla Matters: No longer show the placeholder text during reloading.
+			gc.DrawText( infoX, 26, 20, 9, ammoInClip );
 
 			// Vanilla Matters: Cut out clipsRemaining calls.
 			if ( ammoRemaining <= ammoInClip || ammoRemaining < ( weapon.ReloadCount * 2 ) ) {
@@ -122,12 +114,8 @@ event DrawWindow(GC gc)
 				gc.SetTextColor( colAmmoText );
 			}
 
-			if (weapon.IsInState('Reload'))
-				gc.DrawText(infoX, 38, 20, 9, msgReloading);
-			else
-				//gc.DrawText(infoX, 38, 20, 9, clipsRemaining);
-				// Vanilla Matters: Show how much ammo left instead of how many clips.
-				gc.DrawText( infoX, 38, 20, 9, ammoRemaining - ammoInClip );
+			// Vanilla Matters: Show how much ammo left instead of how many clips.
+			gc.DrawText( infoX, 38, 20, 9, ammoRemaining - ammoInClip );
 		}
 		else
 		{

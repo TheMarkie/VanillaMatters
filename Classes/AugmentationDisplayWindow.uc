@@ -9,12 +9,6 @@ var float corner;
 
 var bool bDefenseActive;
 var int defenseLevel;
-// var DeusExProjectile defenseTarget;
-
-// Vanilla Matters
-var Actor defenseTarget;				// AugDefense now deals with more than projectiles.
-var bool VM_bDefenseEnoughEnergy;		// AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
-var bool VM_bDefenseEnoughDistance;		// Shows if we're in range to detonate.
 
 var ViewportWindow winDrone;
 var bool bDroneCreated;
@@ -118,6 +112,12 @@ var String	keyDropItem, keyTalk, keyTeamTalk;
 var Color	colRed, colGreen, colWhite;
 
 // Vanilla Matters
+var Actor defenseTarget;				// AugDefense now deals with more than projectiles.
+var bool VM_bDefenseEnoughEnergy;		// AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
+var bool VM_bDefenseEnoughDistance;		// Shows if we're in range to detonate.
+
+var bool VM_recticleDrawn;				// True if we're drawing the weapon recticle.
+
 var localized String VM_msgUndefined;
 var localized String VM_msgADSNotEnoughEnergy;
 
@@ -403,35 +403,7 @@ function DrawDefenseAugmentation(GC gc)
 	{
 		bDrawLine = False;
 
-		// if (defenseTarget.IsInState('Exploding'))
-		// {
-		// 	str = msgADSDetonating;
-		// 	bDrawLine = True;
-		// }
-		// else
-		// 	str = msgADSTracking;
-
-		// mult = VSize(defenseTarget.Location - Player.Location);
-		// str = str $ CR() $ msgRange @ Int(mult/16) @ msgRangeUnits;
-
-		// if (!ConvertVectorToCoordinates(defenseTarget.Location, boxCX, boxCY))
-		// 	str = str @ msgBehind;
-
-		// gc.GetTextExtent(0, w, h, str);
-		// x = boxCX - w/2;
-		// y = boxCY - h;
-		// gc.SetTextColorRGB(255,0,0);
-		// gc.DrawText(x, y, w, h, str);
-		// gc.SetTextColor(colHeaderText);
-
-		// if (bDrawLine)
-		// {
-		// 	gc.SetTileColorRGB(255,0,0);
-		// 	Interpolate(gc, width/2, height/2, boxCX, boxCY, 64);
-		// 	gc.SetTileColor(colHeaderText);
-		// }
-
-		// Vanilla Matters: Rewrite all the stuff above to take into account new target types.
+		// Vanilla Matters: Rewrite all the stuff to take into account new target types.
 		bDrawLine = true;
 
 		if ( VM_bDefenseEnoughDistance ) {
@@ -806,6 +778,13 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
 	local int team;
 	local String titleString;
 
+	// Vanilla Matters: Make it white if target is none.
+	if ( target == none ) {
+		xcolor = colWhite;
+
+		return;
+	}
+
 	bDM = (DeathMatchGame(player.DXGame) != None);
 	bTeamDM = (TeamDMGame(player.DXGame) != None);
 
@@ -938,70 +917,63 @@ function DrawTargetAugmentation(GC gc)
 	local vector AimLocation;
 	local int AimBodyPart;
 
+	// Vanilla Matters
+	local Crosshair crosshair;
+
+	crosshair = DeusExRootWindow( player.rootWindow ).hud.cross;
 
 	crossColor.R = 255; crossColor.G = 255; crossColor.B = 255;
 
 	// check 500 feet in front of the player
 	target = TraceLOS(8000,AimLocation);
 
-   targetplayerhealthstring = "";
-   targetplayerlocationstring = "";
+	targetplayerhealthstring = "";
+	targetplayerlocationstring = "";
 
-	if ( target != None )
-	{
-		GetTargetReticleColor( target, crossColor );
+	// Vanilla Matters: Rewrite to have the reticle always on if a weapon is out.
+	GetTargetReticleColor( target, crossColor );
 
-		if ((DeusExPlayer(target) != None) && (bTargetActive))
-		{
-			AimBodyPart = DeusExPlayer(target).GetMPHitLocation(AimLocation);
-			if (AimBodyPart == 1)
-				TargetPlayerLocationString = "("$msgHead$")";
-			else if ((AimBodyPart == 2) || (AimBodyPart == 5) || (AimBodyPart == 6))
-				TargetPlayerLocationString = "("$msgTorso$")";
-			else if ((AimBodyPart == 3) || (AimBodyPart == 4))
-				TargetPlayerLocationString = "("$msgLegs$")";
+	weapon = DeusExWeapon( player.Weapon );
+	if ( weapon != None && !( weapon.bHandToHand && weapon.bInstantHit ) && !bUseOldTarget ) {
+		if ( target != none && VSize( target.Location - Player.Location ) >= weapon.MaxRange ) {
+			crossColor = colWhite;
 		}
 
-		weapon = DeusExWeapon(Player.Weapon);
-		if ((weapon != None) && !weapon.bHandToHand && !bUseOldTarget)
-		{
-			// if the target is out of range, don't draw the reticle
-			if (weapon.MaxRange >= VSize(target.Location - Player.Location))
-			{
-				w = width;
-				h = height;
-				x = int(w * 0.5)-1;
-				y = int(h * 0.5)-1;
+		w = width;
+		h = height;
+		x = int( w * 0.5 );
+		y = int( h * 0.5 );
 
-				// scale based on screen resolution - default is 640x480
-				mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
+		mult = FClamp( weapon.currentAccuracy * 50.0 * ( width / 640.0 ), corner, 100 );
 
-				// make sure it's not too close to the center unless you have a perfect accuracy
-				mult = FMax(mult, corner+4.0);
-				if (weapon.currentAccuracy == 0.0)
-					mult = corner;
-
-				// draw the drop shadowed reticle
-				gc.SetTileColorRGB(0,0,0);
-				for (i=1; i>=0; i--)
-				{
-					gc.DrawBox(x+i, y-mult+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+i, y+mult-corner+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-(corner-1)/2+i, y-mult+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-(corner-1)/2+i, y+mult+i, corner, 1, 0, 0, 1, Texture'Solid');
-
-					gc.DrawBox(x-mult+i, y+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+mult-corner+i, y+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-mult+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+mult+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
-
-					gc.SetTileColor(crossColor);
-				}
-			}
+		mult = FMax( mult, corner + 4 );
+		if ( weapon.currentAccuracy <= 0 ) {
+			mult = corner;
 		}
-		// movers are invalid targets for the aug
-		if (target.IsA('DeusExMover'))
-			target = None;
+
+		gc.SetTileColorRGB( 0, 0, 0 );
+		for ( i = 1; i >= 0; i-- ) {
+			gc.DrawBox( x + i, y - mult + i, 1, corner, 0, 0, 1, Texture'Solid' );
+			gc.DrawBox( x + i, y + mult - corner + i + 1, 1, corner, 0, 0, 1, Texture'Solid' );
+			// gc.DrawBox( x - ( corner - 1 ) / 2 + i, y - mult + i, corner, 1, 0, 0, 1, Texture'Solid' );
+			// gc.DrawBox( x - ( corner - 1 ) / 2 + i, y + mult + i, corner, 1, 0, 0, 1, Texture'Solid' );
+
+			gc.DrawBox( x - mult + i, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
+			gc.DrawBox( x + mult - corner + i + 1, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
+			// gc.DrawBox( x - mult + i, y - ( ( corner - 1 ) / 2 ) + i, 1, corner, 0, 0, 1, Texture'Solid' );
+			// gc.DrawBox( x + mult + i, y - ( ( corner - 1 ) / 2 ) + i , 1, corner, 0, 0, 1, Texture'Solid' );
+
+			gc.SetTileColor( crossColor );
+		}
+
+		VM_recticleDrawn = true;
+	}
+	else {
+		VM_recticleDrawn = false;
+	}
+	
+	if ( DeusExMover( target ) != none ) {
+		target = None;
 	}
 
 	// let there be a 0.5 second delay before losing a target
@@ -1032,6 +1004,22 @@ function DrawTargetAugmentation(GC gc)
 
 	if (target != None)
 	{
+		// Vanilla Matters: Move this here.
+		// VM: We're using an unused DXPlayer variable called "own", it does not mean this contains our own player.
+		own = DeusExPlayer( target );
+		if ( own != none && bTargetActive ) {
+			AimBodyPart = own.GetMPHitLocation( AimLocation );
+			if ( AimBodyPart == 1 ) {
+				TargetPlayerLocationString = "(" $ msgHead $ ")";
+			}
+			else if ( AimBodyPart == 2 || AimBodyPart == 5 || AimBodyPart == 6 ) {
+				TargetPlayerLocationString = "(" $ msgTorso $ ")";
+			}
+			else if ( AimBodyPart == 3 || AimBodyPart == 4 ) {
+				TargetPlayerLocationString = "(" $ msgLegs $ ")";
+			}
+		}
+
 		// draw a cornered targetting box
 		v1.X = target.CollisionRadius;
 		v1.Y = target.CollisionRadius;
@@ -1215,20 +1203,6 @@ function DrawTargetAugmentation(GC gc)
 				if (targetLevel > 1)
 				{
 					// level two gives us weapon info as well
-					// if (target.IsA('Pawn'))
-					// {
-					// 	str = msgWeapon;
-	
-					// 	if (Pawn(target).Weapon != None)
-					// 		str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
-					// 	else
-					// 		str = str @ msgNone;
-
-					// 	gc.GetTextExtent(0, w, h, str);
-					// 	x = boxTLX + margin;
-					// 	y = boxBRY - h - margin;
-					// 	gc.DrawText(x, y, w, h, str);
-					// }
 
 					// Vanilla Matters: Let the player see robots' weapon and identifies monsters' weapons as "undefined".
 					str = msgWeapon;
@@ -1281,7 +1255,9 @@ function DrawTargetAugmentation(GC gc)
 	}
 
 	// set the crosshair colors
-	DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshairColor(crossColor);
+
+	// Vanilla Matters
+	crosshair.SetCrosshairColor( crossColor );
 }
 
 // ----------------------------------------------------------------------

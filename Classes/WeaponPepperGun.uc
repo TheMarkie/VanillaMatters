@@ -27,8 +27,8 @@ defaultproperties
      EnviroEffective=ENVEFF_AirVacuum
      Concealability=CONC_Visual
      bAutomatic=True
-     ShotTime=0.075000
-     reloadTime=4.000000
+     ShotTime=0.100000
+     reloadTime=3.000000
      HitDamage=7
      maxRange=100
      AccurateRange=100

@@ -54,7 +54,7 @@ defaultproperties
      ReloadCount=12
      PickupAmmoCount=12
      ProjectileClass=Class'DeusEx.PlasmaBolt'
-     shakemag=50.000000
+     shakemag=250.000000
      FireSound=Sound'DeusExSounds.Weapons.PlasmaRifleFire'
      AltFireSound=Sound'DeusExSounds.Weapons.PlasmaRifleReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.PlasmaRifleReload'

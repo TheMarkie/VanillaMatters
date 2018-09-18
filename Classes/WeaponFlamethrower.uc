@@ -39,7 +39,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.100000
      reloadTime=5.500000
-     HitDamage=5
+     HitDamage=15
      maxRange=320
      AccurateRange=320
      BaseAccuracy=0.900000
@@ -53,18 +53,17 @@ defaultproperties
      mpReloadCount=100
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
-     VM_ShotCount(0)=2
-     VM_ShotCount(1)=2
-     VM_ShotCount(2)=2
-     VM_ShotCount(3)=2
-     VM_bSlowWithShotCount=True
+     VM_ShotCount(0)=1
+     VM_ShotCount(1)=1
+     VM_ShotCount(2)=1
+     VM_ShotCount(3)=1
      VM_SpreadHorWithShotCount=1.000000
      AmmoName=Class'DeusEx.AmmoNapalm'
      ReloadCount=100
      PickupAmmoCount=100
      FireOffset=(Y=10.000000,Z=10.000000)
      ProjectileClass=Class'DeusEx.Fireball'
-     shakemag=10.000000
+     shakemag=50.000000
      FireSound=Sound'DeusExSounds.Weapons.FlamethrowerFire'
      AltFireSound=Sound'DeusExSounds.Weapons.FlamethrowerReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.FlamethrowerReload'
