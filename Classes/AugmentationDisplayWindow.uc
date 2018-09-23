@@ -24,7 +24,6 @@ var float lastTargetTime;
 var bool bVisionActive;
 var int visionLevel;
 var float visionLevelValue;
-var int activeCount;
 
 var localized String msgRange;
 var localized String msgRangeUnits;
@@ -116,7 +115,15 @@ var Actor defenseTarget;				// AugDefense now deals with more than projectiles.
 var bool VM_bDefenseEnoughEnergy;		// AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
 var bool VM_bDefenseEnoughDistance;		// Shows if we're in range to detonate.
 
+var ViewportWindow VM_playerWnd;		// Holds the player perspective when AugDrone is on.
+
 var bool VM_recticleDrawn;				// True if we're drawing the weapon recticle.
+
+var int VM_visionLevels[2];				// Use an array to hold seperate values from different sources of vision.
+var int VM_visionValues[2];
+
+var() float VM_nvBrightness;
+var() float VM_irBrightness;
 
 var localized String VM_msgUndefined;
 var localized String VM_msgADSNotEnoughEnergy;
@@ -227,20 +234,24 @@ function ConfigurationChanged()
 {
 	local float x, y, w, h, cx, cy;
 
-	if ((winDrone != None) || (winZoom != None))
-	{
-		w = width/4;
-		h = height/4;
-		cx = width/8 + margin;
-		cy = height/2;
-		x = cx - w/2;
-		y = cy - h/2;
+	// Vanilla Matters: Tweak the locations of the windows.
+	if ( winDrone != none ) {
+		winDrone.ConfigureChild( 0, 0, width, height );
+	}
 
-		if (winDrone != None)
-			winDrone.ConfigureChild(x, y, w, h);
+	x = margin;
+	y = height * 0.375;
+	w = width / 4;
+	h = height / 4;
+	
+	if ( VM_playerWnd != none ) {
+		VM_playerWnd.ConfigureChild( x, y, w, h );
+	}
 
-		if (winZoom != None)
-			winZoom.ConfigureChild(x, y, w, h);
+	x = width - ( width / 4 ) - margin;
+
+	if ( winZoom != none ) {
+		winZoom.ConfigureChild( x, y, w, h );
 	}
 }
 
@@ -293,16 +304,39 @@ function RefreshMultiplayerKeys()
 function Tick(float deltaTime)
 {
 	// check for the drone ViewportWindow being constructed
-	if (Player.bSpyDroneActive && (Player.aDrone != None) && (winDrone == None) && 
-		(Player.PlayerIsClient() || (Player.Level.NetMode==NM_Standalone)) )
-	{
-		winDrone = ViewportWindow(NewChild(class'ViewportWindow'));
-		if (winDrone != None)
-		{
+
+	// Vanilla Matters: When AugDrone is active, make the spy drone's perspective the main one and shift the player's down to a smaller window.
+	if ( player.bSpyDroneActive && player.aDrone != none && ( player.PlayerIsClient() || player.Level.NetMode == NM_Standalone ) ) {
+		if ( VM_playerWnd == none ) {
+			VM_playerWnd = ViewportWindow( NewChild( class'ViewportWindow' ) );
+			VM_playerWnd.AskParentForReconfigure();
+			VM_playerWnd.Lower();
+			VM_playerWnd.SetViewportActor( player );
+		}
+		if ( winDrone == none ) {
+			winDrone = ViewportWindow( NewChild( class'ViewportWindow' ) );
 			winDrone.AskParentForReconfigure();
 			winDrone.Lower();
-			winDrone.SetViewportActor(Player.aDrone);
+			winDrone.SetViewportActor( player.aDrone );
 		}
+	}
+
+	if ( !player.bSpyDroneActive ) {
+		if ( winDrone != none ) {
+			winDrone.Destroy();
+			winDrone = none;
+		}
+		if ( VM_playerWnd != none ) {
+			VM_playerWnd.Destroy();
+			VM_playerWnd = none;
+		}
+
+		if ( player.aDrone != none && IsActorValid( player.aDrone ) ) {
+			RemoveActorRef( player.aDrone );
+			bDroneReferenced = false;
+		}
+
+		bDroneCreated = false;
 	}
 
 	// check for the target ViewportWindow being constructed
@@ -314,22 +348,6 @@ function Tick(float deltaTime)
 			winZoom.AskParentForReconfigure();
 			winZoom.Lower();
 		}
-	}
-
-	// handle Destroy() in Tick() since they can't be in DrawWindow()
-	if (!Player.bSpyDroneActive)
-	{
-		if (winDrone != None)
-		{
-			winDrone.Destroy();
-			winDrone = None;
-		}
-		if ((Player.aDrone != None) && IsActorValid(Player.aDrone))
-		{
-			RemoveActorRef(Player.aDrone);
-			bDroneReferenced = false;
-		}
-		bDroneCreated = false;
 	}
 
 	if (winZoom != None)
@@ -353,8 +371,9 @@ function PostDrawWindow(GC gc)
 	pp = Player.GetPlayerPawn();
 
    //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
-	if (bVisionActive)
-		DrawVisionAugmentation(gc);
+
+	// Vanilla Matters: Handle active status in the function itself.
+	DrawVisionAugmentation( gc );
 
 	if ( Player.Level.NetMode != NM_Standalone )
 		DrawMiscStatusMessages( gc );
@@ -368,7 +387,7 @@ function PostDrawWindow(GC gc)
    // draw IFF and accuracy information all the time, return False if target aug is not active
 	DrawTargetAugmentation(gc);
 
-   gc.SetFont(Font'FontMenuSmall_DS');
+	gc.SetFont(Font'FontMenuSmall_DS');
 	gc.SetTextColor(colHeaderText);
 	gc.SetStyle(DSTY_Normal);
 	gc.SetTileColor(colBorder);
@@ -811,7 +830,7 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
          SightDist = VSize(target.Location - Player.Location);
 
 			if ( ( bTeamDM && (TeamDMGame(player.DXGame).ArePlayersAllied(DeusExPlayer(target),player))) ||
-				  (target.Style != STY_Translucent) || (bVisionActive && (Sightdist <= visionLevelvalue)) )              
+				  (target.Style != STY_Translucent) || (bVisionActive && (Sightdist <= VisionLevelValue)) )              
 			{
 				targetPlayerName = DeusExPlayer(target).PlayerReplicationInfo.PlayerName;
             // DEUS_EX AMSD Show health of enemies with the target active.
@@ -944,7 +963,7 @@ function DrawTargetAugmentation(GC gc)
 		x = int( w * 0.5 );
 		y = int( h * 0.5 );
 
-		mult = FClamp( weapon.currentAccuracy * 50.0 * ( width / 640.0 ), corner, 100 );
+		mult = FClamp( weapon.currentAccuracy * 50.0 * ( width / 640.0 ), corner, 200 );
 
 		mult = FMax( mult, corner + 4 );
 		if ( weapon.currentAccuracy <= 0 ) {
@@ -1071,15 +1090,19 @@ function DrawTargetAugmentation(GC gc)
 			{
 				// set the coords of the zoom window, and draw the box
 				// even if we don't have a zoom window
-				x = width/8 + margin;
-				y = height/2;
-				w = width/4;
-				h = height/4;
+
+				// Vanilla Matters: Move the window to the right.
+				x = width - ( width / 8 ) - margin;
+				y = height / 2;
+				w = width / 4;
+				h = height / 4;
 
 				DrawDropShadowBox(gc, x-w/2, y-h/2, w, h);
 
-				boxCX = width/8 + margin;
-				boxCY = height/2;
+				// Vanilla Matters: Move the window to the right.
+				boxCX = width - ( width / 8 ) - margin;
+				boxCY = height / 2;
+
 				boxTLX = boxCX - width/8;
 				boxTLY = boxCY - height/8;
 				boxBRX = boxCX + width/8;
@@ -1264,186 +1287,150 @@ function DrawTargetAugmentation(GC gc)
 // DrawVisionAugmentation()
 // ----------------------------------------------------------------------
 
-function DrawVisionAugmentation(GC gc)
-{
+// Vanilla Matters: Rewrite because it looked really bad.
+function DrawVisionAugmentation( GC gc ) {
 	local Vector loc;
-	local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-	local float dist, x, y, w, h;
-   local float BrightDot;
+	local float dist;
+	local float BrightDot;
 	local Actor A;
-   local float DrawGlow;
-   local float RadianView;
-   local float OldFlash, NewFlash;
-   local vector OldFog, NewFog;
+	local float DrawGlow;
+	local float RadianView;
+	local float OldFlash, NewFlash;
+	local vector OldFog, NewFog;
 	local Texture oldSkins[9];
 
-	boxW = width/2;
-	boxH = height/2;
-	boxCX = width/2;
-	boxCY = height/2;
-	boxTLX = boxCX - boxW/2;
-	boxTLY = boxCY - boxH/2;
-	boxBRX = boxCX + boxW/2;
-	boxBRY = boxCY + boxH/2;
+	local float saveBrightness;
+	local bool heatSource;
 
-	// at level one and higher, enhance heat sources (FLIR)
-	// use DrawActor to enhance NPC visibility
-	if (visionLevel >= 1)
-	{
-		// shift the entire screen to dark red (except for the middle box)
-      if (player.Level.Netmode == NM_Standalone)
-      {
-         gc.SetStyle(DSTY_Modulated);
-         gc.DrawPattern(0, 0, width, boxTLY, 0, 0, Texture'ConWindowBackground');
-         gc.DrawPattern(0, boxBRY, width, height-boxBRY, 0, 0, Texture'ConWindowBackground');
-         gc.DrawPattern(0, boxTLY, boxTLX, boxH, 0, 0, Texture'ConWindowBackground');
-         gc.DrawPattern(boxBRX, boxTLY, width-boxBRX, boxH, 0, 0, Texture'ConWindowBackground');
-         gc.DrawPattern(0, 0, width, boxTLY, 0, 0, Texture'SolidRed');
-         gc.DrawPattern(0, boxBRY, width, height-boxBRY, 0, 0, Texture'SolidRed');
-         gc.DrawPattern(0, boxTLY, boxTLX, boxH, 0, 0, Texture'SolidRed');
-         gc.DrawPattern(boxBRX, boxTLY, width-boxBRX, boxH, 0, 0, Texture'SolidRed');
-         gc.SetStyle(DSTY_Translucent);
-      }
+	// Vanilla Matters
+	local int i;
 
-      // DEUS_EX AMSD In multiplayer, draw green here so that we can draw red actors over it
-      if (player.Level.Netmode != NM_Standalone)
-      {
-         gc.SetStyle(DSTY_Modulated);
-         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
-         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
-         gc.SetStyle(DSTY_Translucent);
-      }
-      
-
-		// adjust for the player's eye height
-		loc = Player.Location;
-		loc.Z += Player.BaseEyeHeight;
-
-      // DEUS_EX AMSD In multiplayer, in order to not let you snipe people hiding in the dark across the map, but not get
-      // bad feedback from coloring everything green, we have to make the red non translucent so that scale glow darkens it,
-      // instead of fading it out.
-      //if (Player.Level.Netmode != NM_Standalone)
-         //gc.SetStyle(DSTY_Normal);
-
-      foreach Player.AllActors(class'Actor', A)
-      {
-         if (A.bVisionImportant)
-         {
-            if (IsHeatSource(A) || ( (Player.Level.Netmode != NM_Standalone) && ((A.IsA('AutoTurret')) || (A.IsA('AutoTurretGun')) || (A.IsA('SecurityCamera')) ) ))
-            {
-               dist = VSize(A.Location - loc);
-               //If within range of vision aug bit
-               if ( ( ((Player.Level.Netmode != NM_Standalone) && (dist <= (visionLevelvalue / 2))) ||
-                      ((Player.Level.Netmode == NM_Standalone) && (dist <= (visionLevelValue)))        ) && (IsHeatSource(A)))
-               {           
-                  VisionTargetStatus = GetVisionTargetStatus(A);               
-                  SetSkins(A, oldSkins);
-                  gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
-                  ResetSkins(A, oldSkins);
-               }
-               else if ((Player.Level.Netmode != NM_Standalone) && (GetVisionTargetStatus(A) == VISIONENEMY) && (A.Style == STY_Translucent))
-               {
-                  //DEUS_EX AMSD In multiplayer, if looking at a cloaked enemy player within range (greater than see through walls)
-                  //(If within walls radius he'd already have been seen.               
-                  if ( (dist <= (visionLevelvalue)) && (Player.LineOfSightTo(A,true)) )
-                  {
-                     VisionTargetStatus = GetVisionTargetStatus(A);               
-                     SetSkins(A, oldSkins);
-                     gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
-                     ResetSkins(A, oldSkins);
-                  }
-               }
-               else if (Player.LineOfSightTo(A,true))
-               {
-                  VisionTargetStatus = GetVisionTargetStatus(A);               
-                  SetSkins(A, oldSkins);
-                  
-                  if ((Player.Level.NetMode == NM_Standalone) || (dist < VisionLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
-                  {
-                     DrawGlow = 2.0;
-                  }
-                  else
-                  {
-                     // Fadeoff with distance square
-                     DrawGlow = 2.0 / ((dist / (VisionLevelValue * 1.5)) * (dist / (VisionLevelValue * 1.5)));
-                     // Don't make the actor harder to see than without the aug.
-                     //DrawGlow = FMax(DrawGlow,A.ScaleGlow);
-                     // Set a minimum.
-                     DrawGlow = FMax(DrawGlow,0.15);
-                  }                  
-                  gc.DrawActor(A, False, False, True, 1.0, DrawGlow, None);
-                  ResetSkins(A, oldSkins);
-               }
-            }
-            else if ( (A != VisionBlinder) && (Player.Level.NetMode != NM_Standalone) && (A.IsA('ExplosionLight')) && (Player.LineOfSightTo(A,True)) )
-            {
-               BrightDot = Normal(Vector(Player.ViewRotation)) dot Normal(A.Location - Player.Location);
-               dist = VSize(A.Location - Player.Location);
-               
-               if (dist > 3000)
-                  DrawGlow = 0;
-               else if (dist < 300)
-                  DrawGlow = 1;
-               else
-                  DrawGlow = ( 3000 - dist ) / ( 3000 - 300 );
-               
-               // Calculate view angle in radians.
-               RadianView = (Player.FovAngle / 180) * 3.141593;
-               
-               if ((BrightDot >= Cos(RadianView)) && (DrawGlow > 0.2) && (BrightDot * DrawGlow * 0.9 > 0.2))  //DEUS_EX AMSD .75 is approximately at our view angle edge.
-               {
-                  VisionBlinder = A;
-                  NewFlash = 10.0 * BrightDot * DrawGlow;
-                  NewFog = vect(1000,1000,900) * BrightDot * DrawGlow * 0.9;
-                  OldFlash = player.DesiredFlashScale;
-                  OldFog = player.DesiredFlashFog * 1000;
-                  
-                  // Don't add increase the player's flash above the current newflash.
-                  NewFlash = FMax(0,NewFlash - OldFlash);
-                  NewFog.X = FMax(0,NewFog.X - OldFog.X);
-                  NewFog.Y = FMax(0,NewFog.Y - OldFog.Y);
-                  NewFog.Z = FMax(0,NewFog.Z - OldFog.Z);
-                  player.ClientFlash(NewFlash,NewFog);
-                  player.IncreaseClientFlashLength(4.0*BrightDot*DrawGlow*BrightDot);
-               }
-            }
-         }
-      }
-
-      // draw text label
-      if (player.Level.Netmode == NM_Standalone)
-      {
-         gc.GetTextExtent(0, w, h, msgIRAmpActive);
-         x = boxTLX + margin;
-         y = boxTLY - margin - h;
-         gc.SetTextColor(colHeaderText);
-         gc.DrawText(x, y, w, h, msgIRAmpActive);
-      }
+	visionLevel = 0;
+	visionLevelValue = 0;
+	for ( i = 0; i < 2; i++ ) {
+		if ( VM_visionLevels[i] > 0 ) {
+			visionLevel = FMax( visionLevel, VM_visionLevels[i] );
+			visionLevelValue = FMax( visionLevelValue, VM_visionValues[i] );
+		}
 	}
 
-	// shift the middle of the screen green (NV) and increase the contrast
-   // DEUS_EX AMSD In singleplayer, draw this here
-   // In multiplayer, drawn earlier so you can still see through walls with it.
-   if (player.Level.Netmode == NM_Standalone)
-   {
-      gc.SetStyle(DSTY_Modulated);
-      gc.DrawPattern(boxTLX, boxTLY, boxW, boxH, 0, 0, Texture'SolidGreen');
-      gc.DrawPattern(boxTLX, boxTLY, boxW, boxH, 0, 0, Texture'SolidGreen');
-   }
-   gc.SetStyle(DSTY_Normal);
+	if ( visionLevel <= 0 ) {
+		bVisionActive = false;
+	}
+	else {
+		bVisionActive = true;
+	}
 
-	if (player.Level.NetMode == NM_Standalone)
-      DrawDropShadowBox(gc, boxTLX, boxTLY, boxW, boxH);
+	if ( !bVisionActive ) {
+		if ( player.Level.Brightness != player.Level.default.Brightness ) {
+			player.Level.Brightness = player.Level.default.Brightness;
+			player.ConsoleCommand( "FlushLighting" );
+		}
 
-	// draw text label
-   if (player.Level.Netmode == NM_Standalone)
-   {
-      gc.GetTextExtent(0, w, h, msgLightAmpActive);
-      x = boxTLX + margin;
-      y = boxTLY + margin;
-      gc.SetTextColor(colHeaderText);
-      gc.DrawText(x, y, w, h, msgLightAmpActive);
-   }
+		return;
+	}
+
+	saveBrightness = player.Level.Brightness;
+
+	if ( visionLevel > 1 ) {
+		if ( player.Level.Netmode == NM_Standalone ) {
+			gc.SetStyle( DSTY_Modulated );
+			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'ConWindowBackground' );
+			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'SolidRed' );
+			gc.SetStyle( DSTY_Translucent );
+		}
+		else {
+			gc.SetStyle( DSTY_Modulated );
+			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
+			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
+			gc.SetStyle( DSTY_Translucent );
+		}
+
+		loc = player.Location;
+		loc.z = loc.z + Player.BaseEyeHeight;
+
+		foreach Player.AllActors( class'Actor', A ) {
+			if ( A.bVisionImportant ) {
+				heatSource = IsHeatSource( A );
+				if ( heatSource || ( player.Level.Netmode != NM_Standalone && ( AutoTurret( A ) != none || AutoTurretGun( A ) != none || SecurityCamera( A ) != none ) ) ) {
+					dist = VSize( A.Location - loc );
+					VisionTargetStatus = GetVisionTargetStatus( A );
+					if ( heatSource && ( ( Player.Level.Netmode != NM_Standalone && dist <= ( visionLevelValue / 2 ) ) || ( Player.Level.Netmode == NM_Standalone && dist <= visionLevelValue ) ) ) {
+						SetSkins( A, oldSkins );
+						gc.DrawActor( A, False, False, True, 1.0, 2.0, None );
+						ResetSkins( A, oldSkins );
+					}
+					else if ( Player.Level.Netmode != NM_Standalone && VisionTargetStatus == VISIONENEMY && A.Style == STY_Translucent ) {
+						if ( dist <= visionLevelValue && player.LineOfSightTo( A, true ) ) {             
+							SetSkins( A, oldSkins );
+							gc.DrawActor( A, False, False, True, 1.0, 2.0, None );
+							ResetSkins( A, oldSkins );
+						}
+					}
+					else if ( Player.LineOfSightTo( A,true ) ) {
+						SetSkins( A, oldSkins );
+
+						if ( player.Level.NetMode == NM_Standalone || dist <= ( visionLevelValue * 1.5 ) || VisionTargetStatus != VISIONENEMY ) {
+							DrawGlow = 2.0;
+						}
+						else {
+							DrawGlow = 2.0 / ( ( dist / ( visionLevelValue * 1.5 ) ) * ( dist / ( visionLevelValue * 1.5 ) ) );
+							DrawGlow = FMax( DrawGlow, 0.15 );
+						}
+
+						gc.DrawActor( A, False, False, True, 1.0, DrawGlow, None );
+						ResetSkins( A, oldSkins );
+					}
+				}
+				else if ( A != VisionBlinder && player.Level.NetMode != NM_Standalone && ExplosionLight( A ) != none && Player.LineOfSightTo( A,True ) ) {
+					BrightDot = Normal( Vector( Player.ViewRotation ) ) dot Normal( A.Location - Player.Location );
+					dist = VSize( A.Location - Player.Location );
+					if ( dist >= 3000 ) {
+						DrawGlow = 0;
+					}
+					else if ( dist <= 300 ) {
+						DrawGlow = 1;
+					}
+					else {
+						DrawGlow = ( 3000 - dist ) / ( 3000 - 300 );
+					}
+
+					// Calculate view angle in radians.
+					RadianView = (Player.FovAngle / 180) * 3.141593;
+
+					if ( BrightDot >= Cos( RadianView ) && DrawGlow > 0.2 && ( BrightDot * DrawGlow * 0.9 ) > 0.2 ) {
+						VisionBlinder = A;
+						NewFlash = 10.0 * BrightDot * DrawGlow;
+						NewFog = vect( 1000,1000,900)  * BrightDot * DrawGlow * 0.9;
+						OldFlash = player.DesiredFlashScale;
+						OldFog = player.DesiredFlashFog * 1000;
+
+						// Don't add increase the player's flash above the current newflash.
+						NewFlash = FMax( 0,NewFlash - OldFlash );
+						NewFog.X = FMax( 0,NewFog.X - OldFog.X );
+						NewFog.Y = FMax( 0,NewFog.Y - OldFog.Y );
+						NewFog.Z = FMax( 0,NewFog.Z - OldFog.Z );
+						player.ClientFlash( NewFlash, NewFog );
+						player.IncreaseClientFlashLength( 4.0 * BrightDot * DrawGlow * BrightDot );
+					}
+				}
+			}
+		}
+
+		player.Level.Brightness = VM_irBrightness;
+	}
+	else if ( visionLevel > 0 && player.Level.NetMode == NM_Standalone ) {
+		gc.SetStyle( DSTY_Modulated );
+		gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'SolidGreen' );
+		gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'SolidGreen' );
+		gc.SetStyle( DSTY_Normal );
+
+		player.Level.Brightness = VM_nvBrightness;
+	}
+
+	if ( player.Level.Brightness != saveBrightness ) {
+		player.ConsoleCommand( "FlushLighting" );
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -1687,6 +1674,8 @@ defaultproperties
      colRed=(R=255)
      colGreen=(G=255)
      colWhite=(R=255,G=255,B=255)
+     VM_nvBrightness=2.500000
+     VM_irBrightness=1.500000
      VM_msgUndefined="Undefined"
      VM_msgADSNotEnoughEnergy="* ADS no energy *"
 }

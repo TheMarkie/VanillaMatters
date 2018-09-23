@@ -231,6 +231,9 @@ var bool		VM_readyFire;						// If the gun is ready to be fired.
 
 var bool		VM_stopReload;
 
+var Texture		VM_handsTex;						// Hands texture.
+var int			VM_handsTexPos[2];					// Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
+
 var localized String VM_msgInfoIgnite;				// If an ammo type has the VM_IgnitesOnHit property then it's displayed to notify players.
 var localized String VM_msgInfoHeadshot;			// Label the headshot multipler section.
 var localized String VM_msgFullClip;
@@ -360,6 +363,41 @@ function PostBeginPlay()
          bNeedToSetMPPickupAmmo = False;
       }
    }
+}
+
+// Vanilla Matters: Override to add in colored hands skin.
+simulated function RenderOverlays( Canvas canvas ) {
+	local int i;
+	local DeusExPlayer player;
+
+	if ( VM_handsTex == none ) {
+		player = DeusExPlayer( Owner );
+		if ( player != none ) {
+			if ( WeaponMiniCrossbow( self ) == none ) {
+				VM_handsTex = player.GetHandsSkin();
+			}
+			else {
+				VM_handsTex = player.GetCrossbowHandsSkin();
+			}
+		}
+	}
+
+	if ( Mesh == PlayerViewMesh ) {
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
+			}
+		}
+	}
+	else {
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = none;
+			}
+		}
+	}
+
+	super.RenderOverlays( canvas );
 }
 
 singular function BaseChange()
@@ -666,17 +704,23 @@ simulated function float CalculateAccuracy()
 
 		// Vanilla Matters: Health penalties now scale dynamically.
 		// VM: AugMuscle helps with arm penalties.
-		div = player.AugmentationSystem.GetClassLevel( class'AugMuscle' );
-		if ( div == -1 ) {
-			div = 1;
-		}
-		else {
-			div = 1 - ( div * 0.1 );
+		div = 1;
+		if ( player != none ) {
+			div = player.AugmentationSystem.GetClassLevel( class'AugMuscle' );
+			if ( div == -1 ) {
+				div = 1;
+			}
+			else {
+				div = 1 - ( div * 0.1 );
+			}
+
+			// VM: Add flinching penalty.
+			accuracy = accuracy + ( player.VM_flinchPenalty * div );
 		}
 
-		accuracy = accuracy + ( ( 1 - FMax( HealthArmRight / BestArmRight, 0 ) ) * 0.6 * div );
-		accuracy = accuracy + ( ( 1 - FMax( HealthArmLeft / BestArmLeft, 0 ) ) * 0.4 * div );
-		accuracy = accuracy + ( ( 1 - FMax( HealthHead / BestHead, 0 ) ) * 0.4 );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.6 * div );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.4 * div );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.6 );
 	}
 
 	// increase accuracy (decrease value) if we haven't been moving for awhile
@@ -704,7 +748,7 @@ simulated function float CalculateAccuracy()
 	}
 
 	// Vanilla Matters: Weapons with shot count higher than 1 will be capped below 100% so that all the shots don't go in one place.
-	accuracy = FMax( accuracy, ( VM_ShotCount[GetWeaponSkillLevel()] - 1 ) * 0.05 );
+	accuracy = FClamp( accuracy, ( VM_ShotCount[GetWeaponSkillLevel()] - 1 ) * 0.05, 2 );
 	
 	if ( Level.NetMode != NM_Standalone ) {
 		accuracy = FMax( accuracy, MinWeaponAcc );
@@ -911,15 +955,6 @@ function CycleAmmo()
 			break;
 
 	last = i;
-
-	// do
-	// {
-	// 	if (++i >= 3)
-	// 		i = 0;
-
-	// 	if (LoadAmmo(i))
-	// 		break;
-	// } until (last == i);
 
 	// Vanilla Matters: Rewrite this part to stop the weapon from trying to cycle to its current ammo.
 	i = last + 1;
@@ -1513,7 +1548,7 @@ simulated function Tick(float deltaTime)
 
 	// Vanilla Matters: Non-automatic weapons need the player to stop holding fire to start firing again.
 	if ( pawn != none ) {
-		if ( !bAutomatic && !VM_readyFire && !bFiring && pawn.bFire == 0 ) {
+		if ( !bAutomatic && !VM_readyFire && ( !bFiring && bReadyToFire ) && pawn.bFire == 0 ) {
 			VM_readyFire = true;
 		}
 	}
@@ -3642,13 +3677,13 @@ state NormalFire {
 			player = DeusExPlayer( Owner );
 			mult = 1.0;
 			if ( bHandToHand && player != none ) {
-				mult = 1.0 / player.AugmentationSystem.GetAugLevelValue( class'AugCombat' );
+				// Vanilla Matters: Tweak AugCombat bonus.
+				mult = player.AugmentationSystem.GetAugLevelValue( class'AugCombat' );
 				if ( mult == -1 ) {
 					mult = 1.0;
 				}
-				// Vanilla Matters: Compensate for reduced augcombat values.
 				else {
-					mult = mult / 10.0;
+					mult = 1 - mult;
 				}
 			}
 
@@ -3713,6 +3748,8 @@ state NormalFire {
 	}
 
 Begin:
+	VM_readyFire = false;
+
 	if ( ClipCount >= ReloadCount && ReloadCount != 0 ) {
 		if ( !bAutomatic ) {
 			bFiring = False;
@@ -4335,6 +4372,8 @@ defaultproperties
      VM_recoilRate=2.000000
      VM_modTimerMax=0.250000
      VM_readyFire=True
+     VM_handsTexPos(0)=-1
+     VM_handsTexPos(1)=-1
      VM_msgInfoIgnite="Ignites enemies:"
      VM_msgInfoHeadshot="Headshot:"
      VM_msgFullClip="You are already fully loaded"

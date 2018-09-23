@@ -3,8 +3,6 @@
 //=============================================================================
 class DartFlare extends Dart;
 
-//var float mpDamage;
-
 simulated function PreBeginPlay()
 {
 	Super.PreBeginPlay();
@@ -13,17 +11,29 @@ simulated function PreBeginPlay()
 		Damage = mpDamage;
 }
 
+// Vanilla Matters: Handle "injecting" into computers.
+auto simulated state Flying {
+	simulated function ProcessTouch( Actor other, vector hitLocation ) {
+		local Computers comp;
+
+		comp = Computers( other );
+		if ( comp != none || ATM( other ) != none ) {
+			if ( comp != none ) {
+				comp.VM_injected = true;
+			}
+
+			other.Frob( Owner, none );
+		}
+
+		super.ProcessTouch( other, hitLocation );
+	}
+}
+
 defaultproperties
 {
-     DamageType=Burned
+     DamageType=EMP
      spawnAmmoClass=Class'DeusEx.AmmoDartFlare'
-     ItemName="Flare Dart"
-     bUnlit=True
-     LightType=LT_Steady
-     LightEffect=LE_NonIncidence
-     LightBrightness=255
-     LightHue=16
-     LightSaturation=192
-     LightRadius=4
-     Damage=50.000000
+     ItemName="Injector Dart"
+     Damage=30.000000
+     VM_bOverridesDamage=True
 }

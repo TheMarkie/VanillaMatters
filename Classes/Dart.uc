@@ -25,7 +25,7 @@ defaultproperties
      mpDamage=30.000000
      speed=2000.000000
      MaxSpeed=3000.000000
-     Damage=25.000000
+     Damage=30.000000
      MomentumTransfer=1000
      ImpactSound=Sound'DeusExSounds.Generic.BulletHitFlesh'
      Mesh=LodMesh'DeusExItems.Dart'

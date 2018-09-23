@@ -9,6 +9,9 @@ var float fireTime;
 var() int VM_miguelReward;
 var() string VM_miguelRewardMsg;
 
+var() int VM_ksReward;
+var() string VM_ksRewardMsg;
+
 // ----------------------------------------------------------------------
 // FirstFrame()
 // 
@@ -287,9 +290,11 @@ function FirstFrame()
 	}
 	// Vanilla Matters: Award SPs for rescuing Miguel, we'll do it here so that the player sees it.
 	else if ( localURL == "06_HONGKONG_HELIBASE" ) {
-		if ( !flags.GetBool( 'Miguel_Dead' ) && flags.GetBool( 'MiguelWandering' ) ) {
+		if ( !flags.GetBool( 'VM_MiguelRescueRewarded' ) && !flags.GetBool( 'Miguel_Dead' ) && flags.GetBool( 'MiguelWandering' ) ) {
 			Player.SkillPointsAdd( VM_miguelReward );
 			Player.ClientMessage( VM_miguelRewardMsg );
+
+			flags.SetBool( 'VM_MiguelRescueRewarded', true );
 		}
 	}
 }
@@ -628,6 +633,15 @@ function Timer()
 			flags.SetBool('MS_DrugDealersAttacking', True,, 8);
 		}
 	}
+	// Vanilla Matters: Add a reward for fixing the killswitch.
+	else if ( localURL == "06_HONGKONG_TONGBASE" ) {
+		if ( !flags.GetBool( 'VM_KillswitchFixRewarded' ) && flags.GetBool( 'KillswitchFixed' ) ) {
+			Player.SkillPointsAdd( VM_ksReward );
+			Player.ClientMessage( VM_ksRewardMsg );
+
+			flags.SetBool( 'VM_KillswitchFixRewarded', true );
+		}
+	}
 }
 
 function FireMissilesAt(name targetTag)
@@ -681,5 +695,7 @@ function TeleportPawn(ScriptedPawn pawn, name patrolTag, name orders, optional b
 defaultproperties
 {
      VM_miguelReward=100
-     VM_miguelRewardMsg="You helped Miguel to safety"
+	 VM_miguelRewardMsg="You helped Miguel to safety"
+	 VM_ksReward=150
+	 VM_ksRewardMsg="You deactivated the kill switch"
 }

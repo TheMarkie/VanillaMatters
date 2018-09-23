@@ -3,46 +3,77 @@
 //=============================================================================
 class TechGoggles extends ChargedPickup;
 
+// Vanilla Matters
+var travel int VM_currentVisionLevel;				// Allow player to swap between night vision and infrared.
+
 // ----------------------------------------------------------------------
 // ChargedPickupBegin()
 // ----------------------------------------------------------------------
 
-function ChargedPickupBegin(DeusExPlayer Player)
-{
-	Super.ChargedPickupBegin(Player);
+function ChargedPickupBegin( DeusExPlayer Player ) {
+	Super.ChargedPickupBegin( Player );
 
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
-	UpdateHUDDisplay(Player);
+	UpdateHUDDisplay( Player );
 }
 
 // ----------------------------------------------------------------------
 // UpdateHUDDisplay()
 // ----------------------------------------------------------------------
 
-function UpdateHUDDisplay(DeusExPlayer Player)
-{
-	if ((DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0) && (IsActive()))
-		DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
+// Vanilla Matters
+function UpdateHUDDisplay( DeusExPlayer Player ) {
+	local AugmentationDisplayWindow augWnd;
 
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = True;
-	// DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 0;
-	// DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = 0;
+	augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
 
-	// Vanilla Matters: Give goggles a flat sonar value.
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.visionLevel = 2;
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.visionLevelValue = 480;
+	augWnd.VM_visionLevels[0] = VM_currentVisionLevel;
+	if ( VM_currentVisionLevel >= 3 ) {
+		augWnd.VM_visionValues[0] = 320;
+	}
+	else {
+		augWnd.VM_visionValues[0] = 0;
+	}
+}
+
+// Vanilla Matters: Switch between night vision and infrared.
+function ExtraFunction( DeusExPlayer player ) {
+	local AugmentationDisplayWindow augWnd;
+	local int level;
+
+	if ( !bIsActive ) {
+		return;
+	}
+
+	level = VM_currentVisionLevel;
+
+	if ( VM_currentVisionLevel > 1 ) {
+		VM_currentVisionLevel = 1;
+	}
+	else {
+		VM_currentVisionLevel = FMax( player.SkillSystem.GetSkillLevel( class'SkillEnviro' ), 1 );
+	}
+
+	if ( level != VM_currentVisionLevel ) {
+		PlaySound( ActivateSound, SLOT_None );
+	}
+
+	UpdateHUDDisplay( player );
 }
 
 // ----------------------------------------------------------------------
 // ChargedPickupEnd()
 // ----------------------------------------------------------------------
 
-function ChargedPickupEnd(DeusExPlayer Player)
-{
-	Super.ChargedPickupEnd(Player);
+// Vanilla Matters
+function ChargedPickupEnd( DeusExPlayer Player ) {
+	local AugmentationDisplayWindow augWnd;
 
-	if (--DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0)
-		DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = False;
+	augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
+
+	Super.ChargedPickupEnd( Player );
+
+	augWnd.VM_visionLevels[0] = 0;
+	augWnd.VM_visionValues[0] = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -66,11 +97,12 @@ defaultproperties
      largeIcon=Texture'DeusExUI.Icons.LargeIconTechGoggles'
      largeIconWidth=49
      largeIconHeight=36
-     Description="Tech goggles are used by many special ops forces throughout the world under a number of different brand names, but they all provide some form of portable light amplification plus close range sonar imaging."
+     Description="Tech goggles are used by many special ops forces throughout the world under a number of different brand names, but they all provide some form of portable light amplification.|n|n(Press Reload to switch between possible vision types)"
      beltDescription="GOGGLES"
      Mesh=LodMesh'DeusExItems.GogglesIR'
      CollisionRadius=8.000000
      CollisionHeight=2.800000
      Mass=10.000000
      Buoyancy=5.000000
+     VM_currentVisionLevel=1
 }

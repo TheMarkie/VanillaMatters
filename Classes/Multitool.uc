@@ -46,4 +46,6 @@ defaultproperties
      CollisionHeight=0.860000
      Mass=20.000000
      Buoyancy=10.000000
+     VM_handsTexPos(0)=1
+     VM_handsTexPos(1)=5
 }

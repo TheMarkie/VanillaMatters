@@ -51,6 +51,8 @@ defaultproperties
      VM_ShotCount(2)=6
      VM_ShotCount(3)=6
      AmmoName=Class'DeusEx.AmmoShell'
+     VM_handsTexPos(0)=0
+     VM_handsTexPos(1)=3
      ReloadCount=4
      PickupAmmoCount=4
      bInstantHit=True

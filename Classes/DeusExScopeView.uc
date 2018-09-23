@@ -145,15 +145,10 @@ event DrawWindow(GC gc)
 	scopeHeight = 256;
 
 	fromX = (width-scopeWidth)/2;
-	// fromY = (height-scopeHeight)/2;
-
-	// Vanilla Matters: Offset it to fit the weapon recticle.
-	fromY = ( ( height-scopeHeight ) / 2 ) + 1;
+	fromY = (height-scopeHeight)/2;
 
 	toX   = fromX + scopeWidth;
 	toY   = fromY + scopeHeight;
-
-	
 
 	// Draw the black borders
 	gc.SetTileColorRGB(0, 0, 0);
@@ -186,14 +181,12 @@ event DrawWindow(GC gc)
 		if ( Player.Level.NetMode == NM_Standalone )
 		{
 			gc.SetStyle(DSTY_Modulated);
-			// gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeView');
 
 			// Vanilla Matters: Use our own fixed texture.
 			gc.DrawTexture( fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'DeusEx.VMUI.HUDScopeView' );
 
 			gc.SetTileColor(colLines);
 			gc.SetStyle(DSTY_Masked);
-			// gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeCrosshair');
 
 			// Vanilla Matters: Use our own fixed texture.
 			gc.DrawTexture( fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'DeusEx.VMUI.HUDScopeCrosshair' );

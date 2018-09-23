@@ -175,35 +175,31 @@ state On
 		if (bOn)
 		{
 			if ((termwindow == None) && (Level.NetMode == NM_Standalone))
-         {
+			{
 				GotoState('Off');
-         }            
-         if (curFrobber == None)
-         {
-            GotoState('Off');
-         }
-         //else if (VSize(curFrobber.Location - Location) > 1500)
-         // Vanilla Matters: Reduce the distance to prevent activating then running away.
-         else if ( VSize( curFrobber.Location - Location ) > ( curFrobber.MaxFrobDistance + CollisionRadius + VSize( Vector( curFrobber.ViewRotation ) ) ) )
-         {
-            // log("Disabling computer "$Self$" because user "$curFrobber$" was too far away");
-			//Probably should be "GotoState('Off')" instead, but no good way to test, so I'll leave it alone.
-            curFrobber = None;
-         }
+			}            
+			if (curFrobber == None)
+			{
+				GotoState('Off');
+			}
+			// Vanilla Matters: Reduce the distance to prevent activating then running away. Ignore distance limit if it's injected.
+			else if ( !VM_injected && VSize( curFrobber.Location - Location ) > ( curFrobber.MaxFrobDistance + CollisionRadius + curFrobber.CollisionRadius ) ) {
+				curFrobber = None;
+			}
 		}
 	}
 
 Begin:
 	if (!bOn)
 	{
-      AdditionalActivation(curFrobber);
+		AdditionalActivation(curFrobber);
 		bAnimating = True;
 		PlayAnim('Activate');
 		FinishAnim();
 		bOn = True;
 		bAnimating = False;
 		ChangePlayerVisibility(False);
-      TryInvoke();
+		TryInvoke();
 	}
 }
 
@@ -216,7 +212,7 @@ auto state Off
 Begin:
 	if (bOn)
 	{
-      AdditionalDeactivation(curFrobber);
+		AdditionalDeactivation(curFrobber);
 		ChangePlayerVisibility(True);
 		bAnimating = True;
 		PlayAnim('Deactivate');
@@ -229,7 +225,10 @@ Begin:
 		// Resume any datalinks that may have started while we were 
 		// in the computers (don't want them to start until we pop back out)
 		ResumeDataLinks();
-      curFrobber = None;
+		curFrobber = None;
+
+		// Vanilla Matters
+		VM_injected = false;
 	}
 }
 
@@ -294,11 +293,11 @@ function bool Invoke()
 
 function CloseOut()
 {
-   if (curFrobber != None)
-   {
-      //curFrobber = None;
-      GotoState('Off');
-   }
+	if (curFrobber != None)
+	{
+		//curFrobber = None;
+		GotoState('Off');
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -310,17 +309,17 @@ function Frob(Actor Frobber, Inventory frobWith)
 	local DeusExPlayer player;
 	local float elapsed, delay;
 
-   // Don't allow someone else to use the computer when already in use.
-   if (curFrobber != None)
-   {
-      if (DeusExPlayer(Frobber) != None)
-         DeusExPlayer(Frobber).ClientMessage(Sprintf(CompInUseMsg,curFrobber.PlayerReplicationInfo.PlayerName));
-      return;
-   }
+	// Don't allow someone else to use the computer when already in use.
+	if (curFrobber != None)
+	{
+		if (DeusExPlayer(Frobber) != None)
+			DeusExPlayer(Frobber).ClientMessage(Sprintf(CompInUseMsg,curFrobber.PlayerReplicationInfo.PlayerName));
+		return;
+	}
 
 	Super.Frob(Frobber, frobWith);
 
-   // DEUS_EX AMSD get player from frobber, not from getplayerpawn
+	// DEUS_EX AMSD get player from frobber, not from getplayerpawn
 	player = DeusExPlayer(Frobber);
 	if (player != None)
 	{
@@ -336,10 +335,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 				bLockedOut = False;
 		}
 		if (!bAnimating && !bLockedOut)
-      {
-         curFrobber = player;
+		{
+			curFrobber = player;
 			GotoState('On');
-      }
+		}
 	}
 }
 

@@ -27,9 +27,10 @@ class WaltonSimons extends HumanMilitary;
 function float ShieldDamage(name damageType)
 {
 	// handle special damage types
-	if ((damageType == 'Flamed') || (damageType == 'Burned') || (damageType == 'Stunned') ||
-	    (damageType == 'KnockedOut'))
+	// Vanilla Matters: Make him vulnerable to Flamed and Burned if he's EMP'd.
+	if ( ( ( damageType == 'Flamed' || damageType == 'Burned' ) && CloakEMPTimer <= 0 ) || damageType == 'Stunned' || damageType == 'KnockedOut' ) {
 		return 0.0;
+	}
 	else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
 			(damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
 	        (damageType == 'PoisonEffect'))

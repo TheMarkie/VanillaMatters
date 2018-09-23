@@ -15,10 +15,6 @@ simulated function PreBeginPlay()
 {
 	Super.PreBeginPlay();
 
-	// Vanilla Matters: Fix Pistol skill always starting at Trained.
-	// if ( Level.NetMode == NM_Standalone )
-	// 	CurrentLevel = 1;
-
 	if ( Level.NetMode != NM_Standalone )
 	{
 		cost[0] = mpCost1;
@@ -41,7 +37,7 @@ defaultproperties
      mpLevel2=-0.370000
      mpLevel3=-0.500000
      SkillName="Weapons: Ballistic"
-     Description="The use of standard weaponry, including pistols, assault rifles, and shotguns.|n|nUNTRAINED: An agent can use standard guns.|n|nTRAINED:|n+20% damage, +5% accuracy, and -10% reload time.|n|nADVANCED:|n+50% damage, +12.5% accuracy, and -25% reload time.|n|nMASTER: An agent is a street sweeper.|n+100% damage, +25% accuracy, and -50% reload time."
+     Description="The use of standard weaponry, including pistols, assault rifles, and shotguns.|n|nUNTRAINED: An agent can use standard guns.|n|nTRAINED:|n+20% damage, +5% accuracy.|n-20% stabilization time and +10% recoil recovery.|n-10% reload time.|n|nADVANCED:|n+50% damage, +12.5% accuracy.|n-50% stabilization time and +25% recoil recovery.|n-25% reload time.|n|nMASTER: An agent is a street sweeper.|n+100% damage, +25% accuracy.|n-100% stabilization time and +50% recoil recovery.|n-50% reload time."
      SkillIcon=Texture'DeusExUI.UserInterface.SkillIconWeaponPistol'
      cost(0)=1575
      cost(1)=3150

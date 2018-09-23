@@ -11,6 +11,10 @@ var int				maxCopies;		// 0 means unlimited copies
 var localized String CountLabel;
 var localized String msgTooMany;
 
+// Vanilla Matters
+var Texture		VM_handsTex;						// Hands texture.
+var int			VM_handsTexPos[2];					// Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
+
 // ----------------------------------------------------------------------
 // Networking Replication
 // ----------------------------------------------------------------------
@@ -20,6 +24,36 @@ replication
    //client to server function
    reliable if ((Role < ROLE_Authority) && (bNetOwner))
       UseOnce;
+}
+
+// Vanilla Matters: Override to add in colored hands skin.
+simulated function RenderOverlays( Canvas canvas ) {
+	local int i;
+	local DeusExPlayer player;
+
+	if ( VM_handsTex == none ) {
+		player = DeusExPlayer( Owner );
+		if ( player != none ) {
+			VM_handsTex = player.GetHandsSkin();
+		}
+	}
+
+	if ( Mesh == PlayerViewMesh ) {
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
+			}
+		}
+	}
+	else {
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = none;
+			}
+		}
+	}
+
+	super.RenderOverlays( canvas );
 }
 
 // ----------------------------------------------------------------------
@@ -48,16 +82,6 @@ function bool HandlePickupQuery( inventory Item )
 		if ((anItem != None) && (bCanHaveMultipleCopies))
 		{
 			// don't actually put it in the hand, just add it to the count
-			// NumCopies += DeusExPickup(item).NumCopies;
-
-			// if ((MaxCopies > 0) && (NumCopies > MaxCopies))
-			// {
-			// 	NumCopies -= DeusExPickup(item).NumCopies;
-			// 	player.ClientMessage(msgTooMany);
-
-			// 	// abort the pickup
-			// 	return True;
-			// }
 
 			// Vanilla Matters: Let the player fill up the stack and allows a chance to quick use the remaining copies.
 			NumCopies = NumCopies + DeusExPickup( item ).NumCopies;
@@ -274,4 +298,6 @@ defaultproperties
      ItemName="DEFAULT PICKUP NAME - REPORT THIS AS A BUG"
      RespawnTime=30.000000
      LandSound=Sound'DeusExSounds.Generic.PaperHit1'
+     VM_handsTexPos(0)=-1
+     VM_handsTexPos(1)=-1
 }

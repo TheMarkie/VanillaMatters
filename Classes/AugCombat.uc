@@ -36,7 +36,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconCombat'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconCombat_Small'
      AugmentationName="Combat Strength"
-     Description="Sorting rotors accelerate calcium ion concentration in the sarcoplasmic reticulum, increasing an agent's muscle speed several-fold and multiplying the damage they inflict in melee combat.|n|nTECH ONE: Melee damage is increased by 25%.|n|nTECH TWO: Melee damage is increased by 50%.|n|nTECH THREE: Melee damage is increased by 75%.|n|nTECH FOUR: Melee weapons are almost instantly lethal. Melee damage is increased by 100%."
+     Description="Sorting rotors accelerate calcium ion concentration in the sarcoplasmic reticulum, increasing an agent's muscle speed several-fold and multiplying the damage they inflict in melee combat.|n|nTECH ONE: Melee damage is increased by 25%.|n+12.5% melee attack speed.|n|nTECH TWO: Melee damage is increased by 50%.|n+25% melee attack speed.|n|nTECH THREE: Melee damage is increased by 75%.|n+37.5% melee attack speed.|n|nTECH FOUR: Melee weapons are almost instantly lethal. Melee damage is increased by 100%.|n+50% melee attack speed."
      MPInfo="When active, you do double damage with melee weapons.  Energy Drain: Moderate"
      LevelValues(0)=0.125000
      LevelValues(1)=0.250000

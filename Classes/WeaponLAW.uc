@@ -54,6 +54,7 @@ defaultproperties
      mpAccurateRange=14400
      mpMaxRange=14400
      AmmoName=Class'DeusEx.AmmoNone'
+     VM_handsTexPos(0)=0
      ReloadCount=0
      FireOffset=(X=28.000000,Y=12.000000,Z=4.000000)
      ProjectileClass=Class'DeusEx.RocketLAW'

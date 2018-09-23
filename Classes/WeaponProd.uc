@@ -42,6 +42,8 @@ defaultproperties
      mpMaxRange=80
      mpReloadCount=4
      AmmoName=Class'DeusEx.AmmoBattery'
+     VM_handsTexPos(0)=0
+     VM_handsTexPos(1)=3
      ReloadCount=4
      PickupAmmoCount=4
      bInstantHit=True

@@ -2900,14 +2900,7 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
 		if (bOnFire)
 			ExtinguishFire();
 
-	if (damageType == 'EMP')
-	{
-		CloakEMPTimer += 10;  // hack - replace with skill-based value
-		if (CloakEMPTimer > 20)
-			CloakEMPTimer = 20;
-		EnableCloak(bCloakOn);
-		return false;
-	}
+	// Vanilla Matters: Moved EMP behaviors to TakeDamageBase.
 
 	return true;
 
@@ -2924,9 +2917,6 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	local int   actualDamage;
 	local float headOffsetZ, headOffsetY, armOffset;
 
-	// Vanilla Matters: Here to avoid too much class casting.
-	local DeusExWeapon instigatorWeapon;
-
 	actualDamage = Damage;
 
 	// calculate our hit extents
@@ -2935,12 +2925,6 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	armOffset   = CollisionRadius * 0.35;
 
 	// if the pawn is stunned, damage is 4X
-	// if (bStunned)
-	// 	actualDamage *= 4;
-	// // if the pawn is hit from behind at point-blank range, he is killed instantly
-	// else if (offset.x < 0)
-	// 	if ((instigatedBy != None) && (VSize(instigatedBy.Location - Location) < 64))
-	// 		actualDamage  *= 10;
 
 	// Vanilla Matters: Fix the bug where stunned enemies can't receive point-blank damage bonus from behind.
 	// VM: Stunned enemies can't receive damage bonus from damage types that stun, to prevent damage stacking.
@@ -3103,12 +3087,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			// narrow the head region
 			if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
 			{
-				// don't allow headshots with stunning weapons
-				// if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
-				// 	HealthHead -= actualDamage;
-				// else
-				// 	HealthHead -= actualDamage * 8;
-
 				// Vanilla Matters: Allow all weapons to be able to headshot equally.
 				// VM: Use custom headshot multiplier property.
 				if ( VM_hitBy != none ) {
@@ -3293,6 +3271,13 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
 	// Impart momentum
 	ImpartMomentum(momentum, instigatedBy);
+
+	// Vanilla Matters: Handle EMP behaviors here instead of FilterDamageType.
+	if ( damageType == 'EMP' ) {
+		CloakEMPTimer = FMin( CloakEMPTimer + ( actualDamage * 0.1 ), 20 );
+
+		EnableCloak( bCloakOn );
+	}
 
 	actualDamage = ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
 
@@ -6471,8 +6456,11 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
 	dxWeapon = DeusExWeapon(Weapon);
 	if (dxWeapon == None)
 		return false;
-	if (bCheckReadiness && !dxWeapon.bReadyToFire)
+
+	// Vanilla Matters: Check against our own ready state.
+	if ( bCheckReadiness && ( !dxWeapon.bReadyToFire || !dxWeapon.VM_readyFire ) ) {
 		return false;
+	}
 
 	if (dxWeapon.ReloadCount > 0)
 	{

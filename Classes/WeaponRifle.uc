@@ -54,6 +54,7 @@ defaultproperties
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
      AmmoName=Class'DeusEx.Ammo3006'
+     VM_handsTexPos(0)=0
      ReloadCount=6
      PickupAmmoCount=6
      bInstantHit=True

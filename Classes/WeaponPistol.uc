@@ -25,7 +25,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
-     ShotTime=0.350000
+     ShotTime=0.400000
      reloadTime=2.000000
      HitDamage=20
      maxRange=4800
@@ -46,6 +46,8 @@ defaultproperties
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
      AmmoName=Class'DeusEx.Ammo10mm'
+     VM_handsTexPos(0)=0
+     VM_handsTexPos(1)=1
      ReloadCount=6
      PickupAmmoCount=6
      bInstantHit=True

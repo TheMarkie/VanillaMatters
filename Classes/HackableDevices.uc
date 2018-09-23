@@ -78,15 +78,10 @@ function Timer()
 	{
 		curTool.PlayUseAnim();
 
-	  // TicksSinceLastHack += (Level.TimeSeconds - LastTickTime) * 10;
-	  // LastTickTime = Level.TimeSeconds;
-      //TicksSinceLastHack = TicksSinceLastHack + 1;
-
       // Vanilla Matters: Fix the infinite multitool bug.
       TicksSinceLastHack = TicksSinceLastHack + ( LastTickTime * 10 );
 	  LastTickTime = 0;
 
-      //while (TicksSinceLastHack > TicksPerHack)
       // VM: No idea why the game doesn't check for how many multitool left.
       while ( TicksSinceLastHack > TicksPerHack && numHacks > 0 )
       {
@@ -222,12 +217,11 @@ function Frob(Actor Frobber, Inventory frobWith)
 					curTool.bBeingUsed = True;
 					curTool.PlayUseAnim();
 					bHacking = True;
-               //Number of percentage points to remove
-               numHacks = hackValue * 100;
-               if (Level.Netmode != NM_Standalone)
-                  hackTime = default.hackTime / (hackValue * hackValue);
-               TicksPerHack = (hackTime * 10.0) / numHacks;
-			   //LastTickTime = Level.TimeSeconds;
+					//Number of percentage points to remove
+					numHacks = hackValue * 100;
+					if (Level.Netmode != NM_Standalone)
+						hackTime = default.hackTime / (hackValue * hackValue);
+					TicksPerHack = (hackTime * 10.0) / numHacks;
 
 			   // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
 			   LastTickTime = 0;

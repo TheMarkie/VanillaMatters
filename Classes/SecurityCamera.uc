@@ -373,9 +373,10 @@ auto state Active
 		if (DamageType == 'EMP')
 		{
 			// duration is based on daamge
-			// 10 seconds min to 30 seconds max
-			mindmg = Max(Damage - 15.0, 0.0);
-			confusionDuration += mindmg / 5.0;
+
+			// Vanilla Matters: Scale it to 0 - 120.
+			confusionDuration = FClamp( confusionDuration + Damage, 0, 120 );
+
 			confusionTimer = 0;
 			if (!bConfused)
 			{

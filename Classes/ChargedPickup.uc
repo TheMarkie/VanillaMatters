@@ -93,8 +93,6 @@ simulated function bool UpdateInfo(Object winObject)
 
 simulated function Float GetCurrentCharge()
 {
-	//return (Float(Charge) / Float(Default.Charge)) * 100.0;
-
 	// Vanilla Matters: Use actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
 	if ( VM_actualCharge > 0 ) {
 		return ( float( Charge ) / float( VM_actualCharge ) ) * 100.0;
@@ -112,8 +110,6 @@ function ChargedPickupBegin(DeusExPlayer Player)
 {
 	Player.AddChargedDisplay(Self);
 	PlaySound(ActivateSound, SLOT_None);
-	// if (LoopSound != None)
-	// 	AmbientSound = LoopSound;
 
 	// Vanilla Matters: Don't interrupt ambient if quiet.
 	if ( LoopSound != None && !VM_bQuiet ) {
@@ -139,6 +135,11 @@ function ChargedPickupBegin(DeusExPlayer Player)
 	bIsActive = True;
 }
 
+// Vanilla Matters: Allow the charged pick up to have an "extra functionality" triggered by the reload key.
+function ExtraFunction( DeusExPlayer player ) {
+
+}
+
 // ----------------------------------------------------------------------
 // ChargedPickupEnd()
 // ----------------------------------------------------------------------
@@ -147,8 +148,6 @@ function ChargedPickupEnd(DeusExPlayer Player)
 {
 	Player.RemoveChargedDisplay(Self);
 	PlaySound(DeactivateSound, SLOT_None);
-	// if (LoopSound != None)
-	// 	AmbientSound = None;
 
 	// Vanilla Matters: No need to interrupt ambient since it's never changed.
 	if ( LoopSound != None && !VM_bQuiet ) {
@@ -348,9 +347,6 @@ state Activated
 					VM_actualCharge = newCharge;
 				}
 			}
-
-			// VM: Still deselect the charged pickup to prevent double-clicking.
-			Player.PutInHand( None );
 
 			ChargedPickupBegin(Player);
 			SetTimer(0.1, True);

@@ -43,6 +43,8 @@ defaultproperties
      VM_ShotBreaksStuff(2)=2.000000
      VM_ShotBreaksStuff(3)=2.000000
      AmmoName=Class'DeusEx.AmmoNone'
+     VM_handsTexPos(0)=1
+     VM_handsTexPos(1)=2
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-40.000000,Y=15.000000,Z=8.000000)

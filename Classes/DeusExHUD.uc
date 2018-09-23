@@ -188,7 +188,10 @@ function ConfigurationChanged()
 	if (cross != None)
 	{
 		cross.QueryPreferredSize(qWidth, qHeight);
-		cross.ConfigureChild((width-qWidth)*0.5+0.5, (height-qHeight)*0.5+0.5, qWidth, qHeight);
+		// cross.ConfigureChild((width-qWidth)*0.5+0.5, (height-qHeight)*0.5+0.5, qWidth, qHeight);
+
+		// Vanilla Matters: Move the crosshair by a tiny bit.
+		cross.ConfigureChild( ( ( width - qWidth ) * 0.5 ) + 1, ( ( height - qHeight ) * 0.5 ) + 1, qWidth, qHeight );
 	}
 	if (belt != None)
 	{

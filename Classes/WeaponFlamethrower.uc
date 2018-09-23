@@ -59,6 +59,7 @@ defaultproperties
      VM_ShotCount(3)=1
      VM_SpreadHorWithShotCount=1.000000
      AmmoName=Class'DeusEx.AmmoNapalm'
+     VM_handsTexPos(0)=0
      ReloadCount=100
      PickupAmmoCount=100
      FireOffset=(Y=10.000000,Z=10.000000)

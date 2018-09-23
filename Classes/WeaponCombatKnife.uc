@@ -42,6 +42,7 @@ defaultproperties
      VM_HeadshotMult(2)=6.000000
      VM_HeadshotMult(3)=6.000000
      AmmoName=Class'DeusEx.AmmoNone'
+     VM_handsTexPos(0)=1
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-5.000000,Y=8.000000,Z=14.000000)

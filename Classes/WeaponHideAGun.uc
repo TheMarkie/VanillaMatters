@@ -19,6 +19,8 @@ defaultproperties
      bEmitWeaponDrawn=False
      bUseAsDrawnWeapon=False
      AmmoName=Class'DeusEx.AmmoNone'
+     VM_handsTexPos(0)=0
+     VM_handsTexPos(1)=3
      ReloadCount=0
      FireOffset=(X=-20.000000,Y=10.000000,Z=16.000000)
      ProjectileClass=Class'DeusEx.PlasmaBolt'

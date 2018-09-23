@@ -17,12 +17,6 @@ Begin:
 		Player.ClientMessage("Reconstruction will be complete in" @ Int(reconstructTime - (Level.TimeSeconds - lastDroneTime)) @ "seconds");
 		Deactivate();
 	}
-	// else
-	// {
-	// 	Player.bSpyDroneActive = True;
-	// 	Player.spyDroneLevel = CurrentLevel;
-	// 	Player.spyDroneLevelValue = LevelValues[CurrentLevel];
-	// }
 	// Vanilla Matters: Allow updating the drone even when it's functioning.
 	else {
 		if ( Player.aDrone != None ) {

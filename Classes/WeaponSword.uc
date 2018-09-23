@@ -38,6 +38,8 @@ defaultproperties
      mpAccurateRange=100
      mpMaxRange=100
      AmmoName=Class'DeusEx.AmmoNone'
+     VM_handsTexPos(0)=0
+     VM_handsTexPos(1)=2
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-25.000000,Y=10.000000,Z=24.000000)

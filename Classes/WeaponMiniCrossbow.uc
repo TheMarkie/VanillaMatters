@@ -54,10 +54,10 @@ defaultproperties
      Concealability=CONC_All
      ShotTime=0.800000
      reloadTime=2.000000
-     HitDamage=25
+     HitDamage=30
      maxRange=1600
      AccurateRange=800
-     BaseAccuracy=0.800000
+     BaseAccuracy=0.500000
      bCanHaveScope=True
      ScopeFOV=15
      bCanHaveLaser=True
@@ -81,6 +81,7 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      AmmoName=Class'DeusEx.AmmoDartPoison'
+     VM_handsTexPos(0)=0
      ReloadCount=4
      PickupAmmoCount=4
      FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)

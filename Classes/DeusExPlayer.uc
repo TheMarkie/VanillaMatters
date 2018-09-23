@@ -6,6 +6,17 @@ class DeusExPlayer extends PlayerPawnExt
 
 #exec OBJ LOAD FILE=Effects
 
+// Vanilla Matters
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"		NAME="WeaponHandsTex1a"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"		NAME="WeaponHandsTex2a"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"		NAME="WeaponHandsTex3a"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"		NAME="WeaponHandsTex4a"		GROUP="VM" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"		NAME="WeaponHandsTex1b"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"		NAME="WeaponHandsTex2b"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"		NAME="WeaponHandsTex3b"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"		NAME="WeaponHandsTex4b"		GROUP="VM" MIPS=Off
+
 // Name and skin assigned to PC by player on the Character Generation screen
 var travel String	TruePlayerName;
 var travel int      PlayerSkin;
@@ -360,6 +371,9 @@ var Computers ActiveComputer;
 var globalconfig bool VM_bEnableFP;
 var globalconfig bool VM_bCheatsEnabled;
 
+var travel int VM_currentQSIndex;
+var travel int VM_currentASIndex;
+
 var travel ForwardPressure FPSystem;			// Forward Pressure system.
 
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
@@ -371,6 +385,9 @@ var travel float VM_CurrentMaxShield;			// Just here to make things easier to fe
 
 var travel int VM_lastMission;					// Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool VM_mapTravel;					// Denote if a travel is a normal map travel or game load.
+
+var float VM_flinchPenalty;						// Accuracy penalty when the player takes damage.
+var() float VM_flinchDecay;						// Penalty decay rate.
 
 var localized String VM_msgTakeHold;
 var localized String VM_msgTakeHoldInstead;
@@ -820,6 +837,10 @@ event TravelPostAccept()
 			FPSystem.SetOwner( self );
 		}
 	}
+	// Vanilla Matters: Try auto saving after every map transition.
+	else {
+		AutoSave();
+	}
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
@@ -933,31 +954,17 @@ function DeusExLevelInfo GetLevelInfo()
 	return info;
 }
 
-//
-// If player chose to dual map the F keys
-//
-// exec function DualmapF3() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(0); }
-// exec function DualmapF4() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(1); }
-// exec function DualmapF5() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(2); }
-// exec function DualmapF6() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(3); }
-// exec function DualmapF7() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(4); }
-// exec function DualmapF8() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(5); }
-// exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(6); }
-// exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
-// exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
-// exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
-
 // Vanilla Matters: Rewrite aug activativation functions to be clearer.
-exec function AugSlot1() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 0 ); }
-exec function AugSlot2() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 1 ); }
-exec function AugSlot3() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 2 ); }
-exec function AugSlot4() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 3 ); }
-exec function AugSlot5() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 4 ); }
-exec function AugSlot6() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 5 ); }
-exec function AugSlot7() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 6 ); }
-exec function AugSlot8() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 7 ); }
-exec function AugSlot9() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 8 ); }
-exec function AugSlot10() { if ( AugmentationSystem != none ) AugmentationSystem.ActivateAugByKey( 9 ); }
+exec function AugSlot1() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 0 ); } }
+exec function AugSlot2() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 1 ); } }
+exec function AugSlot3() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 2 ); } }
+exec function AugSlot4() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 3 ); } }
+exec function AugSlot5() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 4 ); } }
+exec function AugSlot6() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 5 ); } }
+exec function AugSlot7() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 6 ); } }
+exec function AugSlot8() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 7 ); } }
+exec function AugSlot9() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 8 ); } }
+exec function AugSlot10() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 9 ); } }
 
 // Vanilla Matters: Flash light now has its own key and function.
 exec function ToggleFlashlight() {
@@ -1055,7 +1062,37 @@ exec function QuickSave()
 		FPSystem.ResetForwardPressure();
 	}
 
-	SaveGame(-1, QuickSaveGameTitle);
+	// Vanilla Matters: Allow two quick save slots.
+	// VM: We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
+	if ( VM_currentQSIndex != -3 ) {
+		VM_currentQSIndex = -3;
+	}
+	else if ( VM_currentQSIndex != -4 ) {
+		VM_currentQSIndex = -4;
+	}
+
+	SaveGame( VM_currentQSIndex, QuickSaveGameTitle @ "-" @ info.MissionLocation );
+}
+
+// Vanilla Matters: Handle auto save.
+function AutoSave() {
+	local DeusExLevelInfo info;
+
+	info = GetLevelInfo();
+
+	if ( ( info != none && info.MissionNumber < 0 ) || Level.NetMode != NM_Standalone || VM_bEnableFP ) {
+		return;
+	}
+
+	// Vanilla Matters: We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
+	if ( VM_currentASIndex != -5 ) {
+		VM_currentASIndex = -5;
+	}
+	else if ( VM_currentASIndex != -6 ) {
+		VM_currentASIndex = -6;
+	}
+
+	SaveGame( VM_currentASIndex, "Auto Save -" @ info.MissionLocation );
 }
 
 // ----------------------------------------------------------------------
@@ -1081,7 +1118,9 @@ function QuickLoadConfirmed()
 {
    if (Level.Netmode != NM_Standalone)
       return;
-	LoadGame(-1);
+
+	// Vanilla Matters
+	LoadGame( VM_currentQSIndex );
 }
 
 // ----------------------------------------------------------------------
@@ -3928,10 +3967,10 @@ state PlayerWalking
 
 		UpdateDynamicMusic(deltaTime);
 		UpdateWarrenEMPField(deltaTime);
-      // DEUS_EX AMSD Move these funcions to a multiplayer tick
-      // so that only that call gets propagated to the server.
-      MultiplayerTick(deltaTime);
-      // DEUS_EX AMSD For multiplayer...
+		// DEUS_EX AMSD Move these funcions to a multiplayer tick
+		// so that only that call gets propagated to the server.
+		MultiplayerTick(deltaTime);
+		// DEUS_EX AMSD For multiplayer...
 		FrobTime += deltaTime;
 
 		// save some texture info
@@ -3946,11 +3985,14 @@ state PlayerWalking
 		CheckActorDistances();
 
 		// handle poison
-      //DEUS_EX AMSD Now handled in multiplayertick
+		//DEUS_EX AMSD Now handled in multiplayertick
 		//UpdatePoison(deltaTime);
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
+
+		// Vanilla Matters: Decay flinch penalty.
+		ProcessFlinch( deltaTime );
 
 		// Vanilla Matters: Build forward pressure as you move.
 		if ( FPSystem != none ) {
@@ -4000,6 +4042,9 @@ state PlayerFlying
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
+
+		// Vanilla Matters: Decay flinch penalty.
+		ProcessFlinch( deltaTime );
 
 		// Vanilla Matters: Build forward pressure as you move.
 		if ( FPSystem != none ) {
@@ -4142,6 +4187,9 @@ state PlayerSwimming
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
+		// Vanilla Matters: Decay flinch penalty.
+		ProcessFlinch( deltaTime );
+
 		// Vanilla Matters: Build forward pressure as you move.
 		if ( FPSystem != none ) {
 			FPSystem.BuildForwardPressure( deltaTime );
@@ -4193,8 +4241,6 @@ state Dying
 
 	event PlayerTick(float deltaTime)
 	{
-      if (PlayerIsClient())      
-         ClientDeath();
 		UpdateDynamicMusic(deltaTime);
 
 		Super.PlayerTick(deltaTime);
@@ -4225,7 +4271,7 @@ state Dying
 	{
 		FrobTime = Level.TimeSeconds;
 		ShowHud(False);
-      ClientDeath();
+		ClientDeath();
 	}
 
    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
@@ -4347,12 +4393,6 @@ Begin:
 	{
 		DeusExWeapon(inHand).bZoomed = False;
 		DeusExWeapon(inHand).RefreshScopeDisplay(Self, True, False);
-	}
-
-	if ( DeusExRootWindow(rootWindow).hud.augDisplay != None )
-	{
-		DeusExRootWindow(rootWindow).hud.augDisplay.bVisionActive = False;
-		DeusExRootWindow(rootWindow).hud.augDisplay.activeCount = 0;
 	}
 
 	// Don't come back to life drugged or posioned
@@ -4570,13 +4610,6 @@ function DroneExplode()
 
 	if (aDrone != None)
 	{
-		// aDrone.Explode(aDrone.Location, vect(0,0,1));
-  //     //DEUS_EX AMSD Don't blow up OTHER player drones...
-  //     anAug = AugDrone(AugmentationSystem.FindAugmentation(class'AugDrone'));
-		// //foreach AllActors(class'AugDrone', anAug)			
-  //     // if (anAug != None)      
-  //     //    anAug.Deactivate();
-
 		// Vanilla Matters: Make drone detonation cost energy.
 		anAug = AugDrone( AugmentationSystem.FindAugmentation( class'AugDrone' ) );
 
@@ -5962,12 +5995,21 @@ exec function ReloadWeapon()
 {
 	local DeusExWeapon W;
 
+	// Vanilla Matters
+	local ChargedPickup cpickup;
+
 	if (RestrictInput())
 		return;
 
 	W = DeusExWeapon(Weapon);
 	if (W != None)
 		W.ReloadAmmo();
+
+	// Vanilla Matters: Pressing reload while holding a charged pickup triggers its "extra function".
+	cpickup = ChargedPickup( inHand );
+	if ( cpickup != none ) {
+		cpickup.ExtraFunction( self );
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -8020,6 +8062,9 @@ ignores SeePlayer, HearNoise, Bump;
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
+
+		// Vanilla Matters: Decay flinch penalty.
+		ProcessFlinch( deltaTime );
 	}
 
 	function LoopHeadConvoAnim()
@@ -9177,6 +9222,9 @@ function GoalCompleted( Name goalName )
 			if ( FPSystem != none ) {
 				FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
 			}
+
+			// Vanilla Matters: Try auto saving after every goal completed.
+			AutoSave();
 		}
 	}
 }
@@ -10065,6 +10113,10 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 			if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
 			{
 				HealthHead -= actualDamage * 2;
+
+				// Vanilla Matters: Taking damage makes accuracy flinch.
+				VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.02 );
+
 				if (bPlayAnim)
 					PlayAnim('HitHead', , 0.1);
 			}
@@ -10083,6 +10135,9 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 				if (bPlayAnim)
 					PlayAnim('HitLegLeft', , 0.1);
 			}
+
+			// Vanilla Matters: Taking damage makes accuracy flinch.
+			VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.01 );
 
  			// if this part is already dead, damage the adjacent part
 			if ((HealthLegRight < 0) && (HealthLegLeft > 0))
@@ -10123,14 +10178,15 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 			}
 			else
 			{
-				//HealthTorso -= actualDamage * 2;
-
 				// Vanilla Matters: Make the torso receive only exactly the expected amount.
 				HealthTorso = HealthTorso - actualDamage;
 
 				if (bPlayAnim)
 					PlayAnim('HitTorso', , 0.1);
 			}
+
+			// Vanilla Matters: Taking damage makes accuracy flinch.
+			VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.02 );
 
 			// if this part is already dead, damage the adjacent part
 			if (HealthArmLeft < 0)
@@ -10228,6 +10284,11 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 		CatchFire( instigatedBy );
 	}
 	myProjKiller = None;
+}
+
+// Vanilla Matters: Handle flinching penalty decay.
+function ProcessFlinch( float dt ) {
+	VM_flinchPenalty = FClamp( VM_flinchPenalty - ( VM_flinchDecay * dt ), 0, 0.8 );
 }
 
 // ----------------------------------------------------------------------
@@ -10472,11 +10533,17 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 // ----------------------------------------------------------------------
 
 function ClientDeath()
-{   
-   if (!PlayerIsClient())
+{
+	// Vanilla Matters
+	local int i;
+	local AugmentationDisplayWindow augWnd;
+
+	augWnd = DeusExRootWindow( rootWindow ).hud.augDisplay;
+
+	if (!PlayerIsClient())
       return;
 
-   FlashTimer = 0;
+	FlashTimer = 0;
 
 	// Reset skill notification
 	DeusExRootWindow(rootWindow).hud.hms.bNotifySkills = False;
@@ -10488,10 +10555,12 @@ function ClientDeath()
 	if (( DeusExRootWindow(rootWindow).scopeView != None ) && DeusExRootWindow(rootWindow).scopeView.bViewVisible )
 	   DeusExRootWindow(rootWindow).scopeView.DeactivateView();
 
-	if ( DeusExRootWindow(rootWindow).hud.augDisplay != None )
-	{
-		DeusExRootWindow(rootWindow).hud.augDisplay.bVisionActive = False;
-		DeusExRootWindow(rootWindow).hud.augDisplay.activeCount = 0;
+	// Vanilla Matters: Remove any vision.
+	if ( augWnd != none ) {
+		for ( i = 0; i < 2; i++ ) {
+			augWnd.VM_visionLevels[i] = 0;
+			augWnd.VM_visionValues[i] = 0;
+		}
 	}
 
 	if ( bOnFire )
@@ -12676,6 +12745,37 @@ function Texture GetStyleTexture( ERenderStyle newStyle, texture oldTex, optiona
 	}
 }
 
+// Vanilla Matters: Return the appropriate colored skin.
+function Texture GetHandsSkin() {
+	switch( PlayerSkin ) {
+		case 1:
+			return Texture'DeusEx.VM.WeaponHandsTex1a';
+		case 2:
+			return Texture'DeusEx.VM.WeaponHandsTex2a';
+		case 3:
+			return Texture'DeusEx.VM.WeaponHandsTex3a';
+		case 4:
+			return Texture'DeusEx.VM.WeaponHandsTex4a';
+		default:
+			return Texture'DeusExItems.WeaponHandsTex';
+	}
+}
+
+function Texture GetCrossbowHandsSkin() {
+	switch( PlayerSkin ) {
+		case 1:
+			return Texture'DeusEx.VM.WeaponHandsTex1b';
+		case 2:
+			return Texture'DeusEx.VM.WeaponHandsTex2b';
+		case 3:
+			return Texture'DeusEx.VM.WeaponHandsTex3b';
+		case 4:
+			return Texture'DeusEx.VM.WeaponHandsTex4b';
+		default:
+			return Texture'DeusExItems.WeaponHandsTex';
+	}
+}
+
 // ----------------------------------------------------------------------
 // LocalLog
 // ----------------------------------------------------------------------
@@ -12873,7 +12973,10 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
+     VM_currentQSIndex=-3
+     VM_currentASIndex=-5
      VM_CurrentMaxShield=100.000000
+     VM_flinchDecay=0.600000
      VM_msgTakeHold="You took hold of the %s"
      VM_msgTakeHoldInstead="You took hold of the %s instead"
      VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"
