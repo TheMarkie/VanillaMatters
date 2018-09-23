@@ -294,6 +294,7 @@ defaultproperties
      NoKeys="No Nano Keys Available!"
      KeysAvailableLabel="Nano Keys Available:"
      UseSound=Sound'DeusExSounds.Generic.KeysRattling'
+     VM_handsTexPos(0)=0
      bDisplayableInv=False
      ItemName="Nanokey Ring"
      ItemArticle="the"
@@ -313,5 +314,4 @@ defaultproperties
      CollisionHeight=4.690000
      Mass=10.000000
      Buoyancy=5.000000
-     VM_handsTexPos(0)=0
 }

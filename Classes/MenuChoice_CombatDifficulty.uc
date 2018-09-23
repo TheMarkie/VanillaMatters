@@ -50,8 +50,8 @@ defaultproperties
 {
      numTicks=9
      startValue=1.000000
-     defaultValue=1.000000
      endValue=5.000000
+     defaultValue=1.000000
      HelpText="Combat difficulty of the game. Affects damage received and forward pressure rates.|nEasy = 1; Medium = 1.5; Hard = 2; Realistic = 4. Save-dependent."
      actionText="Combat |&Difficulty"
 }

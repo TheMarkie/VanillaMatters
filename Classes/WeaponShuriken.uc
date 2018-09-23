@@ -41,9 +41,9 @@ defaultproperties
      mpAccurateRange=640
      mpMaxRange=640
      mpPickupAmmoCount=7
-     AmmoName=Class'DeusEx.AmmoShuriken'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
+     AmmoName=Class'DeusEx.AmmoShuriken'
      ReloadCount=1
      PickupAmmoCount=5
      FireOffset=(X=-10.000000,Y=14.000000,Z=22.000000)

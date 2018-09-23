@@ -131,7 +131,8 @@ simulated function Tick(float deltaTime)
 								dist = Player.Location - Location;
 								if (VSize(dist) < proxRadius)
 									if (skillTime == 0)
-										skillTime = FClamp(-20.0 * Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'), 1.0, 10.0);
+										// Vanilla Matters: Tweak skill time.
+										skillTime = FClamp( 1 - ( player.SkillSystem.GetSkillLevelValue( class'SkillDemolition' ) * 8 ), 1, 5 );
 							}
 						}
 					}

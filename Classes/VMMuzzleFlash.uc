@@ -23,7 +23,7 @@ defaultproperties
      LifeSpan=0.100000
      DrawType=DT_Mesh
      Style=STY_Translucent
-     Skin=Texture'FlatFXTex34'
+     Skin=Texture'DeusExItems.Skins.FlatFXTex34'
      Mesh=LodMesh'DeusExItems.FlatFX'
      DrawScale=0.400000
      ScaleGlow=2.000000

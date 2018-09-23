@@ -12913,6 +12913,7 @@ defaultproperties
      bNPCHighlighting=True
      bSubtitles=True
      bAlwaysRun=True
+     bToggleCrouch=True
      logTimeout=3.000000
      maxLogLines=4
      bHelpMessages=True
@@ -12929,6 +12930,7 @@ defaultproperties
      bShowAmmoDescriptions=True
      bConfirmSaveDeletes=True
      bConfirmNoteDeletes=True
+     bAskedToTrain=True
      AugPrefs(0)=AugVision
      AugPrefs(1)=AugHealing
      AugPrefs(2)=AugSpeed
@@ -12973,6 +12975,7 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
+     VM_bCheatsEnabled=True
      VM_currentQSIndex=-3
      VM_currentASIndex=-5
      VM_CurrentMaxShield=100.000000

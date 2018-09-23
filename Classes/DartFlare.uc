@@ -34,6 +34,5 @@ defaultproperties
      DamageType=EMP
      spawnAmmoClass=Class'DeusEx.AmmoDartFlare'
      ItemName="Injector Dart"
-     Damage=30.000000
      VM_bOverridesDamage=True
 }

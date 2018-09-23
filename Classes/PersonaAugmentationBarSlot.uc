@@ -395,13 +395,13 @@ defaultproperties
      colSelectionBorder=(R=255,G=255,B=255)
      slotFillWidth=42
      slotFillHeight=37
+     borderY=7
      borderWidth=44
      borderHeight=39
      draggable=True
      fillMode=FM_None
      slotIconX=6
      slotIconY=10
-     borderY=7
      slotNumberX=38
      slotNumberY=3
      texBackground=Texture'DeusEx.VMUI.AugBarSlot'

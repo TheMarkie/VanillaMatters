@@ -895,6 +895,7 @@ defaultproperties
      AugLocationLegs="Legs"
      AugLocationTorso="Torso"
      AugLocationSubdermal="Subdermal"
+     screenHeight=534
      clientBorderOffsetY=32
      ClientWidth=596
      ClientHeight=427
@@ -915,6 +916,5 @@ defaultproperties
      clientTextureRows=2
      clientTextureCols=3
      clientBorderTextureRows=2
-	 clientBorderTextureCols=3
-	 screenHeight=534
+     clientBorderTextureCols=3
 }

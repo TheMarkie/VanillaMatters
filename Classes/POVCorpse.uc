@@ -22,6 +22,7 @@ var travel bool   VM_bSearchedOnce;				// Has the corpse been searched at least 
 defaultproperties
 {
      MaxDamage=10
+     VM_handsTexPos(0)=1
      bDisplayableInv=False
      ItemName="body"
      PlayerViewOffset=(X=20.000000,Y=12.000000,Z=-5.000000)
@@ -33,5 +34,4 @@ defaultproperties
      CollisionHeight=1.000000
      Mass=40.000000
      Buoyancy=30.000000
-     VM_handsTexPos(0)=1
 }

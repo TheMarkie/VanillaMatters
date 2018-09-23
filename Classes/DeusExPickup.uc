@@ -293,11 +293,11 @@ defaultproperties
      FragType=Class'DeusEx.GlassFragment'
      CountLabel="COUNT:"
      msgTooMany="You can't carry any more of those"
+     VM_handsTexPos(0)=-1
+     VM_handsTexPos(1)=-1
      NumCopies=1
      PickupMessage="You found"
      ItemName="DEFAULT PICKUP NAME - REPORT THIS AS A BUG"
      RespawnTime=30.000000
      LandSound=Sound'DeusExSounds.Generic.PaperHit1'
-     VM_handsTexPos(0)=-1
-     VM_handsTexPos(1)=-1
 }

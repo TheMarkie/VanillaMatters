@@ -57,8 +57,8 @@ defaultproperties
 {
      numTicks=36
      startValue=75.000000
-     defaultValue=85.000000
      endValue=110.000000
+     defaultValue=85.000000
      HelpText="Affects both horizontal and vertical Field of View."
      actionText="|&Field of View"
      configSetting="PlayerPawn DefaultFOV"

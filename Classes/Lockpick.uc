@@ -27,6 +27,7 @@ defaultproperties
 {
      UseSound=Sound'DeusExSounds.Generic.LockpickRattling'
      maxCopies=10
+     VM_handsTexPos(0)=0
      bCanHaveMultipleCopies=True
      ItemName="Lockpick"
      PlayerViewOffset=(X=16.000000,Y=8.000000,Z=-16.000000)
@@ -45,5 +46,4 @@ defaultproperties
      CollisionHeight=1.900000
      Mass=20.000000
      Buoyancy=10.000000
-     VM_handsTexPos(0)=0
 }

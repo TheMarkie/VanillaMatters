@@ -23,9 +23,9 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     AmmoName=Class'DeusEx.AmmoNone'
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=2
+     AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-24.000000,Y=14.000000,Z=17.000000)

@@ -49,9 +49,9 @@ defaultproperties
      bUseAsDrawnWeapon=False
      AITimeLimit=3.500000
      AIFireDelay=5.000000
-     AmmoName=Class'DeusEx.AmmoNanoVirusGrenade'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
+     AmmoName=Class'DeusEx.AmmoNanoVirusGrenade'
      ReloadCount=1
      PickupAmmoCount=1
      FireOffset=(Y=10.000000,Z=20.000000)

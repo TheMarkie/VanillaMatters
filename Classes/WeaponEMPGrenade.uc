@@ -97,9 +97,9 @@ defaultproperties
      mpBaseAccuracy=1.000000
      mpAccurateRange=2400
      mpMaxRange=2400
-     AmmoName=Class'DeusEx.AmmoEMPGrenade'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
+     AmmoName=Class'DeusEx.AmmoEMPGrenade'
      ReloadCount=1
      PickupAmmoCount=1
      FireOffset=(Y=10.000000,Z=20.000000)

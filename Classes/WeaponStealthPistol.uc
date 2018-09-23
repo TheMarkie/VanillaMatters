@@ -49,9 +49,9 @@ defaultproperties
      VM_HeadshotMult(1)=6.000000
      VM_HeadshotMult(2)=6.000000
      VM_HeadshotMult(3)=6.000000
-     AmmoName=Class'DeusEx.Ammo10mm'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
+     AmmoName=Class'DeusEx.Ammo10mm'
      PickupAmmoCount=10
      bInstantHit=True
      FireOffset=(X=-24.000000,Y=10.000000,Z=14.000000)

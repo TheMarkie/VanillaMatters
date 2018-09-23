@@ -45,9 +45,9 @@ defaultproperties
      VM_HeadshotMult(1)=1.000000
      VM_HeadshotMult(2)=1.000000
      VM_HeadshotMult(3)=1.000000
-     AmmoName=Class'DeusEx.AmmoPepper'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=4
+     AmmoName=Class'DeusEx.AmmoPepper'
      ReloadCount=100
      PickupAmmoCount=100
      FireOffset=(X=8.000000,Y=4.000000,Z=14.000000)

@@ -28,6 +28,8 @@ defaultproperties
 {
      UseSound=Sound'DeusExSounds.Generic.MultitoolUse'
      maxCopies=10
+     VM_handsTexPos(0)=1
+     VM_handsTexPos(1)=5
      bCanHaveMultipleCopies=True
      ItemName="Multitool"
      PlayerViewOffset=(X=20.000000,Y=10.000000,Z=-16.000000)
@@ -46,6 +48,4 @@ defaultproperties
      CollisionHeight=0.860000
      Mass=20.000000
      Buoyancy=10.000000
-     VM_handsTexPos(0)=1
-     VM_handsTexPos(1)=5
 }

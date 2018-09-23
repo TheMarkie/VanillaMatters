@@ -179,6 +179,6 @@ defaultproperties
 {
      colIconActive=(G=255)
      colIconNormal=(R=255,G=255)
-	 buttonHeight=59
-	 VM_draggable=True
+     VM_draggable=True
+     buttonHeight=59
 }

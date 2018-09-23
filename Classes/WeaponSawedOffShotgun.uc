@@ -26,7 +26,6 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
-     ShotTime=0.500000
      reloadTime=0.800000
      maxRange=2400
      AccurateRange=1200
@@ -50,9 +49,9 @@ defaultproperties
      VM_ShotCount(1)=6
      VM_ShotCount(2)=6
      VM_ShotCount(3)=6
-     AmmoName=Class'DeusEx.AmmoShell'
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
+     AmmoName=Class'DeusEx.AmmoShell'
      ReloadCount=4
      PickupAmmoCount=4
      bInstantHit=True
