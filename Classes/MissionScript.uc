@@ -17,6 +17,9 @@ var FlagBase flags;
 var string localURL;
 var DeusExLevelInfo dxInfo;
 
+// Vanilla Matters
+var float VM_autosaveDelay;
+
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
 //
@@ -204,8 +207,19 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 	return aPoint;
 }
 
+// Vanilla Matters: Try autosaving at the start of every mission map, exclude tutorial, intro and endgame.
+function Tick( float deltaTime ) {
+	if ( player != none && !player.VM_autosaved && player.dataLinkPlay == none ) {
+		VM_autosaveDelay = VM_autosaveDelay - deltaTime;
+		if ( VM_autosaveDelay <= 0 && Mission00( self ) == none && MissionIntro( self ) == none && MissionEndgame( self ) == none ) {
+			player.AutoSave();
+		}
+	}
+}
+
 defaultproperties
 {
      checkTime=1.000000
      localURL="NOTHING"
+     VM_autosaveDelay=1.000000
 }

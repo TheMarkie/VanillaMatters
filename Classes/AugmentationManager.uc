@@ -605,33 +605,6 @@ function bool ActivateAugByKey(int keyNum)
 
 	bActivated = False;
 
-	// if ((keyNum < 0) || (keyNum > 9))
-	// 	return False;
-
-	// anAug = FirstAug;
-	// while(anAug != None)
-	// {
-	// 	if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
-	// 		break;
-
-	// 	anAug = anAug.next;
-	// }
-
-	// if (anAug == None)
-	// {
-	// 	player.ClientMessage(NoAugInSlot);
-	// }
-	// else
-	// {
-	// 	// Toggle
-	// 	if (anAug.bIsActive)
-	// 		anAug.Deactivate();
-	// 	else
-	// 		anAug.Activate();
-
-	// 	bActivated = True;
-	// }
-
 	// Vanilla Matters: Check the aug bar only instead of all augs.
 	if ( keyNum >= 0 && keyNum < 11 ) {
 		if ( VM_augSlots[keyNum] != none ) {

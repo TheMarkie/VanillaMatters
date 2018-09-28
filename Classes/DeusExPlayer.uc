@@ -374,7 +374,12 @@ var globalconfig bool VM_bCheatsEnabled;
 var travel int VM_currentQSIndex;
 var travel int VM_currentASIndex;
 
+var bool VM_autosaved;							// Check if we've done autosaving this level.
+
 var travel ForwardPressure FPSystem;			// Forward Pressure system.
+
+var travel float VM_visibilityNormal;					
+var travel float VM_visibilityRobot;
 
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
 var travel Inventory VM_HeldInHand;				// Item being held.
@@ -388,6 +393,9 @@ var travel bool VM_mapTravel;					// Denote if a travel is a normal map travel o
 
 var float VM_flinchPenalty;						// Accuracy penalty when the player takes damage.
 var() float VM_flinchDecay;						// Penalty decay rate.
+
+var byte VM_cpStatus[5];
+var byte VM_cpStatusSet[5];
 
 var localized String VM_msgTakeHold;
 var localized String VM_msgTakeHoldInstead;
@@ -837,10 +845,6 @@ event TravelPostAccept()
 			FPSystem.SetOwner( self );
 		}
 	}
-	// Vanilla Matters: Try auto saving after every map transition.
-	else {
-		AutoSave();
-	}
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
@@ -1080,7 +1084,7 @@ function AutoSave() {
 
 	info = GetLevelInfo();
 
-	if ( ( info != none && info.MissionNumber < 0 ) || Level.NetMode != NM_Standalone || VM_bEnableFP ) {
+	if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) ) || Level.NetMode != NM_Standalone || VM_bEnableFP ) {
 		return;
 	}
 
@@ -1091,6 +1095,8 @@ function AutoSave() {
 	else if ( VM_currentASIndex != -6 ) {
 		VM_currentASIndex = -6;
 	}
+
+	VM_autosaved = true;
 
 	SaveGame( VM_currentASIndex, "Auto Save -" @ info.MissionLocation );
 }
@@ -1869,6 +1875,11 @@ simulated function RefreshSystems(float DeltaTime)
 
    LastRefreshTime = 0;
 
+}
+
+// Vanilla Matters: We handle updating our custom info here once every player tick, to optimize performance.
+function RefreshStatus() {
+	UpdateCPStatus();
 }
 
 function RepairInventory()
@@ -3955,6 +3966,9 @@ state PlayerWalking
 
 	event PlayerTick(float deltaTime)
 	{
+		// Vanilla Matters: Update our info first.
+		RefreshStatus();
+
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
         //every freaking tick.  
@@ -4020,6 +4034,8 @@ state PlayerFlying
 
 	event PlayerTick(float deltaTime)
 	{
+		// Vanilla Matters: Update our info first.
+		RefreshStatus();
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4125,6 +4141,9 @@ state PlayerSwimming
 	event PlayerTick(float deltaTime)
 	{
 		local vector loc;
+
+		// Vanilla Matters: Update our info first.
+		RefreshStatus();
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4694,6 +4713,7 @@ exec function ParseLeftClick()
 	// Vanilla Matters
 	local Inventory item;
 	local Augmentation aug;
+	local ChargedPickup cpickup;
 
 	if (RestrictInput())
 		return;
@@ -4709,11 +4729,12 @@ exec function ParseLeftClick()
 	{
 		// Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time.
 		if ( inHand.bActivatable ) {
-			if ( inHand.IsA( 'ChargedPickup' ) ) {
-				if ( UsingChargedPickup( ChargedPickup( inHand ).class ) ) {
+			cpickup = ChargedPickup( inHand );
+			if ( cpickup != none ) {
+				if ( UsingChargedPickup( cpickup.class ) ) {
 					// VM: The player is already using a charged pickup, only let them "activate" it if it's the charged pickup being used, which turns it off.
-					if ( ChargedPickup( inHand ).IsActive() ) {
-						inHand.Activate();
+					if ( cpickup.IsActive() ) {
+						cpickup.Activate();
 					}
 					else {
 						ClientMessage( VM_msgChargedPickupAlready );
@@ -8022,6 +8043,9 @@ ignores SeePlayer, HearNoise, Bump;
 		local rotator tempRot;
 		local float   yawDelta;
 
+		// Vanilla Matters: Update our info first.
+		RefreshStatus();
+
 		UpdateInHand();
 		UpdateDynamicMusic(deltaTime);
 
@@ -9222,9 +9246,6 @@ function GoalCompleted( Name goalName )
 			if ( FPSystem != none ) {
 				FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
 			}
-
-			// Vanilla Matters: Try auto saving after every goal completed.
-			AutoSave();
 		}
 	}
 }
@@ -10766,9 +10787,10 @@ function PlayHit(float Damage, vector HitLocation, name damageType, vector Momen
 	if ((Damage > 0) && (damageType == 'Shot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
 		SpawnBlood(HitLocation, Damage);
 
-  if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
-    return;
-  }
+	// Vanilla Matters: No coughing sound for gas damage if we have a rebreather.
+	if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
+		return;
+	}
 
 	PlayTakeHitSound(Damage, damageType, 1);
 }
@@ -10823,35 +10845,33 @@ function MakePlayerIgnored(bool bNewIgnore)
 // CalculatePlayerVisibility()
 // ----------------------------------------------------------------------
 
-function float CalculatePlayerVisibility(ScriptedPawn P)
-{
+// Vanilla Matters
+function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
 	local float vis;
-	local AdaptiveArmor armor;
 
 	vis = 1.0;
-	if ((P != None) && (AugmentationSystem != None))
-	{
-		if (P.IsA('Robot'))
-		{
-			// if the aug is on, give the player full invisibility
-			if (AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
-				vis = 0.0;
-		}
-		else
-		{
-			// if the aug is on, give the player full invisibility
-			if (AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0)
-				vis = 0.0;
-		}
-
-		// go through the actor list looking for owned AdaptiveArmor
-		// since they aren't in the inventory anymore after they are used
-
-      if (UsingChargedPickup(class'AdaptiveArmor'))
-			{
+	if ( P != None && AugmentationSystem != None ) {
+		if ( Robot( P ) != none ) {
+			if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 ) {
 				vis = 0.0;
 			}
+		}
+		else {
+			if ( AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0 ) {
+				vis = 0.0;
+			}
+		}
+		
+		if ( UsingChargedPickup( class'AdaptiveArmor' ) ) {
+			vis = 0.0;
+		}
+
+		if ( vis <= 0 ) {
+			return vis;
+		}
 	}
+
+	vis = AIVisibility();
 
 	return vis;
 }
@@ -12119,33 +12139,86 @@ exec function IAmWarren()
 // UsingChargedPickup
 // ----------------------------------------------------------------------
 
-function bool UsingChargedPickup(class<ChargedPickup> itemclass)
-{
-   local inventory CurrentItem;
-   local bool bFound;
+// Vanilla Matters: We don't have to keep going through the entire inventory every call.
+function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
+	local int i;
 
-   bFound = false;
-   
-   for (CurrentItem = Inventory; ((CurrentItem != None) && (!bFound)); CurrentItem = CurrentItem.inventory)
-   {
-      if ((CurrentItem.class == itemclass) && (CurrentItem.bActive))
-         bFound = true;
-   }
+	if ( itemClass == class'AdaptiveArmor' ) {
+		i = 0;
+	}
+	else if ( itemClass == class'BallisticArmor' ) {
+		i = 1;
+	}
+	else if ( itemClass == class'HazMatSuit' ) {
+		i = 2;
+	}
+	else if ( itemClass == class'Rebreather' ) {
+		i = 3;
+	}
+	else if ( itemClass == class'TechGoggles' ) {
+		i = 4;
+	}
+	else {
+		return false;
+	}
 
-   return bFound;
+	return ( VM_cpStatus[i] > 0 && VM_cpStatusSet[i] > 0 );
+}
+
+// Vanilla Matters: Update the activation status of every type of charged pickups.
+function UpdateCPStatus() {
+	local int i;
+	local Inventory item;
+
+	for ( i = 0; i < 5; i++ ) {
+		VM_cpStatus[i] = 0;
+		VM_cpStatusSet[i] = 0;
+	}
+
+	item = Inventory;
+	while ( item != none ) {
+		if ( item.bActive ) {
+			if ( VM_cpStatusSet[0] <= 0 && AdaptiveArmor( item ) != none ) {
+				VM_cpStatus[0] = 1;
+				VM_cpStatusSet[0] = 1;
+			}
+			else if ( VM_cpStatusSet[1] <= 0 && BallisticArmor( item ) != none ) {
+				VM_cpStatus[1] = 1;
+				VM_cpStatusSet[1] = 1;
+			}
+			else if ( VM_cpStatusSet[2] <= 0 && HazMatSuit( item ) != none ) {
+				VM_cpStatus[2] = 1;
+				VM_cpStatusSet[2] = 1;
+			}
+			else if ( VM_cpStatusSet[3] <= 0 && Rebreather( item ) != none ) {
+				VM_cpStatus[3] = 1;
+				VM_cpStatusSet[3] = 1;
+			}
+			else if ( VM_cpStatusSet[4] <= 0 && TechGoggles( item ) != none ) {
+				VM_cpStatus[4] = 1;
+				VM_cpStatusSet[4] = 1;
+			}
+		}
+
+		item = item.Inventory;
+	}
+
+	for ( i = 0; i < 5; i++ ) {
+		VM_cpStatusSet[i] = 1;
+	}
 }
 
 // Vanilla Matters: Fetch the currently active charged pickup from the inventory, there can be only one so we're good.
 function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) {
-  local inventory item;
+	local inventory item;
 
-  for ( item = Inventory; item != None; item = item.inventory ) {
-    if ( item.class == itemclass && item.bActive ) {
-      return ChargedPickup( item );
-    }
-  }
+	for ( item = Inventory; item != None; item = item.inventory ) {
+		if ( item.class == itemclass && item.bActive ) {
+			return ChargedPickup( item );
+		}
+	}
 
-  return None;
+	return None;
 }
 
 // ----------------------------------------------------------------------

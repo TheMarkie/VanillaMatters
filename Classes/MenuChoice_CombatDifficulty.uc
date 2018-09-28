@@ -9,8 +9,7 @@ class MenuChoice_CombatDifficulty extends MenuUIChoiceSlider;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	saveValue = player.CombatDifficulty;
-	SetValue( FClamp( ( player.CombatDifficulty - 1 ) * 2, startValue, endValue ) );
+	SetValue( FClamp( player.CombatDifficulty, startValue, endValue ) );
 }
 
 // ----------------------------------------------------------------------
@@ -18,7 +17,7 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	player.CombatDifficulty = ( ( GetValue() + 2 ) / 2 );
+	player.CombatDifficulty = GetValue();
 }
 
 // ----------------------------------------------------------------------
@@ -26,7 +25,7 @@ function SaveSetting() {
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( ( player.CombatDifficulty - 1 ) * 2 );
+	SetValue( player.CombatDifficulty );
 }
 
 // ----------------------------------------------------------------------

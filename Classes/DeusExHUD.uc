@@ -30,6 +30,8 @@ var HUDMultiSkills					hms;
 var DeusExPlayer VM_player;
 var DeusExRootWindow VM_rootWnd;
 
+var HUDLightIndicator VM_light;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 // ----------------------------------------------------------------------
@@ -64,6 +66,9 @@ event InitWindow()
 	damageDisplay	= DamageHUDDisplay(NewChild(Class'DamageHUDDisplay'));
 	compass     	= HUDCompassDisplay(NewChild(Class'HUDCompassDisplay'));
 	hms				= HUDMultiSkills(NewChild(Class'HUDMultiSkills'));
+
+	// Vanilla Matters: Create light indicator.
+	VM_light = HUDLightIndicator( NewChild( class'HUDLightIndicator' ) );
 
 	// Create the InformationWindow
 	info = HUDInformationDisplay(NewChild(Class'HUDInformationDisplay', False));
@@ -130,6 +135,10 @@ event DescendantRemoved(Window descendant)
 		receivedItems = None;
 	else if ( descendant == hms )
 		hms = None;
+	// Vanilla Matters
+	else if ( descendant == VM_light ) {
+		VM_light = none;
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -203,6 +212,12 @@ function ConfigurationChanged()
 	else
 	{
 		infoBottom = height;
+	}
+
+	// Vanilla Matters: Light indicator is on the bottom middle of the screen, next to the belt.
+	if ( VM_light != none ) {
+		VM_light.QueryPreferredSize( beltWidth, beltHeight );
+		VM_light.ConfigureChild( ( width - beltWidth ) / 2, height - beltHeight, beltWidth, beltHeight );
 	}
 
 	// Damage display
@@ -487,9 +502,8 @@ function UpdateSettings( DeusExPlayer player )
 	activeItems.SetVisibility(player.bAugDisplayVisible);
 	damageDisplay.SetVisibility(player.bHitDisplayVisible);
 	compass.SetVisibility(player.bCompassVisible);
-	// cross.SetCrosshair(player.bCrosshairVisible);
 
-	// Vanilla Matters: We handle this in Tick.
+	// Vanilla Matters: We handle crosshair stuff in Tick.
 }
 
 // Vanilla Matters: Handle crosshair visibility.

@@ -663,6 +663,6 @@ defaultproperties
      bIsHuman=False
      bCanGlide=True
      Health=10
-     VisibilityThreshold=0.006000
+     VisibilityThreshold=0.015000
      BindName="Animal"
 }

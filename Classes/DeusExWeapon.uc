@@ -623,6 +623,11 @@ simulated function float CalculateAccuracy()
 	local bool checkit;
 	local DeusExPlayer player;
 
+	// Vanilla Matters: Set accuracy to 0 (full accuracy) if the weapon is always accurate.
+	if ( VM_bAlwaysAccurate ) {
+		return 0.0;
+	}
+
 	accuracy = BaseAccuracy;		// start with the weapon's base accuracy
 	weapskill = GetWeaponSkill();
 
@@ -2744,11 +2749,6 @@ simulated function TraceFire( float Accuracy )
 			Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
 	}
 
-	// Vanilla Matters: Set accuracy to 0 (full accuracy) if the weapon is always accurate.
-	if ( VM_bAlwaysAccurate ) {
-		Accuracy = 0.0;
-	}
-
 	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
 	StartTrace = ComputeProjectileStart(X, Y, Z);
 	AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 2.75*AimError, False, False);
@@ -2904,7 +2904,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 			// Vanilla Matters: Ignite enemies.
 			if ( DeusExPlayer( Pawn( Owner ) ) != None && ScriptedPawn( Other ) != None ) {
 				if ( DeusExAmmo( AmmoType ).VM_IgnitesOnHit >= 0.0 && GetWeaponSkillLevel() >= DeusExAmmo( AmmoType ).VM_IgnitesOnHit ) {
-					ScriptedPawn( Other ).CatchFire();
+					ScriptedPawn( Other ).CatchFire( HitDamage );
 				}
 			}
 		}

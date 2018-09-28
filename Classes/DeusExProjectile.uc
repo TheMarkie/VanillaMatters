@@ -632,7 +632,7 @@ auto simulated state Flying
 					// Vanilla Matters: Ignite enemies on explode aka hit.
 					if ( DeusExPlayer( Owner ) != None && ScriptedPawn( damagee ) != None && VM_fromWeapon != None && VM_withAmmo != None ) {
 						if ( VM_withAmmo.VM_IgnitesOnHit >= 0.0 && VM_fromWeapon.GetWeaponSkillLevel() >= VM_withAmmo.VM_IgnitesOnHit ) {
-							ScriptedPawn( damagee ).CatchFire();
+							ScriptedPawn( damagee ).CatchFire( Damage );
 						}
 					}
 				}

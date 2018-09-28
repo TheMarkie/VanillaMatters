@@ -1057,6 +1057,10 @@ function ReactToProjectiles(Actor projectileActor)
 	local DeusExProjectile dxProjectile;
 	local Pawn             instigator;
 
+	// Vanilla Matters
+	local vector loc;
+	local name currentState;
+
 	if ((bFearProjectiles || bReactProjectiles) && bLookingForProjectiles)
 	{
 		dxProjectile = DeusExProjectile(projectileActor);
@@ -1067,21 +1071,51 @@ function ReactToProjectiles(Actor projectileActor)
 				instigator = projectileActor.Instigator;
 			if (instigator != None)
 			{
-				if (bFearProjectiles)
-					IncreaseFear(instigator, 2.0);
-				if (SetEnemy(instigator))
-				{
-					SetDistressTimer();
-					HandleEnemy();
+				// Vanilla Matters: Rewrite to add special rules.
+				if ( AICanSee( instigator, ComputeActorVisibility( instigator ), true, true, true, true ) > 0 ) {
+					if ( bFearProjectiles ) {
+						IncreaseFear( instigator, 2.0 );
+					}
+			
+					if ( SetEnemy( instigator ) ) {
+						SetDistressTimer();
+						HandleEnemy();
+					}
+					else if ( bFearProjectiles && IsFearful() ) {
+						SetDistressTimer();
+						SetEnemy( instigator,, true );
+						SetNextState('Fleeing');
+					}
+					else if ( bAvoidHarm ) {
+						SetState( 'AvoidingProjectiles' );
+					}
 				}
-				else if (bFearProjectiles && IsFearful())
-				{
-					SetDistressTimer();
-					SetEnemy(instigator, , true);
-					GotoState('Fleeing');
+				else {
+					if ( bFearProjectiles ) {
+						IncreaseFear( none, 2.0 );
+					}
+			
+					if ( bFearProjectiles && IsFearful() ) {
+						SetDistressTimer();
+						SetNextState( 'Fleeing' );
+					}
+					else if ( bAvoidHarm ) {
+						SetState( 'AvoidingProjectiles' );
+					}
+					else {
+						SetDistressTimer();
+
+						loc = Location + ( ( instigator.Location - Location ) * ( FRand() + 0.3 ) * 0.5 );
+						loc.x = loc.x + ( FRand() * 160 ) - 80;
+						loc.y = loc.y + ( FRand() * 160 ) - 80;
+						SetSeekLocation( instigator, loc, SEEKTYPE_Guess );
+						
+						currentState = GetStateName();
+						if ( currentState != 'Fleeing' || currentState != 'Alerting' ) {
+							SetNextState( 'HandlingEnemy' );
+						}
+					}
 				}
-				else if (bAvoidHarm)
-					SetState('AvoidingProjectiles');
 			}
 		}
 	}
@@ -1708,26 +1742,31 @@ function bool HasEnemyTimedOut()
 // UpdateActorVisibility()
 // ----------------------------------------------------------------------
 
-function UpdateActorVisibility(actor seeActor, float deltaSeconds,
-                               float checkTime, bool bCheckDir)
-{
+// Vanilla Matters: Rewrite to tweak stuff.
+function UpdateActorVisibility( actor seeActor, float deltaTime, float checkTime, bool checkDir ) {
 	local bool bCanSee;
 
-	CheckPeriod += deltaSeconds;
-	if (CheckPeriod >= checkTime)
-	{
-		CheckPeriod = 0.0;
-		if (seeActor != None)
-			bCanSee = (AICanSee(seeActor, ComputeActorVisibility(seeActor), false, bCheckDir, true, true) > 0);
-		else
+	CheckPeriod = CheckPeriod + deltaTime;
+	if ( CheckPeriod >= checkTime ) {
+		CheckPeriod = CheckPeriod - checkTime;
+		if (seeActor != None) {
+			bCanSee = ( AICanSee( seeActor, ComputeActorVisibility( seeActor ), true, checkDir, true, true ) > 0);
+		}
+		else {
 			bCanSee = false;
-		if (bCanSee)
-			EnemyLastSeen = 0;
-		else if (EnemyLastSeen <= 0)
-			EnemyLastSeen = 0.01;
+		}
 	}
-	if (EnemyLastSeen > 0)
-		EnemyLastSeen += deltaSeconds;
+
+	if ( bCanSee ) {
+		EnemyLastSeen = 0;
+
+		if ( seeActor != none && ( seeActor == Enemy || seeActor == SeekPawn ) ) {
+			LastSeenPos = seeActor.Location;
+		}
+	}
+	else {
+		EnemyLastSeen = EnemyLastSeen + deltaTime;
+	}
 }
 
 
@@ -1739,12 +1778,30 @@ function float ComputeActorVisibility(actor seeActor)
 {
 	local float visibility;
 
-	if (seeActor.IsA('DeusExPlayer'))
-		visibility = DeusExPlayer(seeActor).CalculatePlayerVisibility(self);
-	else
-		visibility = 1.0;
+	// Vanilla Matters
+	local float mult, pvis;
+	local DeusExPlayer player;
 
-	return (visibility);
+	// Vanilla Matters: Allow player to slip under a detection threshold.
+	player = DeusExPlayer( seeActor );
+	if ( player != none ) {
+		pvis = player.CalculatePlayerVisibility( self );
+
+		if ( ( ( SeekPawn == player && bSeekPostCombat ) || Enemy == player ) && pvis > 0 ) {
+			pvis = FMax( pvis, pvis + 0.05 + ( VisibilityThreshold * player.CombatDifficulty ) );
+		}
+
+		mult = ( ( FMin( VSize( seeActor.Location - Location ), 160 ) / 160 ) * 4 ) - 3;
+
+		mult = mult - ( player.CombatDifficulty / 2 ) + 0.75;
+
+		visibility = FMax( pvis - ( VisibilityThreshold * mult ), 0 ) * 10;
+	}
+	else {
+		visibility = 1.0;
+	}
+
+	return visibility;
 }
 
 
@@ -1786,186 +1843,158 @@ function UpdateReactionLevel(bool bRise, float deltaSeconds)
 // CheckCycle() [internal use only]
 // ----------------------------------------------------------------------
 
-function Pawn CheckCycle()
-{
-	local float attackPeriod;
-	local float maxAttackPeriod;
-	local float sustainPeriod;
-	local float decayPeriod;
-	local float minCutoff;
-	local Pawn  cycleEnemy;
+// Vanilla Matters
+function Pawn CheckCycle() {
+	local float attackPeriod, maxAttackPeriod, sustainPeriod, decayPeriod, min;
+	local Pawn cycleEnemy;
+	local DeusExPlayer player;
 
 	attackPeriod    = 0.5;
 	maxAttackPeriod = 4.5;
 	sustainPeriod   = 3.0;
 	decayPeriod     = 4.0;
 
-	minCutoff = attackPeriod/maxAttackPeriod;
+	min = 0.1;
 
 	cycleEnemy = None;
 
-	if (CycleCumulative <= 0)  // no enemies seen during this cycle
-	{
-		CycleTimer -= CyclePeriod;
-		if (CycleTimer <= 0)
-		{
-			CycleTimer = 0;
-			EnemyReadiness -= CyclePeriod/decayPeriod;
-			if (EnemyReadiness < 0)
-				EnemyReadiness = 0;
+	if ( CycleCumulative <= 0 ) {
+		CycleTimer = FMax( CycleTimer - CyclePeriod, 0 );
+		if ( CycleTimer <= 0 ) {
+			EnemyReadiness = EnemyReadiness - ( CyclePeriod / decayPeriod );
 		}
 	}
-	else  // I saw somebody!
-	{
+	else {
 		CycleTimer = sustainPeriod;
-		CycleCumulative *= 2;  // hack
-		if (CycleCumulative < minCutoff)
-			CycleCumulative = minCutoff;
-		else if (CycleCumulative > 1.0)
-			CycleCumulative = 1.0;
-		EnemyReadiness += CycleCumulative*CyclePeriod/attackPeriod;
-		if (EnemyReadiness >= 1.0)
-		{
-			EnemyReadiness = 1.0;
-			if (IsValidEnemy(CycleCandidate))
-				cycleEnemy = CycleCandidate;
+		CycleCumulative = FClamp( CycleCumulative, min, 1.0 );
+
+		player = DeusExPlayer( CycleCandidate );
+		if ( player != none ) {
+			CycleCumulative = CycleCumulative * player.CombatDifficulty;
 		}
-		else if (EnemyReadiness >= SightPercentage)
-			if (IsValidEnemy(CycleCandidate))
-				HandleSighting(CycleCandidate);
+		else {
+			CycleCumulative = CycleCumulative * 2;
+		}
+
+		EnemyReadiness = FMax( EnemyReadiness, 0 ) + ( CycleCumulative * ( CyclePeriod / attackPeriod ) );
+
+		if ( EnemyReadiness >= 1.0 ) {
+			EnemyReadiness = 1.0;
+			if ( IsValidEnemy( CycleCandidate ) ) {
+				cycleEnemy = CycleCandidate;
+			}
+		}
+		else if ( EnemyReadiness >= SightPercentage ) {
+			if ( IsValidEnemy( CycleCandidate ) ) {
+				HandleSighting( CycleCandidate );
+			}
+		}
 	}
+
 	CycleCumulative = 0;
-	CyclePeriod     = 0;
-	CycleCandidate  = None;
-	CycleDistance   = 0;
+	CyclePeriod = 0;
+	CycleCandidate = None;
+	CycleDistance = 0;
 
-	return (cycleEnemy);
-
+	return cycleEnemy;
 }
-
 
 // ----------------------------------------------------------------------
 // CheckEnemyPresence()
 // ----------------------------------------------------------------------
 
-function bool CheckEnemyPresence(float deltaSeconds,
-                                 bool bCheckPlayer, bool bCheckOther)
-{
-	local int          i;
-	local int          count;
-	local int          checked;
-	local Pawn         candidate;
-	local float        candidateDist;
-	local DeusExPlayer playerCandidate;
-	local bool         bCanSee;
-	local int          lastCycle;
-	local float        visibility;
-	local Pawn         cycleEnemy;
-	local bool         bValid;
-	local bool         bPlayer;
-	local float        surpriseTime;
-	local bool         bValidEnemy;
-	local bool         bPotentialEnemy;
-	local bool         bCheck;
+// Vanilla Matters: Rewrite to improve stealth.
+function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkOther ) {
+	local int i, checked;
+	local float visibility, actorVis, dist, minDist;
+	local Pawn candidate;
+	local Pawn cycleEnemy;
+	local bool canSee, valid, isPlayer, validEnemy, potentialEnemy, check;
 
-	bValid  = false;
-	bCanSee = false;
-	if (bReactPresence && bLookingForEnemy && !bNoNegativeAlliances)
-	{
-		if (PotentialEnemyAlliance != '')
-			bCheck = true;
-		else
-		{
-			for (i=0; i<16; i++)
-				if ((AlliancesEx[i].AllianceLevel < 0) || (AlliancesEx[i].AgitationLevel >= 1.0))
+	valid  = false;
+	canSee = false;
+	if ( bReactPresence && bLookingForEnemy && !bNoNegativeAlliances ) {
+		if ( PotentialEnemyAlliance != '' ) {
+			check = true;
+		}
+		else {
+			for ( i = 0; i < 16; i++ ) {
+				if ( AlliancesEx[i].AllianceLevel < 0 || AlliancesEx[i].AgitationLevel >= 1.0 ) {
+					check = true;
+
 					break;
-			if (i < 16)
-				bCheck = true;
+				}
+			}
 		}
 
-		if (bCheck)
-		{
-			bValid       = true;
-			CyclePeriod += deltaSeconds;
-			count        = 0;
-			checked      = 0;
-			lastCycle    = CycleIndex;
-			foreach CycleActors(Class'Pawn', candidate, CycleIndex)
-			{
-				bValidEnemy = IsValidEnemy(candidate);
-				if (!bValidEnemy && (PotentialEnemyTimer > 0))
-					if (PotentialEnemyAlliance == candidate.Alliance)
-						bPotentialEnemy = true;
-				if (bValidEnemy || bPotentialEnemy)
-				{
-					count++;
-					bPlayer = candidate.IsA('PlayerPawn');
-					if ((bPlayer && bCheckPlayer) || (!bPlayer && bCheckOther))
-					{
-						visibility = AICanSee(candidate, ComputeActorVisibility(candidate), true, true, true, true);
-						if (visibility > 0)
-						{
-							if (bPotentialEnemy)  // We can see the potential enemy; ergo, we hate him
-							{
-								IncreaseAgitation(candidate, 1.0);
+		if ( check ) {
+			valid = true;
+			CyclePeriod = deltaTime;
+			checked = 0;
+
+			foreach RadiusActors( class'Pawn', candidate, 3200 ) {
+				validEnemy = IsValidEnemy( candidate );
+				if ( !validEnemy && PotentialEnemyTimer > 0 && PotentialEnemyAlliance == candidate.Alliance ) {
+					potentialEnemy = true;
+				}
+				
+				if ( validEnemy || potentialEnemy ) {
+					isPlayer = ( DeusExPlayer( candidate ) != none );
+					if ( ( isPlayer && checkPlayer ) || ( !isPlayer && checkOther ) ) {
+						visibility = AICanSee( candidate, ComputeActorVisibility( candidate ), true, true, true, true );
+						if ( visibility > 0 ) {
+							if ( potentialEnemy ) {
+								IncreaseAgitation( candidate, visibility );
+
 								PotentialEnemyAlliance = '';
-								PotentialEnemyTimer    = 0;
-								bValidEnemy = IsValidEnemy(candidate);
+								PotentialEnemyTimer = 0;
+
+								validEnemy = IsValidEnemy( candidate );
 							}
-							if (bValidEnemy)
-							{
-								visibility += VisibilityThreshold;
-								candidateDist = VSize(Location-candidate.Location);
-								if ((CycleCandidate == None) || (CycleDistance > candidateDist))
-								{
+
+							if ( validEnemy) {
+								dist = VSize( candidate.Location - Location );
+								if ( CycleCandidate == none || minDist < dist || minDist <= 0 ) {
 									CycleCandidate = candidate;
-									CycleDistance  = candidateDist;
+									minDist = dist;
 								}
-								if (!bPlayer)
-									CycleCumulative += 100000;  // a bit of a hack...
-								else
-									CycleCumulative += visibility;
+
+								CycleCumulative = CycleCumulative + visibility + VisibilityThreshold;
 							}
 						}
 					}
-					if (count >= 1)
-						break;
 				}
-				checked++;
-				if (checked > 20)  // hacky hardcoded number
+
+				checked = checked + 1;
+				if ( checked > 15 ) {
 					break;
-			}
-			if (lastCycle >= CycleIndex)  // have we cycled through all actors?
-			{
-				cycleEnemy = CheckCycle();
-				if (cycleEnemy != None)
-				{
-					SetDistressTimer();
-					SetEnemy(cycleEnemy, 0, true);
-					bCanSee = true;
 				}
+			}
+
+			cycleEnemy = CheckCycle();
+			if ( cycleEnemy != None ) {
+				SetDistressTimer();
+				SetEnemy( cycleEnemy, 0, true );
+				canSee = true;
 			}
 		}
-		else
-			bNoNegativeAlliances = True;
+		else {
+			bNoNegativeAlliances = true;
+		}
 	}
 
-	// Handle surprise levels...
-	UpdateReactionLevel((EnemyReadiness>0)||(GetStateName()=='Seeking')||bDistressed, deltaSeconds);
+	UpdateReactionLevel( EnemyReadiness > SightPercentage || GetStateName() == 'Seeking' || bDistressed, deltaTime );
 
-	if (!bValid)
-	{
+	if ( !valid ) {
 		CycleCumulative = 0;
-		CyclePeriod     = 0;
-		CycleCandidate  = None;
-		CycleDistance   = 0;
-		CycleTimer      = 0;
+		CyclePeriod = 0;
+		CycleCandidate = None;
+		CycleDistance = 0;
+		CycleTimer = 0;
 	}
 
-	return (bCanSee);
-
+	return canSee;
 }
-
 
 // ----------------------------------------------------------------------
 // CheckBeamPresence
@@ -2500,6 +2529,9 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 	local bool bHateThisInjury;
 	local bool bFearThisInjury;
 
+	// Vanilla Matters
+	local vector loc;
+
 	if ((health > 0) && (instigatedBy != None) && (bLookingForInjury || bLookingForIndirectInjury))
 	{
 		currentState = GetStateName();
@@ -2507,59 +2539,75 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 		bHateThisInjury = ShouldReactToInjuryType(damageType, bHateInjury, bHateIndirectInjury);
 		bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
-		if (bHateThisInjury)
-			IncreaseAgitation(instigatedBy);
-		if (bFearThisInjury)
-			IncreaseFear(instigatedBy, 2.0);
+		// Vanilla Matters: Rewrite to add special rules.
+		if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+			if ( bHateThisInjury ) {
+				IncreaseAgitation( instigatedBy );
+			}
+	
+			if ( bFearThisInjury ) {
+				IncreaseFear( instigatedBy, 2.0 );
+			}
+	
+			if ( SetEnemy( instigatedBy ) ) {
+				SetDistressTimer();
+				SetNextState( 'HandlingEnemy' );
+			}
+			else if ( bFearThisInjury && IsFearful() ) {
+				SetDistressTimer();
+				SetEnemy( instigatedBy,, true );
+				SetNextState('Fleeing');
+			}
+			else {
+				SetNextState( currentState );
+			}
+		}
+		else {
+			if ( bFearThisInjury ) {
+				IncreaseFear( none, 2.0 );
+			}
+	
+			if ( bFearThisInjury && IsFearful() ) {
+				SetDistressTimer();
+				SetNextState( 'Fleeing' );
+			}
+			else {
+				SetDistressTimer();
 
-		if (SetEnemy(instigatedBy))
-		{
-			SetDistressTimer();
-			SetNextState('HandlingEnemy');
+				loc = Location + ( ( instigatedBy.Location - Location ) * ( FRand() + 0.3 ) * 0.5 );
+				loc.x = loc.x + ( FRand() * 160 ) - 80;
+				loc.y = loc.y + ( FRand() * 160 ) - 80;
+				SetSeekLocation( instigatedBy, loc, SEEKTYPE_Guess );
+				
+				if ( currentState != 'Fleeing' || currentState != 'Alerting' ) {
+					SetNextState( 'HandlingEnemy' );
+				}
+			}
 		}
-		else if (bFearThisInjury && IsFearful())
-		{
-			SetDistressTimer();
-			SetEnemy(instigatedBy, , true);
-			SetNextState('Fleeing');
-		}
-		else
-		{
-//			if (instigatedBy.bIsPlayer)
-//				ReactToFutz();
-			SetNextState(currentState);
-		}
-		GotoDisabledState(damageType, hitPos);
+
+		GotoDisabledState( damageType, hitPos );
 	}
 }
-
 
 // ----------------------------------------------------------------------
 // TakeHit()
 // ----------------------------------------------------------------------
 
-// function TakeHit(EHitLocation hitPos)
-// {
-// 	if (hitPos != HITLOC_None)
-// 	{
-// 		PlayTakingHit(hitPos);
-// 		GotoState('TakingHit');
-// 	}
-// 	else
-// 		GotoNextState();
-// }
-
 // Vanilla Matters: Rewrite the above to take into account stunned states.
 function TakeHit( EHitLocation hitPos ) {
-	// VM: Looks like WET but it's actually overoptimized to have only 3 comparisons instead of at least 4 :)
+	local bool notStunned;
+
+	notStunned = ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) );
+
+	// VM: Looks WET but it's actually overoptimized to have only 3 comparisons instead of at least 4 :)
 	if ( hitPos != HITLOC_None ) {
 		PlayTakingHit( hitPos );
 
-		if ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) ) {
+		if ( notStunned ) {
 			GotoState( 'TakingHit' );
 		}
 	}
-	else if ( !IsInState( 'Stunned' ) && !IsInState( 'RubbingEyes' ) ) {
+	else if ( notStunned ) {
 		GotoNextState();
 	}
 }
@@ -3357,8 +3405,10 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	if (DamageType != 'Stunned')
 		PlayTakeHitSound(actualDamage, damageType, 1);
 
-	if ((DamageType == 'Flamed') && !bOnFire)
-		CatchFire();
+	// Vanilla Matters: Burning duration now depends on the initial damage.
+	if ( DamageType == 'Flamed' ) {
+		CatchFire( actualDamage );
+	}
 
 	// Vanilla Matters: Set the temporary damage value here because ReactToInjury doesn't get damage passed in.
 	if ( damageType != 'TearGas' ) {
@@ -3550,17 +3600,6 @@ function bool FrobDoor(actor Target)
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	// if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-	// 	return;
-	// else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
-	// 	GotoState('RubbingEyes');
-	// else if (damageType == 'Stunned')
-	// 	GotoState('Stunned');
-	// else if (CanShowPain())
-	// 	TakeHit(hitPos);
-	// else
-	// 	GotoNextState();
-
 	// Vanilla Matters: Use damage taken as a basis for stun durations.
 	if ( !bCollideActors && !bBlockActors && !bBlockPlayers ) {
 		return;
@@ -5156,48 +5195,47 @@ function PlayDying(name damageType, vector hitLoc)
 // CatchFire()
 // ----------------------------------------------------------------------
 
-function CatchFire()
-{
+// Vanilla Matters: Rewrite to limit burn duration.
+function CatchFire( float burnDamage ) {
 	local Fire f;
 	local int i;
 	local vector loc;
 
-	if (bOnFire || Region.Zone.bWaterZone || (BurnPeriod <= 0) || bInvincible)
+	burnTimer = burnTimer + ( burnDamage * 2 );
+
+	if ( bOnFire || Region.Zone.bWaterZone || bInvincible ) {
 		return;
+	}
 
 	bOnFire = True;
-	burnTimer = 0;
 
-	EnableCloak(false);
+	EnableCloak( false );
 
-	for (i=0; i<8; i++)
-	{
-		loc.X = 0.5*CollisionRadius * (1.0-2.0*FRand());
-		loc.Y = 0.5*CollisionRadius * (1.0-2.0*FRand());
-		loc.Z = 0.6*CollisionHeight * (1.0-2.0*FRand());
-		loc += Location;
-		f = Spawn(class'Fire', Self,, loc);
-		if (f != None)
-		{
-			f.DrawScale = 0.5*FRand() + 1.0;
+	for ( i = 0; i < 8; i++ ) {
+		loc.X = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
+		loc.Y = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
+		loc.Z = 0.6 * CollisionHeight * ( 1.0 - 2.0 * FRand() );
+		loc = loc + Location;
+		f = Spawn( class'Fire', Self,, loc );
+		if ( f != None ) {
+			f.DrawScale = 0.5 * FRand() + 1.0;
 
-			// turn off the sound and lights for all but the first one
-			if (i > 0)
-			{
+			if ( i > 0 ) {
 				f.AmbientSound = None;
 				f.LightType = LT_None;
 			}
 
-			// turn on/off extra fire and smoke
-			if (FRand() < 0.5)
+			if ( FRand() < 0.5 ) {
 				f.smokeGen.Destroy();
-			if (FRand() < 0.5)
+			}
+
+			if ( FRand() < 0.5 ) {
 				f.AddFire();
+			}
 		}
 	}
 
-	// set the burn timer
-	SetTimer(1.0, True);
+	SetTimer( 1.0, True );
 }
 
 // ----------------------------------------------------------------------
@@ -5220,18 +5258,26 @@ function ExtinguishFire()
 // UpdateFire()
 // ----------------------------------------------------------------------
 
-function UpdateFire()
-{
-	// continually burn and do damage
-	HealthTorso -= 5;
+// Vanilla Matters: Rewrite to limit burn duration.
+function UpdateFire() {
+	HealthTorso = HealthTorso - 1;
+	HealthArmLeft = HealthArmLeft - 1;
+	HealthArmRight = HealthArmRight - 1;
+	HealthLegLeft = HealthLegLeft - 1;
+	HealthLegRight = HealthLegLeft - 1;
+
 	GenerateTotalHealth();
-	if (Health <= 0)
-	{
-		TakeDamage(10, None, Location, vect(0,0,0), 'Burned');
+
+	burnTimer = burnTimer - 5;
+	
+	if ( Health <= 0 || burnTimer <= 0 ) {
 		ExtinguishFire();
+
+		if ( Health <= 0 ) {
+			TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
+		}
 	}
 }
-
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -5565,23 +5611,42 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
 		pawnActor = InstigatorToPawn(params.bestActor);
 		if (pawnActor != None)
 		{
-			if (bHateShot)
-				IncreaseAgitation(pawnActor);
-			if (bFearShot)
-				IncreaseFear(pawnActor, 1.0);
-			if (SetEnemy(pawnActor))
-			{
-				SetDistressTimer();
-				HandleEnemy();
+			// Vanilla Matters: Rewrite to add special rules.
+			if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, true, true, true ) > 0 ) {
+				if ( bHateShot ) {
+					IncreaseAgitation( pawnActor );
+				}
+
+				if ( bFearShot ) {
+					IncreaseFear( pawnActor, 1.0 );
+				}
+
+				if ( SetEnemy( pawnActor ) ) {
+					SetDistressTimer();
+					HandleEnemy();
+				}
+				else if ( bFearShot && IsFearful() ) {
+					SetDistressTimer();
+					SetEnemy( pawnActor,, true );
+					GotoState( 'Fleeing' );
+				}
+				else if ( pawnActor.bIsPlayer ) {
+					ReactToFutz();
+				}
 			}
-			else if (bFearShot && IsFearful())
-			{
-				SetDistressTimer();
-				SetEnemy(pawnActor, , true);
-				GotoState('Fleeing');
+			else {
+				if ( bFearShot ) {
+					IncreaseFear( none, 1.0 );
+				}
+
+				if ( bFearShot && IsFearful() ) {
+					SetDistressTimer();
+					GotoState( 'Fleeing' );
+				}
+				else if ( pawnActor.bIsPlayer ) {
+					ReactToFutz();
+				}
 			}
-			else if (pawnActor.bIsPlayer)
-				ReactToFutz();
 		}
 	}
 }
@@ -5730,6 +5795,9 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 	local bool         bAttacking;
 	local bool         bFleeing;
 
+	// Vanilla Matters
+	local vector loc;
+
 	bAttacking = false;
 	seeTime    = 0;
 
@@ -5776,13 +5844,32 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 				// Finally, react
 				if (bDistressorValid)
 				{
-					if (bHateDistress)
-						IncreaseAgitation(distressor, 1.0);
-					if (SetEnemy(distressor, seeTime))
-					{
+					// Vanilla Matters: Rewrite to add special rules.
+					if ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 ) {
+						if ( bHateDistress ) {
+							IncreaseAgitation( distressor, 1.0 );
+						}
+
+						if ( SetEnemy( distressor, seeTime ) ) {
+							SetDistressTimer();
+							HandleEnemy();
+
+							bAttacking = true;
+						}
+					}
+					else {
 						SetDistressTimer();
+
+						if ( distressor != none ) {
+							loc = distressor.Location;
+						}
+						else {
+							loc = distressee.Location;
+						}
+						loc.x = loc.x + ( FRand() * 160 ) - 80;
+						loc.y = loc.y + ( FRand() * 160 ) - 80;
+						SetSeekLocation( distressor, loc, SEEKTYPE_Guess );
 						HandleEnemy();
-						bAttacking = true;
 					}
 				}
 				// BOOGER! Make NPCs react by seeking if distressor isn't an enemy?
@@ -5835,26 +5922,20 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 // IncreaseFear()
 // ----------------------------------------------------------------------
 
-function IncreaseFear(Actor actorInstigator, float addedFearLevel,
-                      optional float newFearTimer)
-{
-	local DeusExPlayer player;
-	local Pawn         instigator;
+// Vanilla Matters: Rewrite to handle cases where there is no clear instigator.
+function IncreaseFear( Actor actorInstigator, float addedFearLevel, optional float newFearTimer ) {
+	local Pawn instigator;
 
-	instigator = InstigatorToPawn(actorInstigator);
-	if (instigator != None)
-	{
-		if (FearTimer < (FearSustainTime-newFearTimer))
-			FearTimer = FearSustainTime-newFearTimer;
-		if (FearTimer > 0)
-		{
-			if (addedFearLevel > 0)
-			{
-				FearLevel += addedFearLevel;
-				if (FearLevel > 1.0)
-					FearLevel = 1.0;
-			}
-		}
+	if ( actorInstigator == none ) {
+		addedFearLevel = addedFearLevel * 2;
+	}
+
+	if ( FearTimer < ( FearSustainTime - newFearTimer ) ) {
+		FearTimer = FearSustainTime - newFearTimer;
+	}
+
+	if ( FearTimer > 0 && addedFearLevel > 0 ) {
+		FearLevel = FearLevel + addedFearLevel;
 	}
 }
 
@@ -6768,7 +6849,8 @@ function CheckEnemyParams(Pawn checkPawn,
 
 		if (bReplace)
 		{
-			if ((Enemy == checkPawn) || (AICanSee(checkPawn, , false, false, true, true) > 0))
+			// Vanilla Matters: Apply visibility rules.
+			if ( Enemy == checkPawn || AICanSee( checkPawn, ComputeActorVisibility( checkPawn ), true, true, true, true ) > 0 )
 			{
 				bestPawn        = checkPawn;
 				bestThreatLevel = threatLevel;
@@ -7354,17 +7436,19 @@ function Tick(float deltaTime)
 
 	player = DeusExPlayer(GetPlayerPawn());
 
-	bDoLowPriority = true;
-	bCheckPlayer   = true;
-	bCheckOther    = true;
-	if (bTickVisibleOnly)
-	{
-		if (DistanceFromPlayer > 1200)
-			bDoLowPriority = false;
-		if (DistanceFromPlayer > 2500)
-			bCheckPlayer = false;
-		if ((DistanceFromPlayer > 600) && (LastRendered() >= 5.0))
-			bCheckOther = false;
+	// Vanilla Matters: Rewrite to tweak values and make it less confusing.
+	if ( bTickVisibleOnly ) {
+		if ( DistanceFromPlayer <= 1200 ) {
+			bDoLowPriority = true;
+		}
+
+		if ( DistanceFromPlayer <= 2400 ) {
+			bCheckPlayer = true;
+		}
+
+		if ( DistanceFromPlayer <= 600 || LastRendered() < 5.0 ) {
+			bCheckOther = true;
+		}
 	}
 
 /*
@@ -10424,7 +10508,8 @@ State Seeking
 		if (bSeekLocation)
 		{
 			if (SeekType == SEEKTYPE_Guess)
-				seekDistance = (200+FClamp(GroundSpeed*EnemyLastSeen*0.5, 0, 1000));
+				// Vanilla Matters: Reduce random distance by a bit.
+				seekDistance = FClamp( GroundSpeed * EnemyLastSeen * 0.5, 200, 700 );
 			else
 				seekDistance = 300;
 		}
@@ -10499,7 +10584,8 @@ State Seeking
 		local bool bValid;
 
 		bValid = false;
-		if (/*(EnemyLastSeen <= 25.0) &&*/ (SeekLevel > 0))
+		// Vanilla Matters: Keep seeking for some more time if we're after an enemy.
+		if ( SeekLevel > 0 || ( bSeekPostCombat && EnemyReadiness >= -6 ) )
 		{
 			if (bSeekLocation)
 			{
@@ -10508,14 +10594,12 @@ State Seeking
 			}
 			else
 			{
-				bValid = AIPickRandomDestination(130, 250, 0, 0, 0, 0, 2, 1.0, destLoc);
-				if (!bValid)
-				{
-					bValid  = true;
-					destLoc = Location + VRand()*50;
-				}
-				else
-					destLoc += vect(0,0,1)*BaseEyeHeight;
+				// Vanilla Matters: Rewrite to pick better locations.
+				bValid = true;
+				
+				destLoc = Location + ( ( LastSeenPos - Location ) * ( FRand() + 0.6 ) * 0.5 );
+				destLoc.x = destLoc.x + ( FRand() * 320 ) - 160;
+				destLoc.y = destLoc.y + ( FRand() * 320 ) - 160;
 			}
 		}
 
@@ -10677,21 +10761,16 @@ GoToLocation:
 
 	if ((SeekType == SEEKTYPE_Guess) && bSeekLocation)
 	{
-		MoveTarget = GetOvershootDestination(0.5);
-		if (MoveTarget != None)
-		{
-			if (ShouldPlayWalk(MoveTarget.Location))
-				PlayRunning();
-			MoveToward(MoveTarget, MaxDesiredSpeed);
+		// Vanilla Matters: Rewrite to pick better locations.
+		useLoc = Location + ( ( LastSeenPos - Location ) * ( FRand() + 0.3 ) );
+		useLoc.x = useLoc.x + ( FRand() * 480 ) - 240;
+		useLoc.y = useLoc.y + ( FRand() * 480 ) - 240;
+
+		if ( ShouldPlayWalk( useLoc ) ) {
+			PlayRunning();
 		}
 
-		if (AIPickRandomDestination(CollisionRadius*2, 200+FRand()*200, Rotation.Yaw, 0.75, Rotation.Pitch, 0.75, 2,
-		                            0.4, useLoc))
-		{
-			if (ShouldPlayWalk(useLoc))
-				PlayRunning();
-			MoveTo(useLoc, MaxDesiredSpeed);
-		}
+		MoveTo( useLoc, MaxDesiredSpeed );
 	}
 
 TurnToLocation:
@@ -10768,6 +10847,12 @@ FindAnotherPlace:
 		Goto('GoToLocation');
 
 DoneSeek:
+	// Vanilla Matters: If we're poisoned, try seeking more.
+	if ( poisonCounter > 0 ) {
+		SetSeekLocation( SeekPawn, Location, SEEKTYPE_Guess );
+		Goto( 'GoToLocation' );
+	}
+	
 	if (bSeekPostCombat)
 		PlayTargetLostSound();
 	else
@@ -10816,38 +10901,60 @@ State Fleeing
 			if (bFearThisInjury)
 				IncreaseFear(instigatedBy, 2.0);
 
-			oldEnemy = Enemy;
-
-			bAttack = false;
-			if (SetEnemy(instigatedBy))
-			{
-				if (!ShouldFlee())
-				{
-					SwitchToBestWeapon();
-					if (Weapon != None)
-						bAttack = true;
+			// Vanilla Matters: Rewrite to add special rules.
+			if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+				if ( bHateThisInjury ) {
+					IncreaseAgitation( instigatedBy );
+				}
+	
+				if ( bFearThisInjury ) {
+					IncreaseFear( instigatedBy, 2.0 );
+				}
+	
+				oldEnemy = Enemy;
+	
+				bAttack = false;
+				if ( SetEnemy( instigatedBy ) ) {
+					if ( !ShouldFlee() ) {
+						SwitchToBestWeapon();
+						if ( Weapon != none ) {
+							bAttack = true;
+						}
+					}
+				}
+				else {
+					SetEnemy( instigatedBy,, true );
+				}
+	
+				if ( bAttack ) {
+					SetDistressTimer();
+					SetNextState( 'HandlingEnemy' );
+				}
+				else {
+					SetDistressTimer();
+					if ( oldEnemy != Enemy ) {
+						newLabel = 'Begin';
+					}
+					else {
+						newLabel = 'ContinueFlee';
+					}
+	
+					SetNextState( 'Fleeing', newLabel );
 				}
 			}
-			else
-				SetEnemy(instigatedBy, , true);
+			else {
+				if ( bFearThisInjury ) {
+					IncreaseFear( none, 2.0 );
+				}
+	
+				SetDistressTimer();
+				SetNextState( 'Fleeing', 'ContinueFlee' );
+			}
 
-			if (bAttack)
-			{
-				SetDistressTimer();
-				SetNextState('HandlingEnemy');
-			}
-			else
-			{
-				SetDistressTimer();
-				if (oldEnemy != Enemy)
-					newLabel = 'Begin';
-				else
-					newLabel = 'ContinueFlee';
-				SetNextState('Fleeing', newLabel);
-			}
-			GotoDisabledState(damageType, hitPos);
+			GotoDisabledState( damageType, hitPos );
 		}
 	}
+
 
 	function SetFall()
 	{
@@ -11191,7 +11298,8 @@ Pausing:
 		}
 		Enable('AnimEnd');
 		TweenToWaiting(0.2);
-		while (AICanSee(enemy, 1.0, false, false, true, true) <= 0)
+		// Vanilla Matters: Apply visibility rules.
+		while ( AICanSee( enemy, ComputeActorVisibility( enemy ), true, true, true, true ) <= 0 )
 			Sleep(0.25);
 		Disable('AnimEnd');
 		FinishAnim();
@@ -11281,30 +11389,64 @@ State Attacking
 			bHateThisInjury = ShouldReactToInjuryType(damageType, bHateInjury, bHateIndirectInjury);
 			bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
-			if (bHateThisInjury)
-				IncreaseAgitation(instigatedBy, 1.0);
-			if (bFearThisInjury)
-				IncreaseFear(instigatedBy, 2.0);
-
-			if (ReadyForNewEnemy())
-				SetEnemy(instigatedBy);
-
-			if (ShouldFlee())
-			{
-				SetDistressTimer();
-				PlayCriticalDamageSound();
-				if (RaiseAlarm == RAISEALARM_BeforeFleeing)
-					SetNextState('Alerting');
-				else
-					SetNextState('Fleeing');
+			// Vanilla Matters: Rewrite to add special rules
+			if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+				if ( bHateThisInjury ) {
+					IncreaseAgitation( instigatedBy, 1.0 );
+				}
+	
+				if ( bFearThisInjury ) {
+					IncreaseFear( instigatedBy, 2.0 );
+				}
+	
+				oldEnemy = Enemy;
+	
+				if ( ReadyForNewEnemy() ) {
+					SetEnemy( instigatedBy );
+				}
+	
+				if ( ShouldFlee() ) {
+					SetDistressTimer();
+					PlayCriticalDamageSound();
+					if ( RaiseAlarm == RAISEALARM_BeforeFleeing ) {
+						SetNextState( 'Alerting' );
+					}
+					else {
+						SetNextState( 'Fleeing' );
+					}
+				}
+				else {
+					SetDistressTimer();
+					if ( oldEnemy != Enemy ) {
+						PlayNewTargetSound();
+					}
+	
+					SetNextState( 'Attacking', 'ContinueAttack' );
+				}
 			}
-			else
-			{
+			else {
+				if ( bFearThisInjury ) {
+					IncreaseFear( none, 2.0 );
+				}
+	
 				SetDistressTimer();
-				if (oldEnemy != Enemy)
+	
+				if ( ShouldFlee() ) {
+					PlayCriticalDamageSound();
+					if ( RaiseAlarm == RAISEALARM_BeforeFleeing ) {
+						SetNextState( 'Alerting' );
+					}
+					else {
+						SetNextState( 'Fleeing' );
+					}
+				}
+				else {
 					PlayNewTargetSound();
-				SetNextState('Attacking', 'ContinueAttack');
+	
+					SetNextState( 'Attacking', 'ContinueAttack' );
+				}
 			}
+
 			GotoDisabledState(damageType, hitPos);
 		}
 	}
@@ -11527,8 +11669,9 @@ State Attacking
 			FindBestEnemy(true);
 			if (Enemy == None)
 			{
-				SetSeekLocation(lastEnemy, lastLocation, SEEKTYPE_Guess, true);
-				GotoState('Seeking');
+				// Vanilla Matters: We should doing SEEKTYPE_Sight instead.
+				SetSeekLocation( lastEnemy, lastLocation, SEEKTYPE_Sight, true );
+				GotoState( 'Seeking' );
 			}
 		}
 		else if (bCanFire && (Enemy != None))
@@ -13086,17 +13229,26 @@ state Burning
 
 		if (health > 0)
 		{
-			if (enemy != instigatedBy)
-			{
-				SetEnemy(instigatedBy);
-				newLabel = 'NewEnemy';
+			// Vanilla Matters: Rewrite to add special rules.
+			if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+				if ( Enemy != instigatedBy ) {
+					SetEnemy( instigatedBy );
+					newLabel = 'NewEnemy';
+				}
+				else {
+					newLabel = 'ContinueBurn';
+				}
+	
+				if ( Enemy != None ) {
+					LastSeenPos = Enemy.Location;
+				}
+	
+				SetNextState( 'Burning', newLabel );
 			}
-			else
-				newLabel = 'ContinueBurn';
+			else {
+				SetNextState( 'Burning', 'ContinueBurn' );
+			}
 
-			if ( Enemy != None )
-				LastSeenPos = Enemy.Location;
-			SetNextState('Burning', newLabel);
 			if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
 				GotoDisabledState(damageType, hitPos);
 		}
@@ -13787,10 +13939,14 @@ Begin:
 		Acceleration = vect(0,0,0);
 		GotoState('FallingState', 'Ducking');
 	}
-	else if (HasNextState())
+	// Vanilla Matters: Should try to seek out enemies not return to wandering.
+	else if ( HasNextState() ) {
 		GotoNextState();
-	else
-		GotoState('Wandering');
+	}
+	else {
+		SetSeekLocation( SeekPawn, Location, SEEKTYPE_Guess );
+		GotoState( 'Seeking' );
+	}
 }
 
 
@@ -13812,12 +13968,6 @@ state RubbingEyes
 	{
 		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
 	}
-
-	// function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
-	// {
-	// 	if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
-	// 		Global.ReactToInjury(instigatedBy, damageType, hitPos);
-	// }
 	
 	// Vanilla Matters: Pawns can now be stunned again while already being stunned.
 
@@ -13888,13 +14038,6 @@ RubEyes:
 	PlayRubbingEyesStart();
 	FinishAnim();
 	PlayRubbingEyes();
-	// Sleep(15);
-	// PlayRubbingEyesEnd();
-	// FinishAnim();
-	// if (HasNextState())
-	// 	GotoNextState();
-	// else
-	// 	GotoState('Wandering');
 }
 
 
@@ -13916,12 +14059,6 @@ state Stunned
 	{
 		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
 	}
-
-	// function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
-	// {
-	// 	if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
-	// 		Global.ReactToInjury(instigatedBy, damageType, hitPos);
-	// }
 
 	// Vanilla Matters: Pawns can now be stunned again while already being stunned.
 
@@ -13987,11 +14124,6 @@ state Stunned
 Begin:
 	Acceleration = vect(0, 0, 0);
 	PlayStunned();
-	// Sleep(15);
-	// if (HasNextState())
-	// 	GotoNextState();
-	// else
-	// 	GotoState('Wandering');
 }
 
 

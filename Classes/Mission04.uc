@@ -330,6 +330,8 @@ function Tick( float deltaTime ) {
 	local PaulDenton Paul;
 	local FlagTrigger ft;
 
+	super.Tick( deltaTime );
+
 	if ( localURL == "04_NYC_HOTEL" ) {
 		if ( flags != none && !flags.GetBool( 'M04RaidTeleportDone' ) && flags.GetBool( 'ApartmentEntered' ) && flags.GetBool( 'NSFSignalSent' ) ) {
 			if ( flags.GetBool( 'TalkedToPaulAfterMessage_Played' ) ) {
