@@ -38,7 +38,6 @@ defaultproperties
      AccurateRange=9600
      bCanHaveScope=True
      bHasScope=True
-     bCanHaveLaser=True
      bCanHaveSilencer=True
      bHasMuzzleFlash=False
      recoilStrength=1.500000
@@ -48,9 +47,7 @@ defaultproperties
      mpAccurateRange=28800
      mpMaxRange=28800
      mpReloadCount=6
-     bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
-     bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
      VM_handsTexPos(0)=0

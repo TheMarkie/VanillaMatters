@@ -204,6 +204,8 @@ var int		SimClipCount, flameShotCount, SimAmmoAmount;
 var float	TimeLockSet;
 
 // Vanilla Matters
+var() bool		VM_isGrenade;					// Internal flag to indicate that this weapon is a grenade type.
+
 var() bool		VM_bAlwaysAccurate;				// Accuracy does not affect this weapon if set to true.
 var() bool		VM_pumpAction;					// Reloads one by one.
 var() int		VM_ShotCount[4];				// How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
@@ -234,6 +236,7 @@ var bool		VM_stopReload;
 var Texture		VM_handsTex;						// Hands texture.
 var int			VM_handsTexPos[2];					// Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
 
+var localized string VM_msgInfoStun;				// Label for stunning weapons.
 var localized String VM_msgInfoIgnite;				// If an ammo type has the VM_IgnitesOnHit property then it's displayed to notify players.
 var localized String VM_msgInfoHeadshot;			// Label the headshot multipler section.
 var localized String VM_msgFullClip;
@@ -367,37 +370,40 @@ function PostBeginPlay()
 
 // Vanilla Matters: Override to add in colored hands skin.
 simulated function RenderOverlays( Canvas canvas ) {
+	local bool changed;
 	local int i;
 	local DeusExPlayer player;
 
-	if ( VM_handsTex == none ) {
-		player = DeusExPlayer( Owner );
-		if ( player != none ) {
-			if ( WeaponMiniCrossbow( self ) == none ) {
-				VM_handsTex = player.GetHandsSkin();
+	if ( Mesh == PlayerViewMesh ) {
+		if ( VM_handsTex == none ) {
+			player = DeusExPlayer( Owner );
+			if ( player != none ) {
+				if ( WeaponMiniCrossbow( self ) == none ) {
+					VM_handsTex = player.GetHandsSkin();
+				}
+				else {
+					VM_handsTex = player.GetCrossbowHandsSkin();
+				}
 			}
-			else {
-				VM_handsTex = player.GetCrossbowHandsSkin();
+		}
+
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
+				changed = true;
 			}
 		}
 	}
 
-	if ( Mesh == PlayerViewMesh ) {
-		for ( i = 0; i < 2; i++ ) {
-			if ( VM_handsTexPos[i] >= 0 ) {
-				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
-			}
-		}
-	}
-	else {
+	super.RenderOverlays( canvas );
+
+	if ( changed ) {
 		for ( i = 0; i < 2; i++ ) {
 			if ( VM_handsTexPos[i] >= 0 ) {
 				MultiSkins[VM_handsTexPos[i]] = none;
 			}
 		}
 	}
-
-	super.RenderOverlays( canvas );
 }
 
 singular function BaseChange()
@@ -508,6 +514,9 @@ function BringUp()
 	// reset the standing still accuracy bonus
 	standingTimer = 0;
 
+	// Vanilla Matters
+	VM_readyFire = true;
+
 	Super.BringUp();
 }
 
@@ -613,15 +622,14 @@ function float GetWeaponSkillLevel() {
 }
 
 // calculate the accuracy for this weapon and the owner's damage
-simulated function float CalculateAccuracy()
-{
-	local float accuracy;	// 0 is dead on, 1 is pretty far off
-	local float tempacc, div;
-	local float weapskill; // so we don't keep looking it up (slower).
+// Vanilla Matters: Rewrite because why not.
+simulated function float CalculateAccuracy() {
+	local float accuracy, tempacc, div, weapskill;
 	local int HealthArmRight, HealthArmLeft, HealthHead;
 	local int BestArmRight, BestArmLeft, BestHead;
 	local bool checkit;
 	local DeusExPlayer player;
+	local ScriptedPawn sp;
 
 	// Vanilla Matters: Set accuracy to 0 (full accuracy) if the weapon is always accurate.
 	if ( VM_bAlwaysAccurate ) {
@@ -631,44 +639,52 @@ simulated function float CalculateAccuracy()
 	accuracy = BaseAccuracy;		// start with the weapon's base accuracy
 	weapskill = GetWeaponSkill();
 
-	player = DeusExPlayer(Owner);
+	// Vanilla Matters: Handle accuracy mod bonus here.
+	accuracy = accuracy - ModBaseAccuracy;
 
-	if (player != None)
-	{
+	player = DeusExPlayer( Owner );
+	sp = ScriptedPawn( Owner );
+
+	if ( player != none ) {
 		// check the player's skill
 		// 0.0 = dead on, 1.0 = way off
-		accuracy += weapskill;
+		accuracy = accuracy + weapskill;
 
 		// get the health values for the player
 		HealthArmRight = player.HealthArmRight;
 		HealthArmLeft  = player.HealthArmLeft;
 		HealthHead     = player.HealthHead;
-		BestArmRight   = player.Default.HealthArmRight;
-		BestArmLeft    = player.Default.HealthArmLeft;
-		BestHead       = player.Default.HealthHead;
-		checkit = True;
+		BestArmRight   = player.default.HealthArmRight;
+		BestArmLeft    = player.default.HealthArmLeft;
+		BestHead       = player.default.HealthHead;
+
+		checkit = true;
 	}
-	else if (ScriptedPawn(Owner) != None)
-	{
+	else if ( sp != none ) {
 		// update the weapon's accuracy with the ScriptedPawn's BaseAccuracy
 		// (BaseAccuracy uses higher values for less accuracy, hence we add)
-		accuracy += ScriptedPawn(Owner).BaseAccuracy;
+		accuracy = accuracy + sp.BaseAccuracy;
 
 		// get the health values for the NPC
-		HealthArmRight = ScriptedPawn(Owner).HealthArmRight;
-		HealthArmLeft  = ScriptedPawn(Owner).HealthArmLeft;
-		HealthHead     = ScriptedPawn(Owner).HealthHead;
-		BestArmRight   = ScriptedPawn(Owner).Default.HealthArmRight;
-		BestArmLeft    = ScriptedPawn(Owner).Default.HealthArmLeft;
-		BestHead       = ScriptedPawn(Owner).Default.HealthHead;
+		HealthArmRight = sp.HealthArmRight;
+		HealthArmLeft  = sp.HealthArmLeft;
+		HealthHead     = sp.HealthHead;
+		BestArmRight   = sp.default.HealthArmRight;
+		BestArmLeft    = sp.default.HealthArmLeft;
+		BestHead       = sp.default.HealthHead;
 		checkit = True;
+
+		// Vanilla Matters: If a scriptedpawn is using a rifle, give it more accuracy because the pawn doesn't scope in and lose on the scope bonus.
+		accuracy = FMax( accuracy - 0.5, sp.BaseAccuracy );
 	}
-	else
-		checkit = False;
+	else {
+		checkit = false;
+	}
 
 	// Disabled accuracy mods based on health in multiplayer
-	if ( Level.NetMode != NM_Standalone )
-		checkit = False;
+	if ( Level.NetMode != NM_Standalone ) {
+		checkit = false;
+	}
 
 	// Vanilla Matters: Apply the effectiveness of scope or laser dynamically over time.
 	accuracy = FMax( accuracy * ( ( VM_modTimerMax - VM_modTimer ) / VM_modTimerMax ), 0 );
@@ -680,33 +696,6 @@ simulated function float CalculateAccuracy()
 
 	// Vanilla Matters: Change penalty values for states of health.
 	if ( checkit ) {
-		// if ( HealthArmRight <= 0 ) {
-		// 	accuracy = accuracy + 0.6;
-		// }
-		// else if ( HealthArmRight <= ( BestArmRight * 0.33 ) ) {
-		// 	accuracy = accuracy + 0.4;
-		// }
-		// else if ( HealthArmRight <= ( BestArmRight * 0.66 ) ) {
-		// 	accuracy = accuracy + 0.2;
-		// }
-
-		// if ( HealthArmLeft <= 0 ) {
-		// 	accuracy = accuracy + 0.2;
-		// }
-		// else if ( HealthArmLeft <= ( BestArmLeft * 0.33 ) ) {
-		// 	accuracy = accuracy + 0.1;
-		// }
-		// else if ( HealthArmLeft <= ( BestArmLeft * 0.66 ) ) {
-		// 	accuracy = accuracy + 0.05;
-		// }
-
-		// if ( HealthHead <= ( BestHead * 0.33 ) ) {
-		// 	accuracy = accuracy + 0.4;
-		// }
-		// else if ( HealthHead <= ( BestHead * 0.66 ) ) {
-		// 	accuracy = accuracy + 0.2;
-		// }
-
 		// Vanilla Matters: Health penalties now scale dynamically.
 		// VM: AugMuscle helps with arm penalties.
 		div = 1;
@@ -723,9 +712,9 @@ simulated function float CalculateAccuracy()
 			accuracy = accuracy + ( player.VM_flinchPenalty * div );
 		}
 
-		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.6 * div );
-		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.4 * div );
-		accuracy = accuracy + ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.6 );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.5 * div );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.3 * div );
+		accuracy = accuracy + ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.5 );
 	}
 
 	// increase accuracy (decrease value) if we haven't been moving for awhile
@@ -2645,7 +2634,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 			if (( Role == ROLE_Authority ) || (DeusExPlayer(Owner) == DeusExPlayer(GetPlayerPawn())) )
 			{
 				// Do it the old fashioned way if it can track, or if we are a projectile that we could pick up again
-				if ( bCanTrack || Self.IsA('WeaponShuriken') || Self.IsA('WeaponMiniCrossbow') || Self.IsA('WeaponLAM') || Self.IsA('WeaponEMPGrenade') || Self.IsA('WeaponGasGrenade'))
+				// Vanilla Matters: We now have a grenade flag.
+				if ( bCanTrack || WeaponShuriken( self ) != none || WeaponMiniCrossbow( self ) != none || VM_isGrenade )
 				{
 					if ( Role == ROLE_Authority )
 					{
@@ -2879,9 +2869,9 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 		}
 		else if ((Other != self) && (Other != Owner))
 		{
-			// Vanilla Matters: Let ShotBreaksStuff work against containers and decorations.
+			// Vanilla Matters: Let ShotBreaksStuff work against containers and decos.
 			if ( Role == ROLE_Authority ) {
-				if ( Other.IsA( 'Containers' ) || Other.IsA( 'Decoration' ) ) {
+				if ( Decoration( Other ) != none ) {
 					Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
 				}
 				else {
@@ -3066,8 +3056,8 @@ simulated function bool UpdateInfo(Object winObject)
 	local Ammo weaponAmmo;
 	local int  ammoAmount;
 
-	// Vanilla Matters: Optimize many calls.
-	local float weaponSkillLevel;
+	// Vanilla Matters
+	local float t, weaponSkillLevel;
 	local name damageType;
 
 	weaponSkillLevel = GetWeaponSkillLevel();
@@ -3199,10 +3189,10 @@ simulated function bool UpdateInfo(Object winObject)
 
 	mod = 1.0 - ( 2.0 * GetWeaponSkill( true ) );
 
-	if (mod != 1.0)
-	{
-		str = str @ BuildPercentString(mod - 1.0);
-		str = str @ "=" @ FormatFloatString(dmg * mod, 1.0);
+	// Vanilla Matters
+	if ( mod != 1.0 ) {
+		str = str @ BuildPercentString( mod - 1 );
+		str = str @ "=" @ FormatFloatString( dmg * mod, 0.1 );
 
 		// Vanilla Matters: Display the same number of shots afterwards.
 		if ( Default.VM_ShotCount[weaponSkillLevel] > 1 ) {
@@ -3210,7 +3200,14 @@ simulated function bool UpdateInfo(Object winObject)
 		}
 	}
 
-	winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
+	// Vanilla Matters: Stunning weapons have their "damage" label renamed to "stun duration".
+	damageType = WeaponDamageType();
+	if ( damageType != 'Stunned' && damageType != 'TearGas' ) {
+		winInfo.AddInfoItem( msgInfoDamage, str, mod != 1.0 );
+	}
+	else {
+		winInfo.AddInfoItem( VM_msgInfoStun, str, mod != 1.0 );
+	}
 
 	// Vanilla Matters: Display headshot multiplier.
 	str = "x" $ FormatFloatString( Default.VM_HeadshotMult[0], 0.1 );
@@ -3296,57 +3293,47 @@ simulated function bool UpdateInfo(Object winObject)
 	winInfo.AddInfoItem(msgInfoRecoil, str, HasRecoilMod());
 
 	// base accuracy (2.0 = 0%, 0.0 = 100%)
-	if ( Level.NetMode != NM_Standalone )
-	{
-		str = Int((2.0 - Default.mpBaseAccuracy)*50.0) $ "%";
-		mod = (Default.mpBaseAccuracy - (BaseAccuracy + GetWeaponSkill())) * 0.5;
-		if (mod != 0.0)
-		{
-			str = str @ BuildPercentString(mod);
-			str = str @ "=" @ Min(100, Int(100.0*mod+(2.0 - Default.mpBaseAccuracy)*50.0)) $ "%";
-		}
+
+	// Vanilla Matters: Rewrite to be compatible with the new way to handle accuracy mods.
+	str = int( ( 2 - BaseAccuracy ) * 50.0 ) $ "%";
+	mod = GetWeaponSkill() - ModBaseAccuracy;
+	if ( mod != 0.0 ) {
+		str = str @ BuildPercentString( - ( mod / 2 ) );
+		str = str @ "=" @ FormatFloatString( FMin( 100, ( ( 2 - ( BaseAccuracy + mod ) ) * 50 ) ), 0.1 ) $ "%";
 	}
-	else
-	{
-		str = Int((2.0 - Default.BaseAccuracy)*50.0) $ "%";
-		mod = (Default.BaseAccuracy - (BaseAccuracy + GetWeaponSkill())) * 0.5;
-		if (mod != 0.0)
-		{
-			str = str @ BuildPercentString(mod);
-			str = str @ "=" @ Min(100, Int(100.0*mod+(2.0 - Default.BaseAccuracy)*50.0)) $ "%";
-		}
-	}
-	winInfo.AddInfoItem(msgInfoAccuracy, str, (mod != 0.0));
+
+	winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
 
 	// accurate range
-	if (bHandToHand)
-		str = msgInfoNA;
-	else
-	{
-		if ( Level.NetMode != NM_Standalone )
-			str = FormatFloatString(Default.mpAccurateRange/16.0, 1.0) @ msgRangeUnit;
-		else
-			str = FormatFloatString(Default.AccurateRange/16.0, 1.0) @ msgRangeUnit;
+
+	// Vanilla Matters: Display range of melee weapons too.
+	if ( Level.NetMode != NM_Standalone ) {
+		str = FormatFloatString( default.mpAccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
+	}
+	else {
+		str = FormatFloatString( default.AccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
 	}
 
-	if (HasRangeMod())
-	{
-		str = str @ BuildPercentString(ModAccurateRange);
-		str = str @ "=" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
+	if ( HasRangeMod() ) {
+		str = str @ BuildPercentString( ModAccurateRange );
+		str = str @ "=" @ FormatFloatString( AccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
 	}
-	winInfo.AddInfoItem(msgInfoAccRange, str, HasRangeMod());
+
+	winInfo.AddInfoItem( msgInfoAccRange, str, HasRangeMod() );
 
 	// max range
-	if (bHandToHand)
-		str = msgInfoNA;
-	else
-	{
-		if ( Level.NetMode != NM_Standalone )
-			str = FormatFloatString(Default.mpMaxRange/16.0, 1.0) @ msgRangeUnit;
-		else
-			str = FormatFloatString(Default.MaxRange/16.0, 1.0) @ msgRangeUnit;
+
+	// Vanilla Matters: Don't display max range if we're a projectile or melee weapon because it's meaningless.
+	if ( bInstantHit && !bHandToHand ) {
+		if ( Level.NetMode != NM_Standalone ) {
+			str = FormatFloatString( default.mpMaxRange / 16.0, 1.0 ) @ msgRangeUnit;
+		}
+		else {
+			str = FormatFloatString( default.MaxRange / 16.0, 1.0 ) @ msgRangeUnit;
+		}
+		
+		winInfo.AddInfoItem( msgInfoMaxRange, str );
 	}
-	winInfo.AddInfoItem(msgInfoMaxRange, str);
 
 	// mass
 	winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
@@ -3467,46 +3454,41 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 // BuildPercentString()
 // ----------------------------------------------------------------------
 
-//simulated final function String BuildPercentString(Float value)
 // Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static final function String BuildPercentString(Float value)
-{
+simulated static final function String BuildPercentString( float value ) {
 	local string str;
 
-	//str = String(Int(Abs(value * 100.0)));
+	str = FormatFloatString( Abs( value * 100.0 ), 0.1 );
 
-	// Vanilla Matters: Should fix the 17 year-old graphical, rounding-error glitch.
-	str = String( Int( Abs( value * 100.0 ) + 0.000001 ) );
-
-	if (value < 0.0)
+	if ( value < 0 ) {
 		str = "-" $ str;
-	else
+	}
+	else {
 		str = "+" $ str;
+	}
 
-	return ("(" $ str $ "%)");
+	str = "(" $ str $ "%)";
+
+	return str;
 }
 
 // ----------------------------------------------------------------------
 // FormatFloatString()
 // ----------------------------------------------------------------------
 
-//simulated function String FormatFloatString(float value, float precision)
 // Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static function String FormatFloatString(float value, float precision)
-{
+simulated static function String FormatFloatString( float value, float precision ) {
 	local string str;
 
-	if (precision == 0.0)
+	if ( precision <= 0 ) {
 		return "ERR";
+	}
 
-	// build integer part
-	str = String(Int(value));
+	str = string( int( value ) );
 
-	// build decimal part
-	if (precision < 1.0)
-	{
-		value -= Int(value);
-		str = str $ "." $ String(Int((0.5 * precision) + value * (1.0 / precision)));
+	value = value - int( value );
+	if ( precision < 1.0 && value >= precision ) {
+		str = str $ "." $ string( int( ( 0.5 * precision ) + ( value * ( 1.0 / precision ) ) ) );
 	}
 
 	return str;
@@ -3785,8 +3767,18 @@ state Pickup
 {
 	function BeginState()
 	{
+		// Vanilla Matters
+		local int i;
+
 		// alert NPCs that I'm putting away my gun
 		AIEndEvent('WeaponDrawn', EAITYPE_Visual);
+
+		// Vanilla Matters: Reset hand skins.
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = none;
+			}
+		}
 
 		Super.BeginState();
 	}
@@ -3903,6 +3895,10 @@ Begin:
 			}
 		}
 	}
+	
+	// Vanilla Matters
+	VM_readyFire = true;
+
 	GotoState('Idle');
 }
 
@@ -4374,6 +4370,7 @@ defaultproperties
      VM_readyFire=True
      VM_handsTexPos(0)=-1
      VM_handsTexPos(1)=-1
+     VM_msgInfoStun="Stun duration:"
      VM_msgInfoIgnite="Ignites enemies:"
      VM_msgInfoHeadshot="Headshot:"
      VM_msgFullClip="You are already fully loaded"

@@ -45,6 +45,8 @@ var float	VM_actionCost;			// Amount of time has to be drained for all the actio
 var int		VM_actionCount;			// Amount of actions taken.
 var int		VM_totalActionCount;	// Total amount of actions taken.
 
+var Color VM_colBudget;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -176,6 +178,25 @@ function DrawBorder(GC gc)
 		gc.SetTileColor(colBorder);
 		gc.DrawTexture(0, 0, 221, 112, 0, 0, texBorder);
 	}
+}
+
+// Vanilla Matters: Draw how much time budget is left.
+function PostDrawWindow( GC gc ) {
+	local string str;
+	local float w, h;
+
+	super.PostDrawWindow( gc );
+
+	if ( !bHacked || bHackDetected ) {
+		return;
+	}
+
+	str = class'DeusExWeapon'.static.FormatFloatString( detectionTime + hackTime, 0.1 );
+
+	gc.SetFont( Font'FontMenuTitle' );
+	gc.SetTextColor( VM_colBudget );
+	gc.GetTextExtent( 0, w, h, str );
+	gc.DrawText( 23, 72, w, h, str );
 }
 
 // ----------------------------------------------------------------------
@@ -476,9 +497,6 @@ function Tick(float deltaTime)
 	}
 	else
 	{
-		// manage detection
-		//detectionTime -= deltaTime;
-
 		// Vanilla Matters: Calculate stuff and deducts detectionTime properly.
 		if ( bHacked ) {
 			if ( VM_actionCost > 0 ) {
@@ -556,7 +574,7 @@ defaultproperties
 {
      blinkTimer=1.000000
      digitUpdateTimer=0.050000
-     hackDetectedDelay=3.000000
+     hackDetectedDelay=2.000000
      digitWidth=23
      digitFillerChars="01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=][}{"
      colDigits=(G=128)

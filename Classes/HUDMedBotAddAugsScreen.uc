@@ -238,6 +238,9 @@ function bool ButtonActivated(Window buttonPressed)
 
 function SelectAugmentation(PersonaItemButton buttonPressed)
 {
+	// Vanilla Matters
+	local HUDMedBotAugItemButton btn;
+
 	// Don't do extra work.
 	if (selectedAugButton != buttonPressed)
 	{
@@ -249,39 +252,32 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 		selectedAug       = Augmentation(selectedAugButton.GetClientObject());
 
 		// Check to see if this augmentation has already been installed
-		// if (HUDMedBotAugItemButton(buttonPressed).bHasIt)
-		// {
-		// 	winInfo.Clear();
-		// 	winInfo.SetTitle(selectedAug.AugmentationName);
-		// 	winInfo.SetText(AlreadyHasItText);
-		// 	winInfo.SetText(SelectAnotherText); 
-		// 	selectedAug = None;
-		// 	selectedAugButton = None;
-		// }
 		// Vanilla Matters: Allow reinstalling the same aug to upgrade it. If the aug can't be upgraded further, ignore it.
-		if ( HUDMedBotAugItemButton( buttonPressed ).bHasIt && !selectedAug.CanBeUpgraded() ) {
-			winInfo.Clear();
-			winInfo.SetTitle( selectedAug.AugmentationName );
-			winInfo.SetText( VM_CantBeUpgradedText );
-			winInfo.SetText( SelectAnotherText );
+		btn = HUDMedBotAugItemButton( buttonPressed );
+		if ( btn != none ) {
+			if ( btn.bHasIt && selectedAug != none && !selectedAug.CanBeUpgraded() ) {
+				winInfo.Clear();
+				winInfo.SetTitle( selectedAug.AugmentationName );
+				winInfo.SetText( VM_CantBeUpgradedText );
+				winInfo.SetText( SelectAnotherText );
 
-			selectedAug = None;
-			selectedAugButton = None;
-		}
-		else if (HUDMedBotAugItemButton(buttonPressed).bSlotFull) 
-		{
-			winInfo.Clear();
-			winInfo.SetTitle(selectedAug.AugmentationName);
-			winInfo.SetText(SlotFullText);
-			winInfo.SetText(SelectAnotherText); 
-			selectedAug = None;
-			selectedAugButton = None;
-		}
-		else
-		{
-			selectedAug.UsingMedBot(True);
-			selectedAug.UpdateInfo(winInfo);
-			selectedAugButton.SelectButton(True);
+				selectedAug = none;
+				selectedAugButton = none;
+			}
+			else if ( btn.bSlotFull && selectedAug != none ) {
+				winInfo.Clear();
+				winInfo.SetTitle( selectedAug.AugmentationName );
+				winInfo.SetText( SlotFullText );
+				winInfo.SetText( SelectAnotherText ); 
+
+				selectedAug = none;
+				selectedAugButton = none;
+			}
+			else {
+				selectedAug.UsingMedBot(True);
+				selectedAug.UpdateInfo(winInfo);
+				selectedAugButton.SelectButton(True);
+			}
 		}
 
 		EnableButtons();

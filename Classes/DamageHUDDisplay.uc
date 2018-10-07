@@ -223,7 +223,10 @@ function DrawWindow(GC gc)
 		gc.EnableTranslucentText(True);
 		gc.SetTextColor(col);
 		gc.SetFont(Font'TechSmall');
-		strInfo = Sprintf(msgAbsorbed, Int(absorptionPercent * 100.0));
+
+		// Vanilla Matters: Use FormatFloatString to display a more accurate percentage.
+		strInfo = class'DeusExWeapon'.static.FormatFloatString( ( absorptionPercent + 0.000001 ) * 100, 0.1 ) $ "%" @ msgAbsorbed;
+
 		gc.GetTextExtent(0, strW, strH, strInfo);
 		strX = (width - strW) / 2;
 		strY = height - (arrowIconHeight + strH) / 2;
@@ -277,5 +280,5 @@ defaultproperties
      arrowiconWidth=64
      arrowiconHeight=64
      fadeTime=2.000000
-     msgAbsorbed="%d%% Absorb"
+     msgAbsorbed="Absorb"
 }

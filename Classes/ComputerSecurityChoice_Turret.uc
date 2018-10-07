@@ -94,12 +94,7 @@ function bool ButtonActivated(Window buttonPressed)
 	SetTurretState();
 
 	// Vanilla Matters: Make each turret toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 7.5 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -114,12 +109,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	SetTurretState();
 
 	// Vanilla Matters: Make each turret toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 7.5 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -171,4 +161,5 @@ defaultproperties
      enumText(2)="Enemies"
      enumText(3)="Everything"
      actionText="|&Turret Status"
+     VM_timeCost=7.500000
 }

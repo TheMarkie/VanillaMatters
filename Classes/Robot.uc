@@ -650,6 +650,6 @@ defaultproperties
      HitSound1=Sound'DeusExSounds.Generic.Spark1'
      HitSound2=Sound'DeusExSounds.Generic.Spark1'
      Die=Sound'DeusExSounds.Generic.Spark1'
-     VisibilityThreshold=0.005000
+     VisibilityThreshold=0.010000
      BindName="Robot"
 }

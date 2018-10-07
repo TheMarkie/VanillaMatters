@@ -41,7 +41,7 @@ defaultproperties
      ItemName="Weapon Modification (Reload)"
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponModReload'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponModReload'
-     Description="A speed loader greatly decreases the time required to reload a weapon."
+     Description="A speed loader greatly decreases the time required to reload a weapon.|n-10% reload time."
      beltDescription="MOD RELOD"
      Skin=Texture'DeusExItems.Skins.WeaponModTex6'
 }

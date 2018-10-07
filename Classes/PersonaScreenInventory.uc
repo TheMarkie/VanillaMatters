@@ -820,8 +820,6 @@ function UseSelectedItem()
 		if (inv.IsA('Binoculars')) 
 			player.PutInHand(inv);
 
-		//inv.Activate();
-
 		cpickup = ChargedPickup( inv );
 
 		// Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time. Copied from ParseLeftClick().
@@ -854,10 +852,6 @@ function UseSelectedItem()
 
 		// Update the object belt
 		invBelt.UpdateBeltText(inv);
-
-		// Refresh the info!
-		if (numCopies > 0)
-			UpdateWinInfo(inv);
 
 		// Vanilla Matters: Update item info properly.
 		if ( numCopies > 0 ) {

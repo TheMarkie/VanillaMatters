@@ -76,21 +76,16 @@ function SetMPEnumState()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-   local bool bWasActive;
+	local bool bWasActive;
 
-   bWasActive = (GetValue() != 0);
+	bWasActive = (GetValue() != 0);
 
-   Super.ButtonActivated(buttonPressed);
-   SetCameraState(bWasActive);
+	Super.ButtonActivated(buttonPressed);
+	SetCameraState(bWasActive);
 	//securityWindow.ToggleCameraState();
 
-   // Vanilla Matters: Make each camera toggle cost an amount of time.
-   if ( securityWindow.winTerm.bHacked ) {
-      if ( !VM_bHackedAlready ) {
-         securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-         VM_bHackedAlready = true;
-      }
-   }
+	// Vanilla Matters: Make each camera toggle cost an amount of time.
+	HandleTimeCost();
 
 	return True;
 }
@@ -101,20 +96,15 @@ function bool ButtonActivated( Window buttonPressed )
 
 function bool ButtonActivatedRight( Window buttonPressed )
 {
-   local bool bWasActive;
+	local bool bWasActive;
 
-   bWasActive = (GetValue() != 0);
+	bWasActive = (GetValue() != 0);
 
-   Super.ButtonActivated(buttonPressed);
-   SetCameraState(bWasActive);
+	Super.ButtonActivated(buttonPressed);
+	SetCameraState(bWasActive);
 
-   // Vanilla Matters: Make each camera toggle cost an amount of time.
-   if ( securityWindow.winTerm.bHacked ) {
-      if ( !VM_bHackedAlready ) {
-         securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-         VM_bHackedAlready = true;
-      }
-   }
+	// Vanilla Matters: Make each camera toggle cost an amount of time.
+	HandleTimeCost();
 
 	return True;
 }
@@ -153,4 +143,5 @@ defaultproperties
      enumText(1)="Enemies"
      enumText(2)="Allies"
      actionText="|&Camera Status"
+     VM_timeCost=5.000000
 }

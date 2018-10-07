@@ -185,64 +185,78 @@ function TriggerEvent(bool bTrigger)
 	}
 }
 
-function CheckPlayerVisibility(DeusExPlayer player)
-{
+// Vanilla Matters: Rewrite to add dead body detection.
+function CheckPlayerVisibility( DeusExPlayer player ) {
 	local float yaw, pitch, dist;
 	local Actor hit;
 	local Vector HitLocation, HitNormal;
 	local Rotator rot;
+	local DeusExCarcass carcass;
 
-   if (player == None)
-      return;
-	dist = Abs(VSize(player.Location - Location));
+	if ( player == none ) {
+		return;
+	}
 
-	// if the player is in range
-	if (player.bDetectable && !player.bIgnore && (dist <= cameraRange))
-	{
-		hit = Trace(HitLocation, HitNormal, player.Location, Location, True);
-		if (hit == player)
-		{
-			// If the player's RadarTrans aug is on, the camera can't see him
-         // DEUS_EX AMSD In multiplayer, we've already done this test with 
-         // AcquireMultiplayerTarget
-         if (Level.Netmode == NM_Standalone)
-         {
-            if (player.AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
-               return;
-         }
+	dist = Abs( VSize( player.Location - Location ) );
 
-			// figure out if we can see the player
-			rot = Rotator(player.Location - Location);
-			rot.Roll = 0;
-			yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
-			pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;
-
-			// center the angles around zero
-			if (yaw > 32767)
-				yaw -= 65536;
-			if (pitch > 32767)
-				pitch -= 65536;
-
-			// if we are in the camera's FOV
-			if ((Abs(yaw) < cameraFOV) && (Abs(pitch) < cameraFOV))
-			{
-				// rotate to face the player
-				if (bTrackPlayer)
-					DesiredRotation = rot;
-
-				lastSeenTimer = 0;
-				bPlayerSeen = True;
-				bTrackPlayer = True;
-            bFoundCurPlayer = True;
-
-				playerLocation = player.Location - vect(0,0,1)*(player.CollisionHeight-5);
-
-				// trigger the event if we haven't yet for this sighting
-				if (!bEventTriggered && (triggerTimer >= triggerDelay) && (Level.Netmode == NM_Standalone))
-					TriggerEvent(True);
-
-				return;
+	if ( player.bDetectable && !player.bIgnore && dist <= cameraRange ) {
+		hit = Trace( HitLocation, HitNormal, player.Location, Location, true );
+		if ( hit == player ) {
+			if ( Level.Netmode == NM_Standalone ) {
+				if ( player.AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 ) {
+					hit = none;
+				}
 			}
+		}
+		else {
+			hit = none;
+		}
+	}
+
+	if ( hit == none ) {
+		foreach RadiusActors( class'DeusExCarcass', carcass, cameraRange ) {
+			if ( carcass.KillerAlliance == 'Player' ) {
+				hit = Trace( HitLocation, HitNormal, carcass.Location, Location, true );
+				if ( hit == carcass ) {
+					break;
+				}
+				else {
+					hit = none;
+				}
+			}
+		} 
+	}
+
+	if ( hit == none ) {
+		return;
+	}
+
+	rot = Rotator( hit.Location - Location );
+	rot.Roll = 0;
+	yaw = Abs( Rotation.Yaw - rot.Yaw ) % 65536;
+	pitch = Abs( Rotation.Pitch - rot.Pitch ) % 65536;
+
+	if ( yaw > 32767 ) {
+		yaw -= 65536;
+	}
+	if ( pitch > 32767 ) {
+		pitch -= 65536;
+	}
+
+	if ( Abs( yaw ) < cameraFOV && Abs( pitch ) < cameraFOV ) {
+		if ( bTrackPlayer ) {
+			DesiredRotation = rot;
+		}
+
+		lastSeenTimer = 0;
+		bPlayerSeen = true;
+		bTrackPlayer = true;
+		bFoundCurPlayer = true;
+
+		playerLocation = hit.Location - vect( 0,0,1 ) * ( player.CollisionHeight - 5 );
+
+		if ( !bEventTriggered && triggerTimer >= triggerDelay && Level.Netmode == NM_Standalone ) {
+			TriggerEvent( true );
 		}
 	}
 }

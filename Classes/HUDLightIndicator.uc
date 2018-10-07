@@ -20,7 +20,7 @@ function InitWindow() {
 
 	player = DeusExPlayer( DeusExRootWindow( GetRootWindow() ).parentPawn );
 
-	SetSize( 47, 32 );
+	SetSize( 87, 41 );
 }
 
 // ----------------------------------------------------------------------
@@ -37,7 +37,7 @@ function DrawBackground( GC gc ) {
 
 	gc.SetStyle( DSTY_Translucent );
 	gc.SetTileColor( col );
-	gc.DrawTexture( 5, 6, 40, 19, 0, 0, texBackground );
+	gc.DrawTexture( 5, 6, 80, 24, 0, 0, texBackground );
 }
 
 // ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ function DrawBorder( GC gc ) {
 	if ( bDrawBorder ) {
 		gc.SetStyle( borderDrawStyle );
 		gc.SetTileColor( colBorder );
-		gc.DrawTexture( 0, 0, 47, 32, 0, 0, texBorder );
+		gc.DrawTexture( 0, 0, 87, 41, 0, 0, texBorder );
 	}
 }
 

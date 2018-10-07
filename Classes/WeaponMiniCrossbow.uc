@@ -55,8 +55,8 @@ defaultproperties
      ShotTime=0.800000
      reloadTime=2.000000
      HitDamage=30
-     maxRange=1600
-     AccurateRange=800
+     maxRange=2400
+     AccurateRange=1200
      bCanHaveScope=True
      ScopeFOV=15
      bCanHaveLaser=True
@@ -77,7 +77,6 @@ defaultproperties
      mpReloadCount=6
      mpPickupAmmoCount=6
      bCanHaveModBaseAccuracy=True
-     bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoDartPoison'

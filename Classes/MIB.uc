@@ -69,6 +69,41 @@ function Explode()
 	HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, Location);
 }
 
+// Vanilla Matters: MIBs shouldn't be vulnerable to gas.
+function float ShieldDamage( name damageType ) {
+	if ( damageType == 'PoisonGas' || damageType == 'HalonGas' || damageType == 'Poison' || damageType == 'PoisonEffect' ) {
+		return 0;
+	}
+	else if ( damageType == 'Stunned' || damageType == 'KnockedOut' ) {
+		return 0.5;
+	}
+	else {
+		return super.ShieldDamage( damageType );
+	}
+}
+
+// Vanilla Matters: Make EMP stun MIBs.
+function float ModifyDamage( int Damage, Pawn instigatedBy, Vector hitLocation, Vector offset, Name damageType ) {
+	if ( damageType == 'EMP' ) {
+		damageType = 'Stunned';
+	}
+
+	return super.ModifyDamage( Damage, instigatedBy, hitLocation, offset, damageType );
+}
+
+function GotoDisabledState( name damageType, EHitLocation hitPos ) {
+	if ( damageType == 'EMP' ) {
+		VM_damageToReactTo = VM_damageToReactTo / 2;
+		damageType = 'Stunned';
+	}
+	else if ( damageType == 'TearGas' ) {
+		VM_damageToReactTo = 0;
+		damageType = 'PoisonGas';
+	}
+
+	super.GotoDisabledState( damageType, hitPos );
+}
+
 defaultproperties
 {
      MinHealth=0.000000

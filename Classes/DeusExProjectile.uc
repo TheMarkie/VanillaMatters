@@ -223,8 +223,10 @@ simulated function Tick(float deltaTime)
 
 	dist = Abs(VSize(initLoc - Location));
 
-	if (dist > AccurateRange)		// start descent due to "gravity"
-		Acceleration = Region.Zone.ZoneGravity / 2;
+	// Vanilla Matters: Tweak the drop rate.
+	if ( dist > AccurateRange ) {
+		Acceleration = Region.Zone.ZoneGravity / 4;
+	}
 
    if ((Role < ROLE_Authority) && (bAggressiveExploded))
       Explode(Location, vect(0,0,1));
@@ -577,8 +579,8 @@ auto simulated state Flying
 		if (Wall.IsA('BreakableGlass'))
 			bDebris = False;
 
-		// Vanilla Matters: Hurt the mover on contact with a multiplier.
-		if ( !bExplodes && Wall.IsA( 'Mover' ) && DeusExPlayer( Pawn( Owner ) ) != None && VM_fromWeapon != None ) {
+		// Vanilla Matters: Hurt movers, containers or decos on contact with a multiplier.
+		if ( !bExplodes && ( Mover( Wall ) != none || Decoration( Wall ) != none ) && DeusExPlayer( Pawn( Owner ) ) != None && VM_fromWeapon != None ) {
 			Wall.TakeDamage( Damage * VM_fromWeapon.VM_ShotBreaksStuff[VM_fromWeapon.GetWeaponSkillLevel()], Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), damageType );
 		}
 

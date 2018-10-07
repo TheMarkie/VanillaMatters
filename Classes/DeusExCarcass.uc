@@ -41,8 +41,13 @@ var() bool bInvincible;
 var bool bAnimalCarcass;
 
 // Vanilla Matters
+var string VM_familiarName;
+
 var travel bool VM_bSearchedOnce;		// Has the player searched this body at least once?
 
+var float VM_drownTimer;				// Time we've been drowning if we're in the water.
+
+var localized string VM_msgDrowned;
 var localized String VM_msgNoAmmo;
 
 // ----------------------------------------------------------------------
@@ -51,16 +56,25 @@ var localized String VM_msgNoAmmo;
 
 function InitFor(Actor Other)
 {
+	// Vanilla Matters
+	local ScriptedPawn sp;
+
 	if (Other != None)
 	{
 		// set as unconscious or add the pawns name to the description
 		if (!bAnimalCarcass)
 		{
-			if (bNotDead)
+			// Vanilla Matters
+			if ( bNotDead ) {
 				itemName = msgNotDead;
-			else if (Other.IsA('ScriptedPawn'))
-				itemName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")";
+			}
+			
+			// Vanilla Matters: Flip the order, we now display name first then concious state in brackets.
+			itemName = Other.FamiliarName @ "(" $ itemName $ ")";
 		}
+
+		// Vanilla Matters: Record the name in case we switch body state and need to redo the name string.
+		VM_familiarName = Other.FamiliarName;
 
 		Mass           = Other.Mass;
 		Buoyancy       = Mass * 1.2;
@@ -82,8 +96,10 @@ function InitFor(Actor Other)
 		{
 			if (FRand() < 0.1)
 				bGenerateFlies = true;
-			bEmitCarcass = true;
 		}
+
+		// Vanilla Matters: Unconcious bodies should still provoke people.
+		bEmitCarcass = !bAnimalCarcass;
 
 		if (Other.AnimSequence == 'DeathFront')
 			Mesh = Mesh2;
@@ -196,6 +212,28 @@ function Tick(float deltaSeconds)
 			AIStartEvent('Carcass', EAITYPE_Visual);
 	}
 	Super.Tick(deltaSeconds);
+
+	// Vanilla Matters: Start drowning and eventually die if we land in the water.
+	if ( bNotDead ) {
+		if ( Region.Zone.bWaterZone ) {
+			VM_drownTimer = VM_drownTimer + deltaSeconds;
+			if ( VM_drownTimer >= 20 ) {
+				bNotDead = false;
+
+				if ( !bAnimalCarcass ) {
+					itemName = VM_familiarName @ "(" $ VM_msgDrowned $ ")";
+				}
+
+				if ( FRand() < 0.1 ) {
+					bGenerateFlies = true;
+				}
+			}
+		}
+		else {
+			// VM: Recover but very slow out of water.
+			VM_drownTimer = FMax( VM_drownTimer - ( deltaSeconds * 0.2 ), 0 );
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -292,6 +330,21 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector mo
 			ChunkUp(Damage);
 		if (bDecorative)
 			Velocity = vect(0,0,0);
+
+		// Vanilla Matters: Make the carcase "die" if taken enough damage.
+		if ( bNotDead ) {
+			if ( CumulativeDamage >= 30 ) {
+				bNotDead = false;
+
+				if ( !bAnimalCarcass ) {
+					itemName = VM_familiarName @ "(" $ default.itemName $ ")";
+				}
+
+				if ( FRand() < 0.1 ) {
+					bGenerateFlies = true;
+				}
+			}
+		}
 	}
 
 	SetScaleGlow();
@@ -333,8 +386,8 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 	// Vanilla Matters
 	local bool bHeldAlready;		// Just something to make sure no two pickups are taken held in the same search.
-	local Weapon tempW;				// So we don't have to keep casting.
-	local bool isGrenade;
+	local DeusExWeapon tempW;
+	local bool ammoPicked;
 
 //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -391,13 +444,17 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 					// Grenades and LAMs always pickup 1
 					// Vanilla Matters: Prevent giving weapons more ammo after repeated loot attempts.
-					if ( W.IsA( 'WeaponNanoVirusGrenade' ) || W.IsA( 'WeaponGasGrenade' ) || W.IsA( 'WeaponEMPGrenade' ) || W.IsA( 'WeaponLAM' ) ) {
+					if ( W.VM_isGrenade ) {
 						W.PickupAmmoCount = 1;
-
-						isGrenade = true;
 					}
 					else if ( Level.NetMode == NM_Standalone && !VM_bSearchedOnce ) {
-						W.PickupAmmoCount = Rand( 4 ) + 1;
+						// Vanilla Matters: Make the count scale with the weapon's default amount.
+						if ( W.default.PickUpAmmoCount > 10 ) {
+							W.PickupAmmoCount = FMax( FClamp( FRand(), 0.2, 0.4 ) * W.default.PickUpAmmoCount, 4 );
+						}
+						else {
+							W.PickUpAmmoCount = Rand( W.default.PickUpAmmoCount / 2 ) + 2;
+						}
 					}
 				}
 
@@ -444,64 +501,95 @@ function Frob(Actor Frobber, Inventory frobWith)
 						// want to give the player the AMMO only (as if the player already had 
 						// the weapon).
 
-						if ((W != None) || ((W == None) && (!player.FindInventorySlot(item, True))))
-						{
+						// Vanilla Matters: Rewrite because it's really bad.
+						if ( W != None || ( W == None && !player.FindInventorySlot( item, true ) ) ) {
 							// Vanilla Matters: Fix the bug where the player isn't able to pick up ammo properly due to hacky vanilla coding.
-							tempW = Weapon( item );
+							tempW = DeusExWeapon( item );
 							if ( tempW.AmmoType == None && tempW.AmmoName != None && tempW.AmmoName != class'AmmoNone' ) {
 								tempW.AmmoType = Spawn( tempW.AmmoName );
-								AddInventory( tempW.AmmoType );
-								tempW.AmmoType.BecomeItem();
-								tempW.AmmoType.AmmoAmount = tempW.PickUpAmmoCount;
-								tempW.AmmoType.GotoState( 'Idle2' );
+								if ( tempW.AmmoType != none ) {
+									AddInventory( tempW.AmmoType );
+									tempW.AmmoType.BecomeItem();
+									tempW.AmmoType.AmmoAmount = tempW.PickUpAmmoCount;
+									tempW.AmmoType.GotoState( 'Idle2' );
+								}
 							}
 
 							// Don't bother with this is there's no ammo
-							if ((Weapon(item).AmmoType != None) && (Weapon(item).AmmoType.AmmoAmount > 0))
-							{
-								AmmoType = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
-
-								// Vanilla Matters: Fix the bug where you can pick up ammo of "ammo-weapons".
-								if ( AmmoType.PickupViewMesh == Mesh'TestBox' && W == None ) {
-									AmmoType = None;
+							if ( tempW.AmmoType != None && tempW.AmmoType.AmmoAmount > 0 ) {
+								AmmoType = Ammo( player.FindInventoryType( tempW.AmmoName ) );
+								if ( AmmoType == none ) {
+									AmmoType = Spawn( tempW.AmmoName );
+									if ( AmmoType != none ) {
+										P.AddInventory( AmmoType );
+										AmmoType.BecomeItem();
+										AmmoType.AmmoAmount = 0;
+										AmmoType.GotoState( 'Idle2' );
+									}
 								}
 
-								if ((AmmoType != None) && (AmmoType.AmmoAmount < AmmoType.MaxAmmo))
-								{
-									AmmoType.AddAmmo(Weapon(item).PickupAmmoCount);
-									AddReceivedItem(player, AmmoType, Weapon(item).PickupAmmoCount);
+								if ( AmmoType != None && AmmoType.AmmoAmount < AmmoType.MaxAmmo && !( AmmoType.PickupViewMesh == Mesh'TestBox' && W == none ) ) {
+									AmmoType.AddAmmo( tempW.PickupAmmoCount );
+									AddReceivedItem( player, AmmoType, tempW.PickupAmmoCount );
 
-									// Update the ammo display on the object belt
-									player.UpdateAmmoBeltText(AmmoType);
+									player.UpdateAmmoBeltText( AmmoType );
 
-									// if this is an illegal ammo type, use the weapon name to print the message
-									if (AmmoType.PickupViewMesh == Mesh'TestBox')
-										P.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
-									else
-										P.ClientMessage(AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName, 'Pickup');
-
-									// Mark it as 0 to prevent it from being added twice
-									Weapon(item).AmmoType.AmmoAmount = 0;
-
-									// Vanilla Matters
-									Weapon( item ).PickUpAmmoCount = 0;
-								}
-								// Vanilla Matters: Let the player know if they can't have anymore of something.
-								else if ( !VM_bSearchedOnce && AmmoType != None ) {
 									if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
-										// VM: Make absolute sure the player already has this weapon.
-										if ( W != None ) {
-											P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, item.itemName ) );
+										P.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
+									}
+									else {
+										P.ClientMessage( AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName @ DeusExAmmo( AmmoType ).VM_msgFromWeapon @ tempW.ItemName, 'Pickup' );
+									}
+
+									tempW.AmmoType.AmmoAmount = 0;
+									tempW.PickUpAmmoCount = 0;
+
+									bPickedItemUp = true;
+								}
+
+								// Vanilla Matters: Let the player know if they can't have anymore of something.
+								if ( !bPickedItemUp ) {
+									if ( AmmoType != none ) {
+										if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
+											if ( W != None ) {
+												P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, item.itemName ) );
+											}
+											else {
+												P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
+											}
+										}
+										else {
+											P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, AmmoType.itemName ) );
 										}
 									}
 									else {
-										P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, AmmoType.itemName ) );
+										if ( W == none ) {
+											P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
+										}
 									}
 								}
 							}
 							// Vanilla Matters: Report empty weapons so the player gets the proper feedback.
 							else {
-								P.ClientMessage( Sprintf( VM_msgNoAmmo, item.itemName ) );
+								if ( tempW.AmmoName != none && tempW.AmmoName != class'AmmoNone' ) {
+									P.ClientMessage( Sprintf( VM_msgNoAmmo, item.itemName ) );
+								}
+								else {
+									if ( W != none ) {
+										P.ClientMessage( Sprintf( Player.CanCarryOnlyOne, item.itemName ) );
+									}
+									else {
+										P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
+									}
+								}
+							}
+
+							// Vanilla Matters: Get rid of the grenade weapon if its ammo's been looted.
+							if ( ( tempW != none && tempW.VM_isGrenade && tempW.PickUpAmmoCount <= 0 ) || ( W != none && ( bPickedItemUp || tempW.AmmoName == none || tempW.AmmoName == class'AmmoNone' ) ) ) {
+								DeleteInventory( item );
+								item.Destroy();
+
+								item = none;
 							}
 
 							// Print a message "Cannot pickup blah blah blah" if inventory is full
@@ -510,27 +598,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 							// than he already has. 
 
 							// Vanilla Matters: If the player can't pick it up on their second try, they're to grab the corpse instead.
-							if ( ( W == None && !player.FindInventorySlot( item, true ) ) || ( W != none && Weapon( item ).AmmoType.AmmoAmount <= 0 ) ) {
-								if ( VM_bSearchedOnce ) {
-									if ( nextItem == None ) {
-										spawnPOVCorpse( Frobber, frobWith, true );
+							if ( !bPickedItemUp && VM_bSearchedOnce && nextItem == none ) {
+								SpawnPOVCorpse( Frobber, frobWith, true );
 
-										return;
-									}
-								}
-								else  {
-									P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
-								}
-							}
-
-							// Vanilla Matters: Allow the player to pick it up again at another time.
-							
-							// Vanilla Matters: Get rid of the grenade weapon if its ammo's been looted.
-							if ( isGrenade && Weapon( item ).PickUpAmmoCount <= 0 ) {
-								DeleteInventory( item );
-								item.Destroy();
-
-								item = none;
+								return;
 							}
 
 							bPickedItemUp = True;
@@ -581,7 +652,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 									}
 									else if ( VM_bSearchedOnce ) {
 										if ( nextItem == None && !bHeldAlready ) {
-											spawnPOVCorpse( Frobber, frobWith, true );
+											SpawnPOVCorpse( Frobber, frobWith, true );
 
 											return;
 										}
@@ -692,7 +763,6 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
 		}
 
 		corpse = Spawn( class'POVCorpse' );
-
 		if (corpse != None) {
 			corpse.carcClassString = String( Class );
 			corpse.KillerAlliance = KillerAlliance;
@@ -849,11 +919,11 @@ auto state Dead
 	function Timer()
 	{
 		// overrides goddamned lifespan crap
-      // DEUS_EX AMSD In multiplayer, we want corpses to have lifespans.  
-      if (Level.NetMode == NM_Standalone)		
-         Global.Timer();
-      else
-         Super.Timer();
+		// DEUS_EX AMSD In multiplayer, we want corpses to have lifespans.  
+		if (Level.NetMode == NM_Standalone)		
+			Global.Timer();
+		else
+			Super.Timer();
 	}
 
 	function HandleLanding()
@@ -869,14 +939,14 @@ auto state Dead
 			{
 				EndTrace = Location - vect(0,0,320);
 				hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
-            if ((DeusExMPGame(Level.Game) != None) && (!DeusExMPGame(Level.Game).bSpawnEffects))
-            {
-               pool = None;
-            }
-            else
-            {
-               pool = spawn(class'BloodPool',,, HitLocation+HitNormal, Rotator(HitNormal));
-            }
+				if ((DeusExMPGame(Level.Game) != None) && (!DeusExMPGame(Level.Game).bSpawnEffects))
+				{
+					pool = None;
+				}
+				else
+				{
+					pool = spawn(class'BloodPool',,, HitLocation+HitNormal, Rotator(HitNormal));
+				}
 				if (pool != None)
 					pool.maxDrawScale = CollisionRadius / 40.0;
 			}
@@ -917,7 +987,8 @@ defaultproperties
      msgAnimalCarcass="Animal Carcass"
      msgCannotPickup="You cannot pickup the %s"
      msgRecharged="Recharged %d points"
-     ItemName="Dead Body"
+     ItemName="Dead"
+     VM_msgDrowned="Drowned"
      VM_msgNoAmmo="You don't find anything useful from the %s"
      RemoteRole=ROLE_SimulatedProxy
      LifeSpan=0.000000

@@ -164,6 +164,9 @@ function CreatePanSlider()
 
 function CreateCameraViewWindows()
 {
+	// Vanilla Matters
+	local int i, j;
+
 	winCameras[0] = ComputerSecurityCameraWindow(winClient.NewChild(Class'ComputerSecurityCameraWindow'));
 	winCameras[0].SetPos(1, 175);
 	winCameras[0].SetViewIndex(0);
@@ -175,6 +178,13 @@ function CreateCameraViewWindows()
 	winCameras[2] = ComputerSecurityCameraWindow(winClient.NewChild(Class'ComputerSecurityCameraWindow'));
 	winCameras[2].SetPos(415, 175);
 	winCameras[2].SetViewIndex(2);
+
+	// Vanilla Matters: Register the cameras with the choice buttons so we know which we're controlling currently.
+	for ( i = 0; i < 4; i++ ) {
+		for( j = 0; j < 3; j++ ) {
+			choiceWindows[i].VM_cameras[j] = winCameras[j];
+		}
+	}
 }
 
 // ----------------------------------------------------------------------

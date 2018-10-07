@@ -28,32 +28,35 @@ replication
 
 // Vanilla Matters: Override to add in colored hands skin.
 simulated function RenderOverlays( Canvas canvas ) {
+	local bool changed;
 	local int i;
 	local DeusExPlayer player;
 
-	if ( VM_handsTex == none ) {
-		player = DeusExPlayer( Owner );
-		if ( player != none ) {
-			VM_handsTex = player.GetHandsSkin();
-		}
-	}
-
 	if ( Mesh == PlayerViewMesh ) {
+		if ( VM_handsTex == none ) {
+			player = DeusExPlayer( Owner );
+			if ( player != none ) {
+				VM_handsTex = player.GetHandsSkin();
+			}
+		}
+
 		for ( i = 0; i < 2; i++ ) {
 			if ( VM_handsTexPos[i] >= 0 ) {
 				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
+				changed = true;
 			}
 		}
 	}
-	else {
+
+	super.RenderOverlays( canvas );
+
+	if ( changed ) {
 		for ( i = 0; i < 2; i++ ) {
 			if ( VM_handsTexPos[i] >= 0 ) {
 				MultiSkins[VM_handsTexPos[i]] = none;
 			}
 		}
 	}
-
-	super.RenderOverlays( canvas );
 }
 
 // ----------------------------------------------------------------------
@@ -235,6 +238,19 @@ auto state Pickup
 		if (bBreakable)
 			if (VSize(Velocity) > 400)
 				BreakItSmashIt(fragType, (CollisionRadius + CollisionHeight) / 2);
+	}
+
+	// Vanilla Matters: Reset hand skins.
+	function BeginState() {
+		local int i;
+		
+		for ( i = 0; i < 2; i++ ) {
+			if ( VM_handsTexPos[i] >= 0 ) {
+				MultiSkins[VM_handsTexPos[i]] = none;
+			}
+		}
+
+		Super.BeginState();
 	}
 }
 

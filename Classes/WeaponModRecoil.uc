@@ -41,7 +41,7 @@ defaultproperties
      ItemName="Weapon Modification (Recoil)"
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponModRecoil'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponModRecoil'
-     Description="A stock cushioned with polycellular shock absorbing material will significantly reduce perceived recoil."
+     Description="A stock cushioned with polycellular shock absorbing material will significantly reduce perceived recoil.|n-10% recoil."
      beltDescription="MOD RECOL"
      Skin=Texture'DeusExItems.Skins.WeaponModTex5'
 }

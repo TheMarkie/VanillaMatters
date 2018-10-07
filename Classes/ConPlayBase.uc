@@ -656,10 +656,8 @@ log("  event.toActor    = " $ event.toActor );
 			if ( AmmoType != None )
 			{
 				// Special case for Grenades and LAMs.  Blah.
-				if ((AmmoType.IsA('AmmoEMPGrenade')) || 
-				    (AmmoType.IsA('AmmoGasGrenade')) || 
-					(AmmoType.IsA('AmmoNanoVirusGrenade')) ||
-					(AmmoType.IsA('AmmoLAM')))
+				// Vanilla Matters: We now have a grenade flag.
+				if ( DeusExAmmo( AmmoType ).VM_isGrenade )
 				{
 					if (!AmmoType.AddAmmo(event.TransferCount))
 					{

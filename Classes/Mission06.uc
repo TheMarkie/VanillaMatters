@@ -694,8 +694,8 @@ function TeleportPawn(ScriptedPawn pawn, name patrolTag, name orders, optional b
 
 defaultproperties
 {
-     VM_miguelReward=100
+     VM_miguelReward=150
      VM_miguelRewardMsg="You helped Miguel to safety"
-     VM_ksReward=150
+     VM_ksReward=200
      VM_ksRewardMsg="You deactivated the kill switch"
 }

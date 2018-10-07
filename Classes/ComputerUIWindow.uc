@@ -73,6 +73,9 @@ var localized string ButtonLabelCancel;
 var localized string ButtonLabelSpecial;
 var localized string ComputerNodeFunctionLabel;
 
+// Vanilla Matters
+var() float VM_timeCost;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //

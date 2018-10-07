@@ -13,7 +13,11 @@ var bool bShowInfo;
 var int MPMaxAmmo; //Max Ammo in multiplayer.
 
 // Vanilla Matters
-var() float	VM_IgnitesOnHit; 	// Set enemies on fire. Used for Flare Darts, which only set objects on fire. -1.0 to disable, 0.0 to enable at Untrained, 1.0 = Trained,...
+var() bool VM_isGrenade;
+
+var() float	VM_IgnitesOnHit; 	// Set enemies on fire. -1.0 to disable, 0.0 to enable at Untrained, 1.0 = Trained,...
+
+var localized string VM_msgFromWeapon;
 
 // ----------------------------------------------------------------------
 // PostBeginPlay()
@@ -73,6 +77,7 @@ defaultproperties
 {
      msgInfoRounds="%d Rounds remaining"
      VM_IgnitesOnHit=-1.000000
+     VM_msgFromWeapon="from the"
      bDisplayableInv=False
      PickupMessage="You found"
      ItemName="DEFAULT AMMO NAME - REPORT THIS AS A BUG"

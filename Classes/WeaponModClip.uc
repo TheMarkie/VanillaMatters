@@ -47,7 +47,7 @@ defaultproperties
      ItemName="Weapon Modification (Clip)"
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponModClip'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponModClip'
-     Description="An extended magazine that increases clip capacity beyond the factory default."
+     Description="An extended magazine that increases clip capacity beyond the factory default.|n+ 10% clip capacity."
      beltDescription="MOD CLIP"
      Skin=Texture'DeusExItems.Skins.WeaponModTex3'
 }

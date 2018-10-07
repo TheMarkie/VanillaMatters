@@ -160,11 +160,8 @@ function UpdateItemText()
 				itemText = weapon.AmmoType.beltDescription;
 
 			// If this is a grenade
-			if (weapon.IsA('WeaponNanoVirusGrenade') || 
-				weapon.IsA('WeaponGasGrenade') || 
-				weapon.IsA('WeaponEMPGrenade') ||
-				weapon.IsA('WeaponLAM'))
-			{
+			// Vanilla Matters: We now have a grenade flag.
+			if ( weapon.VM_isGrenade ) {
 				if (weapon.AmmoType.AmmoAmount > 1)
 					itemText = CountLabel @ weapon.AmmoType.AmmoAmount;
 			}

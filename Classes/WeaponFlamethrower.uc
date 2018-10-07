@@ -51,7 +51,6 @@ defaultproperties
      mpAccurateRange=320
      mpMaxRange=320
      mpReloadCount=100
-     bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      VM_SpreadHorWithShotCount=1.000000
      VM_handsTexPos(0)=0

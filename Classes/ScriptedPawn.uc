@@ -422,6 +422,8 @@ var float VM_damageToReactTo;		// The damage that will be used in GotoDisabledSt
 
 var float VM_stunDuration;			// Time being stunned.
 
+var float VM_test;
+
 native(2102) final function ConBindEvents();
 
 native(2105) final function bool IsValidEnemy(Pawn TestEnemy, optional bool bCheckAlliance);
@@ -1072,7 +1074,9 @@ function ReactToProjectiles(Actor projectileActor)
 			if (instigator != None)
 			{
 				// Vanilla Matters: Rewrite to add special rules.
-				if ( AICanSee( instigator, ComputeActorVisibility( instigator ), true, true, true, true ) > 0 ) {
+				if ( AICanSee( instigator, ComputeActorVisibility( instigator ), true, true, true, true ) > 0 
+					|| VSize( instigator.Location - Location ) <= 160 
+					|| SeekPawn == instigator ) {
 					if ( bFearProjectiles ) {
 						IncreaseFear( instigator, 2.0 );
 					}
@@ -1111,8 +1115,11 @@ function ReactToProjectiles(Actor projectileActor)
 						SetSeekLocation( instigator, loc, SEEKTYPE_Guess );
 						
 						currentState = GetStateName();
-						if ( currentState != 'Fleeing' || currentState != 'Alerting' ) {
+						if ( currentState != 'Fleeing' && currentState != 'Alerting' ) {
 							SetNextState( 'HandlingEnemy' );
+						}
+						else {
+							SetNextState( currentState );
 						}
 					}
 				}
@@ -1699,8 +1706,9 @@ function StartPoison(int Damage, Pawn newPoisoner)
 	if ((Health <= 0) || bDeleteMe)  // no more pain -- you're already dead!
 		return;
 
-	poisonCounter = 8;    // take damage no more than eight times (over 16 seconds)
-	poisonTimer   = 0;    // reset pain timer
+	// Vanilla Matters: Make poison stack.
+	poisonCounter = poisonCounter + 8;
+
 	Poisoner      = newPoisoner;
 	if (poisonDamage < Damage)  // set damage amount
 		poisonDamage = Damage;
@@ -1750,7 +1758,7 @@ function UpdateActorVisibility( actor seeActor, float deltaTime, float checkTime
 	if ( CheckPeriod >= checkTime ) {
 		CheckPeriod = CheckPeriod - checkTime;
 		if (seeActor != None) {
-			bCanSee = ( AICanSee( seeActor, ComputeActorVisibility( seeActor ), true, checkDir, true, true ) > 0);
+			bCanSee = ( AICanSee( seeActor, ComputeActorVisibility( seeActor ), false, checkDir, true, true ) > 0);
 		}
 		else {
 			bCanSee = false;
@@ -1786,19 +1794,18 @@ function float ComputeActorVisibility(actor seeActor)
 	player = DeusExPlayer( seeActor );
 	if ( player != none ) {
 		pvis = player.CalculatePlayerVisibility( self );
+		mult = 1;
 
 		if ( ( ( SeekPawn == player && bSeekPostCombat ) || Enemy == player ) && pvis > 0 ) {
-			pvis = FMax( pvis, pvis + 0.05 + ( VisibilityThreshold * player.CombatDifficulty ) );
+			mult = mult - player.CombatDifficulty;
 		}
 
-		mult = ( ( FMin( VSize( seeActor.Location - Location ), 160 ) / 160 ) * 4 ) - 3;
+		mult = mult + 1.5 - ( player.CombatDifficulty / 2 );
 
-		mult = mult - ( player.CombatDifficulty / 2 ) + 0.75;
-
-		visibility = FMax( pvis - ( VisibilityThreshold * mult ), 0 ) * 10;
+		visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 80, 0, 3 );
 	}
 	else {
-		visibility = 1.0;
+		visibility = 5.0;
 	}
 
 	return visibility;
@@ -1845,38 +1852,29 @@ function UpdateReactionLevel(bool bRise, float deltaSeconds)
 
 // Vanilla Matters
 function Pawn CheckCycle() {
-	local float attackPeriod, maxAttackPeriod, sustainPeriod, decayPeriod, min;
 	local Pawn cycleEnemy;
 	local DeusExPlayer player;
-
-	attackPeriod    = 0.5;
-	maxAttackPeriod = 4.5;
-	sustainPeriod   = 3.0;
-	decayPeriod     = 4.0;
-
-	min = 0.1;
 
 	cycleEnemy = None;
 
 	if ( CycleCumulative <= 0 ) {
 		CycleTimer = FMax( CycleTimer - CyclePeriod, 0 );
 		if ( CycleTimer <= 0 ) {
-			EnemyReadiness = EnemyReadiness - ( CyclePeriod / decayPeriod );
+			EnemyReadiness = EnemyReadiness - ( CyclePeriod / 4 );
 		}
 	}
 	else {
-		CycleTimer = sustainPeriod;
-		CycleCumulative = FClamp( CycleCumulative, min, 1.0 );
+		CycleTimer = 3;
 
 		player = DeusExPlayer( CycleCandidate );
 		if ( player != none ) {
-			CycleCumulative = CycleCumulative * player.CombatDifficulty;
+			CycleCumulative = CycleCumulative * ( player.CombatDifficulty + 1 );
 		}
 		else {
 			CycleCumulative = CycleCumulative * 2;
 		}
 
-		EnemyReadiness = FMax( EnemyReadiness, 0 ) + ( CycleCumulative * ( CyclePeriod / attackPeriod ) );
+		EnemyReadiness = FMax( EnemyReadiness, 0 ) + ( CycleCumulative * ( CyclePeriod / 0.5 ) );
 
 		if ( EnemyReadiness >= 1.0 ) {
 			EnemyReadiness = 1.0;
@@ -1905,11 +1903,11 @@ function Pawn CheckCycle() {
 
 // Vanilla Matters: Rewrite to improve stealth.
 function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkOther ) {
-	local int i, checked;
+	local int i, lastCycle;
 	local float visibility, actorVis, dist, minDist;
 	local Pawn candidate;
 	local Pawn cycleEnemy;
-	local bool canSee, valid, isPlayer, validEnemy, potentialEnemy, check;
+	local bool canSee, valid, isPlayer, validEnemy, potentialEnemy, check, proxyEnemy;
 
 	valid  = false;
 	canSee = false;
@@ -1929,22 +1927,34 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 
 		if ( check ) {
 			valid = true;
-			CyclePeriod = deltaTime;
-			checked = 0;
+			CyclePeriod = CyclePeriod + deltaTime;
+			lastCycle = CycleIndex;
+			foreach CycleActors( class'Pawn', candidate, CycleIndex ) {
+				dist = VSize( candidate.Location - Location );
+				if ( dist > 2400 || candidate == CycleCandidate ) {
+					continue;
+				}
 
-			foreach RadiusActors( class'Pawn', candidate, 3200 ) {
 				validEnemy = IsValidEnemy( candidate );
-				if ( !validEnemy && PotentialEnemyTimer > 0 && PotentialEnemyAlliance == candidate.Alliance ) {
-					potentialEnemy = true;
+				proxyEnemy = false;
+				if ( !validEnemy ) {
+					if ( PotentialEnemyTimer > 0 && PotentialEnemyAlliance == candidate.Alliance ) {
+						potentialEnemy = true;
+					}
+					else if ( candidate.Enemy != none && IsValidEnemy( candidate.Enemy ) && AICanSee( candidate, 5.0, false, true, true, true ) > 0 ) {
+						candidate = candidate.Enemy;
+						validEnemy = true;
+						proxyEnemy = true;
+					}
 				}
 				
 				if ( validEnemy || potentialEnemy ) {
 					isPlayer = ( DeusExPlayer( candidate ) != none );
 					if ( ( isPlayer && checkPlayer ) || ( !isPlayer && checkOther ) ) {
 						visibility = AICanSee( candidate, ComputeActorVisibility( candidate ), true, true, true, true );
-						if ( visibility > 0 ) {
+						if ( visibility > 0 || proxyEnemy ) {
 							if ( potentialEnemy ) {
-								IncreaseAgitation( candidate, visibility );
+								IncreaseAgitation( candidate, visibility + VisibilityThreshold );
 
 								PotentialEnemyAlliance = '';
 								PotentialEnemyTimer = 0;
@@ -1952,8 +1962,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 								validEnemy = IsValidEnemy( candidate );
 							}
 
-							if ( validEnemy) {
-								dist = VSize( candidate.Location - Location );
+							if ( validEnemy ) {
 								if ( CycleCandidate == none || minDist < dist || minDist <= 0 ) {
 									CycleCandidate = candidate;
 									minDist = dist;
@@ -1963,19 +1972,18 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 							}
 						}
 					}
-				}
 
-				checked = checked + 1;
-				if ( checked > 15 ) {
 					break;
 				}
 			}
 
-			cycleEnemy = CheckCycle();
-			if ( cycleEnemy != None ) {
-				SetDistressTimer();
-				SetEnemy( cycleEnemy, 0, true );
-				canSee = true;
+			if ( lastCycle >= CycleIndex ) {
+				cycleEnemy = CheckCycle();
+				if ( cycleEnemy != None ) {
+					SetDistressTimer();
+					SetEnemy( cycleEnemy, 0, true );
+					canSee = true;
+				}
 			}
 		}
 		else {
@@ -1983,7 +1991,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 		}
 	}
 
-	UpdateReactionLevel( EnemyReadiness > SightPercentage || GetStateName() == 'Seeking' || bDistressed, deltaTime );
+	UpdateReactionLevel( EnemyReadiness >= ( VisibilityThreshold * 15 ) || GetStateName() == 'Seeking' || bDistressed, deltaTime );
 
 	if ( !valid ) {
 		CycleCumulative = 0;
@@ -2540,7 +2548,9 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 		bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
 		// Vanilla Matters: Rewrite to add special rules.
-		if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+		if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 
+			|| VSize( instigatedBy.Location - Location ) <= 160 
+			|| SeekPawn == instigatedBy ) {
 			if ( bHateThisInjury ) {
 				IncreaseAgitation( instigatedBy );
 			}
@@ -2579,8 +2589,11 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 				loc.y = loc.y + ( FRand() * 160 ) - 80;
 				SetSeekLocation( instigatedBy, loc, SEEKTYPE_Guess );
 				
-				if ( currentState != 'Fleeing' || currentState != 'Alerting' ) {
+				if ( currentState != 'Fleeing' && currentState != 'Alerting' ) {
 					SetNextState( 'HandlingEnemy' );
+				}
+				else {
+					SetNextState( currentState );
 				}
 			}
 		}
@@ -2866,20 +2879,26 @@ function Carcass SpawnCarcass()
 			w = DeusExWeapon( item );
 
 			// VM: Also add a 80% chance to destroy a combat knife if present on the pawn.
-			if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) || ( w.IsA( 'WeaponCombatKnife' ) && FRand() > 0.2 ) ) {
+			if ( ( w != none && w.bNativeAttack ) || Ammo( item ) != none || ( WeaponCombatKnife( w ) != none && FRand() > 0.2 ) ) {
 				item.Destroy();
 			}
 			else {
-				if ( w.IsA( 'WeaponGasGrenade' ) || w.IsA( 'WeaponLAM' ) || w.IsA( 'WeaponEMPGrenade' ) || w.IsA( 'WeaponNanoVirusGrenade' ) ) {
+				if ( w.VM_isGrenade ) {
 					w.PickupAmmoCount = 1;
 				}
 				else if ( w != none && Level.NetMode == NM_Standalone ) {
-					w.PickupAmmoCount = Rand( 4 ) + 1;
+					// Vanilla Matters: Make the count scale with the weapon's default amount.
+					if ( W.default.PickUpAmmoCount > 10 ) {
+						W.PickupAmmoCount = FMax( FClamp( FRand(), 0.2, 0.4 ) * W.default.PickUpAmmoCount, 4 );
+					}
+					else {
+						W.PickUpAmmoCount = Rand( W.default.PickUpAmmoCount / 2 ) + 2;
+					}
 				}
 
 				loc = Location;
-				loc.x = loc.x + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );
-				loc.y = loc.y + ( FRand() * CollisionRadius * 2 ) - ( FRand() * CollisionRadius * 2 );
+				loc.x = loc.x + ( FRand() * CollisionRadius * 4 ) - ( FRand() * CollisionRadius * 4 );
+				loc.y = loc.y + ( FRand() * CollisionRadius * 4 ) - ( FRand() * CollisionRadius * 4 );
 
 				item.DropFrom( loc );
 			}
@@ -2918,10 +2937,9 @@ function Carcass SpawnCarcass()
 					item = Inventory;
 					nextItem = item.Inventory;
 					DeleteInventory(item);
-					//if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
 					// Vanilla Matters: Add a 80% chance to destroy a combat knife if present on the pawn.
 					w = DeusExWeapon( item );
-					if ( ( w != none && w.bNativeAttack ) || item.IsA( 'Ammo' ) || ( w.IsA( 'WeaponCombatKnife' ) && FRand() > 0.2 ) )
+					if ( ( w != none && w.bNativeAttack ) || Ammo( item ) != none || ( WeaponCombatKnife( w ) != none && FRand() > 0.2 ) )
 						item.Destroy();
 					else
 						carc.AddInventory(item);
@@ -2976,13 +2994,14 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 
 	// Vanilla Matters: Fix the bug where stunned enemies can't receive point-blank damage bonus from behind.
 	// VM: Stunned enemies can't receive damage bonus from damage types that stun, to prevent damage stacking.
-	if ( bStunned && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' ) {
+	// VM: Restrict bonus to prod stunned state only.
+	if ( IsInState( 'Stunned' ) && damageType != 'Stunned' ) {
 		actualDamage = actualDamage * 4;
 	}
 	
 	if ( offset.x < 0 ) {
-		// VM: Boost the range from 64 to 80 to make baton/melee knockouts more reliable.
-		if ( ( instigatedBy != None ) && ( VSize( instigatedBy.Location - Location ) < 80 ) ) {
+		// Vanilla Matters: Boost the range from 64 to 80 to make baton/melee knockouts more reliable.
+		if ( instigatedBy != none && VSize( instigatedBy.Location - Location ) <= 80 ) {
 			actualDamage = actualDamage * 10;
 		}
 	}
@@ -3154,8 +3173,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else  // sides of head treated as torso
 			{
-				//HealthTorso -= actualDamage * 2;
-
 				// Vanilla Matters: Make the torso receive only exactly the expected amount.
 				HealthTorso = HealthTorso - actualDamage;
 
@@ -3169,8 +3186,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 		{
 			if (offset.y > 0.0)
 			{
-				//HealthLegRight -= actualDamage * 2;
-
 				// Vanilla Matters: Make the legs receive only exactly the expected amount.
 				HealthLegRight = HealthLegRight - actualDamage;
 
@@ -3181,8 +3196,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else
 			{
-				//HealthLegLeft -= actualDamage * 2;
-
 				// Vanilla Matters: Make the legs receive only exactly the expected amount.
 				HealthLegLeft = HealthLegLeft - actualDamage;
 
@@ -3219,8 +3232,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 		{
 			if (offset.y > armOffset)
 			{
-				//HealthArmRight -= actualDamage * 2;
-
 				// Vanilla Matters: Make the arms receive only exactly the expected amount.
 				HealthArmRight = HealthArmRight - actualDamage;
 
@@ -3231,8 +3242,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else if (offset.y < -armOffset)
 			{
-				//HealthArmLeft -= actualDamage * 2;
-
 				// Vanilla Matters: Make the arms receive only exactly the expected amount.
 				HealthArmLeft = HealthArmLeft - actualDamage;
 
@@ -3243,8 +3252,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 			}
 			else
 			{
-				//HealthTorso -= actualDamage * 2;
-
 				// Vanilla Matters: Make the torso receive only exactly the expected amount.
 				HealthTorso = HealthTorso - actualDamage;
 
@@ -3402,8 +3409,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	}
 
 	// play a hit sound
-	if (DamageType != 'Stunned')
-		PlayTakeHitSound(actualDamage, damageType, 1);
+
+	// Vanilla Matters: When you're being stunned, and hit by more tear gas, make a hit sound only when you're near the end of the current duration.
+	if ( damageType != 'Stunned' && ( damageType != 'TearGas' || VM_stunDuration <= 1 ) ) {
+		PlayTakeHitSound( actualDamage, damageType, 1 );
+	}
 
 	// Vanilla Matters: Burning duration now depends on the initial damage.
 	if ( DamageType == 'Flamed' ) {
@@ -3598,24 +3608,23 @@ function bool FrobDoor(actor Target)
 // GotoDisabledState()
 // ----------------------------------------------------------------------
 
-function GotoDisabledState(name damageType, EHitLocation hitPos)
-{
-	// Vanilla Matters: Use damage taken as a basis for stun durations.
+// Vanilla Matters: Rewrite to use damage taken as a basis for stun durations.
+function GotoDisabledState( name damageType, EHitLocation hitPos ) {
 	if ( !bCollideActors && !bBlockActors && !bBlockPlayers ) {
 		return;
 	}
-	else if ( damageType == 'TearGas' || damageType == 'HalonGas' ) {
-		VM_stunDuration = VM_damageToReactTo;
-
-		if ( !IsInState( 'RubbingEyes' ) ) {
-			GotoState( 'RubbingEyes' );
+	else if ( damageType == 'TearGas' || damageType == 'HalonGas' || damageType == 'Stunned' ) {
+		if ( VM_stunDuration <= 0.5 || damageType == 'Stunned' ) {
+			VM_stunDuration = FMax( VM_damageToReactTo, VM_stunDuration );
 		}
-	}
-	else if ( damageType == 'Stunned' ) {
-		VM_stunDuration = VM_damageToReactTo;
 
-		if ( !IsInState( 'Stunned' ) ) {
-			GotoState( 'Stunned' );
+		if ( damageType == 'Stunned' ) {
+			if ( !IsInState( 'Stunned' ) ) {
+				GotoState( 'Stunned' );
+			}
+		}
+		else if ( !IsInState( 'RubbingEyes' ) ) {
+			GotoState( 'RubbingEyes' );
 		}
 	}
 	else if ( CanShowPain() ) {
@@ -5531,6 +5540,8 @@ function HandleHacking(Name event, EAIEventState state, XAIParams params)
 
 	local Pawn pawnActor;
 
+	log( self @ bHateHacking @ bFearHacking );
+
 	if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
 	{
 		pawnActor = GetPlayerPawn();
@@ -5573,23 +5584,23 @@ function HandleWeapon(Name event, EAIEventState state, XAIParams params)
 		pawnActor = InstigatorToPawn(params.bestActor);
 		if (pawnActor != None)
 		{
-			if (bHateWeapon)
-				IncreaseAgitation(pawnActor);
-			if (bFearWeapon)
-				IncreaseFear(pawnActor, 1.0);
+			// Vanilla Matters: Rewrite to tweak stuff.
+			if ( bHateWeapon ) {
+				IncreaseAgitation( pawnActor, 1.0 );
+			}
+			if ( bFearWeapon ) {
+				IncreaseFear( pawnActor, 1.0 );
+			}
 
-			// Let presence checking handle enemy sighting
-
-			if (!IsValidEnemy(pawnActor))
-			{
-				if (bFearWeapon && IsFearful())
-				{
+			if ( !IsValidEnemy( pawnActor ) ) {
+				if ( bFearWeapon && IsFearful() ) {
 					SetDistressTimer();
-					SetEnemy(pawnActor, , true);
-					GotoState('Fleeing');
+					SetEnemy( pawnActor,, true );
+					GotoState( 'Fleeing' );
 				}
-				else if (pawnActor.bIsPlayer)
+				else if ( pawnActor.bIsPlayer ) {
 					ReactToFutz();
+				}
 			}
 		}
 	}
@@ -5796,6 +5807,7 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 	local bool         bFleeing;
 
 	// Vanilla Matters
+	local bool distressorSeen;
 	local vector loc;
 
 	bAttacking = false;
@@ -5845,7 +5857,15 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 				if (bDistressorValid)
 				{
 					// Vanilla Matters: Rewrite to add special rules.
-					if ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 ) {
+					if ( distressor != none ) {
+						distressorSeen = ( ( distresseePawn != none && distressee.AICanSee( distressor, distresseePawn.ComputeActorVisibility( distressor ), true, true, true, true ) > 0 ) || distresseePlayer != none );
+					}
+					else if ( distresseePawn != none ) {
+						distressor = distresseePawn.SeekPawn;
+						distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 || ( SeekPawn != none && SeekPawn == distressor ) );
+					}
+
+					if ( distressorSeen ) {
 						if ( bHateDistress ) {
 							IncreaseAgitation( distressor, 1.0 );
 						}
@@ -5869,7 +5889,12 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 						loc.x = loc.x + ( FRand() * 160 ) - 80;
 						loc.y = loc.y + ( FRand() * 160 ) - 80;
 						SetSeekLocation( distressor, loc, SEEKTYPE_Guess );
-						HandleEnemy();
+						if ( GetStateName() != 'Seeking' ) {
+							HandleEnemy();
+						}
+						else {
+							GotoState( 'Seeking', 'GoToLocation' );
+						}
 					}
 				}
 				// BOOGER! Make NPCs react by seeking if distressor isn't an enemy?
@@ -6911,26 +6936,45 @@ function bool ShouldStrafe()
 // ShouldFlee()
 // ----------------------------------------------------------------------
 
-function bool ShouldFlee()
-{
-	// This may be overridden from subclasses
-	if (MinHealth > 0)
-	{
-		if (Health <= MinHealth)
+// Vanilla Matters: Rewrite to tweak stuff.
+function bool ShouldFlee() {
+	local int fearFactor;
+
+	if ( MinHealth > 0 ) {
+		if ( Health <= MinHealth ) {
 			return true;
-		else if (HealthArmLeft <= 0)
+		}
+
+		if ( HealthHead <= 30 ) {
+			fearFactor = fearFactor + 3;
+		}
+		if ( HealthTorso <= 30 ) {
+			fearFactor = fearFactor + 3;
+		}
+
+		if ( HealthArmLeft <= 20 ) {
+			fearFactor = fearFactor + 1;
+		}
+		if ( HealthArmRight <= 20 ) {
+			fearFactor = fearFactor + 1;
+		}
+		if ( HealthLegLeft <= 20 ) {
+			fearFactor = fearFactor + 1;
+		}
+		if ( HealthLegRight <= 20 ) {
+			fearFactor = fearFactor + 1;
+		}
+
+		if ( Enemy != none && Enemy.Health >= 60 ) {
+			fearFactor = fearFactor + 1;
+		}
+
+		if ( fearFactor >= 3 ) {
 			return true;
-		else if (HealthArmRight <= 0)
-			return true;
-		else if (HealthLegLeft <= 0)
-			return true;
-		else if (HealthLegRight <= 0)
-			return true;
-		else
-			return false;
+		}
 	}
-	else
-		return false;
+	
+	return false;
 }
 
 
@@ -7436,18 +7480,21 @@ function Tick(float deltaTime)
 
 	player = DeusExPlayer(GetPlayerPawn());
 
-	// Vanilla Matters: Rewrite to tweak values and make it less confusing.
+	// Vanilla Matters: Rewrite to weak stuff.
+	bDoLowPriority = true;
+	bCheckPlayer = true;
+	bCheckOther = true;
 	if ( bTickVisibleOnly ) {
-		if ( DistanceFromPlayer <= 1200 ) {
-			bDoLowPriority = true;
+		if ( DistanceFromPlayer > 1200 ) {
+			bDoLowPriority = false;
 		}
 
-		if ( DistanceFromPlayer <= 2400 ) {
-			bCheckPlayer = true;
+		if ( DistanceFromPlayer > 2400 ) {
+			bCheckPlayer = false;
 		}
 
-		if ( DistanceFromPlayer <= 600 || LastRendered() < 5.0 ) {
-			bCheckOther = true;
+		if ( DistanceFromPlayer > 600 && LastRendered() >= 5.0 ) {
+			bCheckOther = false;
 		}
 	}
 
@@ -10848,7 +10895,7 @@ FindAnotherPlace:
 
 DoneSeek:
 	// Vanilla Matters: If we're poisoned, try seeking more.
-	if ( poisonCounter > 0 ) {
+	if ( poisonCounter > 0 && !HasNextState() ) {
 		SetSeekLocation( SeekPawn, Location, SEEKTYPE_Guess );
 		Goto( 'GoToLocation' );
 	}

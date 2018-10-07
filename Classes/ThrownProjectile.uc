@@ -344,7 +344,6 @@ function SpawnTearGas()
 			gas.Velocity = vect(0,0,0);
 			gas.Acceleration = vect(0,0,0);
 			gas.DrawScale = FRand() * 0.5 + 2.0;
-			//gas.LifeSpan = FRand() * 10 + 30;
 			if ( Level.NetMode != NM_Standalone )
 				gas.bFloating = False;
 			else

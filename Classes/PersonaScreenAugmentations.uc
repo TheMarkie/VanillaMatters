@@ -824,7 +824,9 @@ function EndDragMode() {
 }
 
 function RefreshAugBar() {
-	VM_augBar.PopulateBar();
+	if ( VM_augBar != none ) {
+		VM_augBar.PopulateBar();
+	}
 }
 
 // Vanilla Matters: Select the appropriate aug when player clicks on a slot on the aug bar.

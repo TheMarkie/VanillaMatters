@@ -758,15 +758,8 @@ function DrawMiscStatusMessages( GC gc )
 	weap = DeusExWeapon(Player.inHand);
 	if (( weap != None ) && ( weap.AmmoLeftInClip() == 0 ) && (weap.NumClips() == 0) )
 	{
-		if ( weap.IsA('WeaponLAM') ||
-			  weap.IsA('WeaponGasGrenade') || 
-			  weap.IsA('WeaponEMPGrenade') ||
-			  weap.IsA('WeaponShuriken') ||
-			  weap.IsA('WeaponLAW') )
-		{
-		}
-		else
-		{
+		// Vanilla Matters: We now have a grenade flag.
+		if ( !weap.VM_isGrenade ) {
 			if ( Player.Level.Timeseconds < OutOfAmmoTime )
 			{
 				gc.SetFont(Font'FontMenuTitle');
@@ -1250,19 +1243,8 @@ function DrawTargetAugmentation(GC gc)
 					gc.DrawText( x, y, w, h, str );
 				}
 			}
-			else
-			{
-				// display disabled robots
-				if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
-				{
-					str = msgDisabled;
-					gc.SetTextColor(crossColor);
-					gc.GetTextExtent(0, w, h, str);
-					x = boxCX - w/2;
-					y = boxTLY - h - margin;
-					gc.DrawText(x, y, w, h, str);
-				}
-			}
+
+			// Vanilla Matters: We display disabled robot state in frob display window instead.
 		}
 	}
 	else if ((bTargetActive) && (Player.Level.NetMode == NM_Standalone))

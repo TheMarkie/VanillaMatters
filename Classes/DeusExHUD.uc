@@ -161,6 +161,9 @@ function ConfigurationChanged()
 	local float recWidth, recHeight, recPosY;
 	local float logTop;
 
+	// Vanilla Matters
+	local float lightWidth, lightHeight, offsetX, t;
+
 	if (ammo != None)
 	{
 		if (ammo.IsVisible())
@@ -214,10 +217,11 @@ function ConfigurationChanged()
 		infoBottom = height;
 	}
 
-	// Vanilla Matters: Light indicator is on the bottom middle of the screen, next to the belt.
+	// Vanilla Matters: Light indicator is somewhere on the bottom of the screen.
 	if ( VM_light != none ) {
-		VM_light.QueryPreferredSize( beltWidth, beltHeight );
-		VM_light.ConfigureChild( ( width - beltWidth ) / 2, height - beltHeight, beltWidth, beltHeight );
+		VM_light.QueryPreferredSize( lightWidth, lightHeight );
+
+		VM_light.ConfigureChild( FMin( ( width / 2 ) - ( lightWidth / 2 ), width - beltWidth - lightWidth - 20 ), height - lightHeight, lightWidth, lightHeight );
 	}
 
 	// Damage display
@@ -228,7 +232,9 @@ function ConfigurationChanged()
 	{
 		// Doesn't check to see if it might bump into the Hit Display 
 		damageDisplay.QueryPreferredSize(damageWidth, damageHeight);
-		damageDisplay.ConfigureChild(0, hitHeight + compassHeight + 4, damageWidth, damageHeight);
+
+		// Vanilla Matters: Move the damage display a bit to the right.
+		damageDisplay.ConfigureChild( 4, hitHeight + compassHeight + 4, damageWidth, damageHeight );
 	}
 
 	// Active Items, includes Augmentations and various charged Items

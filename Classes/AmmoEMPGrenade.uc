@@ -14,4 +14,5 @@ defaultproperties
      CollisionRadius=22.500000
      CollisionHeight=16.000000
      bCollideActors=True
+     VM_isGrenade=True
 }

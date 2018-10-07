@@ -512,18 +512,24 @@ function Bump(actor Other)
 				if (player.AugmentationSystem != None)
 				{
 					augLevel = player.AugmentationSystem.GetClassLevel(class'AugMuscle');
-					if (augLevel >= 0)
-						augMult = augLevel+2;
-					maxPush *= augMult;
+
+					// Vanilla Matters: Makes bonus from augmuscle bigger.
+					if ( augLevel >= 0 ) {
+						augMult = augLevel + 2.5;
+						maxPush = maxPush * ( augLevel + 2 );
+					}
 				}
 			}
 
 			if (Mass <= maxPush)
 			{
 				// slow it down based on how heavy it is and what level my augmentation is
-				velscale = FClamp((50.0 * augMult) / Mass, 0.0, 1.0);
-				if (velscale < 0.25)
+
+				// Vanilla Matters: Tweak the formula to promote augmuscle.
+				velscale = FClamp( ( 50 * augMult ) / ( Mass * 2 ), 0, 1.0 );
+				if ( velscale <= 0.25 ) {
 					velscale = 0;
+				}
 
 				// apply more velocity than normal if we're floating
 				if (bFloating)

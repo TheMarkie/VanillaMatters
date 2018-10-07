@@ -25,7 +25,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=2.000000
-     HitDamage=50
+     HitDamage=25
      maxRange=24000
      AccurateRange=14400
      BaseAccuracy=0.600000
@@ -43,7 +43,6 @@ defaultproperties
      mpReloadCount=12
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
-     bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
      VM_ShotCount(0)=3

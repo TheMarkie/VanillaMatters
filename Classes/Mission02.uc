@@ -120,13 +120,6 @@ function PreTravel()
 	}
 	else if (localURL == "02_NYC_UNDERGROUND")
 	{
-		// if you leave the level with Ford Schick, set a flag
-		// if (flags.GetBool('MS_FordFollowing') &&
-		// 	!flags.GetBool('FordSchick_Dead'))
-		// {
-		// 	flags.SetBool('FordSchickRescued', True,, 9);
-		// }
-
 		// Vanilla Matters: Check for conditions that would qualify a rescue.
 		if ( !flags.GetBool( 'FordSchick_Dead' ) ) {
 			if ( flags.GetBool( 'FordSchickRescued' ) ) {
@@ -202,25 +195,6 @@ function Timer()
 		if (!flags.GetBool('BatteryParkSlaughter'))
 		{
 			count = 0;
-
-			// // count the number of living terrorists
-			// foreach AllActors(class'Terrorist', T, 'ClintonTerrorist')
-			// 	count++;
-
-			// // count the number of unconscious terrorists
-			// foreach AllActors(class'TerroristCarcass', carc, 'ClintonTerrorist')
-			// 	if (carc.itemName == "Unconscious")
-			// 		count++;
-
-			// // there are 5 total, player must have killed 2 or more, so
-			// // check to see if there are fewer than 3 still alive or unconscious
-			// if (count <= 3)
-			// {
-			// 	foreach AllActors(class'UNATCOTroop', guard, 'ClintonGuard')
-			// 		guard.SetOrders('Wandering', '', True);
-
-			// 	flags.SetBool('BatteryParkSlaughter', True,, 6);
-			// }
 
 			// Vanilla Matters: Fix the slaughter flag being true even if the player does nothing.
 			n = 0;

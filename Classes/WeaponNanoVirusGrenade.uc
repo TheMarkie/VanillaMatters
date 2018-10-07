@@ -49,6 +49,7 @@ defaultproperties
      bUseAsDrawnWeapon=False
      AITimeLimit=3.500000
      AIFireDelay=5.000000
+     VM_isGrenade=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.AmmoNanoVirusGrenade'

@@ -198,7 +198,6 @@ Begin:
 		FinishAnim();
 		bOn = True;
 		bAnimating = False;
-		ChangePlayerVisibility(False);
 		TryInvoke();
 	}
 }
@@ -213,7 +212,6 @@ Begin:
 	if (bOn)
 	{
 		AdditionalDeactivation(curFrobber);
-		ChangePlayerVisibility(True);
 		bAnimating = True;
 		PlayAnim('Deactivate');
 		FinishAnim();

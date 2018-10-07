@@ -9,20 +9,8 @@ var float mpEnergyDrain;
 state Active
 {
 Begin:
-	// Player.RunSilentValue = Player.AugmentationSystem.GetAugLevelValue(class'AugStealth');
-	// if ( Player.RunSilentValue == -1.0 )
-	// 	Player.RunSilentValue = 1.0;
-
      // Vanilla Matters: No idea why they would call GetAugLevelValue here.
      Player.RunSilentValue = LevelValues[CurrentLevel];
-}
-
-function Deactivate()
-{
-	// Player.RunSilentValue = 1.0;
-	// Super.Deactivate();
-
-     // Vanilla Matters: It can't be deactivated because it's always on.
 }
 
 simulated function PreBeginPlay()
@@ -43,10 +31,10 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconRunSilent_Small'
      bAlwaysActive=True
      AugmentationName="Run Silent"
-     Description="The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.|n|nTECH ONE: Movement is 25% quieter.|n- Falling damage reduced by 5 points.|n|nTECH TWO: Movement is 50% quieter.|n- Falling damage reduced by 10 points.|n|nTECH THREE: Movement is 75% quieter.|n- Falling damage reduced by 15 points.|n|nTECH FOUR: An agent is completely silent.|n- Falling damage reduced by 20 points."
-     LevelValues(0)=0.750000
-     LevelValues(1)=0.500000
-     LevelValues(2)=0.250000
+     Description="The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.|n|nTECH ONE: Movement is 15% quieter.|n- Falling damage reduced by 8 points.|n|nTECH TWO: Movement is 30% quieter.|n- Falling damage reduced by 12 points.|n|nTECH THREE: Movement is 60% quieter.|n- Falling damage reduced by 16 points.|n|nTECH FOUR: An agent is completely silent.|n- Falling damage reduced by 20 points."
+     LevelValues(0)=0.850000
+     LevelValues(1)=0.700000
+     LevelValues(2)=0.400000
      AugmentationLocation=LOC_Leg
      MPConflictSlot=8
 }

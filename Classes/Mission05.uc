@@ -18,6 +18,9 @@ function FirstFrame()
 	local SpawnPoint SP;
 	local AnnaNavarre Anna;
 
+	// Vanilla Matters
+	local DeusExWeapon w;
+
 	Super.FirstFrame();
 
 	if (localURL == "05_NYC_UNATCOMJ12LAB")
@@ -61,43 +64,50 @@ function FirstFrame()
 			Player.HealthArmRight =  Max(50, Player.HealthArmRight);
 			Player.GenerateTotalHealth();
 
-			if (Player.Inventory != None)
-			{
-				item      = Player.Inventory;
-				nextItem  = None;
+			// Vanilla Matters: Rewrite to get rid of ammo too.
+			if ( Player.Inventory != none ) {
+				item = Player.Inventory;
+				nextItem = none;
 
-				foreach AllActors(class'SpawnPoint', SP, 'player_inv')
-				{
-					// Find the next item we can process.
-					while((item != None) && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv)))
-						item = item.Inventory;
+				foreach AllActors( class'SpawnPoint', SP, 'player_inv' ) {
+					while( item != none && ( item.IsA( 'NanoKeyRing' ) || !item.bDisplayableInv ) ) {
+						if ( Ammo( item ) != none ) {
+							nextItem = item.Inventory;
 
-					if (item != None)
-					{
+							Player.DeleteInventory( item );
+							item.Destroy();
+
+							item = nextItem;
+						}
+						else {
+							item = item.Inventory;
+						}
+					}
+
+					if ( item != none ) {
 						nextItem = item.Inventory;
 
 						// Vanilla Matters: Fix a bug where grenades would have their count reset to 1.
-						if ( Weapon( item ) != None && Weapon( item ).AmmoType != None ) {
-							if ( Weapon( item ).AmmoName != class'AmmoNone' && Weapon( item ).AmmoType.PickupViewMesh == Mesh'TestBox' && !DeusExWeapon( item ).bInstantHit ) {
-								Weapon( item ).PickupAmmoCount = Weapon( item ).AmmoType.AmmoAmount;
+						w = DeusExWeapon( item );
+						if ( w != None && w.AmmoType != None ) {
+							if ( w.AmmoName != class'AmmoNone' && w.AmmoType.PickupViewMesh == Mesh'TestBox' && !w.bInstantHit ) {
+								w.PickupAmmoCount = w.AmmoType.AmmoAmount;
 							}
 							else {
-								Weapon( item ).PickupAmmoCount = Weapon( item ).Default.PickupAmmoCount;
+								w.PickupAmmoCount = w.default.PickupAmmoCount;
 							}
 						}
 
-						Player.DeleteInventory(item);
-						item.DropFrom(SP.Location);
-
-						// restore any ammo amounts for a weapon to default
-						// if (item.IsA('Weapon') && (Weapon(item).AmmoType != None))
-						// 	Weapon(item).PickupAmmoCount = Weapon(item).Default.PickupAmmoCount;
+						Player.DeleteInventory( item );
+						item.DropFrom( SP.Location );
 					}
 					
-					if (nextItem == None)
-						break;	
-					else
+					if ( nextItem == none ) {
+						break;
+					}
+					else {
 						item = nextItem;
+					}
 				}
 			}
 			

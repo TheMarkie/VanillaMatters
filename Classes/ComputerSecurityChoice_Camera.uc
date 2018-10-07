@@ -57,12 +57,7 @@ function bool ButtonActivated( Window buttonPressed )
 	securityWindow.ToggleCameraState();
 
 	// Vanilla Matters: Make each camera toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -77,12 +72,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	securityWindow.ToggleCameraState();
 
 	// Vanilla Matters: Make each camera toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -95,4 +85,5 @@ defaultproperties
      enumText(0)="On"
      enumText(1)="Off"
      actionText="|&Camera Status"
+     VM_timeCost=5.000000
 }

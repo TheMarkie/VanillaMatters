@@ -109,26 +109,39 @@ function CreateOptionButtons()
 	local int numOptions;
 	local MenuUIChoiceButton winButton;
 
+	// Vanilla Matters
+	local Computers comp;
+	local string str;
+
 	// Figure out how many special options we have
 
+	// Vanilla Matters: Rewrite because messy.
+	comp = Computers( compOwner );
 	numOptions = 0;
-	for (specialIndex=0; specialIndex<ArrayCount(Computers(compOwner).specialOptions); specialIndex++)
-	{
-		if ((Computers(compOwner).specialOptions[specialIndex].userName == "") || (Caps(Computers(compOwner).specialOptions[specialIndex].userName) == winTerm.GetUserName()))
-		{
-			if (Computers(compOwner).specialOptions[specialIndex].Text != "")
-			{
-				// Create the button
-				winButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
-				winButton.SetPos(buttonLeftMargin, firstButtonPosY + (numOptions * MiddleTextureHeight));
-				winButton.SetButtonText(Computers(compOwner).specialOptions[specialIndex].Text);
-				winButton.SetSensitivity(!Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered);
-				winButton.SetWidth(273);
+	for ( specialIndex=0; specialIndex < ArrayCount( comp.specialOptions ); specialIndex++ ) {
+		if ( comp.specialOptions[specialIndex].userName == "" || Caps( comp.specialOptions[specialIndex].userName ) == winTerm.GetUserName() ) {
+			if ( comp.specialOptions[specialIndex].Text != "" ) {
+				winButton = MenuUIChoiceButton( winClient.NewChild( class'MenuUIChoiceButton' ) );
+				winButton.SetPos( buttonLeftMargin, firstButtonPosY + ( numOptions * MiddleTextureHeight ) );
+				winButton.SetSensitivity( !comp.specialOptions[specialIndex].bAlreadyTriggered );
+				winButton.SetWidth( 273 );
+
+				// VM: Add the time cost after the button label.
+				str = comp.specialOptions[specialIndex].Text;
+				if ( winTerm.bHacked ) {
+					if ( VM_timeCost == int( VM_timeCost ) ) {
+						str = str @ "(" $ int( VM_timeCost ) $ ")";
+					}
+					else {
+						str = str @ "(" $ class'DeusExWeapon'.static.FormatFloatString( VM_timeCost, 0.1 ) $ ")";
+					}
+				}
+				winButton.SetButtonText( str );
 
 				optionButtons[numOptions].specialIndex = specialIndex;
-				optionButtons[numOptions].btnSpecial   = winButton;
+				optionButtons[numOptions].btnSpecial = winButton;
 
-				numOptions++;				
+				numOptions = numOptions + 1;				
 			}
 		}
 	}
@@ -237,10 +250,24 @@ function ActivateSpecialOption(MenuUIChoiceButton buttonPressed)
 			winSpecialInfo.SetText(Computers(compOwner).specialOptions[specialIndex].TriggerText);
 
 			// Vanilla Matters: Special options should cost something, not sure if that's appropriate.
-			if ( winTerm.bHacked ) {
-				if ( !VM_bHackedAlready ) {
-					winTerm.winHack.AddTimeCost( 7.5 );
-					VM_bHackedAlready = true;
+			HandleTimeCost();
+		}
+	}
+}
+
+function HandleTimeCost() {
+	local int i;
+	local Computers comp;
+
+	if ( winTerm.bHacked ) {
+		if ( !VM_bHackedAlready ) {
+			winTerm.winHack.AddTimeCost( VM_timeCost );
+			VM_bHackedAlready = true;
+
+			comp = Computers( compOwner );
+			for ( i = 0; i < ArrayCount( optionButtons ); i++ ) {
+				if ( optionButtons[i].btnSpecial != none ) {
+					optionButtons[i].btnSpecial.SetButtonText( comp.specialOptions[optionButtons[i].specialIndex].Text );
 				}
 			}
 		}
@@ -261,6 +288,7 @@ defaultproperties
      BottomTextureHeight=75
      SecurityButtonLabel="|&Security"
      EmailButtonLabel="|&Email"
+     VM_timeCost=7.500000
      classClient=Class'DeusEx.ComputerUIScaleClientWindow'
      escapeAction="LOGOUT"
      Title="Special Options"

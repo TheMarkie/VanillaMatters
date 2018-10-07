@@ -59,7 +59,6 @@ defaultproperties
      mpAccurateRange=14400
      mpMaxRange=14400
      mpReloadCount=1
-     bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      AmmoName=Class'DeusEx.AmmoRocket'
      ReloadCount=1

@@ -209,7 +209,7 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 
 // Vanilla Matters: Try autosaving at the start of every mission map, exclude tutorial, intro and endgame.
 function Tick( float deltaTime ) {
-	if ( player != none && !player.VM_autosaved && player.dataLinkPlay == none ) {
+	if ( player != none && !player.VM_autosaved && player.dataLinkPlay == none && !player.IsInState( 'Conversation' ) ) {
 		VM_autosaveDelay = VM_autosaveDelay - deltaTime;
 		if ( VM_autosaveDelay <= 0 && Mission00( self ) == none && MissionIntro( self ) == none && MissionEndgame( self ) == none ) {
 			player.AutoSave();

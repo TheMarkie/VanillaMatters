@@ -375,6 +375,10 @@ var travel int VM_currentQSIndex;
 var travel int VM_currentASIndex;
 
 var bool VM_autosaved;							// Check if we've done autosaving this level.
+var bool VM_autosaving;
+var float VM_autosaveTimer;
+var float VM_lastASTime;
+const VM_autosaveDelay = 180;
 
 var travel ForwardPressure FPSystem;			// Forward Pressure system.
 
@@ -397,6 +401,8 @@ var() float VM_flinchDecay;						// Penalty decay rate.
 var byte VM_cpStatus[5];
 var byte VM_cpStatusSet[5];
 
+var localized string VM_msgFullHealth;
+var localized string VM_msgFullEnergy;
 var localized String VM_msgTakeHold;
 var localized String VM_msgTakeHoldInstead;
 var localized String VM_msgTakeHoldCharged;
@@ -845,6 +851,10 @@ event TravelPostAccept()
 			FPSystem.SetOwner( self );
 		}
 	}
+	else {
+		// Vanilla Matters: Trigger an auto save.
+		VM_autosaved = false;
+	}
 
 	// VM: Always set this back to false in case the player saves while it's true.
 	VM_mapTravel = false;
@@ -852,6 +862,33 @@ event TravelPostAccept()
 	// Vanilla Matters: Apply cheating status.
 	if ( Level.NetMode == NM_Standalone ) {
 		bCheatsEnabled = VM_bCheatsEnabled;
+	}
+}
+
+// Vanilla Matters: We handle updating our own stuff here.
+function VMTick( float deltaTime ) {
+	UpdateCPStatus();
+
+	// Vanilla Matters: Decay flinch penalty.
+	ProcessFlinch( deltaTime );
+
+	// Vanilla Matters: Build forward pressure as you move.
+	if ( FPSystem != none && !IsInState( 'Conversation' ) ) {
+		FPSystem.BuildForwardPressure( deltaTime );
+	}
+
+	if ( VM_autosaving ) {
+		if ( dataLinkPlay == none && !IsInState( 'Conversation' ) ) {
+			VM_autosaveTimer = VM_autosaveTimer - deltaTime;
+			if ( VM_autosaveTimer <= 0 ) {
+				VM_autosaving = false;
+				VM_autosaveTimer = 0;
+
+				if ( ( VM_lastASTime + VM_autosaveDelay ) <= Level.TimeSeconds ) {
+					AutoSave();
+				}
+			}
+		}
 	}
 }
 
@@ -1083,7 +1120,6 @@ function AutoSave() {
 	local DeusExLevelInfo info;
 
 	info = GetLevelInfo();
-
 	if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) ) || Level.NetMode != NM_Standalone || VM_bEnableFP ) {
 		return;
 	}
@@ -1097,6 +1133,7 @@ function AutoSave() {
 	}
 
 	VM_autosaved = true;
+	VM_lastASTime = Level.TimeSeconds;
 
 	SaveGame( VM_currentASIndex, "Auto Save -" @ info.MissionLocation );
 }
@@ -1877,11 +1914,6 @@ simulated function RefreshSystems(float DeltaTime)
 
 }
 
-// Vanilla Matters: We handle updating our custom info here once every player tick, to optimize performance.
-function RefreshStatus() {
-	UpdateCPStatus();
-}
-
 function RepairInventory()
 {
    local byte				LocalInvSlots[30];		// 5x6 grid of inventory slots
@@ -2018,8 +2050,9 @@ function StartPoison( Pawn poisoner, int Damage )
 	if (InConversation())  // kinda hacky...
 		return;
 
-	poisonCounter = 4;    // take damage no more than four times (over 8 seconds)
-	poisonTimer   = 0;    // reset pain timer
+	// Vanilla Matters: Make poison stack.
+	poisonCounter = poisonCounter + 4;
+
 	if (poisonDamage < Damage)  // set damage amount
 		poisonDamage = Damage;
 
@@ -3097,21 +3130,26 @@ function Landed(vector HitNormal)
 						augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
 
 						if ( augLevel >= 0 ) {
-							augReduce = 5 * ( augLevel + 1 );
+							augReduce = 4 + ( 4 * ( augLevel + 1 ) );
 						}
 					}
 				}
 
-				dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
-				legLocation = Location + vect(-1,0,-1);			// damage left leg
-				TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+				// Vanilla Matters: Don't actually take any damage if it's fully reduced.
+				dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+				if ( dmg > 0 ) {
+					legLocation = Location + vect( -1, 0, -1 );
+					TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
 
-				legLocation = Location + vect(1,0,-1);			// damage right leg
-				TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+					legLocation = Location + vect( 1, 0, -1 );
+					TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+				}
 
-				dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
-				legLocation = Location + vect(0,0,1);			// damage torso
-				TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+				dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+				if ( dmg > 0 ) {
+					legLocation = Location + vect( 0, 0, 1 );
+					TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+				}
             }
 	}
 	else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
@@ -3966,8 +4004,8 @@ state PlayerWalking
 
 	event PlayerTick(float deltaTime)
 	{
-		// Vanilla Matters: Update our info first.
-		RefreshStatus();
+		// Vanilla Matters: Update our stuff first.
+		VMTick( deltaTime );
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4005,14 +4043,6 @@ state PlayerWalking
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
 
-		// Vanilla Matters: Decay flinch penalty.
-		ProcessFlinch( deltaTime );
-
-		// Vanilla Matters: Build forward pressure as you move.
-		if ( FPSystem != none ) {
-			FPSystem.BuildForwardPressure( deltaTime );
-		}
-
 		Super.PlayerTick(deltaTime);
 	}
 }
@@ -4034,8 +4064,8 @@ state PlayerFlying
 
 	event PlayerTick(float deltaTime)
 	{
-		// Vanilla Matters: Update our info first.
-		RefreshStatus();
+		// Vanilla Matters: Update our stuff first.
+		VMTick( deltaTime );
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4058,14 +4088,6 @@ state PlayerFlying
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
-
-		// Vanilla Matters: Decay flinch penalty.
-		ProcessFlinch( deltaTime );
-
-		// Vanilla Matters: Build forward pressure as you move.
-		if ( FPSystem != none ) {
-			FPSystem.BuildForwardPressure( deltaTime );
-		}
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -4142,8 +4164,8 @@ state PlayerSwimming
 	{
 		local vector loc;
 
-		// Vanilla Matters: Update our info first.
-		RefreshStatus();
+		// Vanilla Matters: Update our stuff first.
+		VMTick( deltaTime );
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4205,14 +4227,6 @@ state PlayerSwimming
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
-
-		// Vanilla Matters: Decay flinch penalty.
-		ProcessFlinch( deltaTime );
-
-		// Vanilla Matters: Build forward pressure as you move.
-		if ( FPSystem != none ) {
-			FPSystem.BuildForwardPressure( deltaTime );
-		}
 
 		Super.PlayerTick(deltaTime);
 	}
@@ -4757,6 +4771,18 @@ exec function ParseLeftClick()
 				}
 			}
 			else {
+				// Vanilla Matters: Prevent using these consumables if we're at full something.
+				if ( MedKit( inHand ) != none && Health >= default.Health ) {
+					ClientMessage( VM_msgFullHealth );
+
+					return;
+				}
+				else if ( BioelectricCell( inHand ) != none && Energy >= EnergyMax ) {
+					ClientMessage( VM_msgFullEnergy );
+
+					return;
+				}
+
 				inHand.Activate();
 			}
 		}
@@ -4888,6 +4914,12 @@ exec function ParseRightClick()
 	local Decoration oldCarriedDecoration;
 	local Vector loc;
 
+	// Vanilla Matters
+	local bool needsKey;
+	local Inventory item;
+	local DeusExMover m;
+	local HackableDevices h;
+
 	if (RestrictInput())
 		return;
 
@@ -4913,6 +4945,10 @@ exec function ParseRightClick()
 		// First check if this is a NanoKey, in which case we just
 		// want to add it to the NanoKeyRing without disrupting
 		// what the player is holding
+
+		// Vanilla Matters
+		m = DeusExMover( FrobTarget );
+		h = HackableDevices( FrobTarget );
 
 		if (FrobTarget.IsA('NanoKey'))
 		{
@@ -4973,6 +5009,43 @@ exec function ParseRightClick()
 		else if (FrobTarget.IsA('Decoration') && Decoration(FrobTarget).bPushable)
 		{
 			GrabDecoration();
+		}
+		// Vanilla Matters: If we frob a locked mover, bring up the lockpick, if it can't be picked, then bring up the keyring if it's unlockable that way.
+		else if ( inHand == none && m != none && m.bHighlight && m.bLocked && ( ( m.bPickable && m.lockStrength > 0 ) || m.KeyIDNeeded != '' ) ) {
+			needsKey = ( m.KeyIDNeeded != '' && !m.bPickable );
+
+			item = Inventory;
+			while ( item != none ) {
+				if ( needsKey ) {
+					if ( NanoKeyRing( item ) != none ) {
+						PutInHand( item );
+
+						break;
+					}
+				}
+				else {
+					if ( Lockpick( item ) != none ) {
+						PutInHand( item );
+
+						break;
+					}
+				}
+
+				item = item.Inventory;
+			}
+		}
+		// Vanilla Matters: Do the same for multitool-able devices, but not keypads.
+		else if ( inHand == none && h != none && h.bHighlight && Keypad( FrobTarget ) == none && h.hackStrength > 0 && h.bHackable ) {
+			item = Inventory;
+			while ( item != none ) {
+				if ( Multitool( item ) != none ) {
+					PutInHand( item );
+
+					break;
+				}
+
+				item = item.Inventory;
+			}
 		}
 		else
 		{
@@ -5057,6 +5130,10 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 	local bool bCanPickup;
 	local bool bSlotSearchNeeded;
 	local Inventory foundItem;
+	
+	// Vanilla Matters
+	local Ammo a;
+	local DeusExWeapon w;
 
 	bSlotSearchNeeded = True;
 	bCanPickup = True;
@@ -5092,56 +5169,44 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 		{
 			bSlotSearchNeeded = False;
 
-			// if this is an ammo, and we're full of it, abort the pickup
-			if (foundItem.IsA('Ammo'))
-			{
-				if (Ammo(foundItem).AmmoAmount >= Ammo(foundItem).MaxAmmo)
-				{
-					//ClientMessage(TooMuchAmmo);
+			w = DeusExWeapon( foundItem );
+			a = Ammo( foundItem );
 
+			// if this is an ammo, and we're full of it, abort the pickup
+			// Vanilla Matters: Rewrite all of this because it's messy!
+			if ( a != none ) {
+				if ( AmmoNone( a ) == none && a.AmmoAmount >= a.MaxAmmo ) {
 					// Vanilla Matters: Use a clearer message.
 					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
 
-					bCanPickup = False;
+					bCanPickup = false;
 				}
 			}
-
 			// If this is a grenade or LAM (what a pain in the ass) then also check
 			// to make sure we don't have too many grenades already
-			else if ((foundItem.IsA('WeaponEMPGrenade')) || 
-			    (foundItem.IsA('WeaponGasGrenade')) || 
-				(foundItem.IsA('WeaponNanoVirusGrenade')) || 
-				(foundItem.IsA('WeaponLAM')))
-			{
-				if (DeusExWeapon(foundItem).AmmoType.AmmoAmount >= DeusExWeapon(foundItem).AmmoType.MaxAmmo)
-				{
-					//ClientMessage(TooMuchAmmo);
-
-					// Vanilla Matters: Use a clearer message.
+			else if ( w != none && w.VM_isGrenade ) {
+				if ( w.AmmoType.AmmoAmount >= w.AmmoType.MaxAmmo) {
 					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
 
-					bCanPickup = False;
+					bCanPickup = false;
 				}
 			}
-
 			// Otherwise, if this is a single-use weapon, prevent the player
 			// from picking up
-			else if (foundItem.IsA('Weapon'))
-			{
+			else if ( w != none ) {
 				// If these fields are set as checked, then this is a 
 				// single use weapon, and if we already have one in our 
 				// inventory another cannot be picked up (puke). 
 
-				bCanPickup = ! ( (Weapon(foundItem).ReloadCount == 0) && 
-				                 (Weapon(foundItem).PickupAmmoCount == 0) && 
-				                 (Weapon(foundItem).AmmoName != None) );
+				bCanPickup = !( ( w.ReloadCount == 0 && w.PickupAmmoCount == 0 && w.AmmoName != none ) || ( w.AmmoName == none || w.AmmoName == class'AmmoNone' ) );
 
-				if (!bCanPickup)
-					ClientMessage(Sprintf(CanCarryOnlyOne, foundItem.itemName));
-				// Vanilla Matters: Fix the bug where you can pick up a weapon whose ammo you're full of.
+				if ( !bCanPickup ) {
+					ClientMessage( Sprintf( CanCarryOnlyOne, foundItem.itemName ) );
+				}
 				else {
-					if ( Weapon( foundItem ).AmmoType.AmmoAmount >= Weapon( foundItem ).AmmoType.MaxAmmo ) {
-						ClientMessage( Sprintf( VM_msgTooMuchAmmo, Weapon( foundItem ).AmmoType.itemName ) );
+					// Vanilla Matters: Fix the bug where you can pick up a weapon whose ammo you're full of.
+					if ( w.AmmoType != none && w.AmmoType.AmmoAmount >= w.AmmoType.MaxAmmo ) {
+						ClientMessage( Sprintf( VM_msgTooMuchAmmo, w.AmmoType.itemName ) );
 
 						bCanPickup = false;
 					}
@@ -8043,8 +8108,8 @@ ignores SeePlayer, HearNoise, Bump;
 		local rotator tempRot;
 		local float   yawDelta;
 
-		// Vanilla Matters: Update our info first.
-		RefreshStatus();
+		// Vanilla Matters: Update our stuff first.
+		VMTick( deltaTime );
 
 		UpdateInHand();
 		UpdateDynamicMusic(deltaTime);
@@ -8086,9 +8151,6 @@ ignores SeePlayer, HearNoise, Bump;
 
 		// Update Time Played
 		UpdateTimePlayed(deltaTime);
-
-		// Vanilla Matters: Decay flinch penalty.
-		ProcessFlinch( deltaTime );
 	}
 
 	function LoopHeadConvoAnim()
@@ -9246,6 +9308,10 @@ function GoalCompleted( Name goalName )
 			if ( FPSystem != none ) {
 				FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
 			}
+
+			// Vanilla Matters: Queue an autosave.
+			VM_autosaving = true;
+			VM_autosaveTimer = 1.0;
 		}
 	}
 }
@@ -10302,7 +10368,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 		if ( Level.NetMode != NM_Standalone )
 			ServerConditionalNotifyMsg( MPMSG_FirstBurn );
 
-		CatchFire( instigatedBy );
+		// Vanilla Matters: Burning damage now scales with initial damage.
+		CatchFire( instigatedBy, actualDamage );
 	}
 	myProjKiller = None;
 }
@@ -10489,33 +10556,32 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			newDamage *= augLevel;
 	}
 
-	if (newDamage < Damage)
-	{
-		if (!bCheckOnly)
-		{
-			pct = 1.0 - (newDamage / Float(Damage));
-			SetDamagePercent(pct);
-			ClientFlash(0.01, vect(0, 0, 50));
+	// Vanilla Matters: Rewrite to add more damage types. Also allow full damage resistance.
+	if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
+		newDamage = newDamage * CombatDifficulty;
+		Damage = Damage * CombatDifficulty;
+	}
+	// VM: Make environmental damage scale with difficulty, emphasizing utility resistances.
+	else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation' || damageType == 'PoisonGas' || damageType == 'PoisonEffect' ) {
+		newDamage = newDamage * ( ( CombatDifficulty / 2 ) + 0.5 );
+		Damage = Damage * ( ( CombatDifficulty / 2 ) + 0.5 );
+	}
+
+	// Vanilla Matters: Move this all the way to the bottom to be be most accurate.
+	if ( newDamage < Damage ) {
+		if ( !bCheckOnly ) {
+			pct = 1.0 - ( newDamage / Damage );
+
+			SetDamagePercent( pct );
+			ClientFlash( 0.01, vect( 0, 0, 50 ) );
 		}
-		bReduced = True;
+
+		bReduced = true;
 	}
-	else
-	{
-		if (!bCheckOnly)
-			SetDamagePercent(0.0);
-	}
-
-
-	//
-	// Reduce or increase the damage based on the combat difficulty setting
-	//
-	if ((damageType == 'Shot') || (damageType == 'AutoShot'))
-	{
-		newDamage *= CombatDifficulty;
-
-		// always take at least one point of damage
-		if ((newDamage <= 1) && (Damage > 0))
-			newDamage = 1;
+	else {
+		if ( !bCheckOnly ) {
+			SetDamagePercent( 0.0 );
+		}
 	}
 
 	adjustedDamage = Int(newDamage);
@@ -10615,22 +10681,30 @@ function ClientDeath()
 // continually burn and do damage
 // ----------------------------------------------------------------------
 
-function Timer()
-{
-	local int damage;
+// Vanilla Matters: Rewrite to tweak burn damage.
+function Timer() {
+	if ( !InConversation() && bOnFire ) {
+		UpdateFire();
+	}
+}
 
-	if (!InConversation() && bOnFire)
-	{
-		if ( Level.NetMode != NM_Standalone )
-			damage = Class'WeaponFlamethrower'.Default.mpBurnDamage;
-		else
-			damage = Class'WeaponFlamethrower'.Default.BurnDamage;
-		TakeDamage(damage, myBurner, Location, vect(0,0,0), 'Burned');
+// Vanilla Matters: Copied from ScriptedPawn to handle buring damage.
+function UpdateFire() {
+	HealthTorso = HealthTorso - 2;
+	HealthArmLeft = HealthArmLeft - 2;
+	HealthArmRight = HealthArmRight - 2;
+	HealthLegLeft = HealthLegLeft - 2;
+	HealthLegRight = HealthLegLeft - 2;
 
-		if (HealthTorso <= 0)
-		{
-			TakeDamage(10, myBurner, Location, vect(0,0,0), 'Burned');
-			ExtinguishFire();
+	GenerateTotalHealth();
+
+	burnTimer = burnTimer - 10;
+	
+	if ( Health <= 0 || burnTimer <= 0 ) {
+		ExtinguishFire();
+
+		if ( Health <= 0 ) {
+			TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
 		}
 	}
 }
@@ -10639,62 +10713,61 @@ function Timer()
 // CatchFire()
 // ----------------------------------------------------------------------
 
-function CatchFire( Pawn burner )
-{
+// Vanilla Matters: Rewrite to have burn damage depend on initial damage taken.
+function CatchFire( Pawn burner, float burnDamage ) {
 	local Fire f;
 	local int i;
 	local vector loc;
 
 	myBurner = burner;
 
-	burnTimer = 0;
+	burnTimer = burnTimer + ( burnDamage * 2 );
 
-   if (bOnFire || Region.Zone.bWaterZone)
+	if ( bOnFire || Region.Zone.bWaterZone ) {
 		return;
+	}
 
-	bOnFire = True;
-	burnTimer = 0;
+	bOnFire = true;
 
-	for (i=0; i<8; i++)
-	{
-		loc.X = 0.5*CollisionRadius * (1.0-2.0*FRand());
-		loc.Y = 0.5*CollisionRadius * (1.0-2.0*FRand());
-		loc.Z = 0.6*CollisionHeight * (1.0-2.0*FRand());
-		loc += Location;
+	for ( i = 0; i < 8; i++ ) {
+		loc.X = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
+		loc.Y = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
+		loc.Z = 0.6 * CollisionHeight * ( 1.0 - 2.0 * FRand() );
+		loc = loc + Location;
 
-      // DEUS_EX AMSD reduce the number of smoke particles in multiplayer
-      // by creating smokeless fire (better for server propagation).
-      if ((Level.NetMode == NM_Standalone) || (i <= 0))		
-         f = Spawn(class'Fire', Self,, loc);
-      else
-         f = Spawn(class'SmokelessFire', Self,, loc);
+		// DEUS_EX AMSD reduce the number of smoke particles in multiplayer
+		// by creating smokeless fire (better for server propagation).
+		if ( Level.NetMode == NM_Standalone || i <= 0 ) {		
+			f = Spawn( class'Fire', Self,, loc );
+		}
+		else {
+			f = Spawn( class'SmokelessFire', Self,, loc );
+		}
 
-		if (f != None)
-		{
-			f.DrawScale = 0.5*FRand() + 1.0;
+		if ( f != none ) {
+			f.DrawScale = 0.5 * FRand() + 1.0;
 
-         //DEUS_EX AMSD Reduce the penalty in multiplayer
-         if (Level.NetMode != NM_Standalone)
-            f.DrawScale = f.DrawScale * 0.5;
+			if ( Level.NetMode != NM_Standalone ) {
+				f.DrawScale = f.DrawScale * 0.5;
+			}
 
 			// turn off the sound and lights for all but the first one
-			if (i > 0)
-			{
+			if ( i > 0 ) {
 				f.AmbientSound = None;
 				f.LightType = LT_None;
 			}
 
 			// turn on/off extra fire and smoke
-         // MP already only generates a little.
-			if ((FRand() < 0.5) && (Level.NetMode == NM_Standalone))
+			// MP already only generates a little.
+			if ( FRand() < 0.5 && Level.NetMode == NM_Standalone ) {
 				f.smokeGen.Destroy();
-			if ((FRand() < 0.5) && (Level.NetMode == NM_Standalone))
 				f.AddFire();
+			}
 		}
 	}
 
 	// set the burn timer
-	SetTimer(1.0, True);
+	SetTimer( 1.0, true );
 }
 
 // ----------------------------------------------------------------------
@@ -13053,6 +13126,8 @@ defaultproperties
      VM_currentASIndex=-5
      VM_CurrentMaxShield=100.000000
      VM_flinchDecay=0.600000
+     VM_msgFullHealth="You already have full health"
+     VM_msgFullEnergy="You already have full energy"
      VM_msgTakeHold="You took hold of the %s"
      VM_msgTakeHoldInstead="You took hold of the %s instead"
      VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"

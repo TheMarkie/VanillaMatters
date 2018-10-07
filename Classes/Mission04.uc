@@ -326,6 +326,7 @@ function Timer()
 
 // Vanilla Matters: Fix a problem with Paul's raid-starting conversation being triggered inconsistently.
 function Tick( float deltaTime ) {
+	local int penalty, vital, limb;
 	local ScriptedPawn pawn;
 	local PaulDenton Paul;
 	local FlagTrigger ft;
@@ -359,6 +360,20 @@ function Tick( float deltaTime ) {
 				foreach AllActors( class'PaulDenton', Paul ) {
 					// VM: Only trigger the convo if within range.
 					if ( VSize( Paul.Location - Player.Location ) <= 70 ) {
+						// VM: Make Paul vulnerable.
+						Paul.bInvincible = false;
+
+						penalty = 50 * Player.CombatDifficulty;
+						vital = 450 - penalty;
+						limb = vital / 2;
+						Paul.HealthHead = vital;
+						Paul.HealthTorso = vital;
+						Paul.HealthArmLeft = limb;
+						Paul.HealthArmRight = limb;
+						Paul.HealthLegLeft = limb;
+						Paul.HealthLegRight = limb;
+						Paul.Health = vital;
+
 						Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
 					}
 
@@ -374,6 +389,6 @@ function Tick( float deltaTime ) {
 
 defaultproperties
 {
-     VM_raidReward=150
+     VM_raidReward=500
      VM_raidRewardMsg="You helped Paul to safety"
 }

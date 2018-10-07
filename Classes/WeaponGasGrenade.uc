@@ -88,6 +88,7 @@ defaultproperties
      mpBaseAccuracy=1.000000
      mpAccurateRange=2400
      mpMaxRange=2400
+     VM_isGrenade=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.AmmoGasGrenade'
@@ -107,7 +108,7 @@ defaultproperties
      largeIcon=Texture'DeusExUI.Icons.LargeIconGasGrenade'
      largeIconWidth=23
      largeIconHeight=46
-     Description="Upon detonation, the gas grenade releases a large amount of CS (a military-grade 'tear gas' agent) over its area of effect. CS will cause irritation to all exposed mucous membranes leading to temporary blindness and uncontrolled coughing. Like a LAM, gas grenades can be attached to any surface.|n|nLasts for a base duration of 15 seconds, affected by skill."
+     Description="Upon detonation, the gas grenade releases a large amount of CS (a military-grade 'tear gas' agent) over its area of effect. CS will cause irritation to all exposed mucous membranes leading to temporary blindness and uncontrolled coughing. Like a LAM, gas grenades can be attached to any surface."
      beltDescription="GAS GREN"
      Mesh=LodMesh'DeusExItems.GasGrenadePickup'
      CollisionRadius=2.300000

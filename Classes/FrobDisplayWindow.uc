@@ -26,6 +26,7 @@ var Color colBorder;
 var Color colText;
 
 // Vanilla Matters
+var localized string VM_msgDisabled;
 var localized String VM_msgDamageThreshold;
 
 // ----------------------------------------------------------------------
@@ -86,6 +87,7 @@ function DrawWindow(GC gc)
 
 	// Vanilla Matters
 	local float minDamageThreshold;
+	local Robot r;
 
 	if (player != None)
 	{
@@ -260,12 +262,12 @@ function DrawWindow(GC gc)
 					gc.SetStyle(DSTY_Translucent);
 					col = GetColorScaled(dxMover.lockStrength);
 					gc.SetTileColor(col);
-					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+(infoH-8)/3, barLength*dxMover.lockStrength, ((infoH-8)/3)-2, 0, 0, Texture'ConWindowBackground');
+					
 					// Vanilla Matters: Fix the position to account for the new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + ( ( infoH - 8 ) / 4 ), barLength * dxMover.lockStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
 					col = GetColorScaled(dxMover.doorStrength);
 					gc.SetTileColor(col);
-					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+2*(infoH-8)/3, barLength*dxMover.doorStrength, ((infoH-8)/3)-2, 0, 0, Texture'ConWindowBackground');
+
 					// Vanilla Matters: Fix the position to account for the new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 2 * ( ( infoH - 8 ) / 4 ), barLength * dxMover.doorStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
 
@@ -294,7 +296,7 @@ function DrawWindow(GC gc)
 						strInfo = numTools @ msgPick;
 					else
 						strInfo = numTools @ msgPicks;
-					//gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/3, barLength, ((infoH-8)/3)-2, strInfo);
+					
 					// Vanilla Matters: Relocate the text to accomodate a new bar.
 					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + 4 + ( infoH - 8 ) / 4, barLength, ( ( infoH - 8 ) / 4 ) - 1, strInfo);
 				}
@@ -348,7 +350,7 @@ function DrawWindow(GC gc)
 					gc.SetStyle(DSTY_Translucent);
 					col = GetColorScaled(device.hackStrength);
 					gc.SetTileColor(col);
-					//gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/2, barLength*device.hackStrength, infoH/2-6, 0, 0, Texture'ConWindowBackground');
+
 					// Vanilla Matters: Fix location to account for new line.
 					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + ( infoH / 3 ) - 1, barLength * device.hackStrength, ( infoH / 3 ) - 3, 0, 0, Texture'ConWindowBackground' );
 
@@ -377,7 +379,7 @@ function DrawWindow(GC gc)
 						strInfo = numTools @ msgTool;
 					else
 						strInfo = numTools @ msgTools;
-					//gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/2, barLength, infoH/2-6, strInfo);
+					
 					// Vanilla Matters: Relocate to accomodate a new bar.
 					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + ( infoH / 3 ), barLength, infoH / 2 - 4, strInfo);
 				}
@@ -385,8 +387,14 @@ function DrawWindow(GC gc)
 			else if (!frobTarget.bStatic && player.bObjectNames)
 			{
 				// TODO: Check familiar vs. unfamiliar flags
-				if (frobTarget.IsA('Pawn'))
-					strInfo = player.GetDisplayName(frobTarget);
+				// Vanilla Matters: Make disabled robots show up as disabled.
+				if ( Pawn( frobTarget ) != none ) {
+					strInfo = player.GetDisplayName( frobTarget );
+					r = Robot( frobTarget );
+					if ( r != none && r.EMPHitPoints <= 0 ) {
+						strInfo = strInfo @ "(" $ VM_msgDisabled $ ")";
+					}
+				}
 				else if (frobTarget.IsA('DeusExCarcass'))
 					strInfo = DeusExCarcass(frobTarget).itemName;
 				else if (frobTarget.IsA('Inventory'))
@@ -461,5 +469,6 @@ defaultproperties
      msgPicks="picks"
      msgTool="tool"
      msgTools="tools"
+     VM_msgDisabled="Disabled"
      VM_msgDamageThreshold="Min Dmg: "
 }

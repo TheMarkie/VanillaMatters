@@ -51,12 +51,7 @@ function bool ButtonActivated( Window buttonPressed )
 	securityWindow.TriggerDoor();
 
 	// Vanilla Matters: Make each door toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -71,12 +66,7 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	securityWindow.TriggerDoor();
 
 	// Vanilla Matters: Make each door toggle cost an amount of time.
-	if ( securityWindow.winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			securityWindow.winTerm.winHack.AddTimeCost( 5.0 );
-			VM_bHackedAlready = true;
-		}
-	}
+	HandleTimeCost();
 
 	return True;
 }
@@ -89,4 +79,5 @@ defaultproperties
      enumText(0)="Open"
      enumText(1)="Closed"
      actionText="|&Door Status"
+     VM_timeCost=5.000000
 }
