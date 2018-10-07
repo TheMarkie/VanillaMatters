@@ -82,8 +82,8 @@ function bool ButtonActivatedRight( Window buttonPressed )
 
 defaultproperties
 {
+     VM_timeCost=5.000000
      enumText(0)="On"
      enumText(1)="Off"
      actionText="|&Camera Status"
-     VM_timeCost=5.000000
 }

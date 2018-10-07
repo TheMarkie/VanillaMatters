@@ -5,6 +5,7 @@ class AmmoGasGrenade extends DeusExAmmo;
 
 defaultproperties
 {
+     VM_isGrenade=True
      AmmoAmount=1
      MaxAmmo=10
      PickupViewMesh=LodMesh'DeusExItems.TestBox'
@@ -14,5 +15,4 @@ defaultproperties
      CollisionRadius=22.500000
      CollisionHeight=16.000000
      bCollideActors=True
-     VM_isGrenade=True
 }

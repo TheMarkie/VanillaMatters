@@ -139,9 +139,9 @@ function SetCameraState(bool bWasActive)
 
 defaultproperties
 {
+     VM_timeCost=5.000000
      enumText(0)="Off"
      enumText(1)="Enemies"
      enumText(2)="Allies"
      actionText="|&Camera Status"
-     VM_timeCost=5.000000
 }

@@ -288,7 +288,6 @@ defaultproperties
      BottomTextureHeight=75
      SecurityButtonLabel="|&Security"
      EmailButtonLabel="|&Email"
-     VM_timeCost=7.500000
      classClient=Class'DeusEx.ComputerUIScaleClientWindow'
      escapeAction="LOGOUT"
      Title="Special Options"
@@ -302,4 +301,5 @@ defaultproperties
      textureCols=2
      bAlwaysCenter=True
      ComputerNodeFunctionLabel="SpecialOptions"
+     VM_timeCost=7.500000
 }

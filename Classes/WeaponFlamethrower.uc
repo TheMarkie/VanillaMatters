@@ -30,7 +30,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      burnTime=30
-     BurnDamage=5
+     burnDamage=5
      mpBurnTime=15
      mpBurnDamage=2
      LowAmmoWaterMark=50

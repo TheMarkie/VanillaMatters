@@ -76,8 +76,8 @@ function bool ButtonActivatedRight( Window buttonPressed )
 
 defaultproperties
 {
+     VM_timeCost=5.000000
      enumText(0)="Locked"
      enumText(1)="Unlocked"
      actionText="Door |&Access"
-     VM_timeCost=5.000000
 }
