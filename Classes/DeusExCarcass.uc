@@ -41,11 +41,11 @@ var() bool bInvincible;
 var bool bAnimalCarcass;
 
 // Vanilla Matters
-var string VM_familiarName;
+var travel string VM_name;
 
 var travel bool VM_bSearchedOnce;		// Has the player searched this body at least once?
 
-var float VM_drownTimer;				// Time we've been drowning if we're in the water.
+var travel float VM_drownTimer;				// Time we've been drowning if we're in the water.
 
 var localized string VM_msgDrowned;
 var localized String VM_msgNoAmmo;
@@ -58,9 +58,15 @@ function InitFor(Actor Other)
 {
 	// Vanilla Matters
 	local ScriptedPawn sp;
+	local DeusExPlayer player;
+
+	player = DeusExPlayer( GetPlayerPawn() );
 
 	if (Other != None)
 	{
+		// Vanilla Matters: Record the name in case we switch body state and need to redo the name string.
+		VM_name = player.GetDisplayName( Other );
+
 		// set as unconscious or add the pawns name to the description
 		if (!bAnimalCarcass)
 		{
@@ -70,11 +76,8 @@ function InitFor(Actor Other)
 			}
 			
 			// Vanilla Matters: Flip the order, we now display name first then concious state in brackets.
-			itemName = Other.FamiliarName @ "(" $ itemName $ ")";
+			itemName = VM_name @ "(" $ itemName $ ")";
 		}
-
-		// Vanilla Matters: Record the name in case we switch body state and need to redo the name string.
-		VM_familiarName = Other.FamiliarName;
 
 		Mass           = Other.Mass;
 		Buoyancy       = Mass * 1.2;
@@ -217,11 +220,11 @@ function Tick(float deltaSeconds)
 	if ( bNotDead ) {
 		if ( Region.Zone.bWaterZone ) {
 			VM_drownTimer = VM_drownTimer + deltaSeconds;
-			if ( VM_drownTimer >= 20 ) {
+			if ( VM_drownTimer >= 5 ) {
 				bNotDead = false;
 
 				if ( !bAnimalCarcass ) {
-					itemName = VM_familiarName @ "(" $ VM_msgDrowned $ ")";
+					itemName = VM_name @ "(" $ VM_msgDrowned $ ")";
 				}
 
 				if ( FRand() < 0.1 ) {
@@ -330,20 +333,18 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector mo
 			ChunkUp(Damage);
 		if (bDecorative)
 			Velocity = vect(0,0,0);
+	}
 
-		// Vanilla Matters: Make the carcase "die" if taken enough damage.
-		if ( bNotDead ) {
-			if ( CumulativeDamage >= 30 ) {
-				bNotDead = false;
+	// Vanilla Matters: Make the carcase "die" if taken enough damage.
+	if ( bNotDead ) {
+		bNotDead = false;
 
-				if ( !bAnimalCarcass ) {
-					itemName = VM_familiarName @ "(" $ default.itemName $ ")";
-				}
+		if ( !bAnimalCarcass ) {
+			itemName = VM_name @ "(" $ default.itemName $ ")";
+		}
 
-				if ( FRand() < 0.1 ) {
-					bGenerateFlies = true;
-				}
-			}
+		if ( FRand() < 0.1 ) {
+			bGenerateFlies = true;
 		}
 	}
 
@@ -774,6 +775,7 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
 			corpse.MaxDamage = MaxDamage;
 			corpse.CorpseItemName = itemName;
 			corpse.CarcassName = CarcassName;
+			corpse.VM_name = VM_name;
 
 			// Vanilla Matters: Save inventory information in case the frob ignores inventory.
 			item = Inventory;
@@ -816,12 +818,6 @@ function AddReceivedItem(DeusExPlayer player, Inventory item, int count)
 {
 	local DeusExWeapon w;
 	local Inventory altAmmo;
-
-	// if (!bSearchMsgPrinted)
-	// {
-	// 	player.ClientMessage(msgSearching);
-	// 	bSearchMsgPrinted = True;
-	// }
 
 	// Vanilla Matters: Omit the message because it's pretty useless anyhow.
 
@@ -902,12 +898,11 @@ function bool DeleteInventory( inventory Item )
 			break;
 		}
 	}
-   //Item.SetOwner(None);
 
-   // Vanilla Matters: Make sure we don't just set the ownership to None when it's not necessary.
-   if ( Item.Owner == self ) {
-   	Item.SetOwner( None );
-   }
+	// Vanilla Matters: Make sure we don't just set the ownership to None when it's not necessary.
+	if ( Item.Owner == self ) {
+		Item.SetOwner( None );
+	}
 }
 
 // ----------------------------------------------------------------------

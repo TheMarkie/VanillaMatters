@@ -4,9 +4,16 @@
 class WeaponAssaultGun extends DeusExWeapon;
 
 // Vanilla Matters: Import custom fire sound to accomodate 3-round burst.
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire.wav"		NAME="AssaultGunFire"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire1.wav"		NAME="AssaultGunFire1"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire2.wav"		NAME="AssaultGunFire2"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire3.wav"		NAME="AssaultGunFire3"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire4.wav"		NAME="AssaultGunFire4"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire5.wav"		NAME="AssaultGunFire5"		GROUP="VMSounds"
 
 var float	mpRecoilStrength;
+
+// Vanilla Matters
+var Sound VM_fireSounds[5];
 
 simulated function PreBeginPlay()
 {
@@ -27,8 +34,20 @@ simulated function PreBeginPlay()
 	}
 }
 
+// Vanilla Matters: Randomize between all the firing sounds.
+simulated function PlayFiringSound() {
+	FireSound = VM_fireSounds[Rand( 4 )];
+
+	super.PlayFiringSound();
+}
+
 defaultproperties
 {
+     VM_fireSounds(0)=Sound'DeusEx.VMSounds.AssaultGunFire1'
+     VM_fireSounds(1)=Sound'DeusEx.VMSounds.AssaultGunFire2'
+     VM_fireSounds(2)=Sound'DeusEx.VMSounds.AssaultGunFire3'
+     VM_fireSounds(3)=Sound'DeusEx.VMSounds.AssaultGunFire4'
+     VM_fireSounds(4)=Sound'DeusEx.VMSounds.AssaultGunFire5'
      LowAmmoWaterMark=30
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
@@ -65,7 +84,7 @@ defaultproperties
      bInstantHit=True
      FireOffset=(X=-16.000000,Y=5.000000,Z=11.500000)
      shakemag=150.000000
-     FireSound=Sound'DeusEx.VMSounds.AssaultGunFire'
+     FireSound=Sound'DeusEx.VMSounds.AssaultGunFire1'
      AltFireSound=Sound'DeusExSounds.Weapons.AssaultGunReloadEnd'
      CockingSound=Sound'DeusExSounds.Weapons.AssaultGunReload'
      SelectSound=Sound'DeusExSounds.Weapons.AssaultGunSelect'

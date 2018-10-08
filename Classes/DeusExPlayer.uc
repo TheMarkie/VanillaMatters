@@ -5177,7 +5177,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 			if ( a != none ) {
 				if ( AmmoNone( a ) == none && a.AmmoAmount >= a.MaxAmmo ) {
 					// Vanilla Matters: Use a clearer message.
-					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
+					ClientMessage( Sprintf( VM_msgTooMuchAmmo, a.itemName ) );
 
 					bCanPickup = false;
 				}
@@ -5186,7 +5186,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 			// to make sure we don't have too many grenades already
 			else if ( w != none && w.VM_isGrenade ) {
 				if ( w.AmmoType.AmmoAmount >= w.AmmoType.MaxAmmo) {
-					ClientMessage( Sprintf( VM_msgTooMuchAmmo, foundItem.itemName ) );
+					ClientMessage( Sprintf( VM_msgTooMuchAmmo, w.itemName ) );
 
 					bCanPickup = false;
 				}
@@ -5201,7 +5201,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 				bCanPickup = !( ( w.ReloadCount == 0 && w.PickupAmmoCount == 0 && w.AmmoName != none ) || ( w.AmmoName == none || w.AmmoName == class'AmmoNone' ) );
 
 				if ( !bCanPickup ) {
-					ClientMessage( Sprintf( CanCarryOnlyOne, foundItem.itemName ) );
+					ClientMessage( Sprintf( CanCarryOnlyOne, w.itemName ) );
 				}
 				else {
 					// Vanilla Matters: Fix the bug where you can pick up a weapon whose ammo you're full of.
@@ -6424,6 +6424,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	local int saveNumCopies;
 	local float boost;
 
+	local POVCorpse corpse;
 	local Inventory corpseInv;
 	local Inventory nextCorpseInv;
 
@@ -6600,29 +6601,28 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			dropVect.Z += BaseEyeHeight;
 
 			// if we are a corpse, spawn the actual carcass
-			if (item.IsA('POVCorpse'))
-			{
-				if (POVCorpse(item).carcClassString != "")
-				{
-					carcClass = class<DeusExCarcass>(DynamicLoadObject(POVCorpse(item).carcClassString, class'Class'));
-					if (carcClass != None)
-					{
-						carc = Spawn(carcClass);
-						if (carc != None)
-						{
+			// Vanilla Matters: Rewrite because messy.
+			corpse = POVCorpse( item );
+			if ( corpse != none ) {
+				if ( corpse.carcClassString != "" ) {
+					carcClass = class<DeusExCarcass>( DynamicLoadObject( corpse.carcClassString, class'Class' ) );
+					if ( carcClass != none ) {
+						carc = Spawn( carcClass );
+						if ( carc != none ) {
 							carc.Mesh = carc.Mesh2;
-							carc.KillerAlliance = POVCorpse(item).KillerAlliance;
-							carc.KillerBindName = POVCorpse(item).KillerBindName;
-							carc.Alliance = POVCorpse(item).Alliance;
-							carc.bNotDead = POVCorpse(item).bNotDead;
-							carc.bEmitCarcass = POVCorpse(item).bEmitCarcass;
-							carc.CumulativeDamage = POVCorpse(item).CumulativeDamage;
-							carc.MaxDamage = POVCorpse(item).MaxDamage;
-							carc.itemName = POVCorpse(item).CorpseItemName;
-							carc.CarcassName = POVCorpse(item).CarcassName;
+							carc.KillerAlliance = corpse.KillerAlliance;
+							carc.KillerBindName = corpse.KillerBindName;
+							carc.Alliance = corpse.Alliance;
+							carc.bNotDead = corpse.bNotDead;
+							carc.bEmitCarcass = corpse.bEmitCarcass;
+							carc.CumulativeDamage = corpse.CumulativeDamage;
+							carc.MaxDamage = corpse.MaxDamage;
+							carc.itemName = corpse.CorpseItemName;
+							carc.CarcassName = corpse.CarcassName;
+							carc.VM_name = corpse.VM_name;
 
 							// Vanilla Matters: Pass the inventory back in to allow recollecting the items.
-							corpseInv = POVCorpse( item ).VM_corpseInventory;
+							corpseInv = corpse.VM_corpseInventory;
 							while ( corpseInv != None ) {
 								nextCorpseInv = corpseInv.Inventory;
 
@@ -6631,23 +6631,23 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 								corpseInv = nextCorpseInv;
 							}
 
-							carc.VM_bSearchedOnce = POVCorpse( item ).VM_bSearchedOnce;
+							carc.VM_bSearchedOnce = corpse.VM_bSearchedOnce;
 
 							carc.Velocity = item.Velocity * 0.5;
-							item.Velocity = vect(0,0,0);
+							item.Velocity = vect( 0,0,0 );
 							carc.bHidden = False;
-							carc.SetPhysics(PHYS_Falling);
+							carc.SetPhysics( PHYS_Falling );
 							carc.SetScaleGlow();
-							if (carc.SetLocation(dropVect))
-							{
+							if ( carc.SetLocation(dropVect ) ) {
 								// must circumvent PutInHand() since it won't allow
 								// things in hand when you're carrying a corpse
-								SetInHandPending(None);
+								SetInHandPending( none );
 								item.Destroy();
-								item = None;
+								item = none;
 							}
-							else
+							else {
 								carc.bHidden = True;
+							}
 						}
 					}
 				}
@@ -12918,7 +12918,7 @@ function Texture GetCrossbowHandsSkin() {
 		case 4:
 			return Texture'DeusEx.VM.WeaponHandsTex4b';
 		default:
-			return Texture'DeusExItems.WeaponHandsTex';
+			return Texture'DeusExItems.MiniCrossbowTex1';
 	}
 }
 

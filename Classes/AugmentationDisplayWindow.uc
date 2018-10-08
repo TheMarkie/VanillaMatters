@@ -975,6 +975,8 @@ function DrawTargetAugmentation(GC gc)
 			// gc.DrawBox( x - mult + i, y - ( ( corner - 1 ) / 2 ) + i, 1, corner, 0, 0, 1, Texture'Solid' );
 			// gc.DrawBox( x + mult + i, y - ( ( corner - 1 ) / 2 ) + i , 1, corner, 0, 0, 1, Texture'Solid' );
 
+			gc.DrawBox( x + i, y + i, 1, 1, 0, 0, 1, Texture'Solid' );
+
 			gc.SetTileColor( crossColor );
 		}
 
