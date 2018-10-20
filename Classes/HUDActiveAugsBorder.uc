@@ -164,7 +164,6 @@ function UpdateAugIconStatus(Augmentation aug)
 
 defaultproperties
 {
-     FirstKeyNum=0
      LastKeyNum=10
      texBorderTop=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Top'
      texBorderCenter=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Center'
