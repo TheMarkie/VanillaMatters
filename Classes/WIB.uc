@@ -80,7 +80,6 @@ defaultproperties
      walkAnimMult=0.870000
      bIsFemale=True
      GroundSpeed=200.000000
-     Health=300
      HealthHead=300
      HealthTorso=300
      HealthLegLeft=150

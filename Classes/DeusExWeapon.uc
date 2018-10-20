@@ -237,7 +237,6 @@ var Texture		VM_handsTex;						// Hands texture.
 var int			VM_handsTexPos[2];					// Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
 
 var localized string VM_msgInfoStun;				// Label for stunning weapons.
-var localized String VM_msgInfoIgnite;				// If an ammo type has the VM_IgnitesOnHit property then it's displayed to notify players.
 var localized String VM_msgInfoHeadshot;			// Label the headshot multipler section.
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
@@ -320,14 +319,20 @@ function TravelPostAccept()
 
 		// make sure the projectile info matches the actual AmmoType
 		// since we can't "var travel class" (AmmoName and ProjectileClass)
-		if (AmmoType != None)
-		{
-			FireSound = None;
-			for (i=0; i<ArrayCount(AmmoNames); i++)
-			{
-				if (AmmoNames[i] == AmmoName)
-				{
+
+		// Vanilla Matters: Fix a weird bug where some projectile weapons lose their firesound.
+		if ( AmmoType != None ) {
+			for ( i = 0; i < ArrayCount( AmmoNames ); i++ ) {
+				if ( AmmoNames[i] == AmmoName ) {
 					ProjectileClass = ProjectileNames[i];
+
+					if ( ProjectileClass.default.SpawnSound != none ) {
+						FireSound = none;
+					}
+					else {
+						FireSound = default.FireSound;
+					}
+					
 					break;
 				}
 			}
@@ -810,10 +815,17 @@ function bool LoadAmmo(int ammoNum)
 				ShotTime = 1.0;
 
 				// Vanilla Matters: Handles reload time bonus from mods in GetReloadTime.
-
-				FireSound = None;		// handled by the projectile
+				
 				ProjectileClass = ProjectileNames[ammoNum];
 				ProjectileSpeed = ProjectileClass.Default.Speed;
+
+				// Vanilla Matters: Fix a weird bug where some projectile weapons lose their firesound.
+				if ( ProjectileClass.default.SpawnSound != none ) {
+					FireSound = none;
+				}
+				else {
+					FireSound = default.FireSound;
+				}
 			}
 
 			AmmoName = newAmmoClass;
@@ -2890,13 +2902,6 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 
 			if (bPenetrating && Other.IsA('Pawn') && !Other.IsA('Robot'))
 				SpawnBlood(HitLocation, HitNormal);
-
-			// Vanilla Matters: Ignite enemies.
-			if ( DeusExPlayer( Pawn( Owner ) ) != None && ScriptedPawn( Other ) != None ) {
-				if ( DeusExAmmo( AmmoType ).VM_IgnitesOnHit >= 0.0 && GetWeaponSkillLevel() >= DeusExAmmo( AmmoType ).VM_IgnitesOnHit ) {
-					ScriptedPawn( Other ).CatchFire( HitDamage );
-				}
-			}
 		}
 	}
    if (DeusExMPGame(Level.Game) != None)
@@ -3399,18 +3404,6 @@ simulated function bool UpdateInfo(Object winObject)
 	{
 		winInfo.AddLine();
 		winInfo.AddAmmoDescription(ammoClass.Default.ItemName $ "|n" $ ammoClass.Default.description);
-
-		// Vanilla Matters: Display if the ammo type can ignite people. If the property is disabled with -1.0 then it won't show at all.
-		if ( ammoClass.Default.VM_IgnitesOnHit >= 0.0 ) {
-			if ( weaponSkillLevel >= ammoClass.Default.VM_IgnitesOnHit ) {
-				str = msgInfoYes;
-			}
-			else {
-				str = msgInfoNo;
-			}
-
-			winInfo.AddInfoItem( VM_msgInfoIgnite, str, ( weaponSkillLevel >= ammoClass.Default.VM_IgnitesOnHit ) );
-		}
 	}
 
 	return True;
@@ -4371,7 +4364,6 @@ defaultproperties
      VM_handsTexPos(0)=-1
      VM_handsTexPos(1)=-1
      VM_msgInfoStun="Stun duration:"
-     VM_msgInfoIgnite="Ignites enemies:"
      VM_msgInfoHeadshot="Headshot:"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"

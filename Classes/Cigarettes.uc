@@ -16,35 +16,6 @@ state Activated
 		// can't turn it off
 	}
 
-	// function BeginState()
-	// {
-	// 	local Pawn P;
-	// 	local vector loc;
-	// 	local rotator rot;
-	// 	local SmokeTrail puff;
-		
-	// 	Super.BeginState();
-
-	// 	P = Pawn(Owner);
-	// 	if (P != None)
-	// 	{
-	// 		P.TakeDamage(5, P, P.Location, vect(0,0,0), 'PoisonGas');
-	// 		loc = Owner.Location;
-	// 		rot = Owner.Rotation;
-	// 		loc += 2.0 * Owner.CollisionRadius * vector(P.ViewRotation);
-	// 		loc.Z += Owner.CollisionHeight * 0.9;
-	// 		puff = Spawn(class'SmokeTrail', Owner,, loc, rot);
-	// 		if (puff != None)
-	// 		{
-	// 			puff.DrawScale = 1.0;
-	// 			puff.origScale = puff.DrawScale;
-	// 		}
-	// 		PlaySound(sound'MaleCough');
-	// 	}
-
-	// 	UseOnce();
-	// }
-
 	// Vanilla Matters: Make the smoke puff appear over time and do damage.
 	function Timer() {
 		local Pawn P;
@@ -63,13 +34,7 @@ state Activated
 
 				bActive = false;
 
-				NumCopies = NumCopies - 1;
-
 				if ( NumCopies <= 0 ) {
-					if ( player.IsHolding( self ) ) {
-						player.VM_HeldInHand = none;
-					}
-
 					Destroy();
 				}
 				else {
@@ -128,7 +93,14 @@ state Activated
 
 			SetTimer( 3.0, true );
 
-			player.DeleteInventory( self );
+			NumCopies = NumCopies - 1;
+			if ( NumCopies <= 0 ) {
+				player.DeleteInventory( self );
+
+				if ( player.IsHolding( self ) ) {
+					player.VM_HeldInHand = none;
+				}
+			}
 		}
 	}
 Begin:

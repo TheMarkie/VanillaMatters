@@ -19,7 +19,7 @@ defaultproperties
      WaterSpeed=50.000000
      AirSpeed=144.000000
      AccelRate=500.000000
-     Health=20
+     Health=40
      UnderWaterTime=20.000000
      AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.DogLargeGrowl'

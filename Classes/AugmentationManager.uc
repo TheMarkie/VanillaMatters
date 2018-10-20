@@ -129,8 +129,6 @@ function AddDefaultAugmentations()
 
 simulated function RefreshAugDisplay()
 {
-	// local Augmentation anAug;
-
 	// Vanilla Matters
 	local int i;
 
@@ -407,11 +405,6 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 	// Manage our AugLocs[] array
 	AugLocs[anAug.AugmentationLocation].augCount++;
 
-	// Vanilla Matters: Count this aug if it's not always active.
-	// if ( !anAug.bAlwaysActive ) {
-	// 	VM_realAugCount[anAug.AugmentationLocation] = VM_realAugCount[anAug.AugmentationLocation] + 1;
-	// }
-
 	// Vanilla Matters: Assign hotkeys using our method so we don't get always active augs taking up hotkey slots.
 	if ( Level.NetMode == NM_Standalone ) {
 		if ( !anAug.bAlwaysActive ) {
@@ -433,9 +426,6 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 	else {
 		anAug.HotKeyNum = anAug.MPConflictSlot + 2;
 	}
-
-	// if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
-	//     Player.AddAugmentationDisplay(anAug);
 
 	// Vanilla Matters: Augs are now displayed by their aug bar order.
 

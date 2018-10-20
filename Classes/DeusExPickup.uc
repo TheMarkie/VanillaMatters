@@ -153,9 +153,6 @@ function UseOnce()
 
 	if (NumCopies <= 0)
 	{
-		// if (player.inHand == Self)
-		// 	player.PutInHand(None);
-
 		// Vanilla Matters: Clear HeldInHand then makes the pickup destroy itself.
 		if ( player.IsHolding( self ) ) {
 			player.VM_HeldInHand = None;

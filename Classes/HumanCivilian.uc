@@ -59,6 +59,12 @@ defaultproperties
      BaseEyeHeight=40.000000
      UnderWaterTime=20.000000
      AttitudeToPlayer=ATTITUDE_Ignore
+     HealthHead=80
+     HealthTorso=80
+     HealthLegLeft=40
+     HealthLegRight=40
+     HealthArmLeft=40
+     HealthArmRight=40
      HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
      HitSound2=Sound'DeusExSounds.Player.MalePainMedium'
      Die=Sound'DeusExSounds.Player.MaleDeath'

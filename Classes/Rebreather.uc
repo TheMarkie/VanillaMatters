@@ -3,15 +3,39 @@
 //=============================================================================
 class Rebreather extends ChargedPickup;
 
-function ChargedPickupUpdate(DeusExPlayer Player)
-{
-	Super.ChargedPickupUpdate(Player);
+// Vanilla Matters
+var travel DeusExPlayer VM_player;
+var travel float VM_breathTimer;
 
-	//Player.swimTimer = Player.swimDuration;
+// Vanilla Matters: We handle it in Tick so we can properly sync the breath provided with the breathing loop sound.
+function Tick( float deltaTime ) {
+	if ( VM_player == none || !IsActive() ) {
+		return;
+	}
 
-	// Vanilla Matters: Fix an exploit where you can use Rebreather for at least one tick to get full oxygen.
-	// VM: Since we know the timer only runs every 0.1 second, we can hardcode this to be double that amount. I'd rather rewrite the callback to include passin in interval however.
-	Player.swimTimer = FMin( Player.swimTimer + 0.2, Player.swimDuration );
+	VM_breathTimer = VM_breathTimer + deltaTime;
+	// VM: All the values are arbitrary timestamps of the "breathing" segment on the specific sound loop.
+	if ( VM_breathTimer >= 0.15 && VM_breathTimer <= 1.5 ) {
+		VM_player.swimTimer = FClamp( VM_player.swimTimer + ( deltaTime * 3.5 ), 0, VM_player.swimDuration );
+	}
+
+	if ( VM_breathTimer >= 2.785 ) {
+		VM_breathTimer = VM_breathTimer - 2.785;
+	}
+}
+
+function ChargedPickupBegin( DeusExPlayer player ) {
+	VM_player = player;
+	VM_breathTimer = 0;
+
+	super.ChargedPickupBegin( player );
+}
+
+function ChargedPickupEnd( DeusExPlayer player ) {
+	VM_player = none;
+	VM_breathTimer = 0;
+
+	super.ChargedPickupEnd( player );
 }
 
 defaultproperties

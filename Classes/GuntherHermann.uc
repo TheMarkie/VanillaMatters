@@ -172,9 +172,8 @@ defaultproperties
      walkAnimMult=0.750000
      GroundSpeed=210.000000
      BaseEyeHeight=44.000000
-     Health=400
-     HealthHead=600
-     HealthTorso=400
+     HealthHead=500
+     HealthTorso=500
      HealthLegLeft=250
      HealthLegRight=250
      HealthArmLeft=250

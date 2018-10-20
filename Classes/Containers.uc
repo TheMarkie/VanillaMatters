@@ -7,6 +7,9 @@ class Containers extends DeusExDecoration
 var() int numThings;
 var() bool bGenerateTrash;
 
+// Vanilla Matters
+var bool VM_isSupply;
+
 //
 // copied from Engine.Decoration
 //

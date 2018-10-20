@@ -214,12 +214,6 @@ defaultproperties
      HitSound1=Sound'DeusExSounds.Animal.RatSqueak1'
      HitSound2=Sound'DeusExSounds.Animal.RatSqueak3'
      Die=Sound'DeusExSounds.Animal.RatDie'
-     HealthHead=5
-     HealthTorso=5
-     HealthLegLeft=2
-     HealthLegRight=2
-     HealthArmLeft=2
-     HealthArmRight=2
      Alliance=Rat
      DrawType=DT_Mesh
      Mesh=LodMesh'DeusExCharacters.Rat'

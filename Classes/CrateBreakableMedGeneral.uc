@@ -5,6 +5,7 @@ class CrateBreakableMedGeneral extends Containers;
 
 defaultproperties
 {
+     VM_isSupply=True
      HitPoints=30
      FragType=Class'DeusEx.WoodFragment'
      ItemName="General Supply Crate"

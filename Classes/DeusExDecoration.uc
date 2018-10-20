@@ -818,6 +818,7 @@ auto state Active
 
 		// Vanilla Matters
 		local DeusExPlayer player;
+		local Containers c;
 
 		local int origHP;
 
@@ -901,8 +902,9 @@ auto state Active
 				Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
 		}
 
-		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		if ( player != None ) {
+		// Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+		c = Containers( self );
+		if ( c != none && c.VM_isSupply && player != None ) {
 			if ( player.FPSystem != none ) {
 				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
 			}
@@ -941,6 +943,7 @@ state Burning
 
 		// Vanilla Matters
 		local DeusExPlayer player;
+		local Containers c;
 
 		local int origHP;
 
@@ -996,8 +999,9 @@ state Burning
 			}
 		}
 
-		// VM: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		if ( player != None ) {
+		// Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+		c = Containers( self );
+		if ( c != none && c.VM_isSupply && player != None ) {
 			if ( player.FPSystem != none ) {
 				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
 			}

@@ -233,7 +233,7 @@ defaultproperties
      AirSpeed=144.000000
      AccelRate=500.000000
      BaseEyeHeight=12.500000
-     Health=100
+     Health=60
      UnderWaterTime=99999.000000
      AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.GreaselPainSmall'

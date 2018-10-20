@@ -19,6 +19,7 @@ var Localized String SlotFullText;
 var Localized String SelectAnotherText;
 
 // Vanilla Matters
+var localized string VM_upgradeLabelText;
 var localized String VM_CantBeUpgradedText;
 
 // ----------------------------------------------------------------------
@@ -274,9 +275,16 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 				selectedAugButton = none;
 			}
 			else {
-				selectedAug.UsingMedBot(True);
-				selectedAug.UpdateInfo(winInfo);
-				selectedAugButton.SelectButton(True);
+				selectedAug.UsingMedBot( true );
+				selectedAug.UpdateInfo( winInfo );
+				selectedAugButton.SelectButton( true );
+
+				if ( btn.bHasIt && selectedAug != none ) {
+					btnInstall.SetButtonText( VM_upgradeLabelText );
+				}
+				else {
+					btnInstall.SetButtonText( InstallButtonLabel );
+				}
 			}
 		}
 
@@ -407,6 +415,7 @@ defaultproperties
      AlreadyHasItText="You already have this augmentation, therefore you cannot install it a second time."
      SlotFullText="The slot that this augmentation occupies is already full, therefore you cannot install it."
      SelectAnotherText="Please select another augmentation to install."
+     VM_upgradeLabelText="|&Upgrade"
      VM_CantBeUpgradedText="You cannot upgrade this augmentation any further."
      clientTextures(0)=Texture'DeusExUI.UserInterface.HUDMedbotBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.HUDMedbotBackground_2'

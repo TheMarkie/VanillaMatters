@@ -16,12 +16,6 @@ defaultproperties
      Health=20
      UnderWaterTime=20.000000
      AttitudeToPlayer=ATTITUDE_Fear
-     HealthHead=20
-     HealthTorso=20
-     HealthLegLeft=10
-     HealthLegRight=10
-     HealthArmLeft=10
-     HealthArmRight=10
      Alliance=Pigeon
      DrawType=DT_Mesh
      Mesh=LodMesh'DeusExCharacters.Pigeon'

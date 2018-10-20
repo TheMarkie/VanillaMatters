@@ -111,9 +111,8 @@ defaultproperties
      bIsFemale=True
      GroundSpeed=220.000000
      BaseEyeHeight=38.000000
-     Health=300
-     HealthHead=400
-     HealthTorso=300
+     HealthHead=350
+     HealthTorso=350
      HealthLegLeft=200
      HealthLegRight=200
      HealthArmLeft=200

@@ -80,8 +80,8 @@ function FirstFrame()
 			}
 		}
 
-		if (flags.GetBool('JaimeRecruited') &&
-			flags.GetBool('Versalife_Done'))
+		// Vanilla Matters: Bring Jaime to the base sooner to fit the barks??
+		if ( flags.GetBool( 'JaimeRecruited' ) && flags.GetBool( 'Have_ROM' ) )
 		{
 			foreach AllActors(class'ScriptedPawn', pawn)
 			{

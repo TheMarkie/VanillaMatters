@@ -1317,18 +1317,11 @@ function DrawVisionAugmentation( GC gc ) {
 	saveBrightness = player.Level.Brightness;
 
 	if ( visionLevel > 1 ) {
-		if ( player.Level.Netmode == NM_Standalone ) {
-			gc.SetStyle( DSTY_Modulated );
-			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'ConWindowBackground' );
-			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'SolidRed' );
-			gc.SetStyle( DSTY_Translucent );
-		}
-		else {
-			gc.SetStyle( DSTY_Modulated );
-			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
-			gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
-			gc.SetStyle( DSTY_Translucent );
-		}
+		// Vanilla Matters: Always use the blue overlay because it's better.
+		gc.SetStyle( DSTY_Modulated );
+		gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
+		gc.DrawPattern( 0, 0, width, height, 0, 0, Texture'VisionBlue' );
+		gc.SetStyle( DSTY_Translucent );
 
 		loc = player.Location;
 		loc.z = loc.z + Player.BaseEyeHeight;

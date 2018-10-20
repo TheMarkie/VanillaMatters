@@ -93,11 +93,11 @@ function float ModifyDamage( int Damage, Pawn instigatedBy, Vector hitLocation, 
 
 function GotoDisabledState( name damageType, EHitLocation hitPos ) {
 	if ( damageType == 'EMP' ) {
-		VM_damageToReactTo = VM_damageToReactTo / 2;
+		VM_damageTaken = VM_damageTaken / 2;
 		damageType = 'Stunned';
 	}
 	else if ( damageType == 'TearGas' ) {
-		VM_damageToReactTo = 0;
+		VM_damageTaken = 0;
 		damageType = 'PoisonGas';
 	}
 
@@ -111,7 +111,6 @@ defaultproperties
      WalkingSpeed=0.213333
      CloseCombatMult=0.500000
      GroundSpeed=180.000000
-     Health=350
      HealthHead=350
      HealthTorso=350
      HealthLegLeft=175

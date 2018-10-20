@@ -59,18 +59,27 @@ replication
 
 function PostBeginPlay()
 {
+	// Vanilla Matters
+	local Pawn p;
+
 	Super.PostBeginPlay();
 
    if (bEmitDanger)
 		AIStartEvent('Projectile', EAITYPE_Visual);
 
 	// Vanilla Matters: Fetch them right as the projectile finishes spawning, so the player can't switch weapon or change ammo type and confuse the game.
-	if ( Pawn( Owner ) != None ) {
-		VM_fromWeapon = DeusExWeapon( Pawn( Owner ).Weapon );
+	p = Pawn( Owner );
+	if ( p != None ) {
+		VM_fromWeapon = DeusExWeapon( p.Weapon );
 
 		if ( VM_fromWeapon != None ) {
 			VM_withAmmo = DeusExAmmo( VM_fromWeapon.AmmoType );
 		}
+	}
+
+	// Vanilla Matters: Make PS20's projectile does Flamed instead of Burned, we hardcode it here because the projectile is shared.
+	if ( WeaponHideAGun( VM_fromWeapon ) != none ) {
+		damageType = 'Flamed';
 	}
 }
 
@@ -486,11 +495,6 @@ state Exploding
 		}
 	}
 
-	// Vanilla Matters: Ignite the full radius.
-	function IgniteRadius() {
-		HurtRadius( 1, blastRadius, 'Flamed', MomentumTransfer, Location, false );
-	}
-
 Begin:
 	// stagger the HurtRadius outward using Timer()
 	// do five separate blast rings increasing in size
@@ -505,14 +509,6 @@ Begin:
 
 	// Vanilla Matters: Allow explosive projectiles to damage movers with their full damage instead of vanilla mechanics.
 	DamageMovers();
-
-	// Vanilla Matters: Ignite things if the projectile is designated so.
-	if ( DeusExPlayer( Owner ) != none ) {
-		// VM: Hardcode PS20 because its ammotype is none.
-		if ( ( VM_withAmmo != none && VM_fromWeapon != none && VM_withAmmo.VM_IgnitesOnHit >= 0.0 && VM_fromWeapon.GetWeaponSkillLevel() >= VM_withAmmo.VM_IgnitesOnHit ) || WeaponHideAGun( VM_fromWeapon ) != none ) {
-			IgniteRadius();
-		}
-	}
 }
 
 function PlayImpactSound()
@@ -630,13 +626,6 @@ auto simulated state Flying
 					}
 
 					damagee.TakeDamage(Damage, Pawn(Owner), HitLocation, MomentumTransfer*Normal(Velocity), damageType);
-
-					// Vanilla Matters: Ignite enemies on explode aka hit.
-					if ( DeusExPlayer( Owner ) != None && ScriptedPawn( damagee ) != None && VM_fromWeapon != None && VM_withAmmo != None ) {
-						if ( VM_withAmmo.VM_IgnitesOnHit >= 0.0 && VM_fromWeapon.GetWeaponSkillLevel() >= VM_withAmmo.VM_IgnitesOnHit ) {
-							ScriptedPawn( damagee ).CatchFire( Damage );
-						}
-					}
 				}
 			}
 			if (!bStuck)

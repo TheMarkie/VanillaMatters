@@ -418,7 +418,7 @@ var      float    runAnimMult;
 // Vanilla Matters
 var DeusExWeapon VM_hitBy;			// The weapon that the pawn was hit by. Only used by the player.
 
-var float VM_damageToReactTo;		// The damage that will be used in GotoDisabledState because ReactToInjury does not get any damage passed in and neither does GotoDisabledState.
+var float VM_damageTaken;		// Store the damage to be used after TakeDamageBase where it's not possible to just pass it to. Reset after GotoDisabledState.
 
 var float VM_stunDuration;			// Time being stunned.
 
@@ -1951,8 +1951,17 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 				if ( validEnemy || potentialEnemy ) {
 					isPlayer = ( DeusExPlayer( candidate ) != none );
 					if ( ( isPlayer && checkPlayer ) || ( !isPlayer && checkOther ) ) {
-						visibility = AICanSee( candidate, ComputeActorVisibility( candidate ), true, true, true, true );
-						if ( visibility > 0 || proxyEnemy ) {
+						if ( proxyEnemy ) {
+							visibility = 0.2;
+						}
+						else if ( SeekPawn == candidate && dist <= 240 ) {
+							visibility = AICanSee( candidate, 1.0, false, true, true, true );
+						}
+						else {
+							visibility = AICanSee( candidate, ComputeActorVisibility( candidate ), true, true, true, true );
+						}
+
+						if ( visibility > 0 ) {
 							if ( potentialEnemy ) {
 								IncreaseAgitation( candidate, visibility + VisibilityThreshold );
 
@@ -2550,7 +2559,7 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 		// Vanilla Matters: Rewrite to add special rules.
 		if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 
 			|| VSize( instigatedBy.Location - Location ) <= 160 
-			|| SeekPawn == instigatedBy ) {
+			|| ( SeekPawn == instigatedBy && damageType != 'PoisonEffect' ) ) {
 			if ( bHateThisInjury ) {
 				IncreaseAgitation( instigatedBy );
 			}
@@ -2587,7 +2596,10 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 				loc = Location + ( ( instigatedBy.Location - Location ) * ( FRand() + 0.3 ) * 0.5 );
 				loc.x = loc.x + ( FRand() * 160 ) - 80;
 				loc.y = loc.y + ( FRand() * 160 ) - 80;
-				SetSeekLocation( instigatedBy, loc, SEEKTYPE_Guess );
+
+				if ( damageType != 'PoisonEffect' ) {
+					SetSeekLocation( instigatedBy, loc, SEEKTYPE_Guess );
+				}
 				
 				if ( currentState != 'Fleeing' && currentState != 'Alerting' ) {
 					SetNextState( 'HandlingEnemy' );
@@ -3369,7 +3381,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	// Vanilla Matters: Add FP rate for damage dealt, based on health loss.
 	if ( player != None ) {
 		if ( player.FPSystem != none ) {
-			if ( self.IsA( 'Animal' ) ) {
+			if ( Animal( self ) != none ) {
 				player.FPSystem.AddForwardPressure( FClamp( origHealth - Health, 0, Default.Health ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
 			}
 			else {
@@ -3409,23 +3421,21 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	}
 
 	// play a hit sound
-
-	// Vanilla Matters: When you're being stunned, and hit by more tear gas, make a hit sound only when you're near the end of the current duration.
-	if ( damageType != 'Stunned' && ( damageType != 'TearGas' || VM_stunDuration <= 1 ) ) {
+	if ( damageType != 'Stunned' ) {
 		PlayTakeHitSound( actualDamage, damageType, 1 );
-	}
-
-	// Vanilla Matters: Burning duration now depends on the initial damage.
-	if ( DamageType == 'Flamed' ) {
-		CatchFire( actualDamage );
 	}
 
 	// Vanilla Matters: Set the temporary damage value here because ReactToInjury doesn't get damage passed in.
 	if ( damageType != 'TearGas' ) {
-		VM_damageToReactTo = actualDamage;
+		VM_damageTaken = actualDamage;
 	}
 	else {
-		VM_damageToReactTo = Damage;
+		VM_damageTaken = Damage;
+	}
+
+	// Vanilla Matters: Burning duration now depends on the initial damage.
+	if ( DamageType == 'Flamed' ) {
+		CatchFire();
 	}
 
 	ReactToInjury(instigatedBy, damageType, hitPos);
@@ -3614,9 +3624,7 @@ function GotoDisabledState( name damageType, EHitLocation hitPos ) {
 		return;
 	}
 	else if ( damageType == 'TearGas' || damageType == 'HalonGas' || damageType == 'Stunned' ) {
-		if ( VM_stunDuration <= 0.5 || damageType == 'Stunned' ) {
-			VM_stunDuration = FMax( VM_damageToReactTo, VM_stunDuration );
-		}
+		VM_stunDuration = FMax( VM_damageTaken, VM_stunDuration );
 
 		if ( damageType == 'Stunned' ) {
 			if ( !IsInState( 'Stunned' ) ) {
@@ -3635,7 +3643,7 @@ function GotoDisabledState( name damageType, EHitLocation hitPos ) {
 	}
 
 	// VM: Reset temporary damage value.
-	VM_damageToReactTo = 0;
+	VM_damageTaken = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -5205,12 +5213,12 @@ function PlayDying(name damageType, vector hitLoc)
 // ----------------------------------------------------------------------
 
 // Vanilla Matters: Rewrite to limit burn duration.
-function CatchFire( float burnDamage ) {
+function CatchFire() {
 	local Fire f;
 	local int i;
 	local vector loc;
 
-	burnTimer = burnTimer + ( burnDamage * 2 );
+	burnTimer = burnTimer + VM_damageTaken;
 
 	if ( bOnFire || Region.Zone.bWaterZone || bInvincible ) {
 		return;
@@ -5862,7 +5870,7 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 					}
 					else if ( distresseePawn != none ) {
 						distressor = distresseePawn.SeekPawn;
-						distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 || ( SeekPawn != none && SeekPawn == distressor ) );
+						distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 );
 					}
 
 					if ( distressorSeen ) {
@@ -5888,7 +5896,9 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 						}
 						loc.x = loc.x + ( FRand() * 160 ) - 80;
 						loc.y = loc.y + ( FRand() * 160 ) - 80;
+
 						SetSeekLocation( distressor, loc, SEEKTYPE_Guess );
+
 						if ( GetStateName() != 'Seeking' ) {
 							HandleEnemy();
 						}
@@ -7497,168 +7507,6 @@ function Tick(float deltaTime)
 			bCheckOther = false;
 		}
 	}
-
-/*
-	if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
-	{
-		Destroy();
-		return;
-	}
-
-	if (PrePivotTime > 0)
-	{
-		if (deltaTime < PrePivotTime)
-		{
-			PrePivot = PrePivot + (DesiredPrePivot-PrePivot)*deltaTime/PrePivotTime;
-			PrePivotTime -= deltaTime;
-		}
-		else
-		{
-			PrePivot = DesiredPrePivot;
-			PrePivotTime = 0;
-		}
-	}
-
-	if (bDoLowPriority)
-		Super.Tick(deltaTime);
-
-	UpdateAgitation(deltaTime);
-	UpdateFear(deltaTime);
-
-	AlarmTimer -= deltaTime;
-	if (AlarmTimer < 0)
-		AlarmTimer = 0;
-
-	if (Weapon != None)
-		WeaponTimer += deltaTime;
-	else if (WeaponTimer != 0)
-		WeaponTimer = 0;
-
-	if ((ReloadTimer > 0) && (Weapon != None))
-		ReloadTimer -= deltaTime;
-	else
-		ReloadTimer = 0;
-
-	if (AvoidWallTimer > 0)
-	{
-		AvoidWallTimer -= deltaTime;
-		if (AvoidWallTimer < 0)
-			AvoidWallTimer = 0;
-	}
-
-	if (AvoidBumpTimer > 0)
-	{
-		AvoidBumpTimer -= deltaTime;
-		if (AvoidBumpTimer < 0)
-			AvoidBumpTimer = 0;
-	}
-
-	if (CloakEMPTimer > 0)
-	{
-		CloakEMPTimer -= deltaTime;
-		if (CloakEMPTimer < 0)
-			CloakEMPTimer = 0;
-	}
-
-	if (TakeHitTimer > 0)
-	{
-		TakeHitTimer -= deltaTime;
-		if (TakeHitTimer < 0)
-			TakeHitTimer = 0;
-	}
-
-	if (CarcassCheckTimer > 0)
-	{
-		CarcassCheckTimer -= deltaTime;
-		if (CarcassCheckTimer < 0)
-			CarcassCheckTimer = 0;
-	}
-
-	if (PotentialEnemyTimer > 0)
-	{
-		PotentialEnemyTimer -= deltaTime;
-		if (PotentialEnemyTimer <= 0)
-		{
-			PotentialEnemyTimer    = 0;
-			PotentialEnemyAlliance = '';
-		}
-	}
-
-	if (BeamCheckTimer > 0)
-	{
-		BeamCheckTimer -= deltaTime;
-		if (BeamCheckTimer < 0)
-			BeamCheckTimer = 0;
-	}
-
-	if (FutzTimer > 0)
-	{
-		FutzTimer -= deltaTime;
-		if (FutzTimer < 0)
-			FutzTimer = 0;
-	}
-
-	if (PlayerAgitationTimer > 0)
-	{
-		PlayerAgitationTimer -= deltaTime;
-		if (PlayerAgitationTimer < 0)
-			PlayerAgitationTimer = 0;
-	}
-
-	if (DistressTimer >= 0)
-	{
-		DistressTimer += deltaTime;
-		if (DistressTimer > FearSustainTime)
-			DistressTimer = -1;
-	}
-
-	if (bHasCloak)
-		EnableCloak(Health <= CloakThreshold);
-
-	if (bAdvancedTactics)
-	{
-		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) ||
-		    (TurnDirection == TURNING_None))
-		{
-			bAdvancedTactics = false;
-			if (TurnDirection != TURNING_None)
-				MoveTimer -= 4.0;
-			ActorAvoiding    = None;
-			NextDirection    = TURNING_None;
-			TurnDirection    = TURNING_None;
-			bClearedObstacle = true;
-			ObstacleTimer    = 0;
-		}
-	}
-
-	if (bOnFire)
-	{
-		burnTimer += deltaTime;
-		if (burnTimer >= BurnPeriod)
-			ExtinguishFire();
-	}
-
-	if (bDoLowPriority)
-	{
-		if ((bleedRate > 0) && bCanBleed)
-		{
-			adjustedRate = (1.0-FClamp(bleedRate, 0.0, 1.0))*1.0+0.1;  // max 10 drops per second
-			dropPeriod = adjustedRate / FClamp(VSize(Velocity)/512.0, 0.05, 1.0);
-			dropCounter += deltaTime;
-			while (dropCounter >= dropPeriod)
-			{
-				SpurtBlood();
-				dropCounter -= dropPeriod;
-			}
-			bleedRate -= deltaTime/clotPeriod;
-		}
-		if (bleedRate <= 0)
-		{
-			dropCounter = 0;
-			bleedRate   = 0;
-		}
-	}
-*/
 
 	if (bStandInterpolation)
 		UpdateStanding(deltaTime);

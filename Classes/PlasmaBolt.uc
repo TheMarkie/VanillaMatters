@@ -106,6 +106,7 @@ defaultproperties
      MaxSpeed=1500.000000
      Damage=40.000000
      MomentumTransfer=5000
+     SpawnSound=Sound'DeusExSounds.Weapons.GEPGunFire'
      ImpactSound=Sound'DeusExSounds.Weapons.PlasmaRifleHit'
      ExplosionDecal=Class'DeusEx.ScorchMark'
      Mesh=LodMesh'DeusExItems.PlasmaBolt'

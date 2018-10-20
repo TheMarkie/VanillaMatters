@@ -95,7 +95,6 @@ defaultproperties
      BurnPeriod=0.000000
      bHasCloak=True
      CloakThreshold=100
-     Health=200
      HealthHead=200
      HealthTorso=200
      HealthLegLeft=100
