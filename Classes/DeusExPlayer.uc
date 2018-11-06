@@ -382,15 +382,15 @@ const VM_autosaveDelay = 180;
 
 var travel ForwardPressure FPSystem;			// Forward Pressure system.
 
-var travel float VM_visibilityNormal;					
-var travel float VM_visibilityRobot;
+var travel float VM_visibilityNormal;			
+var travel float VM_visibilityRobot;			
 
 var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
 var travel Inventory VM_HeldInHand;				// Item being held.
 var travel Inventory VM_lastHeldInHand;			// Some temporary place to keep track of HeldInHand.
 
-var travel float VM_Shield;						// Current shield health.
-var travel float VM_CurrentMaxShield;			// Just here to make things easier to fetch for the HUD.
+// var travel float VM_Shield;						// Current shield health.
+// var travel float VM_CurrentMaxShield;			// Just here to make things easier to fetch for the HUD.
 
 var travel int VM_lastMission;					// Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool VM_mapTravel;					// Denote if a travel is a normal map travel or game load.
@@ -410,8 +410,8 @@ var localized String VM_msgDroneCost;
 var localized String VM_msgTooMuchAmmo;
 var localized String VM_msgMuscleCost;
 var localized String VM_msgChargedPickupAlready;
-var localized String VM_msgShieldBroken;
-var localized String VM_msgShieldRegen;
+// var localized String VM_msgShieldBroken;
+// var localized String VM_msgShieldRegen;
 
 // native Functions
 native(1099) final function string GetDeusExVersion();
@@ -868,6 +868,9 @@ event TravelPostAccept()
 // Vanilla Matters: We handle updating our own stuff here.
 function VMTick( float deltaTime ) {
 	UpdateCPStatus();
+
+	// Vanilla Matters: Calculate visibility values for this frame.
+	UpdateVisibility();
 
 	// Vanilla Matters: Decay flinch penalty.
 	ProcessFlinch( deltaTime );
@@ -6307,12 +6310,9 @@ function DropDecoration()
 				if (mult == -1.0)
 					mult = 1.0;
 
-				// Vanilla Matters: Calculate the velocity boost from AugMuscle.
-				boost = boost + ( boost * mult );
-
 				// Vanilla Matters: Add some more boost if the deco is powerthrown.
 				if ( deco != none && deco.VM_bPowerthrown ) {
-					boost = boost + ( 1000 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
+					boost = boost + ( boost * mult ) + ( 1000 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
 				}
 			}
 
@@ -10443,21 +10443,21 @@ simulated function int GetMPHitLocation(Vector HitLocation)
 }
 
 // Vanilla Matters: Drain shield and return the undrained amount properly.
-function float DrainShield( float amount ) {
-	local float remaining;
+// function float DrainShield( float amount ) {
+// 	local float remaining;
 
-	remaining = 0;
+// 	remaining = 0;
 
-	remaining = FMax( amount - VM_Shield, 0 );
-	VM_Shield = FMax( VM_Shield - amount, 0 );
+// 	remaining = FMax( amount - VM_Shield, 0 );
+// 	VM_Shield = FMax( VM_Shield - amount, 0 );
 
-	// Vanilla Matters: Add in FP rate for damage absorbed by shield.
-	if ( FPSystem != none ) {
-		FPSystem.AddForwardPressure( FMax( amount - remaining, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
-	}
+// 	// Vanilla Matters: Add in FP rate for damage absorbed by shield.
+// 	if ( FPSystem != none ) {
+// 		FPSystem.AddForwardPressure( FMax( amount - remaining, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
+// 	}
 
-	return remaining;
-}
+// 	return remaining;
+// }
 
 // ----------------------------------------------------------------------
 // DXReduceDamage()
@@ -10918,35 +10918,35 @@ function MakePlayerIgnored(bool bNewIgnore)
 // CalculatePlayerVisibility()
 // ----------------------------------------------------------------------
 
-// Vanilla Matters
-function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
-	local float vis;
+// Vanilla Matters: Update visibility values.
+function UpdateVisibility() {
+	local bool adaptiveOn;
 
-	vis = 1.0;
-	if ( P != None && AugmentationSystem != None ) {
-		if ( Robot( P ) != none ) {
-			if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 ) {
-				vis = 0.0;
-			}
-		}
-		else {
-			if ( AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0 ) {
-				vis = 0.0;
-			}
-		}
-		
-		if ( UsingChargedPickup( class'AdaptiveArmor' ) ) {
-			vis = 0.0;
-		}
+	adaptiveOn = UsingChargedPickup( class'AdaptiveArmor' );
 
-		if ( vis <= 0 ) {
-			return vis;
-		}
+	if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 || adaptiveOn ) {
+		VM_visibilityRobot = 0;
+	}
+	else {
+		VM_visibilityRobot = AIVisibility();
 	}
 
-	vis = AIVisibility();
+	if ( AugmentationSystem.GetAugLevelValue( class'AugCloak' ) != -1.0 || adaptiveOn ) {
+		VM_visibilityNormal = 0;
+	}
+	else {
+		VM_visibilityNormal = AIVisibility();
+	}
+}
 
-	return vis;
+// Vanilla Matters
+function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
+	if ( Robot( P ) != none ) {
+		return VM_visibilityRobot;
+	}
+	else {
+		return VM_visibilityNormal;
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -10969,7 +10969,7 @@ function IncreaseClientFlashLength(float NewFlashTime)
 }
 
 // ----------------------------------------------------------------------
-// ViewFlash()
+// ViewFlash()VM_visibilityRobot = 0;
 // modified so that flash doesn't always go away in exactly half a second.
 // ---------------------------------------------------------------------
 function ViewFlash(float DeltaTime)
@@ -12903,7 +12903,7 @@ function Texture GetHandsSkin() {
 		case 4:
 			return Texture'DeusEx.VM.WeaponHandsTex4a';
 		default:
-			return Texture'DeusExItems.WeaponHandsTex';
+			return Texture'DeusEx.VM.WeaponHandsTex3a';
 	}
 }
 
@@ -12918,7 +12918,7 @@ function Texture GetCrossbowHandsSkin() {
 		case 4:
 			return Texture'DeusEx.VM.WeaponHandsTex4b';
 		default:
-			return Texture'DeusExItems.MiniCrossbowTex1';
+			return Texture'DeusEx.VM.WeaponHandsTex3b';
 	}
 }
 
@@ -13124,7 +13124,6 @@ defaultproperties
      VM_bCheatsEnabled=True
      VM_currentQSIndex=-3
      VM_currentASIndex=-5
-     VM_CurrentMaxShield=100.000000
      VM_flinchDecay=0.600000
      VM_msgFullHealth="You already have full health"
      VM_msgFullEnergy="You already have full energy"
@@ -13135,8 +13134,6 @@ defaultproperties
      VM_msgTooMuchAmmo="You already have enough %s"
      VM_msgMuscleCost="You don't have enough energy to do a powerthrow"
      VM_msgChargedPickupAlready="You are already using that type of equipment"
-     VM_msgShieldBroken="Your energy shield has been broken"
-     VM_msgShieldRegen="Regenerating energy shield..."
      bCanStrafe=True
      MeleeRange=50.000000
      AccelRate=2048.000000

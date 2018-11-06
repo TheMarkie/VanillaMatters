@@ -106,7 +106,7 @@ defaultproperties
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')
      BurnPeriod=5.000000
      bHasCloak=True
-     CloakThreshold=100
+     CloakThreshold=75
      walkAnimMult=1.000000
      bIsFemale=True
      GroundSpeed=220.000000

@@ -99,7 +99,6 @@ defaultproperties
      mpMaxRange=320
      mpReloadCount=100
      bCanHaveModReloadTime=True
-     VM_SpreadHorWithShotCount=1.000000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoNapalm'
      ReloadCount=100

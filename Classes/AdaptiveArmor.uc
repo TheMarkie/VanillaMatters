@@ -19,7 +19,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.AdaptiveArmor'
      PickupViewMesh=LodMesh'DeusExItems.AdaptiveArmor'
      ThirdPersonMesh=LodMesh'DeusExItems.AdaptiveArmor'
-     Charge=125
+     Charge=150
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconArmorAdaptive'
      largeIcon=Texture'DeusExUI.Icons.LargeIconArmorAdaptive'

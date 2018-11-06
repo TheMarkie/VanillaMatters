@@ -209,8 +209,6 @@ var() bool		VM_isGrenade;					// Internal flag to indicate that this weapon is a
 var() bool		VM_bAlwaysAccurate;				// Accuracy does not affect this weapon if set to true.
 var() bool		VM_pumpAction;					// Reloads one by one.
 var() int		VM_ShotCount[4];				// How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
-var() float		VM_SpreadHorWithShotCount;		// Spread the shots as count goes up. Vanilla already does but relies on accuracy, meaning high accuracy would cram all the shots into one place.
-var() float		VM_SpreadVerWithShotCount;		// Apply for projectile weapons only. If spread is 0, then only vanilla spread applies.
 
 var() float		VM_ShotBreaksStuff[4];			// Make projectiles break doors/lids with a multiplier. Trace weapons already do, but use this for multiplier.
 
@@ -2610,9 +2608,9 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 
 		AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, AimError, True, bWarn);
 		
-		// Vanilla Matters: Add in more spread as count goes up if the spread modifiers are set above zero.
-		AdjustedAim.Yaw = AdjustedAim.Yaw + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadHorWithShotCount ) ) );
-		AdjustedAim.Pitch = AdjustedAim.Pitch + ( currentAccuracy * ( Rand( 1024 ) - 512 ) * ( 1 + ( numProj * VM_SpreadVerWithShotCount ) ) );
+		// Vanilla Matters
+		AdjustedAim.Yaw = AdjustedAim.Yaw + ( currentAccuracy * ( Rand( 1024 ) - 512 ) );
+		AdjustedAim.Pitch = AdjustedAim.Pitch + ( currentAccuracy * ( Rand( 1024 ) - 512 ) );
 
 		if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
 		{

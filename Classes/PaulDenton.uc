@@ -94,7 +94,7 @@ defaultproperties
      InitialInventory(4)=(Inventory=Class'DeusEx.WeaponSword')
      BurnPeriod=0.000000
      bHasCloak=True
-     CloakThreshold=100
+     CloakThreshold=60
      HealthHead=200
      HealthTorso=200
      HealthLegLeft=100

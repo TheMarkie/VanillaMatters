@@ -59,7 +59,7 @@ defaultproperties
      BaseAssHeight=-23.000000
      BurnPeriod=0.000000
      bHasCloak=True
-     CloakThreshold=150
+     CloakThreshold=50
      walkAnimMult=1.400000
      GroundSpeed=240.000000
      HealthHead=750
