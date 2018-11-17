@@ -17,5 +17,4 @@ To install and use the code:
 Code modification belonging to Vanilla Matters is marked with "**// Vanilla Matters**" comments. Inside these chunks there can be submarks "**// VM**" to explain more detailedly the code.
 
 ### References
-[Vanilla Matters References](https://github.com/TheMarkie/VanillaMatters/wiki/Vanilla-Matters-Documentations)  
 [Helpful Resources](https://github.com/TheMarkie/VanillaMatters/wiki/Setting-Up-Deus-Ex-for-modding#helpful-resources)
