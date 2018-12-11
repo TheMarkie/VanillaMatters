@@ -20,5 +20,5 @@ defaultproperties
      ItemName="Tranquilizer Dart"
      VM_bOverridesDamage=True
      mpDamage=10.000000
-     Damage=10.000000
+     Damage=15.000000
 }

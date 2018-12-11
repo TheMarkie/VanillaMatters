@@ -201,7 +201,7 @@ function Timer()
 			foreach AllActors( class'TerroristCarcass', carc, 'ClintonTerrorist' ) {
 				count = count + 1;
 
-				if ( carc.KillerBindName == "JCDenton" && carc.itemName != "Unconscious" ) {
+				if ( carc.KillerBindName == "JCDenton" && !carc.bNotDead ) {
 					n = n + 1;
 				}
 			}
@@ -315,13 +315,14 @@ function Timer()
 				// if player killed 3 or more, call it a slaughter
 				foreach AllActors(class'TerroristCarcass', carc, 'StreetTerrorist')
 				{
-					if ((carc.KillerBindName == "JCDenton") && (carc.itemName != "Unconscious"))
+					// Vanilla Matters: Rewrite to use bNotDead which's more reliable.
+					if ( carc.KillerBindName == "JCDenton" && !carc.bNotDead )
 						count++;
 				}
 
 				// Vanilla Matters: Also counts the Terrorist Leader. Code from Revision.
 				foreach AllActors( class'TerroristCarcass', carc, 'LeadTerrorist' ) {
-					if ( carc.KillerBindName == "JCDenton" && carc.itemName != "Unconscious" ) {
+					if ( carc.KillerBindName == "JCDenton" && !carc.bNotDead ) {
 						count = count + 1;
 					}
 				}

@@ -94,7 +94,8 @@ function Timer()
 			// there are 28 terrorists total on the island
 			foreach AllActors(class'TerroristCarcass', carc)
 			{
-				if ((carc.KillerBindName == "JCDenton") && (carc.itemName == "Unconscious"))
+				// Vanilla Matters: Rewrite to use bNotDead which's more reliable.
+				if ( carc.KillerBindName == "JCDenton" && carc.bNotDead )
 					count++;
 				else if (carc.KillerBindName != "JCDenton")
 					count++;

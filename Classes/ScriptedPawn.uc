@@ -2998,9 +2998,9 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	actualDamage = Damage;
 
 	// calculate our hit extents
-	headOffsetZ = CollisionHeight * 0.7;
-	headOffsetY = CollisionRadius * 0.3;
-	armOffset   = CollisionRadius * 0.35;
+	// headOffsetZ = CollisionHeight * 0.7;
+	// headOffsetY = CollisionRadius * 0.3;
+	// armOffset   = CollisionRadius * 0.35;
 
 	// if the pawn is stunned, damage is 4X
 
@@ -3010,10 +3010,11 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 	if ( IsInState( 'Stunned' ) && damageType != 'Stunned' ) {
 		actualDamage = actualDamage * 4;
 	}
-	
-	if ( offset.x < 0 ) {
-		// Vanilla Matters: Boost the range from 64 to 80 to make baton/melee knockouts more reliable.
-		if ( instigatedBy != none && VSize( instigatedBy.Location - Location ) <= 80 ) {
+
+	// Vanilla Matters: Backstab bonus is now granted when the pawn isn't suspecting, not when struck from behind.
+	// VM: Also apply to non-lethal damage types only.
+	if ( damageType == 'KnockedOut' || damageType == 'Stunned' ) {
+		if ( !bDistressed && EnemyReadiness <= 0 ) {
 			actualDamage = actualDamage * 10;
 		}
 	}
