@@ -4,9 +4,9 @@
 class AmmoDartFlare extends AmmoDart;
 
 // Vanilla Matters: Replacement textures.
-#exec TEXTURE IMPORT FILE="Textures\AmmoDartTex3.bmp"					NAME="AmmoDartTex3"						GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\BeltIconAmmoDartsInjector.bmp"		NAME="BeltIconAmmoDartsInjector"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\LargeIconAmmoDartsInjector.bmp"		NAME="LargeIconAmmoDartsInjector"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AmmoDartTex3.bmp"					NAME="AmmoDartTex3"						GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\BeltIconAmmoDartsInjector.bmp"		NAME="BeltIconAmmoDartsInjector"		GROUP="VMUI" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\LargeIconAmmoDartsInjector.bmp"		NAME="LargeIconAmmoDartsInjector"		GROUP="VMUI" MIPS=On
 
 defaultproperties
 {

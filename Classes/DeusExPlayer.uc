@@ -7,15 +7,15 @@ class DeusExPlayer extends PlayerPawnExt
 #exec OBJ LOAD FILE=Effects
 
 // Vanilla Matters
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"		NAME="WeaponHandsTex1a"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"		NAME="WeaponHandsTex2a"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"		NAME="WeaponHandsTex3a"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"		NAME="WeaponHandsTex4a"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"		NAME="WeaponHandsTex1a"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"		NAME="WeaponHandsTex2a"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"		NAME="WeaponHandsTex3a"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"		NAME="WeaponHandsTex4a"		GROUP="VM" MIPS=On
 
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"		NAME="WeaponHandsTex1b"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"		NAME="WeaponHandsTex2b"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"		NAME="WeaponHandsTex3b"		GROUP="VM" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"		NAME="WeaponHandsTex4b"		GROUP="VM" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"		NAME="WeaponHandsTex1b"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"		NAME="WeaponHandsTex2b"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"		NAME="WeaponHandsTex3b"		GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"		NAME="WeaponHandsTex4b"		GROUP="VM" MIPS=On
 
 // Name and skin assigned to PC by player on the Character Generation screen
 var travel String	TruePlayerName;
@@ -368,6 +368,7 @@ const			NintendoDelay = 6.0;
 var Computers ActiveComputer;
 
 // Vanilla Matters
+var globalconfig bool VM_bEnableAS;
 var globalconfig bool VM_bEnableFP;
 var globalconfig bool VM_bCheatsEnabled;
 
@@ -880,7 +881,7 @@ function VMTick( float deltaTime ) {
 		FPSystem.BuildForwardPressure( deltaTime );
 	}
 
-	if ( VM_autosaving ) {
+	if ( VM_bEnableAS && VM_autosaving ) {
 		if ( dataLinkPlay == none && !IsInState( 'Conversation' ) ) {
 			VM_autosaveTimer = VM_autosaveTimer - deltaTime;
 			if ( VM_autosaveTimer <= 0 ) {
@@ -13121,6 +13122,7 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
+     VM_bEnableAS=True
      VM_bCheatsEnabled=True
      VM_currentQSIndex=-3
      VM_currentASIndex=-5
