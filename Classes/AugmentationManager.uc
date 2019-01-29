@@ -429,6 +429,11 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 
 	// Vanilla Matters: Augs are now displayed by their aug bar order.
 
+	// Vanilla Matters: Refresh the display just in case.
+	if ( !anAug.bAlwaysActive ) {
+		RefreshAugDisplay();
+	}
+
 	return anAug;
 }
 

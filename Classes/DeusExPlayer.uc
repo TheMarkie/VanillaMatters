@@ -10070,6 +10070,9 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	if (ReducedDamageType == 'All') //God mode
 		actualDamage = 0;
 
+	// Vanilla Matters: Prevent damage from being negative.
+	actualDamage = Max( actualDamage, 0 );
+
 	// Multiplayer only code
 	if ( Level.NetMode != NM_Standalone )
 	{

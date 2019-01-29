@@ -1951,14 +1951,16 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 				if ( validEnemy || potentialEnemy ) {
 					isPlayer = ( DeusExPlayer( candidate ) != none );
 					if ( ( isPlayer && checkPlayer ) || ( !isPlayer && checkOther ) ) {
+						actorVis = ComputeActorVisibility( candidate );
+
 						if ( proxyEnemy ) {
 							visibility = 0.2;
 						}
-						else if ( SeekPawn == candidate && dist <= 240 ) {
+						else if ( SeekPawn == candidate && ( dist <= 60 || ( actorVis > 0 && dist <= 240 ) ) ) {
 							visibility = AICanSee( candidate, 1.0, false, true, true, true );
 						}
 						else {
-							visibility = AICanSee( candidate, ComputeActorVisibility( candidate ), true, true, true, true );
+							visibility = AICanSee( candidate, actorVis, true, true, true, true );
 						}
 
 						if ( visibility > 0 ) {
