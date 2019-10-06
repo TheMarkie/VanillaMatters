@@ -3,11 +3,11 @@
 //=============================================================================
 class LoadMapWindow expands ToolWindow;
 
-// Windows 
-var ToolListWindow		lstMaps;
-var ToolButtonWindow	btnLoad;    
-var ToolButtonWindow	btnCancel;  
-var ToolCheckboxWindow	chkTravel;
+// Windows
+var ToolListWindow      lstMaps;
+var ToolButtonWindow    btnLoad;
+var ToolButtonWindow    btnCancel;
+var ToolCheckboxWindow  chkTravel;
 
 // List of files
 var GameDirectory mapDir;
@@ -20,20 +20,20 @@ var GameDirectory mapDir;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Create our Map Directory class
-	mapDir = new(None) Class'GameDirectory';
-	mapDir.SetDirType(mapDir.EGameDirectoryTypes.GD_Maps);
-	mapDir.GetGameDirectory();
+    // Create our Map Directory class
+    mapDir = new(None) Class'GameDirectory';
+    mapDir.SetDirType(mapDir.EGameDirectoryTypes.GD_Maps);
+    mapDir.GetGameDirectory();
 
-	// Center this window	
-	SetSize(370, 430);
-	SetTitle("Load Map");
+    // Center this window
+    SetSize(370, 430);
+    SetTitle("Load Map");
 
-	// Create the controls
-	CreateControls();
-	PopulateMapList();
+    // Create the controls
+    CreateControls();
+    PopulateMapList();
 }
 
 // ----------------------------------------------------------------------
@@ -42,8 +42,8 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	CriticalDelete( mapDir );
-	mapDir = None;
+    CriticalDelete( mapDir );
+    mapDir = None;
 }
 
 // ----------------------------------------------------------------------
@@ -52,19 +52,19 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	// Flags list box
-	CreateMapList();
-	
-	// Checkbox
-	chkTravel = ToolCheckboxWindow(winContainer.NewChild(Class'ToolCheckboxWindow'));
-	chkTravel.SetPos(280, 66);
-	chkTravel.SetSize(75, 50);
-	chkTravel.SetText("|&Travel");
-	chkTravel.SetToggle(True);
+    // Flags list box
+    CreateMapList();
 
-	// Buttons
-	btnLoad   = CreateToolButton(280, 362, "|&Load Map");
-	btnCancel = CreateToolButton(280, 387, "|&Cancel");
+    // Checkbox
+    chkTravel = ToolCheckboxWindow(winContainer.NewChild(Class'ToolCheckboxWindow'));
+    chkTravel.SetPos(280, 66);
+    chkTravel.SetSize(75, 50);
+    chkTravel.SetText("|&Travel");
+    chkTravel.SetToggle(True);
+
+    // Buttons
+    btnLoad   = CreateToolButton(280, 362, "|&Load Map");
+    btnCancel = CreateToolButton(280, 387, "|&Cancel");
 }
 
 // ----------------------------------------------------------------------
@@ -73,10 +73,10 @@ function CreateControls()
 
 function CreateMapList()
 {
-	// Now create the List Window
-	lstMaps = CreateToolList(15, 38, 255, 372);
-	lstMaps.EnableMultiSelect(False);
-	lstMaps.EnableAutoExpandColumns(True);
+    // Now create the List Window
+    lstMaps = CreateToolList(15, 38, 255, 372);
+    lstMaps.EnableMultiSelect(False);
+    lstMaps.EnableAutoExpandColumns(True);
 }
 
 // ----------------------------------------------------------------------
@@ -85,24 +85,24 @@ function CreateMapList()
 
 function PopulateMapList()
 {
-	local int mapIndex;
-	local String mapFileName;
+    local int mapIndex;
+    local String mapFileName;
 
-	lstMaps.DeleteAllRows();
+    lstMaps.DeleteAllRows();
 
-	// Loop through all the files, but only display travelmaps if 
-	// the TravelMap checkbox is enabled
+    // Loop through all the files, but only display travelmaps if
+    // the TravelMap checkbox is enabled
 
-	for( mapIndex=0; mapIndex<mapDir.GetDirCount(); mapIndex++)
-	{
-		mapFileName = mapDir.GetDirFilename(mapIndex);
-		lstMaps.AddRow( left(mapFileName, len(mapFileName) - 3) );
-	}
+    for( mapIndex=0; mapIndex<mapDir.GetDirCount(); mapIndex++)
+    {
+        mapFileName = mapDir.GetDirFilename(mapIndex);
+        lstMaps.AddRow( left(mapFileName, len(mapFileName) - 3) );
+    }
 
-	// Sort the maps by name
-	lstMaps.Sort();
+    // Sort the maps by name
+    lstMaps.Sort();
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -111,33 +111,33 @@ function PopulateMapList()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnLoad:
-			LoadMap(lstMaps.GetSelectedRow());
-			break;
+    switch( buttonPressed )
+    {
+        case btnLoad:
+            LoadMap(lstMaps.GetSelectedRow());
+            break;
 
-		case btnCancel:
-			root.PopWindow();
-			break;
+        case btnCancel:
+            root.PopWindow();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled ) 
-		bHandled = Super.ButtonActivated( buttonPressed );
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated( buttonPressed );
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the buttons
 // appropriately
@@ -145,9 +145,9 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -156,9 +156,9 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	LoadMap(rowID);
+    LoadMap(rowID);
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -167,26 +167,26 @@ event bool ListRowActivated(window list, int rowId)
 
 function LoadMap(int rowID)
 {
-	local String mapFileName;
-	local DeusExPlayer localPlayer;
-	local Bool bTravel;
+    local String mapFileName;
+    local DeusExPlayer localPlayer;
+    local Bool bTravel;
 
-	localPlayer = player;
+    localPlayer = player;
 
-	// If a travel map is selected, then we need to set a flag in 
-	// the player before loading the map
+    // If a travel map is selected, then we need to set a flag in
+    // the player before loading the map
 
-	mapFileName = lstMaps.GetField(rowID, 0);
+    mapFileName = lstMaps.GetField(rowID, 0);
 
-	mapFileName = mapFileName $ ".dx";
-	bTravel = chkTravel.GetToggle();
+    mapFileName = mapFileName $ ".dx";
+    bTravel = chkTravel.GetToggle();
 
-	root.ClearWindowStack();
+    root.ClearWindowStack();
 
-	if (bTravel)
-		localPlayer.ClientTravel(mapFileName, TRAVEL_Relative, True);
-	else
-		localPlayer.ConsoleCommand("Open" @ mapFileName $ "?loadonly");
+    if (bTravel)
+        localPlayer.ClientTravel(mapFileName, TRAVEL_Relative, True);
+    else
+        localPlayer.ConsoleCommand("Open" @ mapFileName $ "?loadonly");
 }
 
 // ----------------------------------------------------------------------
@@ -198,7 +198,7 @@ function LoadMap(int rowID)
 
 function EnableButtons()
 {
-	btnLoad.SetSensitivity( lstMaps.GetNumSelectedRows() > 0 );
+    btnLoad.SetSensitivity( lstMaps.GetNumSelectedRows() > 0 );
 }
 
 // ----------------------------------------------------------------------

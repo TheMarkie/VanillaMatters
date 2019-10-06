@@ -9,18 +9,18 @@ class PersonaClientWindow extends PersonaClientBaseWindow;
 // ----------------------------------------------------------------------
 
 event DrawBackground(GC gc)
-{	
-	// Draw window background
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
+{
+    // Draw window background
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
 
-	for(textureIndex=0; textureIndex<textureCount; textureIndex++)
-	{
-		gc.DrawIcon(
-			texturePosX[textureIndex], 
-			texturePosY[textureIndex], 
-			clientTextures[textureIndex]);		
-	}
+    for(textureIndex=0; textureIndex<textureCount; textureIndex++)
+    {
+        gc.DrawIcon(
+            texturePosX[textureIndex],
+            texturePosY[textureIndex],
+            clientTextures[textureIndex]);
+    }
 }
 
 defaultproperties

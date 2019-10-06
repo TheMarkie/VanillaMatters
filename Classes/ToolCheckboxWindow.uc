@@ -18,16 +18,16 @@ var int fontAcceleratorLineHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetTextColors(colText, colText, colText, colText);
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	SetTextMargins(0, 0);
-	SetCheckboxTextures(Texture'ToolWindowCheckbox_Off', Texture'ToolWindowCheckbox_On', 13, 13);
-	SetCheckboxSpacing(6);
-	SetCheckboxStyle(DSTY_Normal);
-	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
+    SetFont(fontText);
+    SetTextColors(colText, colText, colText, colText);
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetTextMargins(0, 0);
+    SetCheckboxTextures(Texture'ToolWindowCheckbox_Off', Texture'ToolWindowCheckbox_On', 13, 13);
+    SetCheckboxSpacing(6);
+    SetCheckboxStyle(DSTY_Normal);
+    SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 }
 
 // ----------------------------------------------------------------------

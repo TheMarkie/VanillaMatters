@@ -5,52 +5,52 @@ class SpyDrone extends ThrownProjectile;
 
 auto state Flying
 {
-	function ProcessTouch (Actor Other, Vector HitLocation)
-	{
-		// do nothing
-	}
-	simulated function HitWall (vector HitNormal, actor HitWall)
-	{
-		// do nothing
-	}
+    function ProcessTouch (Actor Other, Vector HitLocation)
+    {
+        // do nothing
+    }
+    simulated function HitWall (vector HitNormal, actor HitWall)
+    {
+        // do nothing
+    }
 }
 
 function Tick(float deltaTime)
 {
-	// do nothing
+    // do nothing
 }
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Momentum, name damageType)
 {
-	// fall to the ground if EMP'ed
-	if ((DamageType == 'EMP') && !bDisabled)
-	{
-		SetPhysics(PHYS_Falling);
-		bBounce = True;
-		LifeSpan = 10.0;
-	}
+    // fall to the ground if EMP'ed
+    if ((DamageType == 'EMP') && !bDisabled)
+    {
+        SetPhysics(PHYS_Falling);
+        bBounce = True;
+        LifeSpan = 10.0;
+    }
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		if ( DeusExPlayer(Owner) != None )
-			DeusExPlayer(Owner).ForceDroneOff();
-		else
-			log("Warning:Drone with no owner?" );
-	}
-	Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, damageType);
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( DeusExPlayer(Owner) != None )
+            DeusExPlayer(Owner).ForceDroneOff();
+        else
+            log("Warning:Drone with no owner?" );
+    }
+    Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, damageType);
 }
 
 function BeginPlay()
 {
-	// do nothing
+    // do nothing
 }
 
 function Destroyed()
 {
-	if ( DeusExPlayer(Owner) != None )
-		DeusExPlayer(Owner).aDrone = None;
+    if ( DeusExPlayer(Owner) != None )
+        DeusExPlayer(Owner).aDrone = None;
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 defaultproperties

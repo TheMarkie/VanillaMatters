@@ -15,9 +15,9 @@ var localized String     LevelNames[3]; //Human readable skill level names
 
 event InitWindow()
 {
-	PopulateSkillLevels();
+    PopulateSkillLevels();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialSkillLevel();
 
@@ -30,7 +30,7 @@ event InitWindow()
 
 function PopulateSkillLevels()
 {
-	local int LevelIndex;
+    local int LevelIndex;
 
    for (LevelIndex = 0; LevelIndex < arrayCount(LevelNames); LevelIndex++)
    {
@@ -79,7 +79,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ (defaultValue + 1));
    LoadSetting();
 }

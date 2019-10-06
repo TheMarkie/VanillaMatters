@@ -3,8 +3,8 @@
 //=============================================================================
 class HUDLightIndicator expands HUDBaseWindow;
 
-#exec TEXTURE IMPORT FILE="Textures\HUDLightBorder_1.bmp"		NAME="HUDLightBorder_1"			GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\HUDLightBackground_1.bmp"	NAME="HUDLightBackground_1"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\HUDLightBorder_1.bmp"       NAME="HUDLightBorder_1"         GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\HUDLightBackground_1.bmp"   NAME="HUDLightBackground_1"     GROUP="VMUI" MIPS=Off
 
 var Texture texBackground;
 var Texture texBorder;
@@ -14,13 +14,13 @@ var Texture texBorder;
 // ----------------------------------------------------------------------
 
 function InitWindow() {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	Hide();
+    Hide();
 
-	player = DeusExPlayer( DeusExRootWindow( GetRootWindow() ).parentPawn );
+    player = DeusExPlayer( DeusExRootWindow( GetRootWindow() ).parentPawn );
 
-	SetSize( 87, 41 );
+    SetSize( 87, 41 );
 }
 
 // ----------------------------------------------------------------------
@@ -28,16 +28,16 @@ function InitWindow() {
 // ----------------------------------------------------------------------
 
 function DrawBackground( GC gc ) {
-	local float vis;
-	local color col;
+    local float vis;
+    local color col;
 
-	vis = FMin( player.AIVisibility() * 10, 1 );
+    vis = FMin( player.AIVisibility() * 10, 1 );
 
-	col = GetColorScaled( FMax( 1 - vis, 0.01 ) );
+    col = GetColorScaled( FMax( 1 - vis, 0.01 ) );
 
-	gc.SetStyle( DSTY_Translucent );
-	gc.SetTileColor( col );
-	gc.DrawTexture( 5, 6, 80, 24, 0, 0, texBackground );
+    gc.SetStyle( DSTY_Translucent );
+    gc.SetTileColor( col );
+    gc.DrawTexture( 5, 6, 80, 24, 0, 0, texBackground );
 }
 
 // ----------------------------------------------------------------------
@@ -45,11 +45,11 @@ function DrawBackground( GC gc ) {
 // ----------------------------------------------------------------------
 
 function DrawBorder( GC gc ) {
-	if ( bDrawBorder ) {
-		gc.SetStyle( borderDrawStyle );
-		gc.SetTileColor( colBorder );
-		gc.DrawTexture( 0, 0, 87, 41, 0, 0, texBorder );
-	}
+    if ( bDrawBorder ) {
+        gc.SetStyle( borderDrawStyle );
+        gc.SetTileColor( colBorder );
+        gc.DrawTexture( 0, 0, 87, 41, 0, 0, texBorder );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -57,7 +57,7 @@ function DrawBorder( GC gc ) {
 // ----------------------------------------------------------------------
 
 function SetVisibility( bool bNewVisibility ) {
-	Show( bNewVisibility );
+    Show( bNewVisibility );
 }
 
 // ----------------------------------------------------------------------

@@ -3,17 +3,17 @@
 //
 // Used for non-interactive conversations displayed in first-person
 // mode.  This type of conversation can only display spoken text,
-// choices are -not- allowed.  
+// choices are -not- allowed.
 //=============================================================================
 
 class ConWindow extends DeusExBaseWindow;
 
-var TileWindow lowerConWindow;					// Lower letterbox region
-var ConWindowSpeech winSpeech;					// Speech window
-var ConCameraWindow cameraWin;					// Camera Stats displayed here
-var Texture    conTexture;						// Background texture for window
+var TileWindow lowerConWindow;                  // Lower letterbox region
+var ConWindowSpeech winSpeech;                  // Speech window
+var ConCameraWindow cameraWin;                  // Camera Stats displayed here
+var Texture    conTexture;                      // Background texture for window
 
-var ConPlay conPlay;							// Pointer into current conPlay object
+var ConPlay conPlay;                            // Pointer into current conPlay object
 
 var DeusExPlayer player;
 var DeusExRootWindow root;
@@ -33,35 +33,35 @@ var bool  bForcePlay;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	// Set default mouse focus mode
-	SetMouseFocusMode(MFocus_Enter);
+    // Set default mouse focus mode
+    SetMouseFocusMode(MFocus_Enter);
 
-	// Initialize some variables and stuff
-	conPlay = None;
+    // Initialize some variables and stuff
+    conPlay = None;
 
-	// Create text window where we'll display the conversation
-	lowerConWindow = TileWindow(NewChild(Class'TileWindow'));
-	lowerConWindow.SetBackground(conTexture);
-	lowerConWindow.SetBackgroundStyle(DSTY_Modulated);
-	lowerConWindow.SetOrder(ORDER_Down);
-	lowerConWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	lowerConWindow.SetMargins(2, 2);
-	lowerConWindow.MakeWidthsEqual(False);
-	lowerConWindow.MakeHeightsEqual(False);
-	lowerConWindow.SetTileColorRGB(0, 0, 0);
+    // Create text window where we'll display the conversation
+    lowerConWindow = TileWindow(NewChild(Class'TileWindow'));
+    lowerConWindow.SetBackground(conTexture);
+    lowerConWindow.SetBackgroundStyle(DSTY_Modulated);
+    lowerConWindow.SetOrder(ORDER_Down);
+    lowerConWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    lowerConWindow.SetMargins(2, 2);
+    lowerConWindow.MakeWidthsEqual(False);
+    lowerConWindow.MakeHeightsEqual(False);
+    lowerConWindow.SetTileColorRGB(0, 0, 0);
 
-	conStartTime = player.level.TimeSeconds;
+    conStartTime = player.level.TimeSeconds;
 
-//	lastTick     = 0;
-//	fadeColor    = 255;
+//  lastTick     = 0;
+//  fadeColor    = 255;
 }
 
 // ----------------------------------------------------------------------
@@ -70,13 +70,13 @@ event InitWindow()
 
 function CreateSpeechWindow()
 {
-	if (winSpeech == None)
-	{
-		winSpeech = ConWindowSpeech(lowerConWindow.NewChild(Class'ConWindowSpeech'));
-		winSpeech.SetSpeechFont(conPlay.GetCurrentSpeechFont());
-		winSpeech.SetNameFont(conPlay.GetCurrentNameFont());
-		winSpeech.SetForcePlay(bForcePlay);
-	}
+    if (winSpeech == None)
+    {
+        winSpeech = ConWindowSpeech(lowerConWindow.NewChild(Class'ConWindowSpeech'));
+        winSpeech.SetSpeechFont(conPlay.GetCurrentSpeechFont());
+        winSpeech.SetNameFont(conPlay.GetCurrentNameFont());
+        winSpeech.SetForcePlay(bForcePlay);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -86,27 +86,27 @@ function CreateSpeechWindow()
 event Tick(float deltaSeconds)
 {
 
-	
+
 //////////////////////////////////////////////////////////////////
-// This code is commented out because setting the tile color for 
+// This code is commented out because setting the tile color for
 // modulated textures DOES NOT WORK (damn).  Someday perhaps we'll
 // find a work-around or fix the engine to support this.
 //////////////////////////////////////////////////////////////////
 /*
-	if ( lastTick + deltaSeconds > fadeInterval ) 
-	{
-		fadeColor--;
-		lowerConWindow.SetTileColorRGB(fadeColor, fadeColor, fadeColor);
-		lastTick = ( lastTick - fadeInterval);
-		
-		// Stop the tick event once the box is solid black.
-		if ( fadeColor == 0 ) 
-			bTickEnabled = False;
-	}
-	else
-	{
-		lastTick = lastTick + deltaSeconds;
-	}
+    if ( lastTick + deltaSeconds > fadeInterval )
+    {
+        fadeColor--;
+        lowerConWindow.SetTileColorRGB(fadeColor, fadeColor, fadeColor);
+        lastTick = ( lastTick - fadeInterval);
+
+        // Stop the tick event once the box is solid black.
+        if ( fadeColor == 0 )
+            bTickEnabled = False;
+    }
+    else
+    {
+        lastTick = lastTick + deltaSeconds;
+    }
 */
 }
 
@@ -116,11 +116,11 @@ event Tick(float deltaSeconds)
 
 function CreateCameraWindow()
 {
-	if (( cameraWin == None ) && (conPlay != None))
-	{
-		cameraWin = ConCameraWindow(NewChild(Class'ConCameraWindow'));
-		cameraWin.SetConCamera(conPlay.cameraInfo);
-	}
+    if (( cameraWin == None ) && (conPlay != None))
+    {
+        cameraWin = ConCameraWindow(NewChild(Class'ConCameraWindow'));
+        cameraWin.SetConCamera(conPlay.cameraInfo);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -129,11 +129,11 @@ function CreateCameraWindow()
 
 function DestroyCameraWindow()
 {
-	if ( cameraWin != None )
-	{
-		cameraWin.Destroy();
-		cameraWin = None;
-	}
+    if ( cameraWin != None )
+    {
+        cameraWin.Destroy();
+        cameraWin = None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -142,8 +142,8 @@ function DestroyCameraWindow()
 
 function UpdateCameraInfo()
 {
-	if ( cameraWin != None )
-		cameraWin.UpdateCameraInfo();
+    if ( cameraWin != None )
+        cameraWin.UpdateCameraInfo();
 }
 
 // ----------------------------------------------------------------------
@@ -154,15 +154,15 @@ function UpdateCameraInfo()
 
 event ConfigurationChanged()
 {
-	local float newHeight;
-	local float lowerConPosY;
+    local float newHeight;
+    local float lowerConPosY;
 
-	newHeight = height * 0.15;
+    newHeight = height * 0.15;
 
-	lowerConPosY = height - newHeight - 30;
-	lowerConWindow.ConfigureChild(75, lowerConPosY, width - 150, newHeight);
+    lowerConPosY = height - newHeight - 30;
+    lowerConWindow.ConfigureChild(75, lowerConPosY, width - 150, newHeight);
 
-	ConfigureCameraWindow(lowerConPosY);
+    ConfigureCameraWindow(lowerConPosY);
 }
 
 // ----------------------------------------------------------------------
@@ -171,9 +171,9 @@ event ConfigurationChanged()
 
 event bool ChildRequestedReconfiguration(window childWin)
 {
-	ConfigurationChanged();
+    ConfigurationChanged();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -182,14 +182,14 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 function ConfigureCameraWindow(float lowerConPosY)
 {
-	local float qWidth, qHeight;
+    local float qWidth, qHeight;
 
-	// If the camera window is visible, position it right above the lower window
-	if (cameraWin != None)
-	{
-		cameraWin.QueryPreferredSize(qWidth, qHeight);
-		cameraWin.ConfigureChild(10, lowerConPosY - qHeight - 10, qWidth, qHeight);	
-	}
+    // If the camera window is visible, position it right above the lower window
+    if (cameraWin != None)
+    {
+        cameraWin.QueryPreferredSize(qWidth, qHeight);
+        cameraWin.ConfigureChild(10, lowerConPosY - qHeight - 10, qWidth, qHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -200,15 +200,15 @@ function ConfigureCameraWindow(float lowerConPosY)
 
 function DisplayName(string text)
 {
-	// Don't do this if bForcePlay == True
+    // Don't do this if bForcePlay == True
 
-	if (!bForcePlay)
-	{
-		if (winSpeech == None ) 
-			CreateSpeechWindow();
+    if (!bForcePlay)
+    {
+        if (winSpeech == None )
+            CreateSpeechWindow();
 
-		winSpeech.SetName(text);
-	}
+        winSpeech.SetName(text);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -219,10 +219,10 @@ function DisplayName(string text)
 
 function DisplayText(string text, Actor speakingActor)
 {
-	if (winSpeech == None ) 
-		CreateSpeechWindow();
+    if (winSpeech == None )
+        CreateSpeechWindow();
 
-	winSpeech.SetSpeech(text, speakingActor);
+    winSpeech.SetSpeech(text, speakingActor);
 }
 
 // ----------------------------------------------------------------------
@@ -233,32 +233,32 @@ function DisplayText(string text, Actor speakingActor)
 
 function AppendText(string text)
 {
-	if (winSpeech == None ) 
-		CreateSpeechWindow();
+    if (winSpeech == None )
+        CreateSpeechWindow();
 
-	winSpeech.AppendSpeech(text);
+    winSpeech.AppendSpeech(text);
 }
 
 // ----------------------------------------------------------------------
 // DestroyChildren()
 //
-// Destroys all the windows used to display text and choices, 
+// Destroys all the windows used to display text and choices,
 // including the name window
 // ----------------------------------------------------------------------
 
 function DestroyChildren()
 {
-	local Window win;
+    local Window win;
 
-	win = lowerConWindow.GetTopChild();
-	while( win != None )
-	{
-		win.Destroy();
-		win = lowerConWindow.GetTopChild();
-	}
+    win = lowerConWindow.GetTopChild();
+    while( win != None )
+    {
+        win.Destroy();
+        win = lowerConWindow.GetTopChild();
+    }
 
-	// Reset variables
-	winSpeech = None;
+    // Reset variables
+    winSpeech = None;
 }
 
 // ----------------------------------------------------------------------
@@ -267,7 +267,7 @@ function DestroyChildren()
 
 function Close()
 {
-	Hide();
+    Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -278,7 +278,7 @@ function Close()
 
 function Clear()
 {
-	DestroyChildren();
+    DestroyChildren();
 }
 
 // ----------------------------------------------------------------------
@@ -289,18 +289,18 @@ function Clear()
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	// Ignore the mouse click if we're less than two seconds 
-	// into the conversation 
+    // Ignore the mouse click if we're less than two seconds
+    // into the conversation
 
-	if (player.level.TimeSeconds - conStartTime < 2) 
-	{
-		return False;
-	}
-	else
-	{
-		conPlay.PlayNextEvent();
-		return True;
-	}
+    if (player.level.TimeSeconds - conStartTime < 2)
+    {
+        return False;
+    }
+    else
+    {
+        conPlay.PlayNextEvent();
+        return True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -312,41 +312,41 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if ( conPlay.interactiveCamera )
-		bHandled = ProcessCameraKey( key );
+    if ( conPlay.interactiveCamera )
+        bHandled = ProcessCameraKey( key );
 
-	// Check for Ctrl-F9, which is a hard-coded key to take a screenshot
-	if ( IsKeyDown( IK_Ctrl ) && ( key == IK_F9 ))
-	{
-		player.ConsoleCommand("SHOT");			
-		return True;
-	}
+    // Check for Ctrl-F9, which is a hard-coded key to take a screenshot
+    if ( IsKeyDown( IK_Ctrl ) && ( key == IK_F9 ))
+    {
+        player.ConsoleCommand("SHOT");
+        return True;
+    }
 
-	// If the key wasn't handled, let's take a look to see if we can
-	// use it.
+    // If the key wasn't handled, let's take a look to see if we can
+    // use it.
 
-	if ( bHandled == False )
-	{
-		switch( key ) 
-		{	
-			// Toggle interactive conversations on/off
-//			case IK_F1:
-//				conPlay.ToggleInteractiveCamera();
-//				bHandled = True;
-//				break;
+    if ( bHandled == False )
+    {
+        switch( key )
+        {
+            // Toggle interactive conversations on/off
+//          case IK_F1:
+//              conPlay.ToggleInteractiveCamera();
+//              bHandled = True;
+//              break;
 
-			case IK_Escape:
-			case IK_Enter:	
-			case IK_Space:
-				conPlay.PlayNextEvent();
-				bHandled = True;
-				break;
-		}
-	}
+            case IK_Escape:
+            case IK_Enter:
+            case IK_Space:
+                conPlay.PlayNextEvent();
+                bHandled = True;
+                break;
+        }
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -358,167 +358,167 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function bool ProcessCameraKey(EInputKey key)
 {
-	local float magnitude;
-	local bool rotationControl;
-	local ConCamera ci;
-	local bool bHandled;
+    local float magnitude;
+    local bool rotationControl;
+    local ConCamera ci;
+    local bool bHandled;
 
-	// Get a pointer to the Camera Object for shorthand reference
-	ci = conPlay.cameraInfo;
+    // Get a pointer to the Camera Object for shorthand reference
+    ci = conPlay.cameraInfo;
 
-	// Allow the user to hold down shift or ctrl for less/finer
-	// resolution
+    // Allow the user to hold down shift or ctrl for less/finer
+    // resolution
 
-	if ( IsKeyDown(IK_SHIFT) ) 
-		magnitude = 10.0;
-	else
-		magnitude = 1.0;
+    if ( IsKeyDown(IK_SHIFT) )
+        magnitude = 10.0;
+    else
+        magnitude = 1.0;
 
-	// If the user is holding down Control, then we're toying with
-	// the camera rotation
+    // If the user is holding down Control, then we're toying with
+    // the camera rotation
 
-	rotationControl = IsKeyDown(IK_CTRL);
+    rotationControl = IsKeyDown(IK_CTRL);
 
-	// Keys are different based on whether we're in Speakers or Actor camera mode.
+    // Keys are different based on whether we're in Speakers or Actor camera mode.
 
-	if (( ci.cameraMode == CT_Actor ) && ( rotationControl == False ))
-	{
-		switch( key )
-		{
-			// Move Left/Right (X Axis)
-			case IK_Left:
-				ci.cameraOffset.X -= (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Right:
-				ci.cameraOffset.X += (0.10 * magnitude);
-				bHandled = True;
-				break;
+    if (( ci.cameraMode == CT_Actor ) && ( rotationControl == False ))
+    {
+        switch( key )
+        {
+            // Move Left/Right (X Axis)
+            case IK_Left:
+                ci.cameraOffset.X -= (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Right:
+                ci.cameraOffset.X += (0.10 * magnitude);
+                bHandled = True;
+                break;
 
-			// Move Up/Down (Y Axis)
-			case IK_Up:
-				ci.cameraOffset.Y -= (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Down:
-				ci.cameraOffset.Y += (0.10 * magnitude);
-				bHandled = True;
-				break;
+            // Move Up/Down (Y Axis)
+            case IK_Up:
+                ci.cameraOffset.Y -= (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Down:
+                ci.cameraOffset.Y += (0.10 * magnitude);
+                bHandled = True;
+                break;
 
-			// Zoom-In/Out (Z Axis)
-			case IK_A:
-				ci.cameraOffset.Z -= (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Z:
-				ci.cameraOffset.Z += (0.10 * magnitude);
-				bHandled = True;
-				break;		
-		}
-	}
-	else if (( ci.cameraMode == CT_Speakers ) && ( rotationControl == False ))
-	{
-		switch( key )
-		{
-			// Center Modifier
-			case IK_Left:
-				ci.centerModifier += (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Right:
-				ci.centerModifier -= (0.10 * magnitude);
-				bHandled = True;
-				break;
+            // Zoom-In/Out (Z Axis)
+            case IK_A:
+                ci.cameraOffset.Z -= (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Z:
+                ci.cameraOffset.Z += (0.10 * magnitude);
+                bHandled = True;
+                break;
+        }
+    }
+    else if (( ci.cameraMode == CT_Speakers ) && ( rotationControl == False ))
+    {
+        switch( key )
+        {
+            // Center Modifier
+            case IK_Left:
+                ci.centerModifier += (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Right:
+                ci.centerModifier -= (0.10 * magnitude);
+                bHandled = True;
+                break;
 
-			// Camera Height Modifier
-			case IK_Up:
-				ci.heightModifier += (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Down:
-				ci.heightModifier -= (0.10 * magnitude);
-				bHandled = True;
-				break;
+            // Camera Height Modifier
+            case IK_Up:
+                ci.heightModifier += (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Down:
+                ci.heightModifier -= (0.10 * magnitude);
+                bHandled = True;
+                break;
 
-			// Distance Multiplier
-			case IK_A:
-				ci.distanceMultiplier += (0.10 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Z:
-				ci.distanceMultiplier -= (0.10 * magnitude);
-				bHandled = True;
-				break;
-		}
-	}
+            // Distance Multiplier
+            case IK_A:
+                ci.distanceMultiplier += (0.10 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Z:
+                ci.distanceMultiplier -= (0.10 * magnitude);
+                bHandled = True;
+                break;
+        }
+    }
 
-	// If the key still hasn't been handled, check to see there's a key
-	// common to both modes
+    // If the key still hasn't been handled, check to see there's a key
+    // common to both modes
 
-	if ( bHandled == False )
-	{
-		// Keys common to both modes
-		switch( key ) 
-		{	
-			// Pitch
-			case IK_Up:
-				ci.rotation.pitch += (100 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Down:
-				ci.rotation.pitch -= (100 * magnitude);
-				bHandled = True;
-				break;
+    if ( bHandled == False )
+    {
+        // Keys common to both modes
+        switch( key )
+        {
+            // Pitch
+            case IK_Up:
+                ci.rotation.pitch += (100 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Down:
+                ci.rotation.pitch -= (100 * magnitude);
+                bHandled = True;
+                break;
 
-			// Yaw 
-			case IK_Left:
-				ci.rotation.yaw += (100 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Right:
-				ci.rotation.yaw -= (100 * magnitude);
-				bHandled = True;
-				break;
+            // Yaw
+            case IK_Left:
+                ci.rotation.yaw += (100 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Right:
+                ci.rotation.yaw -= (100 * magnitude);
+                bHandled = True;
+                break;
 
-			// Roll
-			case IK_A:
-				ci.rotation.roll += (100 * magnitude);
-				bHandled = True;
-				break;
-			case IK_Z:
-				ci.rotation.roll -= (100 * magnitude);
-				bHandled = True;
-				break;
+            // Roll
+            case IK_A:
+                ci.rotation.roll += (100 * magnitude);
+                bHandled = True;
+                break;
+            case IK_Z:
+                ci.rotation.roll -= (100 * magnitude);
+                bHandled = True;
+                break;
 
-			// Toggle through camera views
-			case IK_PageUp:
-				ci.IncCameraMode();
-				break;
+            // Toggle through camera views
+            case IK_PageUp:
+                ci.IncCameraMode();
+                break;
 
-			case IK_PageDown:
-				ci.DecCameraMode();
-				break;
+            case IK_PageDown:
+                ci.DecCameraMode();
+                break;
 
-			// Write camera info to log
-			case IK_SPACE:
-				ci.LogCameraInfo();
-				bHandled = True;
-				break;
+            // Write camera info to log
+            case IK_SPACE:
+                ci.LogCameraInfo();
+                bHandled = True;
+                break;
 
-			// Switch camera modes
-			case IK_ENTER:
-				ci.SwitchCameraMode();
-				bHandled = True;
-				break;
-		}
-	}
+            // Switch camera modes
+            case IK_ENTER:
+                ci.SwitchCameraMode();
+                bHandled = True;
+                break;
+        }
+    }
 
-	// If we processed this key, update the camera window
+    // If we processed this key, update the camera window
 
-	if (( bHandled )  && (cameraWin != None))
-		cameraWin.UpdateCameraInfo();
+    if (( bHandled )  && (cameraWin != None))
+        cameraWin.UpdateCameraInfo();
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -535,7 +535,7 @@ function ShowReceivedItem(Inventory invItem, int count)
 
 function SetForcePlay(bool bNewForcePlay)
 {
-	bForcePlay = bNewForcePlay;
+    bForcePlay = bNewForcePlay;
 }
 
 // ----------------------------------------------------------------------

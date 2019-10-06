@@ -11,85 +11,85 @@ var travel Inventory lastInHand;
 
 state Active
 {
-	// Vanilla Matters: Apply and remove transparency accordingly, applies to newly equipped items and removes from unequipped ones.
-	function Tick( float deltaTime ) {
-		if ( lastInHand == None ) {
-			if ( Player.inHand != None ) {
-				lastInHand = Player.inHand;
-				ToggleTransparency( lastInHand, true, 0.05 );
-			}
+    // Vanilla Matters: Apply and remove transparency accordingly, applies to newly equipped items and removes from unequipped ones.
+    function Tick( float deltaTime ) {
+        if ( lastInHand == None ) {
+            if ( Player.inHand != None ) {
+                lastInHand = Player.inHand;
+                ToggleTransparency( lastInHand, true, 0.05 );
+            }
 
-			return;
-		}
-		else if ( Player.inHand == None ) {
-			ToggleTransparency( lastInHand, false );
-			lastInHand = None;
-			return;
-		}
+            return;
+        }
+        else if ( Player.inHand == None ) {
+            ToggleTransparency( lastInHand, false );
+            lastInHand = None;
+            return;
+        }
 
-		if ( lastInHand != Player.inHand ) {
-			ToggleTransparency( lastInHand, false );
-			lastInHand = Player.inHand;
-			ToggleTransparency( lastInHand, true, 0.05 );
-		}
-	}
+        if ( lastInHand != Player.inHand ) {
+            ToggleTransparency( lastInHand, false );
+            lastInHand = Player.inHand;
+            ToggleTransparency( lastInHand, true, 0.05 );
+        }
+    }
 Begin:
-	if ((Player.inHand != None) && (Player.inHand.IsA('DeusExWeapon')))
-		Player.ServerConditionalNotifyMsg( Player.MPMSG_NoCloakWeapon );
-	Player.PlaySound(Sound'CloakUp', SLOT_Interact, 0.85, ,768,1.0);
+    if ((Player.inHand != None) && (Player.inHand.IsA('DeusExWeapon')))
+        Player.ServerConditionalNotifyMsg( Player.MPMSG_NoCloakWeapon );
+    Player.PlaySound(Sound'CloakUp', SLOT_Interact, 0.85, ,768,1.0);
 
-	// Vanilla Matters: Cloak the player in third person.
-	Player.SetSkinStyle( STY_Translucent, Texture'WhiteStatic', 0.05 );
-	Player.KillShadow();
-	Player.MultiSkins[6] = Texture'BlackMaskTex';
-	Player.MultiSkins[7] = Texture'BlackMaskTex';
+    // Vanilla Matters: Cloak the player in third person.
+    Player.SetSkinStyle( STY_Translucent, Texture'WhiteStatic', 0.05 );
+    Player.KillShadow();
+    Player.MultiSkins[6] = Texture'BlackMaskTex';
+    Player.MultiSkins[7] = Texture'BlackMaskTex';
 }
 
 function Deactivate()
 {
-	Player.PlaySound(Sound'CloakDown', SLOT_Interact, 0.85, ,768,1.0);
-	Super.Deactivate();
+    Player.PlaySound(Sound'CloakDown', SLOT_Interact, 0.85, ,768,1.0);
+    Super.Deactivate();
 
-	// Vanilla Matters: Clean up transparency.
-	ToggleTransparency( lastInHand, false );
-	lastInHand = None;
+    // Vanilla Matters: Clean up transparency.
+    ToggleTransparency( lastInHand, false );
+    lastInHand = None;
 
-	Player.ResetSkinStyle();
-	Player.CreateShadow();
+    Player.ResetSkinStyle();
+    Player.CreateShadow();
 }
 
 // Vanilla Matters: Functions to set and reset item transparency.
 function ToggleTransparency( Inventory item, bool transparent, optional float newScaleGlow ) {
-	if ( item == none ) {
-		return;
-	}
+    if ( item == none ) {
+        return;
+    }
 
-	if ( transparent ) {
-		item.Style = STY_Translucent;
-		item.ScaleGlow = newScaleGlow;
-	}
-	else {
-		item.Style = STY_Normal;
-		item.ScaleGlow = item.Default.ScaleGlow;
-	}
+    if ( transparent ) {
+        item.Style = STY_Translucent;
+        item.ScaleGlow = newScaleGlow;
+    }
+    else {
+        item.Style = STY_Normal;
+        item.ScaleGlow = item.Default.ScaleGlow;
+    }
 }
 
 simulated function float GetEnergyRate()
 {
-	return energyRate * LevelValues[CurrentLevel];
+    return energyRate * LevelValues[CurrentLevel];
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
       AugmentationLocation = LOC_Eye;
-	}
+    }
 }
 
 defaultproperties

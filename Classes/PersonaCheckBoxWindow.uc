@@ -21,24 +21,24 @@ var int   fontAcceleratorLineHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	SetTextMargins(0, 0);
-	SetCheckboxTextures(Texture'PersonaCheckBox_Off', Texture'PersonaCheckBox_On', 12, 12);
-	SetCheckboxSpacing(6);
-	SetCheckboxStyle(DSTY_Masked);
-	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
+    SetFont(fontText);
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetTextMargins(0, 0);
+    SetCheckboxTextures(Texture'PersonaCheckBox_Off', Texture'PersonaCheckBox_On', 12, 12);
+    SetCheckboxSpacing(6);
+    SetCheckboxStyle(DSTY_Masked);
+    SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 
-	// TODO: Unique HUD sounds
-	SetButtonSounds(None, Sound'Menu_Press');
-	SetSoundVolume(0.25);
+    // TODO: Unique HUD sounds
+    SetButtonSounds(None, Sound'Menu_Press');
+    SetSoundVolume(0.25);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -47,15 +47,15 @@ event InitWindow()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colText       = theme.GetColorFromName('HUDColor_ButtonTextNormal');
-	colButtonFace = theme.GetColorFromName('HUDColor_ButtonFace');
+    colText       = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+    colButtonFace = theme.GetColorFromName('HUDColor_ButtonFace');
 
-	SetTextColors(colText, colText, colText, colText, colText, colText);
-	SetCheckboxColor(colText);
+    SetTextColors(colText, colText, colText, colText, colText, colText);
+    SetCheckboxColor(colText);
 }
 
 // ----------------------------------------------------------------------

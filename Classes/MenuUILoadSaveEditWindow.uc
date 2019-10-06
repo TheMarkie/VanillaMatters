@@ -17,10 +17,10 @@ var bool    bReadOnly;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetBackground(texBackground);
-	SetBackgroundStyle(DSTY_Normal);
+    SetBackground(texBackground);
+    SetBackgroundStyle(DSTY_Normal);
 }
 
 // ----------------------------------------------------------------------
@@ -32,7 +32,7 @@ event InitWindow()
 
 function bool FilterChar(out string chStr)
 {
-	return ((chStr != ";") || (!bReadOnly));
+    return ((chStr != ";") || (!bReadOnly));
 }
 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function bool FilterChar(out string chStr)
 
 function SetReadOnly(bool bNewReadOnly)
 {
-	bReadOnly = bNewReadOnly;
+    bReadOnly = bNewReadOnly;
 }
 
 // ----------------------------------------------------------------------
@@ -52,19 +52,19 @@ function SetReadOnly(bool bNewReadOnly)
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local int keyIndex;
-	local bool bKeyHandled;
+    local int keyIndex;
+    local bool bKeyHandled;
 
-	bKeyHandled = True;
+    bKeyHandled = True;
 
-	// If the user hits the up or down arrow keys or the Page Up/Down 
-	// keys, we want to pass them back to the parent window so the 
-	// user can easily scroll between savegames.
+    // If the user hits the up or down arrow keys or the Page Up/Down
+    // keys, we want to pass them back to the parent window so the
+    // user can easily scroll between savegames.
 
-	if ((key == IK_Up) || (key == IK_Down) || (key == IK_PageUp) || (key == IK_PageDown))
-		return False;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if ((key == IK_Up) || (key == IK_Down) || (key == IK_PageUp) || (key == IK_PageDown))
+        return False;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -73,11 +73,11 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	SetTextColor(colWhite);
+    SetTextColor(colWhite);
 }
 
 // ----------------------------------------------------------------------

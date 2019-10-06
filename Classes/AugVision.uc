@@ -19,18 +19,18 @@ replication
 
 // Vanilla Matters: I don't even know what the heck is going on here so I'm gonna rewrite this mess.
 state Active {
-	function BeginState() {
-		SetVisionAugStatus( CurrentLevel + 1, LevelValues[CurrentLevel], true );
-		Player.RelevantRadius = LevelValues[CurrentLevel];
-	}
+    function BeginState() {
+        SetVisionAugStatus( CurrentLevel + 1, LevelValues[CurrentLevel], true );
+        Player.RelevantRadius = LevelValues[CurrentLevel];
+    }
 Begin:
 }
 
 state Inactive {
-	function BeginState() {
-		SetVisionAugStatus( 0, 0, false );
-		Player.RelevantRadius = 0;
-	}
+    function BeginState() {
+        SetVisionAugStatus( 0, 0, false );
+        Player.RelevantRadius = 0;
+    }
 Begin:
 }
 
@@ -40,32 +40,32 @@ Begin:
 
 // Vanilla Matters: Gonna rewrite the mess above for readability.
 simulated function SetVisionAugStatus( int Level, float LevelValue, bool active ) {
-	local AugmentationDisplayWindow augWnd;
+    local AugmentationDisplayWindow augWnd;
 
-	augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
+    augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
 
-	if ( active ) {
-		augWnd.VM_visionLevels[1] = Level;
-		augWnd.VM_visionValues[1] = LevelValue;
-	}
-	else {
-		augWnd.visionBlinder = none;
+    if ( active ) {
+        augWnd.VM_visionLevels[1] = Level;
+        augWnd.VM_visionValues[1] = LevelValue;
+    }
+    else {
+        augWnd.visionBlinder = none;
 
-		augWnd.VM_visionLevels[1] = 0;
-		augWnd.VM_visionValues[1] = 0;
-	}
+        augWnd.VM_visionLevels[1] = 0;
+        augWnd.VM_visionValues[1] = 0;
+    }
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+    }
 }
 
 defaultproperties

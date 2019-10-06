@@ -9,13 +9,13 @@ var Rotator rot;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Velocity = vect(0,0,0);
-		rot = Rotation;
-		rot.Roll += FRand() * 65535;
-		SetRotation(rot);
-	}
+    function BeginState()
+    {
+        Velocity = vect(0,0,0);
+        rot = Rotation;
+        rot.Roll += FRand() * 65535;
+        SetRotation(rot);
+    }
 }
 
 defaultproperties

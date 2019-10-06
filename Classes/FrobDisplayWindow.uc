@@ -37,12 +37,12 @@ var localized String VM_msgDamageThreshold;
 
 function InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -51,19 +51,19 @@ function InitWindow()
 
 function string FormatString(float num)
 {
-	local string tempstr;
+    local string tempstr;
 
-	// round up
-	num += 0.5;
+    // round up
+    num += 0.5;
 
-	tempstr = Left(String(num), 3);
+    tempstr = Left(String(num), 3);
 
-	if (num < 100.0)
-		tempstr = Left(String(num), 2);
-	if (num < 10.0)
-		tempstr = Left(String(num), 1);
+    if (num < 100.0)
+        tempstr = Left(String(num), 2);
+    if (num < 10.0)
+        tempstr = Left(String(num), 1);
 
-	return tempstr;
+    return tempstr;
 }
 
 // ----------------------------------------------------------------------
@@ -72,368 +72,368 @@ function string FormatString(float num)
 
 function DrawWindow(GC gc)
 {
-	local actor				frobTarget;
-	local float				infoX, infoY, infoW, infoH;
-	local string			strInfo;
-	local DeusExMover		dxMover;
-	local Mover				M;
-	local HackableDevices	device;
-	local Vector			centerLoc, v1, v2;
-	local float				boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-	local float				corner, x, y;
-	local int				i, j, k, offset;
-	local Color				col;
-	local int				numTools;
+    local actor             frobTarget;
+    local float             infoX, infoY, infoW, infoH;
+    local string            strInfo;
+    local DeusExMover       dxMover;
+    local Mover             M;
+    local HackableDevices   device;
+    local Vector            centerLoc, v1, v2;
+    local float             boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float             corner, x, y;
+    local int               i, j, k, offset;
+    local Color             col;
+    local int               numTools;
 
-	// Vanilla Matters
-	local float minDamageThreshold;
-	local Robot r;
+    // Vanilla Matters
+    local float minDamageThreshold;
+    local Robot r;
 
-	if (player != None)
-	{
-		frobTarget = player.FrobTarget;
-		if (frobTarget != None)
-			if (!player.IsHighlighted(frobTarget))
-				frobTarget = None;
+    if (player != None)
+    {
+        frobTarget = player.FrobTarget;
+        if (frobTarget != None)
+            if (!player.IsHighlighted(frobTarget))
+                frobTarget = None;
 
-		if (frobTarget != None)
-		{
-			// move the box in and out based on time
-			offset = (24.0 * (frobTarget.Level.TimeSeconds % 0.3));
+        if (frobTarget != None)
+        {
+            // move the box in and out based on time
+            offset = (24.0 * (frobTarget.Level.TimeSeconds % 0.3));
 
-			// draw a cornered targetting box
-			// get the center of the object
-			M = Mover(frobTarget);
-			if (M != None)
-			{
-				M.GetBoundingBox(v1, v2, False, M.KeyPos[M.KeyNum]+M.BasePos, M.KeyRot[M.KeyNum]+M.BaseRot);
-				centerLoc = v1 + (v2 - v1) * 0.5;
-				v1.X = 16;
-				v1.Y = 16;
-				v1.Z = 16;
-			}
-			else
-			{
-				centerLoc = frobTarget.Location;
-				v1.X = frobTarget.CollisionRadius;
-				v1.Y = frobTarget.CollisionRadius;
-				v1.Z = frobTarget.CollisionHeight;
-			}
+            // draw a cornered targetting box
+            // get the center of the object
+            M = Mover(frobTarget);
+            if (M != None)
+            {
+                M.GetBoundingBox(v1, v2, False, M.KeyPos[M.KeyNum]+M.BasePos, M.KeyRot[M.KeyNum]+M.BaseRot);
+                centerLoc = v1 + (v2 - v1) * 0.5;
+                v1.X = 16;
+                v1.Y = 16;
+                v1.Z = 16;
+            }
+            else
+            {
+                centerLoc = frobTarget.Location;
+                v1.X = frobTarget.CollisionRadius;
+                v1.Y = frobTarget.CollisionRadius;
+                v1.Z = frobTarget.CollisionHeight;
+            }
 
-			ConvertVectorToCoordinates(centerLoc, boxCX, boxCY);
+            ConvertVectorToCoordinates(centerLoc, boxCX, boxCY);
 
-			boxTLX = boxCX;
-			boxTLY = boxCY;
-			boxBRX = boxCX;
-			boxBRY = boxCY;
+            boxTLX = boxCX;
+            boxTLY = boxCY;
+            boxBRX = boxCX;
+            boxBRY = boxCY;
 
-			// get the smallest box to enclose actor
-			// modified from Scott's ActorDisplayWindow
-			for (i=-1; i<=1; i+=2)
-			{
-				for (j=-1; j<=1; j+=2)
-				{
-					for (k=-1; k<=1; k+=2)
-					{
-						v2 = v1;
-						v2.X *= i;
-						v2.Y *= j;
-						v2.Z *= k;
-						v2.X += centerLoc.X;
-						v2.Y += centerLoc.Y;
-						v2.Z += centerLoc.Z;
+            // get the smallest box to enclose actor
+            // modified from Scott's ActorDisplayWindow
+            for (i=-1; i<=1; i+=2)
+            {
+                for (j=-1; j<=1; j+=2)
+                {
+                    for (k=-1; k<=1; k+=2)
+                    {
+                        v2 = v1;
+                        v2.X *= i;
+                        v2.Y *= j;
+                        v2.Z *= k;
+                        v2.X += centerLoc.X;
+                        v2.Y += centerLoc.Y;
+                        v2.Z += centerLoc.Z;
 
-						if (ConvertVectorToCoordinates(v2, x, y))
-						{
-							boxTLX = FMin(boxTLX, x);
-							boxTLY = FMin(boxTLY, y);
-							boxBRX = FMax(boxBRX, x);
-							boxBRY = FMax(boxBRY, y);
-						}
-					}
-				}
-			}
+                        if (ConvertVectorToCoordinates(v2, x, y))
+                        {
+                            boxTLX = FMin(boxTLX, x);
+                            boxTLY = FMin(boxTLY, y);
+                            boxBRX = FMax(boxBRX, x);
+                            boxBRY = FMax(boxBRY, y);
+                        }
+                    }
+                }
+            }
 
-			if (!frobTarget.IsA('Mover'))
-			{
-				boxTLX += frobTarget.CollisionRadius / 4.0;
-				boxTLY += frobTarget.CollisionHeight / 4.0;
-				boxBRX -= frobTarget.CollisionRadius / 4.0;
-				boxBRY -= frobTarget.CollisionHeight / 4.0;
-			}
+            if (!frobTarget.IsA('Mover'))
+            {
+                boxTLX += frobTarget.CollisionRadius / 4.0;
+                boxTLY += frobTarget.CollisionHeight / 4.0;
+                boxBRX -= frobTarget.CollisionRadius / 4.0;
+                boxBRY -= frobTarget.CollisionHeight / 4.0;
+            }
 
-			boxTLX = FClamp(boxTLX, margin, width-margin);
-			boxTLY = FClamp(boxTLY, margin, height-margin);
-			boxBRX = FClamp(boxBRX, margin, width-margin);
-			boxBRY = FClamp(boxBRY, margin, height-margin);
+            boxTLX = FClamp(boxTLX, margin, width-margin);
+            boxTLY = FClamp(boxTLY, margin, height-margin);
+            boxBRX = FClamp(boxBRX, margin, width-margin);
+            boxBRY = FClamp(boxBRY, margin, height-margin);
 
-			boxW = boxBRX - boxTLX;
-			boxH = boxBRY - boxTLY;
+            boxW = boxBRX - boxTLX;
+            boxH = boxBRY - boxTLY;
 
-			// scale the corner based on the size of the box
-			corner = FClamp((boxW + boxH) * 0.1, 4.0, 40.0);
+            // scale the corner based on the size of the box
+            corner = FClamp((boxW + boxH) * 0.1, 4.0, 40.0);
 
-			// make sure the box doesn't invert itself
-			if (boxBRX - boxTLX < corner)
-			{
-				boxTLX -= (corner+4);
-				boxBRX += (corner+4);
-			}
-			if (boxBRY - boxTLY < corner)
-			{
-				boxTLY -= (corner+4);
-				boxBRY += (corner+4);
-			}
+            // make sure the box doesn't invert itself
+            if (boxBRX - boxTLX < corner)
+            {
+                boxTLX -= (corner+4);
+                boxBRX += (corner+4);
+            }
+            if (boxBRY - boxTLY < corner)
+            {
+                boxTLY -= (corner+4);
+                boxBRY += (corner+4);
+            }
 
-			// draw the drop shadow first, then normal
-			gc.SetTileColorRGB(0,0,0);
-			for (i=1; i>=0; i--)
-			{
-				gc.DrawBox(boxTLX+i+offset, boxTLY+i+offset, corner, 1, 0, 0, 1, Texture'Solid');
-				gc.DrawBox(boxTLX+i+offset, boxTLY+i+offset, 1, corner, 0, 0, 1, Texture'Solid');
+            // draw the drop shadow first, then normal
+            gc.SetTileColorRGB(0,0,0);
+            for (i=1; i>=0; i--)
+            {
+                gc.DrawBox(boxTLX+i+offset, boxTLY+i+offset, corner, 1, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxTLX+i+offset, boxTLY+i+offset, 1, corner, 0, 0, 1, Texture'Solid');
 
-				gc.DrawBox(boxBRX+i-corner-offset, boxTLY+i+offset, corner, 1, 0, 0, 1, Texture'Solid');
-				gc.DrawBox(boxBRX+i-offset, boxTLY+i+offset, 1, corner, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxBRX+i-corner-offset, boxTLY+i+offset, corner, 1, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxBRX+i-offset, boxTLY+i+offset, 1, corner, 0, 0, 1, Texture'Solid');
 
-				gc.DrawBox(boxTLX+i+offset, boxBRY+i-offset, corner, 1, 0, 0, 1, Texture'Solid');
-				gc.DrawBox(boxTLX+i+offset, boxBRY+i-corner-offset, 1, corner, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxTLX+i+offset, boxBRY+i-offset, corner, 1, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxTLX+i+offset, boxBRY+i-corner-offset, 1, corner, 0, 0, 1, Texture'Solid');
 
-				gc.DrawBox(boxBRX+i-corner+1-offset, boxBRY+i-offset, corner, 1, 0, 0, 1, Texture'Solid');
-				gc.DrawBox(boxBRX+i-offset, boxBRY+i-corner-offset, 1, corner, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxBRX+i-corner+1-offset, boxBRY+i-offset, corner, 1, 0, 0, 1, Texture'Solid');
+                gc.DrawBox(boxBRX+i-offset, boxBRY+i-corner-offset, 1, corner, 0, 0, 1, Texture'Solid');
 
-				gc.SetTileColor(colText);
-			}
+                gc.SetTileColor(colText);
+            }
 
-			// draw object-specific info
-			if (frobTarget.IsA('Mover'))
-			{
-				// get the door's lock and strength info
-				dxMover = DeusExMover(frobTarget);
-				if ((dxMover != None) && dxMover.bLocked)
-				{
-					strInfo = msgLocked $ CR() $ msgLockStr;
-					if (dxMover.bPickable)
-						strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
-					else
-						strInfo = strInfo $ msgInf;
+            // draw object-specific info
+            if (frobTarget.IsA('Mover'))
+            {
+                // get the door's lock and strength info
+                dxMover = DeusExMover(frobTarget);
+                if ((dxMover != None) && dxMover.bLocked)
+                {
+                    strInfo = msgLocked $ CR() $ msgLockStr;
+                    if (dxMover.bPickable)
+                        strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
+                    else
+                        strInfo = strInfo $ msgInf;
 
-					strInfo = strInfo $ CR() $ msgDoorStr;
-					if (dxMover.bBreakable)
-						strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
-					else
-						strInfo = strInfo $ msgInf;
+                    strInfo = strInfo $ CR() $ msgDoorStr;
+                    if (dxMover.bBreakable)
+                        strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
+                    else
+                        strInfo = strInfo $ msgInf;
 
-					// Vanilla Matters: Add in minDamageThreshold.
-					strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
-					if ( dxMover.bBreakable ) {
-						minDamageThreshold = dxMover.minDamageThreshold / 100.0;
-						strInfo = strInfo $ FormatString( dxMover.minDamageThreshold );
-					}
-					else {
-						minDamageThreshold = 1.0;
-						strInfo = strInfo $ msgInf;
-					}
-				}
-				else
-				{
-					strInfo = msgUnlocked;
-				}
+                    // Vanilla Matters: Add in minDamageThreshold.
+                    strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
+                    if ( dxMover.bBreakable ) {
+                        minDamageThreshold = dxMover.minDamageThreshold / 100.0;
+                        strInfo = strInfo $ FormatString( dxMover.minDamageThreshold );
+                    }
+                    else {
+                        minDamageThreshold = 1.0;
+                        strInfo = strInfo $ msgInf;
+                    }
+                }
+                else
+                {
+                    strInfo = msgUnlocked;
+                }
 
-				infoX = boxTLX + 10;
-				infoY = boxTLY + 10;
+                infoX = boxTLX + 10;
+                infoY = boxTLY + 10;
 
-				gc.SetFont(Font'FontMenuSmall_DS');
-				gc.GetTextExtent(0, infoW, infoH, strInfo);
-				infoW += 8;
-				if ((dxMover != None) && dxMover.bLocked)
-					infoW += barLength + 2;
-				infoH += 8;
-				infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
-				infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+                gc.SetFont(Font'FontMenuSmall_DS');
+                gc.GetTextExtent(0, infoW, infoH, strInfo);
+                infoW += 8;
+                if ((dxMover != None) && dxMover.bLocked)
+                    infoW += barLength + 2;
+                infoH += 8;
+                infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
+                infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
 
-				// draw a dark background
-				gc.SetStyle(DSTY_Modulated);
-				gc.SetTileColorRGB(0, 0, 0);
-				gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
+                // draw a dark background
+                gc.SetStyle(DSTY_Modulated);
+                gc.SetTileColorRGB(0, 0, 0);
+                gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
 
-				// draw colored bars for each value
-				if ((dxMover != None) && dxMover.bLocked)
-				{
-					gc.SetStyle(DSTY_Translucent);
-					col = GetColorScaled(dxMover.lockStrength);
-					gc.SetTileColor(col);
-					
-					// Vanilla Matters: Fix the position to account for the new line.
-					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + ( ( infoH - 8 ) / 4 ), barLength * dxMover.lockStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
-					col = GetColorScaled(dxMover.doorStrength);
-					gc.SetTileColor(col);
+                // draw colored bars for each value
+                if ((dxMover != None) && dxMover.bLocked)
+                {
+                    gc.SetStyle(DSTY_Translucent);
+                    col = GetColorScaled(dxMover.lockStrength);
+                    gc.SetTileColor(col);
 
-					// Vanilla Matters: Fix the position to account for the new line.
-					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 2 * ( ( infoH - 8 ) / 4 ), barLength * dxMover.doorStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
+                    // Vanilla Matters: Fix the position to account for the new line.
+                    gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + ( ( infoH - 8 ) / 4 ), barLength * dxMover.lockStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
+                    col = GetColorScaled(dxMover.doorStrength);
+                    gc.SetTileColor(col);
 
-					// Vanilla Matters: Add in bar for minDamageThreshold.
-					col = GetColorScaled( minDamageThreshold );
-					gc.SetTileColor( col );
-					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 3 * ( ( infoH - 8 ) / 4 ), barLength * minDamageThreshold, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
-				}
+                    // Vanilla Matters: Fix the position to account for the new line.
+                    gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 2 * ( ( infoH - 8 ) / 4 ), barLength * dxMover.doorStrength, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
 
-				// draw the text
-				gc.SetTextColor(colText);
-				gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
+                    // Vanilla Matters: Add in bar for minDamageThreshold.
+                    col = GetColorScaled( minDamageThreshold );
+                    gc.SetTileColor( col );
+                    gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 3 + 3 * ( ( infoH - 8 ) / 4 ), barLength * minDamageThreshold, ( ( infoH - 8 ) / 4 ) - 1, 0, 0, Texture'ConWindowBackground' );
+                }
 
-				// draw the two highlight boxes
-				gc.SetStyle(DSTY_Translucent);
-				gc.SetTileColor(colBorder);
-				gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
-				gc.SetTileColor(colBackground);
-				gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
+                // draw the text
+                gc.SetTextColor(colText);
+                gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
 
-				// draw the absolute number of lockpicks on top of the colored bar
-				if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
-				{
-					numTools = int((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')) + 0.99);
-					if (numTools == 1)
-						strInfo = numTools @ msgPick;
-					else
-						strInfo = numTools @ msgPicks;
-					
-					// Vanilla Matters: Relocate the text to accomodate a new bar.
-					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + 4 + ( infoH - 8 ) / 4, barLength, ( ( infoH - 8 ) / 4 ) - 1, strInfo);
-				}
-			}
-			else if (frobTarget.IsA('HackableDevices'))
-			{
-				// get the devices hack strength info
-				device = HackableDevices(frobTarget);
-				strInfo = DeusExDecoration(frobTarget).itemName $ CR() $ msgHackStr;
-				if (device.bHackable)
-				{
-					if (device.hackStrength != 0.0)
-						strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
-					else
-						strInfo = DeusExDecoration(frobTarget).itemName $ ": " $ msgHacked;
-				}
-				else
-					strInfo = strInfo $ msgInf;
+                // draw the two highlight boxes
+                gc.SetStyle(DSTY_Translucent);
+                gc.SetTileColor(colBorder);
+                gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
+                gc.SetTileColor(colBackground);
+                gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 
-				// Vanilla Matters: Add minDamageThreshold for these too.
-				strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
-				if ( !device.bInvincible ) {
-					minDamageThreshold = device.minDamageThreshold / 100.0;
-					strInfo = strInfo $ FormatString( device.minDamageThreshold );
-				}
-				else {
-					minDamageThreshold = 1.0;
-					strInfo = strInfo $ msgInf;
-				}
+                // draw the absolute number of lockpicks on top of the colored bar
+                if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
+                {
+                    numTools = int((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')) + 0.99);
+                    if (numTools == 1)
+                        strInfo = numTools @ msgPick;
+                    else
+                        strInfo = numTools @ msgPicks;
 
-				infoX = boxTLX + 10;
-				infoY = boxTLY + 10;
+                    // Vanilla Matters: Relocate the text to accomodate a new bar.
+                    gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + 4 + ( infoH - 8 ) / 4, barLength, ( ( infoH - 8 ) / 4 ) - 1, strInfo);
+                }
+            }
+            else if (frobTarget.IsA('HackableDevices'))
+            {
+                // get the devices hack strength info
+                device = HackableDevices(frobTarget);
+                strInfo = DeusExDecoration(frobTarget).itemName $ CR() $ msgHackStr;
+                if (device.bHackable)
+                {
+                    if (device.hackStrength != 0.0)
+                        strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
+                    else
+                        strInfo = DeusExDecoration(frobTarget).itemName $ ": " $ msgHacked;
+                }
+                else
+                    strInfo = strInfo $ msgInf;
 
-				gc.SetFont(Font'FontMenuSmall_DS');
-				gc.GetTextExtent(0, infoW, infoH, strInfo);
-				infoW += 8;
-				if (device.hackStrength != 0.0)
-					infoW += barLength + 2;
-				infoH += 8;
-				infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
-				infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+                // Vanilla Matters: Add minDamageThreshold for these too.
+                strInfo = strInfo $ CR() $ VM_msgDamageThreshold;
+                if ( !device.bInvincible ) {
+                    minDamageThreshold = device.minDamageThreshold / 100.0;
+                    strInfo = strInfo $ FormatString( device.minDamageThreshold );
+                }
+                else {
+                    minDamageThreshold = 1.0;
+                    strInfo = strInfo $ msgInf;
+                }
 
-				// draw a dark background
-				gc.SetStyle(DSTY_Modulated);
-				gc.SetTileColorRGB(0, 0, 0);
-				gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
+                infoX = boxTLX + 10;
+                infoY = boxTLY + 10;
 
-				// draw a colored bar
-				if (device.hackStrength != 0.0)
-				{
-					gc.SetStyle(DSTY_Translucent);
-					col = GetColorScaled(device.hackStrength);
-					gc.SetTileColor(col);
+                gc.SetFont(Font'FontMenuSmall_DS');
+                gc.GetTextExtent(0, infoW, infoH, strInfo);
+                infoW += 8;
+                if (device.hackStrength != 0.0)
+                    infoW += barLength + 2;
+                infoH += 8;
+                infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
+                infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
 
-					// Vanilla Matters: Fix location to account for new line.
-					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + ( infoH / 3 ) - 1, barLength * device.hackStrength, ( infoH / 3 ) - 3, 0, 0, Texture'ConWindowBackground' );
+                // draw a dark background
+                gc.SetStyle(DSTY_Modulated);
+                gc.SetTileColorRGB(0, 0, 0);
+                gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
 
-					// Vanilla Matters: Draw a bar for minDamageStrength too.
-					col = GetColorScaled( minDamageThreshold );
-					gc.SetTileColor( col );
-					gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 2 * ( infoH / 3 ) - 3, barLength * minDamageThreshold, ( infoH / 3 ) - 2, 0, 0, Texture'ConWindowBackground' );
-				}
+                // draw a colored bar
+                if (device.hackStrength != 0.0)
+                {
+                    gc.SetStyle(DSTY_Translucent);
+                    col = GetColorScaled(device.hackStrength);
+                    gc.SetTileColor(col);
 
-				// draw the text
-				gc.SetTextColor(colText);
-				gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
+                    // Vanilla Matters: Fix location to account for new line.
+                    gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + ( infoH / 3 ) - 1, barLength * device.hackStrength, ( infoH / 3 ) - 3, 0, 0, Texture'ConWindowBackground' );
 
-				// draw the two highlight boxes
-				gc.SetStyle(DSTY_Translucent);
-				gc.SetTileColor(colBorder);
-				gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
-				gc.SetTileColor(colBackground);
-				gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
+                    // Vanilla Matters: Draw a bar for minDamageStrength too.
+                    col = GetColorScaled( minDamageThreshold );
+                    gc.SetTileColor( col );
+                    gc.DrawPattern( infoX + ( infoW - barLength - 4 ), infoY + 2 * ( infoH / 3 ) - 3, barLength * minDamageThreshold, ( infoH / 3 ) - 2, 0, 0, Texture'ConWindowBackground' );
+                }
 
-				// draw the absolute number of multitools on top of the colored bar
-				if ((device.bHackable) && (device.hackStrength != 0.0))
-				{
-					numTools = int((device.hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')) + 0.99);
-					if (numTools == 1)
-						strInfo = numTools @ msgTool;
-					else
-						strInfo = numTools @ msgTools;
-					
-					// Vanilla Matters: Relocate to accomodate a new bar.
-					gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + ( infoH / 3 ), barLength, infoH / 2 - 4, strInfo);
-				}
-			}
-			else if (!frobTarget.bStatic && player.bObjectNames)
-			{
-				// TODO: Check familiar vs. unfamiliar flags
-				// Vanilla Matters: Make disabled robots show up as disabled.
-				if ( Pawn( frobTarget ) != none ) {
-					strInfo = player.GetDisplayName( frobTarget );
-					r = Robot( frobTarget );
-					if ( r != none && r.EMPHitPoints <= 0 ) {
-						strInfo = strInfo @ "(" $ VM_msgDisabled $ ")";
-					}
-				}
-				else if (frobTarget.IsA('DeusExCarcass'))
-					strInfo = DeusExCarcass(frobTarget).itemName;
-				else if (frobTarget.IsA('Inventory'))
-					strInfo = Inventory(frobTarget).itemName;
-				else if (frobTarget.IsA('DeusExDecoration'))
-					strInfo = player.GetDisplayName(frobTarget);
-				else if (frobTarget.IsA('DeusExProjectile'))
-					strInfo = DeusExProjectile(frobTarget).itemName;
-				else
-					strInfo = "DEFAULT ACTOR NAME - REPORT THIS AS A BUG - " $ frobTarget.GetItemName(String(frobTarget.Class));
+                // draw the text
+                gc.SetTextColor(colText);
+                gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
 
-				infoX = boxTLX + 10;
-				infoY = boxTLY + 10;
+                // draw the two highlight boxes
+                gc.SetStyle(DSTY_Translucent);
+                gc.SetTileColor(colBorder);
+                gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
+                gc.SetTileColor(colBackground);
+                gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 
-				gc.SetFont(Font'FontMenuSmall_DS');
-				gc.GetTextExtent(0, infoW, infoH, strInfo);
-				infoW += 8;
-				infoH += 8;
-				infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
-				infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+                // draw the absolute number of multitools on top of the colored bar
+                if ((device.bHackable) && (device.hackStrength != 0.0))
+                {
+                    numTools = int((device.hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')) + 0.99);
+                    if (numTools == 1)
+                        strInfo = numTools @ msgTool;
+                    else
+                        strInfo = numTools @ msgTools;
 
-				// draw a dark background
-				gc.SetStyle(DSTY_Modulated);
-				gc.SetTileColorRGB(0, 0, 0);
-				gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
+                    // Vanilla Matters: Relocate to accomodate a new bar.
+                    gc.DrawText( infoX + ( infoW - barLength - 2 ), infoY + ( infoH / 3 ), barLength, infoH / 2 - 4, strInfo);
+                }
+            }
+            else if (!frobTarget.bStatic && player.bObjectNames)
+            {
+                // TODO: Check familiar vs. unfamiliar flags
+                // Vanilla Matters: Make disabled robots show up as disabled.
+                if ( Pawn( frobTarget ) != none ) {
+                    strInfo = player.GetDisplayName( frobTarget );
+                    r = Robot( frobTarget );
+                    if ( r != none && r.EMPHitPoints <= 0 ) {
+                        strInfo = strInfo @ "(" $ VM_msgDisabled $ ")";
+                    }
+                }
+                else if (frobTarget.IsA('DeusExCarcass'))
+                    strInfo = DeusExCarcass(frobTarget).itemName;
+                else if (frobTarget.IsA('Inventory'))
+                    strInfo = Inventory(frobTarget).itemName;
+                else if (frobTarget.IsA('DeusExDecoration'))
+                    strInfo = player.GetDisplayName(frobTarget);
+                else if (frobTarget.IsA('DeusExProjectile'))
+                    strInfo = DeusExProjectile(frobTarget).itemName;
+                else
+                    strInfo = "DEFAULT ACTOR NAME - REPORT THIS AS A BUG - " $ frobTarget.GetItemName(String(frobTarget.Class));
 
-				// draw the text
-				gc.SetTextColor(colText);
-				gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
+                infoX = boxTLX + 10;
+                infoY = boxTLY + 10;
 
-				// draw the two highlight boxes
-				gc.SetStyle(DSTY_Translucent);
-				gc.SetTileColor(colBorder);
-				gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
-				gc.SetTileColor(colBackground);
-				gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
-			}
-		}
-	}
+                gc.SetFont(Font'FontMenuSmall_DS');
+                gc.GetTextExtent(0, infoW, infoH, strInfo);
+                infoW += 8;
+                infoH += 8;
+                infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
+                infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+
+                // draw a dark background
+                gc.SetStyle(DSTY_Modulated);
+                gc.SetTileColorRGB(0, 0, 0);
+                gc.DrawPattern(infoX, infoY, infoW, infoH, 0, 0, Texture'ConWindowBackground');
+
+                // draw the text
+                gc.SetTextColor(colText);
+                gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
+
+                // draw the two highlight boxes
+                gc.SetStyle(DSTY_Translucent);
+                gc.SetTileColor(colBorder);
+                gc.DrawBox(infoX, infoY, infoW, infoH, 0, 0, 1, Texture'Solid');
+                gc.SetTileColor(colBackground);
+                gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -442,13 +442,13 @@ function DrawWindow(GC gc)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colBorder     = theme.GetColorFromName('HUDColor_Borders');
-	colText       = theme.GetColorFromName('HUDColor_HeaderText');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colBorder     = theme.GetColorFromName('HUDColor_Borders');
+    colText       = theme.GetColorFromName('HUDColor_HeaderText');
 }
 
 // ----------------------------------------------------------------------

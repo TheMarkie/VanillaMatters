@@ -15,16 +15,16 @@ var Font         fontText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetTextMargins(0, 0);
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetFont(fontText);
+    SetTextMargins(0, 0);
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -33,15 +33,15 @@ event InitWindow()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colText;
+    local ColorTheme theme;
+    local Color colText;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	colText = theme.GetColorFromName('HUDColor_NormalText');
+    // Title colors
+    colText = theme.GetColorFromName('HUDColor_NormalText');
 
-	SetTextColor(colText);
+    SetTextColor(colText);
 }
 
 // ----------------------------------------------------------------------

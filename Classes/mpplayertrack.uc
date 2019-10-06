@@ -1,7 +1,7 @@
 //=============================================================================
 // MPPlayerTrack
 // Just maintains info about other players in multiplayer.  Useful for doing
-// simulated effects on them without making all the code on the other end 
+// simulated effects on them without making all the code on the other end
 // simulated.
 //=============================================================================
 class MPPlayerTrack extends Actor;
@@ -16,7 +16,7 @@ simulated function Tick(float deltaTime)
       Destroy();
       return;
    }
-	HandleNintendoEffect( AttachedPlayer );
+    HandleNintendoEffect( AttachedPlayer );
    HandlePlayerCloak(AttachedPlayer, deltaTime);
 }
 
@@ -36,10 +36,10 @@ function HandleNintendoEffect( DeusExPlayer OtherPlayer )
    if (OtherPlayer == MyPlayer)
       return;
 
-	if ( OtherPlayer.NintendoImmunityTimeLeft > 0.0 )
-		OtherPlayer.DrawInvulnShield();
-	else
-		OtherPlayer.InvulnSph = None;
+    if ( OtherPlayer.NintendoImmunityTimeLeft > 0.0 )
+        OtherPlayer.DrawInvulnShield();
+    else
+        OtherPlayer.InvulnSph = None;
 }
 
 // ----------------------------------------------------------------------
@@ -84,7 +84,7 @@ function HandlePlayerCloak(DeusExPlayer OtherPlayer, float DeltaTime)
       OtherPlayer.MultiSkins[6] = Texture'BlackMaskTex';
       OtherPlayer.MultiSkins[7] = Texture'BlackMaskTex';
    }
-   
+
    bAllied = False;
 
    if ( (MyPlayer.DXGame.IsA('TeamDMGame')) && ((TeamDMGame(MyPlayer.DXGame).ArePlayersAllied(OtherPlayer,MyPlayer))) )

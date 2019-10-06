@@ -27,13 +27,13 @@ var Localized String ReadyLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	HUDMedBotNavBarWindow(winNavBar).btnHealth.SetSensitivity(False);
+    HUDMedBotNavBarWindow(winNavBar).btnHealth.SetSensitivity(False);
 
-	bTickEnabled = True;
+    bTickEnabled = True;
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -44,17 +44,17 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	if (medBot != None)
-	{
-		if (!bSkipAnimation)
-		{
-			medBot.PlayAnim('Stop');
-			medBot.PlaySound(sound'MedicalBotLowerArm', SLOT_None);
-			medBot.FollowOrders();
-		}
-	}
+    if (medBot != None)
+    {
+        if (!bSkipAnimation)
+        {
+            medBot.PlayAnim('Stop');
+            medBot.PlaySound(sound'MedicalBotLowerArm', SLOT_None);
+            medBot.FollowOrders();
+        }
+    }
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ event DestroyWindow()
 
 function Tick(float deltaTime)
 {
-	UpdateMedBotDisplay();
+    UpdateMedBotDisplay();
 }
 
 // ----------------------------------------------------------------------
@@ -72,21 +72,21 @@ function Tick(float deltaTime)
 
 function CreateControls()
 {
-	CreateNavBarWindow();
-	CreateClientBorderWindow();
-	CreateClientWindow();
+    CreateNavBarWindow();
+    CreateClientBorderWindow();
+    CreateClientWindow();
 
-	CreateTitleWindow(9, 5, HealthTitleText);
-	CreateInfoWindow();
-	CreateOverlaysWindow();
-	CreateBodyWindow();
-	CreateRegionWindows();
-	CreateButtons();
-	CreatePartButtons();
-	CreateRegionWindows();
-	CreateMedbotLabel();
-	CreateMedBotDisplay();
-	CreateStatusWindow();
+    CreateTitleWindow(9, 5, HealthTitleText);
+    CreateInfoWindow();
+    CreateOverlaysWindow();
+    CreateBodyWindow();
+    CreateRegionWindows();
+    CreateButtons();
+    CreatePartButtons();
+    CreateRegionWindows();
+    CreateMedbotLabel();
+    CreateMedBotDisplay();
+    CreateStatusWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -95,9 +95,9 @@ function CreateControls()
 
 function CreateStatusWindow()
 {
-	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(15, 410);
-	winStatus.SetWidth(291);
+    winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
+    winStatus.SetPos(15, 410);
+    winStatus.SetWidth(291);
 }
 
 // ----------------------------------------------------------------------
@@ -106,8 +106,8 @@ function CreateStatusWindow()
 
 function CreateNavBarWindow()
 {
-	winNavBar = PersonaNavBarBaseWindow(NewChild(Class'HUDMedBotNavBarWindow')); 
-	winNavBar.SetPos(0, 0);
+    winNavBar = PersonaNavBarBaseWindow(NewChild(Class'HUDMedBotNavBarWindow'));
+    winNavBar.SetPos(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -116,9 +116,9 @@ function CreateNavBarWindow()
 
 function CreateInfoWindow()
 {
-	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 22);
-	winInfo.SetSize(238, 243);
+    winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
+    winInfo.SetPos(348, 22);
+    winInfo.SetSize(238, 243);
 }
 
 // ----------------------------------------------------------------------
@@ -127,15 +127,15 @@ function CreateInfoWindow()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(346, 346);
-	winActionButtons.SetWidth(97);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(346, 346);
+    winActionButtons.SetWidth(97);
+    winActionButtons.FillAllSpace(False);
 
-	btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnHealAll.SetButtonText(HealAllButtonLabel);
+    btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnHealAll.SetButtonText(HealAllButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -144,9 +144,9 @@ function CreateButtons()
 
 function CreateOverlaysWindow()
 {
-	winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'HUDMedBotHealthOverlaysWindow'));
-	winOverlays.SetPos(24, 36);
-	winOverlays.Lower();
+    winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'HUDMedBotHealthOverlaysWindow'));
+    winOverlays.SetPos(24, 36);
+    winOverlays.Lower();
 }
 
 // ----------------------------------------------------------------------
@@ -155,13 +155,13 @@ function CreateOverlaysWindow()
 
 function CreateMedbotLabel()
 {
-	local PersonaHeaderTextWindow txtLabel;
+    local PersonaHeaderTextWindow txtLabel;
 
-	txtLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	txtLabel.SetPos(305, 9);
-	txtLabel.SetSize(250, 16);
-	txtLabel.SetTextAlignments(HALIGN_Right, VALIGN_Center);
-	txtLabel.SetText(MedbotInterfaceText);
+    txtLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    txtLabel.SetPos(305, 9);
+    txtLabel.SetSize(250, 16);
+    txtLabel.SetTextAlignments(HALIGN_Right, VALIGN_Center);
+    txtLabel.SetText(MedbotInterfaceText);
 }
 
 // ----------------------------------------------------------------------
@@ -170,28 +170,28 @@ function CreateMedbotLabel()
 
 function CreateMedBotDisplay()
 {
-	winHealthBar = ProgressBarWindow(winClient.NewChild(Class'ProgressBarWindow'));
+    winHealthBar = ProgressBarWindow(winClient.NewChild(Class'ProgressBarWindow'));
 
-	winHealthBar.SetPos(446, 348);
-	winHealthBar.SetSize(140, 12);
-	winHealthBar.SetValues(0, 100);
-	winHealthBar.UseScaledColor(True);
-	winHealthBar.SetVertical(False);
-	winHealthBar.SetScaleColorModifier(0.5);
-	winHealthBar.SetDrawBackground(False);
+    winHealthBar.SetPos(446, 348);
+    winHealthBar.SetSize(140, 12);
+    winHealthBar.SetValues(0, 100);
+    winHealthBar.UseScaledColor(True);
+    winHealthBar.SetVertical(False);
+    winHealthBar.SetScaleColorModifier(0.5);
+    winHealthBar.SetDrawBackground(False);
 
-	winHealthBarText = TextWindow(winClient.NewChild(Class'TextWindow'));
-	winHealthBarText.SetPos(446, 349);
-	winHealthBarText.SetSize(140, 12);
-	winHealthBarText.SetTextMargins(0, 0);
-	winHealthBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winHealthBarText.SetFont(Font'FontMenuSmall_DS');
-	winHealthBarText.SetTextColorRGB(255, 255, 255);
+    winHealthBarText = TextWindow(winClient.NewChild(Class'TextWindow'));
+    winHealthBarText.SetPos(446, 349);
+    winHealthBarText.SetSize(140, 12);
+    winHealthBarText.SetTextMargins(0, 0);
+    winHealthBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winHealthBarText.SetFont(Font'FontMenuSmall_DS');
+    winHealthBarText.SetTextColorRGB(255, 255, 255);
 
-	winHealthInfoText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winHealthInfoText.SetPos(348, 293);
-	winHealthInfoText.SetSize(238, 50);
-	winHealthInfoText.SetTextMargins(2, 0);
+    winHealthInfoText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
+    winHealthInfoText.SetPos(348, 293);
+    winHealthInfoText.SetSize(238, 50);
+    winHealthInfoText.SetTextMargins(2, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -200,48 +200,48 @@ function CreateMedBotDisplay()
 
 function UpdateMedBotDisplay()
 {
-	local float barPercent;
-	local String infoText;
-	local float secondsRemaining;
+    local float barPercent;
+    local String infoText;
+    local float secondsRemaining;
 
-	if (medBot != None)
-	{
-		infoText = Sprintf(HealthInfoTextLabel, medBot.healAmount);
+    if (medBot != None)
+    {
+        infoText = Sprintf(HealthInfoTextLabel, medBot.healAmount);
 
-		// Update the bar
-		if (medBot.CanHeal())
-		{		
-			winHealthBar.SetCurrentValue(100);
-			winHealthBarText.SetText(ReadyLabel);
+        // Update the bar
+        if (medBot.CanHeal())
+        {
+            winHealthBar.SetCurrentValue(100);
+            winHealthBarText.SetText(ReadyLabel);
 
-			if (IsPlayerDamaged())
-				infoText = infoText $ MedBotReadyLabel;
-			else
-				infoText = infoText $ MedBotYouAreHealed;
-		}
-		else
-		{
-			secondsRemaining = medBot.GetRefreshTimeRemaining();
+            if (IsPlayerDamaged())
+                infoText = infoText $ MedBotReadyLabel;
+            else
+                infoText = infoText $ MedBotYouAreHealed;
+        }
+        else
+        {
+            secondsRemaining = medBot.GetRefreshTimeRemaining();
 
-			barPercent = 100 * (1.0 - (secondsRemaining / Float(medBot.healRefreshTime)));
+            barPercent = 100 * (1.0 - (secondsRemaining / Float(medBot.healRefreshTime)));
 
-			winHealthBar.SetCurrentValue(barPercent);
+            winHealthBar.SetCurrentValue(barPercent);
 
-			if (secondsRemaining == 1)
-				winHealthBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
-			else
-				winHealthBarText.SetText(Sprintf(SecondsPluralLabel, Int(secondsRemaining)));
+            if (secondsRemaining == 1)
+                winHealthBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
+            else
+                winHealthBarText.SetText(Sprintf(SecondsPluralLabel, Int(secondsRemaining)));
 
-			if (IsPlayerDamaged())
-				infoText = infoText $ MedBotRechargingLabel;
-			else
-				infoText = infoText $ MedBotYouAreHealed;
-		}
+            if (IsPlayerDamaged())
+                infoText = infoText $ MedBotRechargingLabel;
+            else
+                infoText = infoText $ MedBotYouAreHealed;
+        }
 
-		winHealthInfoText.SetText(infoText);
-	}
+        winHealthInfoText.SetText(infoText);
+    }
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -250,25 +250,25 @@ function UpdateMedBotDisplay()
 
 function bool ButtonActivated(Window buttonPressed)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch(buttonPressed)
-	{
-		case btnHealAll:
-			MedBotHealPlayer();
-			break;
+    switch(buttonPressed)
+    {
+        case btnHealAll:
+            MedBotHealPlayer();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else 
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -277,9 +277,9 @@ function bool ButtonActivated(Window buttonPressed)
 
 function MedBotHealPlayer()
 {
-	medBot.HealPlayer(player);
-	UpdateMedBotDisplay();
-	UpdateRegionWindows();
+    medBot.HealPlayer(player);
+    UpdateMedBotDisplay();
+    UpdateRegionWindows();
 }
 
 // ----------------------------------------------------------------------
@@ -288,10 +288,10 @@ function MedBotHealPlayer()
 
 function EnableButtons()
 {
-	if (medBot != None)
-		btnHealAll.EnableWindow(medBot.CanHeal() && IsPlayerDamaged());
-	else
-		btnHealAll.EnableWindow(False);
+    if (medBot != None)
+        btnHealAll.EnableWindow(medBot.CanHeal() && IsPlayerDamaged());
+    else
+        btnHealAll.EnableWindow(False);
 }
 
 // ----------------------------------------------------------------------
@@ -300,18 +300,18 @@ function EnableButtons()
 
 function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 {
-	medBot = newBot;
+    medBot = newBot;
 
-	if (medBot != None)
-	{
-		medBot.StandStill();
+    if (medBot != None)
+    {
+        medBot.StandStill();
 
-		if (bPlayAnim)
-		{
-			medBot.PlayAnim('Start');
-			medBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
-		}
-	}
+        if (bPlayAnim)
+        {
+            medBot.PlayAnim('Start');
+            medBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -320,7 +320,7 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 
 function SkipAnimation(bool bNewSkipAnimation)
 {
-	bSkipAnimation = bNewSkipAnimation;
+    bSkipAnimation = bNewSkipAnimation;
 }
 
 // ----------------------------------------------------------------------

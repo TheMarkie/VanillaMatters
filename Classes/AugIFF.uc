@@ -16,7 +16,7 @@ Begin:
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 }
 
 // ----------------------------------------------------------------------

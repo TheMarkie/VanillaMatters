@@ -17,7 +17,7 @@ var Float                     blinkTimer;
 var Float                     digitUpdateTimer;
 var Float                     hackDetectedDelay;
 var Bool                      bHacking;
-var Bool		              bHacked;
+var Bool                      bHacked;
 var Bool                      bHackDetected;
 var Bool                      bHackDetectedNotified;
 
@@ -41,9 +41,9 @@ var localized String HackDetectedLabel;
 var localized String MPHackInitializingLabel;
 
 // Vanilla Matters
-var float	VM_actionCost;			// Amount of time has to be drained for all the actions taken.
-var int		VM_actionCount;			// Amount of actions taken.
-var int		VM_totalActionCount;	// Total amount of actions taken.
+var float   VM_actionCost;          // Amount of time has to be drained for all the actions taken.
+var int     VM_actionCount;         // Amount of actions taken.
+var int     VM_totalActionCount;    // Total amount of actions taken.
 
 var Color VM_colBudget;
 
@@ -55,13 +55,13 @@ var Color VM_colBudget;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(215, 112);
+    SetSize(215, 112);
 
-	CreateControls();	
+    CreateControls();
 
-	SetHackMessage(HackReadyLabel);
+    SetHackMessage(HackReadyLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -72,10 +72,10 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	if ((bHackDetected) && (!bHackDetectedNotified) && (winTerm != None))
-		winTerm.HackDetected(True);
+    if ((bHackDetected) && (!bHackDetectedNotified) && (winTerm != None))
+        winTerm.HackDetected(True);
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -84,10 +84,10 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	CreateTextDigits();
-	CreateHackMessageWindow();
-	CreateHackProgressBar();
-	CreateHackButton();	
+    CreateTextDigits();
+    CreateHackMessageWindow();
+    CreateHackProgressBar();
+    CreateHackButton();
 }
 
 // ----------------------------------------------------------------------
@@ -96,12 +96,12 @@ function CreateControls()
 
 function CreateHackMessageWindow()
 {
-	winHackMessage = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winHackMessage.SetPos(22, 19);
-	winHackMessage.SetSize(168, 47);
-	winHackMessage.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winHackMessage.SetBackgroundStyle(DSTY_Modulated);
-	winHackMessage.SetBackground(Texture'HackInfoBackground');
+    winHackMessage = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winHackMessage.SetPos(22, 19);
+    winHackMessage.SetSize(168, 47);
+    winHackMessage.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winHackMessage.SetBackgroundStyle(DSTY_Modulated);
+    winHackMessage.SetBackground(Texture'HackInfoBackground');
 }
 
 // ----------------------------------------------------------------------
@@ -110,13 +110,13 @@ function CreateHackMessageWindow()
 
 function CreateTextDigits()
 {
-	winDigits = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winDigits.SetPos(22, 19);
-	winDigits.SetSize(168, 47);
-	winDigits.SetFont(Font'FontFixedWidthSmall');
-	winDigits.SetTextColor(colDigits);
-	winDigits.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winDigits.SetTextMargins(0, 0);
+    winDigits = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winDigits.SetPos(22, 19);
+    winDigits.SetSize(168, 47);
+    winDigits.SetFont(Font'FontFixedWidthSmall');
+    winDigits.SetTextColor(colDigits);
+    winDigits.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winDigits.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -125,14 +125,14 @@ function CreateTextDigits()
 
 function CreateHackProgressBar()
 {
-	barHackProgress = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
-	barHackProgress.SetPos(22, 71);
-	barHackProgress.SetSize(169, 12);
-	barHackProgress.SetValues(0, 100);
-	barHackProgress.SetVertical(False);
-	barHackProgress.UseScaledColor(True);
-	barHackProgress.SetDrawBackground(False);
-	barHackProgress.SetCurrentValue(100);
+    barHackProgress = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
+    barHackProgress.SetPos(22, 71);
+    barHackProgress.SetSize(169, 12);
+    barHackProgress.SetValues(0, 100);
+    barHackProgress.SetVertical(False);
+    barHackProgress.UseScaledColor(True);
+    barHackProgress.SetDrawBackground(False);
+    barHackProgress.SetCurrentValue(100);
 }
 
 // ----------------------------------------------------------------------
@@ -141,15 +141,15 @@ function CreateHackProgressBar()
 
 function CreateHackButton()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(20, 86);
-	winActionButtons.SetWidth(88);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(20, 86);
+    winActionButtons.SetWidth(88);
+    winActionButtons.FillAllSpace(False);
 
-	btnHack = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnHack.SetButtonText(HackButtonLabel);
+    btnHack = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnHack.SetButtonText(HackButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -158,12 +158,12 @@ function CreateHackButton()
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(
-		backgroundPosX, backgroundPosY, 
-		backgroundWidth, backgroundHeight, 
-		0, 0, texBackground);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(
+        backgroundPosX, backgroundPosY,
+        backgroundWidth, backgroundHeight,
+        0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -172,31 +172,31 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 221, 112, 0, 0, texBorder);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawTexture(0, 0, 221, 112, 0, 0, texBorder);
+    }
 }
 
 // Vanilla Matters: Draw how much time budget is left.
 function PostDrawWindow( GC gc ) {
-	local string str;
-	local float w, h;
+    local string str;
+    local float w, h;
 
-	super.PostDrawWindow( gc );
+    super.PostDrawWindow( gc );
 
-	if ( !bHacked || bHackDetected ) {
-		return;
-	}
+    if ( !bHacked || bHackDetected ) {
+        return;
+    }
 
-	str = class'DeusExWeapon'.static.FormatFloatString( detectionTime + hackTime, 0.1 );
+    str = class'DeusExWeapon'.static.FormatFloatString( detectionTime + hackTime, 0.1 );
 
-	gc.SetFont( Font'FontMenuTitle' );
-	gc.SetTextColor( VM_colBudget );
-	gc.GetTextExtent( 0, w, h, str );
-	gc.DrawText( 23, 72, w, h, str );
+    gc.SetFont( Font'FontMenuTitle' );
+    gc.SetTextColor( VM_colBudget );
+    gc.GetTextExtent( 0, w, h, str );
+    gc.DrawText( 23, 72, w, h, str );
 }
 
 // ----------------------------------------------------------------------
@@ -205,7 +205,7 @@ function PostDrawWindow( GC gc ) {
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	winTerm = newTerm;
+    winTerm = newTerm;
 }
 
 // ----------------------------------------------------------------------
@@ -214,33 +214,33 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnHack:
-			if (winTerm != None)
-			{
-				if (bHacked)
-					winTerm.ComputerHacked();
-				else
-					StartHack();
+    switch( buttonPressed )
+    {
+        case btnHack:
+            if (winTerm != None)
+            {
+                if (bHacked)
+                    winTerm.ComputerHacked();
+                else
+                    StartHack();
 
-				btnHack.SetSensitivity(False);
-			}
-			break;
+                btnHack.SetSensitivity(False);
+            }
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -249,18 +249,18 @@ function bool ButtonActivated( Window buttonPressed )
 
 function StartHack()
 {
-	bHacking     = True;
-	bTickEnabled = True;
+    bHacking     = True;
+    bTickEnabled = True;
 
-	// Display hack message
-   if (Player.Level.NetMode == NM_Standalone)	
+    // Display hack message
+   if (Player.Level.NetMode == NM_Standalone)
       SetHackMessage(HackInitializingLabel);
    else
       SetHackMessage(MPHackInitializingLabel);
 
-	// Vanilla Matters
-	VM_actionCost = 0;
-	VM_actionCount = 0;
+    // Vanilla Matters
+    VM_actionCost = 0;
+    VM_actionCount = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -269,15 +269,15 @@ function StartHack()
 
 function FinishHack()
 {
-	bHacked = True;
+    bHacked = True;
 
-	// Display hack message
-	SetHackMessage(HackSuccessfulLabel);
+    // Display hack message
+    SetHackMessage(HackSuccessfulLabel);
 
-	winDigits.SetText("");
+    winDigits.SetText("");
 
-	if (winTerm != None)
-		winTerm.ComputerHacked();
+    if (winTerm != None)
+        winTerm.ComputerHacked();
 }
 
 // ----------------------------------------------------------------------
@@ -286,12 +286,12 @@ function FinishHack()
 
 function HackDetected()
 {
-	bHackDetected = True;
-	blinkTimer    = Default.blinkTimer;
-	detectionTime = hackDetectedDelay;
-	bTickEnabled  = True;
-	SetHackMessage(HackDetectedLabel);
-	winHackMessage.SetTextColor(colRed);
+    bHackDetected = True;
+    blinkTimer    = Default.blinkTimer;
+    detectionTime = hackDetectedDelay;
+    bTickEnabled  = True;
+    SetHackMessage(HackDetectedLabel);
+    winHackMessage.SetTextColor(colRed);
 }
 
 // ----------------------------------------------------------------------
@@ -300,12 +300,12 @@ function HackDetected()
 
 function SetHackMessage(String newHackMessage)
 {
-	if (newHackMessage == "")
-		winHackMessage.Hide();
-	else
-		winHackMessage.Show();
+    if (newHackMessage == "")
+        winHackMessage.Hide();
+    else
+        winHackMessage.Show();
 
-	winHackMessage.SetText(newHackMessage);
+    winHackMessage.SetText(newHackMessage);
 }
 
 // ----------------------------------------------------------------------
@@ -314,25 +314,25 @@ function SetHackMessage(String newHackMessage)
 
 function SetDetectionTime(Float newDetectionTime, Float newHackTime)
 {
-	// The detection time is how long it takes before the user is 
-	// caught and electrified.  This now includes the Hack time to 
-	// give the player the perception that he's being tracked 
-	// immediately (a little more tense).  When in reality he has the 
-	// same amount of "detection" time (once hacked) as before.
+    // The detection time is how long it takes before the user is
+    // caught and electrified.  This now includes the Hack time to
+    // give the player the perception that he's being tracked
+    // immediately (a little more tense).  When in reality he has the
+    // same amount of "detection" time (once hacked) as before.
 
-	detectionTime     = newDetectionTime + newHackTime;
-	saveDetectionTime = detectionTime;
+    detectionTime     = newDetectionTime + newHackTime;
+    saveDetectionTime = detectionTime;
 
-	// Hack time is also based on skill
-	hackTime      = newHackTime;
-	saveHackTime  = hackTime;
+    // Hack time is also based on skill
+    hackTime      = newHackTime;
+    saveHackTime  = hackTime;
 }
 
 // Vanilla Matters: Add in how much time has to be drained from the detectionTime.
 function AddTimeCost( float timeCost ) {
-	VM_actionCost = VM_actionCost + timeCost;
-	VM_actionCount = VM_actionCount + 1;
-	VM_totalActionCount = VM_totalActionCount + 1;
+    VM_actionCost = VM_actionCost + timeCost;
+    VM_actionCount = VM_actionCount + 1;
+    VM_totalActionCount = VM_totalActionCount + 1;
 }
 
 // ----------------------------------------------------------------------
@@ -341,7 +341,7 @@ function AddTimeCost( float timeCost ) {
 
 function Float GetSaveDetectionTime()
 {
-	return saveDetectionTime;
+    return saveDetectionTime;
 }
 
 // ----------------------------------------------------------------------
@@ -350,10 +350,10 @@ function Float GetSaveDetectionTime()
 
 function UpdateDetectionTime(Float newDetectionTime)
 {
-	detectionTime = newDetectionTime;
+    detectionTime = newDetectionTime;
 
-	// Update the progress bar
-	UpdateHackBar();
+    // Update the progress bar
+    UpdateHackBar();
 }
 
 // ----------------------------------------------------------------------
@@ -362,38 +362,38 @@ function UpdateDetectionTime(Float newDetectionTime)
 
 function UpdateDigits()
 {
-	local bool bSpace;
-	local int stringIndex;
+    local bool bSpace;
+    local int stringIndex;
 
-	// First move down the existing strings
+    // First move down the existing strings
 
-	for(stringIndex=arrayCount(digitStrings)-1; stringIndex>0;	stringIndex--)
-		digitStrings[stringIndex] = digitStrings[stringIndex-1];
-	
-	// Now fill the string.  As we get closer to detection time, 
-	// will fill with more characters
-	
-	digitStrings[0] = "";
+    for(stringIndex=arrayCount(digitStrings)-1; stringIndex>0;  stringIndex--)
+        digitStrings[stringIndex] = digitStrings[stringIndex-1];
 
-	for(stringIndex=0; stringIndex<digitWidth; stringIndex++)
-	{
-		// Calculate chance that this is a space
-		bSpace = ((saveHackTime - hackTime) / saveHackTime) > FRand();
+    // Now fill the string.  As we get closer to detection time,
+    // will fill with more characters
 
-		if (bSpace)
-			digitStrings[0] = digitStrings[0] $ " ";
-		else
-			digitStrings[0] = digitStrings[0] $ Mid(digitFillerChars, Rand(Len(digitFillerChars)) + 1, 1);
-	}
+    digitStrings[0] = "";
 
-	winDigits.SetText("");
+    for(stringIndex=0; stringIndex<digitWidth; stringIndex++)
+    {
+        // Calculate chance that this is a space
+        bSpace = ((saveHackTime - hackTime) / saveHackTime) > FRand();
 
-	for(stringIndex=0; stringIndex<arrayCount(digitStrings); stringIndex++)
-	{
-		winDigits.AppendText(digitStrings[stringIndex]);
-		if (stringIndex - 1 == arrayCount(digitStrings))
-			winDigits.AppendText("|n");
-	}
+        if (bSpace)
+            digitStrings[0] = digitStrings[0] $ " ";
+        else
+            digitStrings[0] = digitStrings[0] $ Mid(digitFillerChars, Rand(Len(digitFillerChars)) + 1, 1);
+    }
+
+    winDigits.SetText("");
+
+    for(stringIndex=0; stringIndex<arrayCount(digitStrings); stringIndex++)
+    {
+        winDigits.AppendText(digitStrings[stringIndex]);
+        if (stringIndex - 1 == arrayCount(digitStrings))
+            winDigits.AppendText("|n");
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -402,10 +402,10 @@ function UpdateDigits()
 
 function UpdateHackBar()
 {
-	local float percentRemaining;
+    local float percentRemaining;
 
-	percentRemaining = (detectionTime / saveDetectionTime) * 100;
-	barHackProgress.SetCurrentValue(percentRemaining);
+    percentRemaining = (detectionTime / saveDetectionTime) * 100;
+    barHackProgress.SetCurrentValue(percentRemaining);
 }
 
 // ----------------------------------------------------------------------
@@ -414,8 +414,8 @@ function UpdateHackBar()
 
 function SetHackButtonToReturn()
 {
-	btnHack.SetSensitivity(True);
-	btnHack.SetButtonText(ReturnButtonLabel);
+    btnHack.SetSensitivity(True);
+    btnHack.SetButtonText(ReturnButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -424,120 +424,120 @@ function SetHackButtonToReturn()
 
 function Tick(float deltaTime)
 {
-	// Vanilla Matters
-	local float timeCost;
+    // Vanilla Matters
+    local float timeCost;
 
-	if (bHacking)	// manage initial hacking
-	{
-		hackTime         -= deltaTime;
-		blinkTimer       -= deltaTime;
-		digitUpdateTimer -= deltaTime;
+    if (bHacking)   // manage initial hacking
+    {
+        hackTime         -= deltaTime;
+        blinkTimer       -= deltaTime;
+        digitUpdateTimer -= deltaTime;
 
-		// Update blinking text
-		if (blinkTimer < 0)
-		{
-			if (winHackMessage.GetText() == "")
-			{
-				blinkTimer = Default.blinkTimer;
+        // Update blinking text
+        if (blinkTimer < 0)
+        {
+            if (winHackMessage.GetText() == "")
+            {
+                blinkTimer = Default.blinkTimer;
             // Display hack message
-            if (Player.Level.NetMode == NM_Standalone)	
+            if (Player.Level.NetMode == NM_Standalone)
                SetHackMessage(HackInitializingLabel);
             else
                SetHackMessage(MPHackInitializingLabel);
-			}
-			else
-			{
-				blinkTimer = Default.blinkTimer / 3;
-				winHackMessage.SetText("");
-			}
-		}
+            }
+            else
+            {
+                blinkTimer = Default.blinkTimer / 3;
+                winHackMessage.SetText("");
+            }
+        }
 
-		// Update scrolling text
-		if (digitUpdateTimer < 0)
-		{
-			digitUpdateTimer = Default.digitUpdateTimer;
-			UpdateDigits();
-		}
+        // Update scrolling text
+        if (digitUpdateTimer < 0)
+        {
+            digitUpdateTimer = Default.digitUpdateTimer;
+            UpdateDigits();
+        }
 
-		if (hackTime < 0)
-		{
-			bHacking = False;
-			FinishHack();
-		}	
-	}
-	
-	if (bHackDetected)
-	{
-		detectionTime -= deltaTime;
-		blinkTimer    -= deltaTime;
+        if (hackTime < 0)
+        {
+            bHacking = False;
+            FinishHack();
+        }
+    }
 
-		// Update blinking text
-		if (blinkTimer < 0)
-		{
-			if (winHackMessage.GetText() == "")
-			{
-				blinkTimer = Default.blinkTimer;
-				winHackMessage.SetText(HackDetectedLabel);
-			}
-			else
-			{
-				blinkTimer = Default.blinkTimer / 3;
-				winHackMessage.SetText("");
-			}
-		}
+    if (bHackDetected)
+    {
+        detectionTime -= deltaTime;
+        blinkTimer    -= deltaTime;
 
-		if (detectionTime < 0)
-		{
-			if (winTerm != None)
-			{
-				bHackDetectedNotified = True;
-				winTerm.HackDetected();
-			}
-		}
-	}
-	else
-	{
-		// Vanilla Matters: Calculate stuff and deducts detectionTime properly.
-		if ( bHacked ) {
-			if ( VM_actionCost > 0 ) {
-				if ( VM_actionCost >= detectionTime ) {
-					timeCost = deltaTime * VM_actionCount * 50;
-				}
-				else {
-					timeCost = deltaTime * VM_actionCount * 25;
-				}
+        // Update blinking text
+        if (blinkTimer < 0)
+        {
+            if (winHackMessage.GetText() == "")
+            {
+                blinkTimer = Default.blinkTimer;
+                winHackMessage.SetText(HackDetectedLabel);
+            }
+            else
+            {
+                blinkTimer = Default.blinkTimer / 3;
+                winHackMessage.SetText("");
+            }
+        }
 
-				detectionTime = detectionTime - timeCost;
-				VM_actionCost = VM_actionCost - timeCost;
+        if (detectionTime < 0)
+        {
+            if (winTerm != None)
+            {
+                bHackDetectedNotified = True;
+                winTerm.HackDetected();
+            }
+        }
+    }
+    else
+    {
+        // Vanilla Matters: Calculate stuff and deducts detectionTime properly.
+        if ( bHacked ) {
+            if ( VM_actionCost > 0 ) {
+                if ( VM_actionCost >= detectionTime ) {
+                    timeCost = deltaTime * VM_actionCount * 50;
+                }
+                else {
+                    timeCost = deltaTime * VM_actionCount * 25;
+                }
 
-				if ( VM_actionCost <= 0 ) {
-					VM_actionCost = 0;
-					VM_actionCount = 0;
-				}
+                detectionTime = detectionTime - timeCost;
+                VM_actionCost = VM_actionCost - timeCost;
 
-				// Vanilla Matters: Add FP rate for hacking.
-				if ( player.FPSystem != none ) {
-					player.FPSystem.AddForwardPressure( timeCost * ( player.FPSystem.VM_fpUtility + player.FPSystem.fpUtilityHS ) );
-				}
-			}
-			else {
-				detectionTime = detectionTime - ( deltaTime * 0.1 );
-			}
-		}
-		else {
-			detectionTime = detectionTime - deltaTime;
-		}
+                if ( VM_actionCost <= 0 ) {
+                    VM_actionCost = 0;
+                    VM_actionCount = 0;
+                }
 
-		// Update the progress bar
-		UpdateHackBar();
+                // Vanilla Matters: Add FP rate for hacking.
+                if ( player.FPSystem != none ) {
+                    player.FPSystem.AddForwardPressure( timeCost * ( player.FPSystem.VM_fpUtility + player.FPSystem.fpUtilityHS ) );
+                }
+            }
+            else {
+                detectionTime = detectionTime - ( deltaTime * 0.1 );
+            }
+        }
+        else {
+            detectionTime = detectionTime - deltaTime;
+        }
 
-		if (detectionTime < 0)
-		{
-			detectionTime = 0;
-			bTickEnabled = False;
-			HackDetected();
-		}
-	}
+        // Update the progress bar
+        UpdateHackBar();
+
+        if (detectionTime < 0)
+        {
+            detectionTime = 0;
+            bTickEnabled = False;
+            HackDetected();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -548,23 +548,23 @@ function Tick(float deltaTime)
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = True;
+    local bool bKeyHandled;
+    bKeyHandled = True;
 
-	switch( key ) 
-	{	
-		case IK_Escape:
-			winTerm.ForceCloseScreen();	
-			break;
+    switch( key )
+    {
+        case IK_Escape:
+            winTerm.ForceCloseScreen();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	if (bKeyHandled)
-		return True;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (bKeyHandled)
+        return True;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------

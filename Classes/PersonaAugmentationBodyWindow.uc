@@ -14,9 +14,9 @@ var Texture bodyTextures[2];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(174, 359);
+    SetSize(174, 359);
 }
 
 // ----------------------------------------------------------------------
@@ -24,12 +24,12 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw window background
-	gc.SetStyle(DSTY_Masked);
+{
+    // Draw window background
+    gc.SetStyle(DSTY_Masked);
 
-	gc.DrawTexture(0,   0, 174, 256, 0, 0, bodyTextures[0]);
-	gc.DrawTexture(0, 256, 174, 103, 0, 0, bodyTextures[1]);
+    gc.DrawTexture(0,   0, 174, 256, 0, 0, bodyTextures[0]);
+    gc.DrawTexture(0, 256, 174, 103, 0, 0, bodyTextures[1]);
 }
 
 // ----------------------------------------------------------------------

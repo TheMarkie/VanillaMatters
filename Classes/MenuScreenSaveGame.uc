@@ -8,7 +8,7 @@ var ClipWindow               clipName;
 var MenuUILoadSaveEditWindow editName;
 
 var String  currentSaveName;
-var int	    editRowId;
+var int     editRowId;
 var int     newSaveRowId;
 var bool    bInitializing;
 var int     tickCount;
@@ -33,28 +33,28 @@ var localized String DiskSpaceMessage;
 
 event InitWindow()
 {
-	bInitializing = True;
+    bInitializing = True;
 
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Need to do this because of the edit control used for 
-	// saving games.
-	SetMouseFocusMode(MFOCUS_Click);
+    // Need to do this because of the edit control used for
+    // saving games.
+    SetMouseFocusMode(MFOCUS_Click);
 
-	NewSaveGame();
+    NewSaveGame();
 
-	SetFocusWindow(editName);
+    SetFocusWindow(editName);
 
-	// Don't mask this window, as we need to take a snapshot of 
-	// the 3D scene without worry about the snapshot or a black screen.
-	if (player.UIBackground > 0)
-		root.HideSnapshot();
+    // Don't mask this window, as we need to take a snapshot of
+    // the 3D scene without worry about the snapshot or a black screen.
+    if (player.UIBackground > 0)
+        root.HideSnapshot();
 
-	root.Hide();
+    root.Hide();
 
-	bGenerateSnapShot = True;
-	bTickEnabled      = True;
-	bInitializing     = False;
+    bGenerateSnapShot = True;
+    bTickEnabled      = True;
+    bInitializing     = False;
 }
 
 // ----------------------------------------------------------------------
@@ -63,12 +63,12 @@ event InitWindow()
 
 function DestroyWindow()
 {
-	if (newSaveSnapshot != None)
-	{
-		CriticalDelete(newSaveSnapshot);
-		newSaveSnapshot = None;
-	}
-	root.ShowSnapshot(True);
+    if (newSaveSnapshot != None)
+    {
+        CriticalDelete(newSaveSnapshot);
+        newSaveSnapshot = None;
+    }
+    root.ShowSnapshot(True);
 }
 
 // ----------------------------------------------------------------------
@@ -77,10 +77,10 @@ function DestroyWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateEditControl();
-	EnableButtons();
+    CreateEditControl();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -91,12 +91,12 @@ function CreateControls()
 
 function CreateEditControl()
 {
-	clipName = ClipWindow(lstGames.newChild(Class'ClipWindow'));
-	clipName.SetWidth(235);
-	clipName.ForceChildSize(False, True);
+    clipName = ClipWindow(lstGames.newChild(Class'ClipWindow'));
+    clipName.SetWidth(235);
+    clipName.ForceChildSize(False, True);
 
-	editName = MenuUILoadSaveEditWindow(clipName.newChild(Class'MenuUILoadSaveEditWindow'));
-	clipName.Hide();
+    editName = MenuUILoadSaveEditWindow(clipName.newChild(Class'MenuUILoadSaveEditWindow'));
+    clipName.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -107,34 +107,34 @@ function CreateEditControl()
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local int keyIndex;
-	local bool bKeyHandled;
+    local int keyIndex;
+    local bool bKeyHandled;
 
-	switch(key)
-	{
-		case IK_Up:
-			SelectPreviousRow();
-			bKeyHandled = True;
-			break;
+    switch(key)
+    {
+        case IK_Up:
+            SelectPreviousRow();
+            bKeyHandled = True;
+            break;
 
-		case IK_Down:
-			SelectNextRow();
-			bKeyHandled = True;
-			break;
+        case IK_Down:
+            SelectNextRow();
+            bKeyHandled = True;
+            break;
 
-		case IK_Enter:
-			bKeyHandled = True;
-			ConfirmSaveGame();
-			break;
+        case IK_Enter:
+            bKeyHandled = True;
+            ConfirmSaveGame();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	if (bKeyHandled)
-		return True;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (bKeyHandled)
+        return True;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -143,52 +143,52 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	local string newName;
-	local int deleteRowId;
+    local string newName;
+    local int deleteRowId;
 
-	// Destroy the msgbox!  
-	root.PopWindow();
+    // Destroy the msgbox!
+    root.PopWindow();
 
-	switch(msgBoxMode)
-	{
-		case MB_Overwrite:
-			if ( buttonNumber == 0 ) 
-			{
-				SaveGame(saveRowId);
-			}
-			else
-			{
-				msgBoxMode = MB_None;
-				clipName.Show();
-				SetFocusWindow(editName);
-			}
-			break;
+    switch(msgBoxMode)
+    {
+        case MB_Overwrite:
+            if ( buttonNumber == 0 )
+            {
+                SaveGame(saveRowId);
+            }
+            else
+            {
+                msgBoxMode = MB_None;
+                clipName.Show();
+                SetFocusWindow(editName);
+            }
+            break;
 
-		case MB_Delete:
+        case MB_Delete:
 
-			if ( buttonNumber == 0 )
-			{
-				msgBoxMode  = MB_None;
-				deleteRowId = editRowId;
-				MoveEditControl(newSaveRowID);				
-				DeleteGame(deleteRowId);			
-			}
-			else
-			{
-				clipName.Show();
-				SetFocusWindow(editName);
-			}
+            if ( buttonNumber == 0 )
+            {
+                msgBoxMode  = MB_None;
+                deleteRowId = editRowId;
+                MoveEditControl(newSaveRowID);
+                DeleteGame(deleteRowId);
+            }
+            else
+            {
+                clipName.Show();
+                SetFocusWindow(editName);
+            }
 
-			break;
+            break;
 
-		case MB_LowSpace:
-			break;
+        case MB_LowSpace:
+            break;
 
-		default:
-			msgBoxMode = MB_None;
-	}
+        default:
+            msgBoxMode = MB_None;
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -197,36 +197,36 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	if (rowId != editRowId)
-		MoveEditControl(rowId);
+    if (rowId != editRowId)
+        MoveEditControl(rowId);
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the buttons
-// appropriately.  If we're in Save mode and the user clicks on a 
-// name *twice* (but doesn't double-click), then allow the user 
-// to rename the box by displaying the edit control on top of the 
+// appropriately.  If we're in Save mode and the user clicks on a
+// name *twice* (but doesn't double-click), then allow the user
+// to rename the box by displaying the edit control on top of the
 // list item.
 // ----------------------------------------------------------------------
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	if (!bInitializing)
-	{
-		if (focusRowId != editRowId)
-		{
-			MoveEditControl(focusRowId);
-			UpdateSaveInfo(focusRowId);
+    if (!bInitializing)
+    {
+        if (focusRowId != editRowId)
+        {
+            MoveEditControl(focusRowId);
+            UpdateSaveInfo(focusRowId);
 
-			EnableButtons();
-		}
-	}
+            EnableButtons();
+        }
+    }
 
-	return false;
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -235,23 +235,23 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 function UpdateSaveInfo(int rowId)
 {
-	// If this is the saveRowId, then use our stored away
-	// snapshot
-	if (rowId == newSaveRowID)
-	{
-		winSnapshot.SetBackground(newSaveSnapshot);	
-		winSaveInfo.SetText(Sprintf(LocationLabel, MissionLocation));
-		winSaveInfo.AppendText(Sprintf(SaveCountLabel, player.saveCount));
-		winSaveInfo.AppendText(Sprintf(PlayTimeLabel, BuildElapsedTimeString(Int(player.saveTime))));
+    // If this is the saveRowId, then use our stored away
+    // snapshot
+    if (rowId == newSaveRowID)
+    {
+        winSnapshot.SetBackground(newSaveSnapshot);
+        winSaveInfo.SetText(Sprintf(LocationLabel, MissionLocation));
+        winSaveInfo.AppendText(Sprintf(SaveCountLabel, player.saveCount));
+        winSaveInfo.AppendText(Sprintf(PlayTimeLabel, BuildElapsedTimeString(Int(player.saveTime))));
 
-		// Show the "Cheats Enabled" text if cheats were enabled for this savegame
-		if (player.bCheatsEnabled)
-			winCheatsEnabled.Show();
-	}
-	else
-	{
-		Super.UpdateSaveInfo(rowId);
-	}
+        // Show the "Cheats Enabled" text if cheats were enabled for this savegame
+        if (player.bCheatsEnabled)
+            winCheatsEnabled.Show();
+    }
+    else
+    {
+        Super.UpdateSaveInfo(rowId);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -260,18 +260,18 @@ function UpdateSaveInfo(int rowId)
 
 function SelectNextRow()
 {
-	local int rowId;
-	local int rowIndex;
+    local int rowId;
+    local int rowIndex;
 
-	rowId    = lstGames.GetSelectedRow();
-	rowIndex = lstGames.RowIdToIndex(rowId);
+    rowId    = lstGames.GetSelectedRow();
+    rowIndex = lstGames.RowIdToIndex(rowId);
 
-	if (rowIndex < lstGames.GetNumRows() - 1)
-	{
-		rowIndex++;
-		rowId = lstGames.IndexToRowId(rowIndex);
-		lstGames.SelectRow(rowId);
-	}
+    if (rowIndex < lstGames.GetNumRows() - 1)
+    {
+        rowIndex++;
+        rowId = lstGames.IndexToRowId(rowIndex);
+        lstGames.SelectRow(rowId);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -280,18 +280,18 @@ function SelectNextRow()
 
 function SelectPreviousRow()
 {
-	local int rowId;
-	local int rowIndex;
+    local int rowId;
+    local int rowIndex;
 
-	rowId    = lstGames.GetSelectedRow();
-	rowIndex = lstGames.RowIdToIndex(rowId);
+    rowId    = lstGames.GetSelectedRow();
+    rowIndex = lstGames.RowIdToIndex(rowId);
 
-	if (rowIndex > 0)
-	{
-		rowIndex--;
-		rowId = lstGames.IndexToRowId(rowIndex);
-		lstGames.SelectRow(rowId);
-	}
+    if (rowIndex > 0)
+    {
+        rowIndex--;
+        rowId = lstGames.IndexToRowId(rowIndex);
+        lstGames.SelectRow(rowId);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -300,12 +300,12 @@ function SelectPreviousRow()
 
 function GenerateNewSnapShot()
 {
-   // DEUS_EX CAC - only take screenshot if not using OpenGL   
-	if (GetConfig("Engine.Engine", "GameRenderDevice") != "OpenGlDrv.OpenGLRenderDevice")
+   // DEUS_EX CAC - only take screenshot if not using OpenGL
+    if (GetConfig("Engine.Engine", "GameRenderDevice") != "OpenGlDrv.OpenGLRenderDevice")
    {
       root.SetSnapshotSize(snapshotWidth, snapshotHeight);
-  	   newSaveSnapshot = root.GenerateSnapshot(True);
-	   winSnapshot.SetBackground(newSaveSnapshot);	
+       newSaveSnapshot = root.GenerateSnapshot(True);
+       winSnapshot.SetBackground(newSaveSnapshot);
    }
 }
 
@@ -315,36 +315,36 @@ function GenerateNewSnapShot()
 
 function NewSaveGame()
 {
-	local String timeString;
-	local DeusExSaveInfo saveInfo;
-	local GameDirectory saveDir;
+    local String timeString;
+    local DeusExSaveInfo saveInfo;
+    local GameDirectory saveDir;
 
-	// Save away the mission string
-	SaveMissionLocationString();
+    // Save away the mission string
+    SaveMissionLocationString();
 
-	// Create our Map Directory class
-	saveDir = player.CreateGameDirectoryObject();
+    // Create our Map Directory class
+    saveDir = player.CreateGameDirectoryObject();
 
-	saveInfo = saveDir.GetTempSaveInfo();
-	saveInfo.UpdateTimeStamp();
+    saveInfo = saveDir.GetTempSaveInfo();
+    saveInfo.UpdateTimeStamp();
 
-	// Insert a new row at the top of the listbox and move the 
-	// edit window there.
+    // Insert a new row at the top of the listbox and move the
+    // edit window there.
 
-	// TODO: Come up with a better default save game name
-	// (level title and some counter, maybe?)
+    // TODO: Come up with a better default save game name
+    // (level title and some counter, maybe?)
 
-	timeString = BuildTimeString(
-		saveInfo.Year, saveInfo.Month, saveInfo.Day,
-		saveInfo.Hour, saveInfo.Minute);
+    timeString = BuildTimeString(
+        saveInfo.Year, saveInfo.Month, saveInfo.Day,
+        saveInfo.Hour, saveInfo.Minute);
 
-	newSaveRowID = lstGames.AddRow(missionLocation $ ";" $ timeString $ ";9999999999;;-2");
+    newSaveRowID = lstGames.AddRow(missionLocation $ ";" $ timeString $ ";9999999999;;-2");
 
-	lstGames.SetRow(newSaveRowID);
-	MoveEditControl(newSaveRowID, True);
-	editName.SetSelectedArea(0, Len(missionLocation));
+    lstGames.SetRow(newSaveRowID);
+    MoveEditControl(newSaveRowID, True);
+    editName.SetSelectedArea(0, Len(missionLocation));
 
-	CriticalDelete(savedir);
+    CriticalDelete(savedir);
 }
 
 // ----------------------------------------------------------------------
@@ -355,56 +355,56 @@ function NewSaveGame()
 
 function SaveMissionLocationString()
 {
-	local DeusExLevelInfo aDeusExLevelInfo;
+    local DeusExLevelInfo aDeusExLevelInfo;
 
-	missionLocation = "";
+    missionLocation = "";
 
-	// Grab the mission location, which we'll use to build a default
-	// save game string
-	foreach player.AllActors(class'DeusExLevelInfo', aDeusExLevelInfo)
-	{
-		if (aDeusExLevelInfo != None)
-		{
-			missionLocation = aDeusExLevelInfo.MissionLocation;	
-			break;
-		}
-	}
+    // Grab the mission location, which we'll use to build a default
+    // save game string
+    foreach player.AllActors(class'DeusExLevelInfo', aDeusExLevelInfo)
+    {
+        if (aDeusExLevelInfo != None)
+        {
+            missionLocation = aDeusExLevelInfo.MissionLocation;
+            break;
+        }
+    }
 
-	if (missionLocation == "")
-		missionLocation = defaultSaveText;
+    if (missionLocation == "")
+        missionLocation = defaultSaveText;
 }
 
 // ----------------------------------------------------------------------
 // ConfirmSaveGame()
 //
-// If the user is overwriting an existing savegame, then prompt to 
+// If the user is overwriting an existing savegame, then prompt to
 // confirm first.
 // ----------------------------------------------------------------------
 
 function ConfirmSaveGame()
 {
-	// First check to see how much disk space we have. 
-	// If < the minimum, then notify the user to clear some 
-	// disk space.
+    // First check to see how much disk space we have.
+    // If < the minimum, then notify the user to clear some
+    // disk space.
 
-	if ((freeDiskSpace / 1024) < minFreeDiskSpace)
-	{
-		msgBoxMode = MB_LowSpace;
-		root.MessageBox(DiskSpaceTitle, DiskSpaceMessage, 1, False, Self);
-	}
-	else
-	{
-		if (editRowId == newSaveRowId)
-		{
-			SaveGame(editRowId);
-		}
-		else
-		{
-			saveRowId = editRowId;
-			msgBoxMode = MB_Overwrite;
-			root.MessageBox( OverwriteTitle, OverwritePrompt, 0, False, Self);
-		}
-	}
+    if ((freeDiskSpace / 1024) < minFreeDiskSpace)
+    {
+        msgBoxMode = MB_LowSpace;
+        root.MessageBox(DiskSpaceTitle, DiskSpaceMessage, 1, False, Self);
+    }
+    else
+    {
+        if (editRowId == newSaveRowId)
+        {
+            SaveGame(editRowId);
+        }
+        else
+        {
+            saveRowId = editRowId;
+            msgBoxMode = MB_Overwrite;
+            root.MessageBox( OverwriteTitle, OverwritePrompt, 0, False, Self);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -413,16 +413,16 @@ function ConfirmSaveGame()
 
 function SaveGame(int rowId)
 {
-	// Okay, we need to do some trickery in order to take a snapshot
-	// of the game that doesn't have the UI in it!
+    // Okay, we need to do some trickery in order to take a snapshot
+    // of the game that doesn't have the UI in it!
 
-	saveRowID = rowId;
+    saveRowID = rowId;
 
-	if (player.UIBackground > 0)
-		root.HideSnapshot();
+    if (player.UIBackground > 0)
+        root.HideSnapshot();
 
-	root.Hide();
-	bTickEnabled  = True;
+    root.Hide();
+    bTickEnabled  = True;
 }
 
 // ----------------------------------------------------------------------
@@ -431,30 +431,30 @@ function SaveGame(int rowId)
 
 function Tick(float deltaTime)
 {
-	if (bGenerateSnapShot)
-	{
-		if (tickCount++ == 1)
-		{
-			bGenerateSnapShot = False;
-			tickCount = 0;
+    if (bGenerateSnapShot)
+    {
+        if (tickCount++ == 1)
+        {
+            bGenerateSnapShot = False;
+            tickCount = 0;
 
-			GenerateNewSnapShot();
-			root.ShowSnapshot(True);
-			UpdateSaveInfo(newSaveRowId);
-			bTickEnabled = False;
-			root.Show();
-			Show();
-		}
-	}
-	else
-	{
-		if (tickCount++ == 1)
-		{
-			root.HideSnapshot();
-			bTickenabled = False;
-			PerformSave();	
-		}
-	}
+            GenerateNewSnapShot();
+            root.ShowSnapshot(True);
+            UpdateSaveInfo(newSaveRowId);
+            bTickEnabled = False;
+            root.Show();
+            Show();
+        }
+    }
+    else
+    {
+        if (tickCount++ == 1)
+        {
+            root.HideSnapshot();
+            bTickenabled = False;
+            PerformSave();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -463,36 +463,36 @@ function Tick(float deltaTime)
 
 function PerformSave()
 {
-	local DeusExRootWindow localRoot;
-	local DeusExPlayer localPlayer;
-	local int gameIndex;
-	local String saveName;
+    local DeusExRootWindow localRoot;
+    local DeusExPlayer localPlayer;
+    local int gameIndex;
+    local String saveName;
 
-	// Get the save index if this is an existing savegame
-	gameIndex = int(lstGames.GetFieldValue(saveRowID, 4));
+    // Get the save index if this is an existing savegame
+    gameIndex = int(lstGames.GetFieldValue(saveRowID, 4));
 
-	// If gameIndex is -2, this is our New Save Game and we 
-	// need to set gameIndex to 0, which is not a valid
-	// gameIndex, in which case the DeusExGameEngine::SaveGame()
-	// code will be kind and get us a new GameIndex (Really!
-	// If you don't believe me, go look at the code!)
+    // If gameIndex is -2, this is our New Save Game and we
+    // need to set gameIndex to 0, which is not a valid
+    // gameIndex, in which case the DeusExGameEngine::SaveGame()
+    // code will be kind and get us a new GameIndex (Really!
+    // If you don't believe me, go look at the code!)
 
-	if (gameIndex == -2)
-		gameIndex = 0;
+    if (gameIndex == -2)
+        gameIndex = 0;
 
-	saveName = editName.GetText();
+    saveName = editName.GetText();
 
-	localPlayer   = player;
-	localRoot     = root;
+    localPlayer   = player;
+    localRoot     = root;
 
-	// Vanilla Matters: Reset the forward pressure.
-	if ( player.FPSystem != none ) {
-		player.FPSystem.ResetForwardPressure();
-	}
+    // Vanilla Matters: Reset the forward pressure.
+    if ( player.FPSystem != none ) {
+        player.FPSystem.ResetForwardPressure();
+    }
 
-	localRoot.ClearWindowStack();
-	localPlayer.SaveGame(gameIndex, saveName);
-	localRoot.Show();
+    localRoot.ClearWindowStack();
+    localPlayer.SaveGame(gameIndex, saveName);
+    localRoot.Show();
 }
 
 // ----------------------------------------------------------------------
@@ -501,13 +501,13 @@ function PerformSave()
 
 function DeleteGame(int rowId)
 {
-	// Hide the edit box
-	clipName.Hide();
+    // Hide the edit box
+    clipName.Hide();
 
-	editRowId = newSaveRowId;
-	currentSaveName = missionLocation;
+    editRowId = newSaveRowId;
+    currentSaveName = missionLocation;
 
-	Super.DeleteGame(rowId);
+    Super.DeleteGame(rowId);
 }
 
 // ----------------------------------------------------------------------
@@ -518,30 +518,30 @@ function DeleteGame(int rowId)
 
 function ProcessAction(String actionKey)
 {
-	local int deleteRowId;
+    local int deleteRowId;
 
-	if (actionKey == "SAVE")
-	{
-		ConfirmSaveGame();
-	}
-	else if (actionKey == "DELETE")
-	{
-		// Only confirm 
-		if (chkConfirmDelete.GetToggle())
-		{
-			ConfirmDeleteGame(lstGames.GetSelectedRow());
-		}
-		else
-		{
-			deleteRowId = editRowId;
-			MoveEditControl(newSaveRowID);				
-			DeleteGame(deleteRowId);
-		}
-	}
-	else
-	{
-		Super.ProcessAction(actionKey);
-	}
+    if (actionKey == "SAVE")
+    {
+        ConfirmSaveGame();
+    }
+    else if (actionKey == "DELETE")
+    {
+        // Only confirm
+        if (chkConfirmDelete.GetToggle())
+        {
+            ConfirmDeleteGame(lstGames.GetSelectedRow());
+        }
+        else
+        {
+            deleteRowId = editRowId;
+            MoveEditControl(newSaveRowID);
+            DeleteGame(deleteRowId);
+        }
+    }
+    else
+    {
+        Super.ProcessAction(actionKey);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -549,52 +549,52 @@ function ProcessAction(String actionKey)
 // ----------------------------------------------------------------------
 
 function MoveEditControl(int rowId, optional bool bNoSetOldName)
-{	
-	local int rowIndex;
-	local String saveNamePlaceholder;
+{
+    local int rowIndex;
+    local String saveNamePlaceholder;
 
-	// Check for valid edit row Id
-	if (editRowId == -1)
-		return;
+    // Check for valid edit row Id
+    if (editRowId == -1)
+        return;
 
-	saveNamePlaceholder = lstGames.GetField(rowId, 0);
+    saveNamePlaceholder = lstGames.GetField(rowId, 0);
 
-	// Restore the savegame from where we're currently located
-	if (!bNoSetOldName)
-		lstGames.SetField(editRowId, 0, currentSaveName);
+    // Restore the savegame from where we're currently located
+    if (!bNoSetOldName)
+        lstGames.SetField(editRowId, 0, currentSaveName);
 
-	// Save the rowId so we can restore the list to its previous
-	// state if the user hits Escape while editing the text
-	editRowId = rowId;
-	
-	// Save the current savegame so we can restore it if the user 
-	// hits Escape.
-	currentSaveName = saveNamePlaceholder;
+    // Save the rowId so we can restore the list to its previous
+    // state if the user hits Escape while editing the text
+    editRowId = rowId;
 
-	lstGames.EnableAutoSort(False);
-	lstGames.SetField(editRowId, 0, "");
+    // Save the current savegame so we can restore it if the user
+    // hits Escape.
+    currentSaveName = saveNamePlaceholder;
 
-	// If the user is over the QuickSave slot, then prevent 
-	// him/her/it from modifying the text
-	editName.EnableEditing(int(lstGames.GetField(lstGames.GetSelectedRow(), 4)) != -1);
+    lstGames.EnableAutoSort(False);
+    lstGames.SetField(editRowId, 0, "");
 
-	// Unselect the row and hide its text
-	lstGames.SelectRow(editRowId, False);
+    // If the user is over the QuickSave slot, then prevent
+    // him/her/it from modifying the text
+    editName.EnableEditing(int(lstGames.GetField(lstGames.GetSelectedRow(), 4)) != -1);
 
-	// Get the physical row location so we can position the 
-	// edit control in the same place as the selected row
-	rowIndex = lstGames.RowIdToIndex(editRowId);				
-	clipName.SetPos(0, (rowIndex * lstGames.lineSize) + 1);
+    // Unselect the row and hide its text
+    lstGames.SelectRow(editRowId, False);
 
-	// Set the edit text, move the cursor to the 
-	// end of the line, and finally show the edit control.
-	editName.SetText(currentSaveName);
-	editName.MoveInsertionPoint(MOVEINSERT_End);
+    // Get the physical row location so we can position the
+    // edit control in the same place as the selected row
+    rowIndex = lstGames.RowIdToIndex(editRowId);
+    clipName.SetPos(0, (rowIndex * lstGames.lineSize) + 1);
 
-	// Show the edit control, which should be hidden when 
-	// this function is called.
-	clipName.Show();
-	SetFocusWindow(editName);
+    // Set the edit text, move the cursor to the
+    // end of the line, and finally show the edit control.
+    editName.SetText(currentSaveName);
+    editName.MoveInsertionPoint(MOVEINSERT_End);
+
+    // Show the edit control, which should be hidden when
+    // this function is called.
+    clipName.Show();
+    SetFocusWindow(editName);
 }
 
 // ----------------------------------------------------------------------
@@ -603,8 +603,8 @@ function MoveEditControl(int rowId, optional bool bNoSetOldName)
 
 function HideEditControl()
 {
-	clipName.Hide();
-	lstGames.EnableAutoSort(True);
+    clipName.Hide();
+    lstGames.EnableAutoSort(True);
 }
 
 // ----------------------------------------------------------------------
@@ -615,38 +615,38 @@ function HideEditControl()
 
 event bool EditActivated(window edit, bool bModified)
 {
-	if ( edit != editName ) 
-		return False;
+    if ( edit != editName )
+        return False;
 
-	if ( editName.GetText() != "" ) 
-	{
-		HideEditControl();
-		lstGames.SetField(editRowId, 0, editName.GetText());
-		lstGames.SetRow(editRowId);
-		ConfirmSaveGame();
+    if ( editName.GetText() != "" )
+    {
+        HideEditControl();
+        lstGames.SetField(editRowId, 0, editName.GetText());
+        lstGames.SetRow(editRowId);
+        ConfirmSaveGame();
 
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+        return True;
+    }
+    else
+    {
+        return False;
+    }
 }
 
 // ----------------------------------------------------------------------
-// TextChanged() 
+// TextChanged()
 // ----------------------------------------------------------------------
 
 event bool TextChanged(window edit, bool bModified)
 {
-	// If this is the quicksave gameslot, don't allow the user 
-	// to edit!!!
-	if (int(lstGames.GetField(lstGames.GetSelectedRow(), 4)) == -1)
-		editName.EnableWindow(False);
+    // If this is the quicksave gameslot, don't allow the user
+    // to edit!!!
+    if (int(lstGames.GetField(lstGames.GetSelectedRow(), 4)) == -1)
+        editName.EnableWindow(False);
 
-	EnableButtons();
+    EnableButtons();
 
-	return false;
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -655,25 +655,25 @@ event bool TextChanged(window edit, bool bModified)
 
 function EnableButtons()
 {
-	// Don't allow delete if we're on the new savegame or the QuickSave 
-	// slot
+    // Don't allow delete if we're on the new savegame or the QuickSave
+    // slot
 
-	if ((editRowId != newSaveRowId) && (editRowId != -1))
-		EnableActionButton(AB_Other, True, "DELETE");
-	else
-		EnableActionButton(AB_Other, False, "DELETE");
-		
-	if (editName != None)
-	{
-		if ((editName.IsVisible()) && (editName.GetText() == ""))
-			EnableActionButton(AB_Other, False, "SAVE");
-		else
-			EnableActionButton(AB_Other, True, "SAVE");
-	}
-	else
-	{
-		EnableActionButton(AB_Other, True, "SAVE");	
-	}
+    if ((editRowId != newSaveRowId) && (editRowId != -1))
+        EnableActionButton(AB_Other, True, "DELETE");
+    else
+        EnableActionButton(AB_Other, False, "DELETE");
+
+    if (editName != None)
+    {
+        if ((editName.IsVisible()) && (editName.GetText() == ""))
+            EnableActionButton(AB_Other, False, "SAVE");
+        else
+            EnableActionButton(AB_Other, True, "SAVE");
+    }
+    else
+    {
+        EnableActionButton(AB_Other, True, "SAVE");
+    }
 }
 
 // ----------------------------------------------------------------------

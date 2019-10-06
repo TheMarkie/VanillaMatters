@@ -18,108 +18,108 @@ var float mpEnergyDrain;
 
 state Active
 {
-	// // Vanilla Matters: Init shield regen stuff.
-	// function BeginState() {
-	// 	VM_ShieldTimer = 0;
-	// 	VM_bShieldDown = true;
-	// 	VM_bShieldRegen = false;
-	
-	// 	Player.VM_CurrentMaxShield = LevelValues[CurrentLevel];
-	// }
+    // // Vanilla Matters: Init shield regen stuff.
+    // function BeginState() {
+    //  VM_ShieldTimer = 0;
+    //  VM_bShieldDown = true;
+    //  VM_bShieldRegen = false;
 
-	// // Vanilla Matters: Check for shield status and regenerate if necessary.
-	// function Tick( float deltaTime ) {
-	// 	local float rate;
+    //  Player.VM_CurrentMaxShield = LevelValues[CurrentLevel];
+    // }
 
-	// 	if ( VM_bShieldDown ) {
-	// 		VM_ShieldTimer = VM_ShieldTimer + deltaTime;
+    // // Vanilla Matters: Check for shield status and regenerate if necessary.
+    // function Tick( float deltaTime ) {
+    //  local float rate;
 
-	// 		if ( VM_ShieldTimer >= VM_ShieldCooldown ) {
-	// 			VM_bShieldDown = false;
-	// 			VM_bShieldRegen = true;
+    //  if ( VM_bShieldDown ) {
+    //      VM_ShieldTimer = VM_ShieldTimer + deltaTime;
 
-	// 			VM_ShieldTimer = 0;
+    //      if ( VM_ShieldTimer >= VM_ShieldCooldown ) {
+    //          VM_bShieldDown = false;
+    //          VM_bShieldRegen = true;
 
-	// 			Player.ClientMessage( Player.VM_msgShieldRegen );
-	// 			PlayRegenSound();
-	// 		}
-	// 	}
-	// 	else if ( VM_bShieldRegen ) {
-	// 		rate = ( LevelValues[CurrentLevel] / VM_ShieldRegenTime ) * deltaTime;
-	// 		rate = FMin( rate, LevelValues[CurrentLevel] - Player.VM_Shield );
-	// 		rate = Player.DrainEnergy( self, rate, 2 );
+    //          VM_ShieldTimer = 0;
 
-	// 		Player.VM_Shield = FMin( Player.VM_Shield + rate, LevelValues[CurrentLevel] );
+    //          Player.ClientMessage( Player.VM_msgShieldRegen );
+    //          PlayRegenSound();
+    //      }
+    //  }
+    //  else if ( VM_bShieldRegen ) {
+    //      rate = ( LevelValues[CurrentLevel] / VM_ShieldRegenTime ) * deltaTime;
+    //      rate = FMin( rate, LevelValues[CurrentLevel] - Player.VM_Shield );
+    //      rate = Player.DrainEnergy( self, rate, 2 );
 
-	// 		VM_ShieldTimer = VM_ShieldTimer + rate;
+    //      Player.VM_Shield = FMin( Player.VM_Shield + rate, LevelValues[CurrentLevel] );
 
-	// 		if ( VM_ShieldTimer >= LevelValues[CurrentLevel] || Player.VM_Shield >= LevelValues[CurrentLevel] ) {
-	// 			VM_bShieldRegen = false;
+    //      VM_ShieldTimer = VM_ShieldTimer + rate;
 
-	// 			VM_ShieldTimer = 0;
-	// 		}
-	// 	}
-	// 	else {
-	// 		if ( Player.VM_Shield < LevelValues[CurrentLevel] ) {
-	// 			VM_ShieldTimer = VM_ShieldTimer + deltaTime;
-	// 		}
+    //      if ( VM_ShieldTimer >= LevelValues[CurrentLevel] || Player.VM_Shield >= LevelValues[CurrentLevel] ) {
+    //          VM_bShieldRegen = false;
 
-	// 		if ( Player.VM_Shield <= 0 ) {
-	// 			VM_bShieldDown = true;
-	// 			VM_bShieldRegen = false;
-	
-	// 			VM_ShieldTimer = 0;
-	
-	// 			Player.ClientMessage( Player.VM_msgShieldBroken );
-	// 			Player.PlaySound( class'ChargedPickup'.default.DeactivateSound, SLOT_None );
-	// 		}
-	// 		else if ( VM_ShieldTimer >= ( VM_ShieldCooldown * 2 ) ) {
-	// 			VM_bShieldRegen = true;
+    //          VM_ShieldTimer = 0;
+    //      }
+    //  }
+    //  else {
+    //      if ( Player.VM_Shield < LevelValues[CurrentLevel] ) {
+    //          VM_ShieldTimer = VM_ShieldTimer + deltaTime;
+    //      }
 
-	// 			VM_ShieldTimer = 0;
+    //      if ( Player.VM_Shield <= 0 ) {
+    //          VM_bShieldDown = true;
+    //          VM_bShieldRegen = false;
 
-	// 			Player.ClientMessage( Player.VM_msgShieldRegen );
-	// 			PlayRegenSound();
-	// 		}
-	// 	}
-	// }
+    //          VM_ShieldTimer = 0;
 
-	// // Vanilla Matters: Play sound when the regen starts.
-	// function PlayRegenSound() {
-	// 	Player.PlaySound( sound'BioElectricHiss', SLOT_None,,,, 0.5 );
-	// }
+    //          Player.ClientMessage( Player.VM_msgShieldBroken );
+    //          Player.PlaySound( class'ChargedPickup'.default.DeactivateSound, SLOT_None );
+    //      }
+    //      else if ( VM_ShieldTimer >= ( VM_ShieldCooldown * 2 ) ) {
+    //          VM_bShieldRegen = true;
+
+    //          VM_ShieldTimer = 0;
+
+    //          Player.ClientMessage( Player.VM_msgShieldRegen );
+    //          PlayRegenSound();
+    //      }
+    //  }
+    // }
+
+    // // Vanilla Matters: Play sound when the regen starts.
+    // function PlayRegenSound() {
+    //  Player.PlaySound( sound'BioElectricHiss', SLOT_None,,,, 0.5 );
+    // }
 
 Begin:
 }
 
 // // Vanilla Matters: Just handle a situation where the aug is off but the shield is broken.
 // state Inactive {
-// 	function Tick( float deltaTime ) {
-// 		if ( Player.VM_Shield <= 0 && Player.VM_Shield < VM_lastShieldAmount ) {
-// 			Player.ClientMessage( Player.VM_msgShieldBroken );
-// 				Player.PlaySound( class'ChargedPickup'.default.DeactivateSound, SLOT_None );
-// 		}
+//  function Tick( float deltaTime ) {
+//      if ( Player.VM_Shield <= 0 && Player.VM_Shield < VM_lastShieldAmount ) {
+//          Player.ClientMessage( Player.VM_msgShieldBroken );
+//              Player.PlaySound( class'ChargedPickup'.default.DeactivateSound, SLOT_None );
+//      }
 
-// 		VM_lastShieldAmount = Player.VM_Shield;
-// 	}
+//      VM_lastShieldAmount = Player.VM_Shield;
+//  }
 // }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
       AugmentationLocation = LOC_Arm;
-	}
+    }
 }
 
 defaultproperties

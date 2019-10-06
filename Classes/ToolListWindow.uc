@@ -22,18 +22,18 @@ var Font fontText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetHighlightTextColor(colTextHighlight);
-	SetHighlightTexture(Texture'Solid');
-	SetHighlightColor(colHighlight);
-	SetFocusTexture(Texture'Dithered');
-	SetFocusColor(colFocus);
-	SetBackgroundStyle(DSTY_Normal);
-	SetBackground(Texture'Solid');
-	SetTileColor(colBackground);
-	SetColumnColor(0, colText);
-	SetColumnFont(0, fontText);
+    SetHighlightTextColor(colTextHighlight);
+    SetHighlightTexture(Texture'Solid');
+    SetHighlightColor(colHighlight);
+    SetFocusTexture(Texture'Dithered');
+    SetFocusColor(colFocus);
+    SetBackgroundStyle(DSTY_Normal);
+    SetBackground(Texture'Solid');
+    SetTileColor(colBackground);
+    SetColumnColor(0, colText);
+    SetColumnFont(0, fontText);
 }
 
 // ----------------------------------------------------------------------
@@ -42,15 +42,15 @@ event InitWindow()
 
 function SetColumns(int newColumnCount)
 {
-	local int colIndex;
+    local int colIndex;
 
-	SetNumColumns(newColumnCount);
+    SetNumColumns(newColumnCount);
 
-	for (colIndex=0; colIndex<newColumnCount; colIndex++)
-	{
-		SetColumnColor(colIndex, colText);
-		SetColumnFont(colIndex, fontText);
-	}
+    for (colIndex=0; colIndex<newColumnCount; colIndex++)
+    {
+        SetColumnColor(colIndex, colText);
+        SetColumnFont(colIndex, fontText);
+    }
 }
 
 // ----------------------------------------------------------------------

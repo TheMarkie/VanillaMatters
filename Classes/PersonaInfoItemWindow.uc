@@ -18,28 +18,28 @@ var bool bHighlight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Defaults for tile window
-	SetChildVAlignment(VALIGN_Top);
-	SetChildSpacing(10);
+    // Defaults for tile window
+    SetChildVAlignment(VALIGN_Top);
+    SetChildSpacing(10);
 
-	winLabel = TextWindow(NewChild(Class'TextWindow'));
-	winLabel.SetFont(fontText);
-	winLabel.SetTextAlignments(HALIGN_Right, VALIGN_Top);
-	winLabel.SetTextMargins(0, 0);
-	winLabel.SetWidth(70);
+    winLabel = TextWindow(NewChild(Class'TextWindow'));
+    winLabel.SetFont(fontText);
+    winLabel.SetTextAlignments(HALIGN_Right, VALIGN_Top);
+    winLabel.SetTextMargins(0, 0);
+    winLabel.SetWidth(70);
 
-	winText = TextWindow(NewChild(Class'TextWindow'));
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winText.SetFont(fontText);
-	winText.SetTextMargins(0, 0);
-	winText.SetWordWrap(True);
+    winText = TextWindow(NewChild(Class'TextWindow'));
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText.SetFont(fontText);
+    winText.SetTextMargins(0, 0);
+    winText.SetWordWrap(True);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetPlayerPawn());
+    // Get a pointer to the player
+    player = DeusExPlayer(GetPlayerPawn());
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -48,9 +48,9 @@ event InitWindow()
 
 function SetItemInfo(coerce String newLabel, coerce String newText, optional bool bNewHighlight)
 {
-	winLabel.SetText(newLabel);
-	winText.SetText(newText);
-	SetHighlight(bNewHighlight);
+    winLabel.SetText(newLabel);
+    winText.SetText(newText);
+    SetHighlight(bNewHighlight);
 }
 
 // ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ function SetItemInfo(coerce String newLabel, coerce String newText, optional boo
 
 function SetItemText(coerce string newText)
 {
-	winText.SetText(newText);
+    winText.SetText(newText);
 }
 
 // ----------------------------------------------------------------------
@@ -68,14 +68,14 @@ function SetItemText(coerce string newText)
 
 function SetHighlight(bool bNewHighlight)
 {
-	bHighlight = bNewHighlight;
+    bHighlight = bNewHighlight;
 
-	if (bHighlight)
-		winText.SetFont(fontTextHighlight);
-	else
-		winText.SetFont(fontText);
+    if (bHighlight)
+        winText.SetFont(fontTextHighlight);
+    else
+        winText.SetFont(fontText);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -84,16 +84,16 @@ function SetHighlight(bool bNewHighlight)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	winLabel.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
+    winLabel.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
 
-	if (bHighlight)
-		winText.SetTextColor(theme.GetColorFromName('HUDColor_HeaderText'));
-	else
-		winText.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
+    if (bHighlight)
+        winText.SetTextColor(theme.GetColorFromName('HUDColor_HeaderText'));
+    else
+        winText.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
 }
 
 // ----------------------------------------------------------------------

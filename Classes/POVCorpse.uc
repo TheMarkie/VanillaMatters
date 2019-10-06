@@ -17,9 +17,9 @@ var travel Name   CarcassName;
 // Vanilla Matters
 var travel string VM_name;
 
-var Inventory     VM_corpseInventory;			// Save inventory information.
+var Inventory     VM_corpseInventory;           // Save inventory information.
 
-var travel bool   VM_bSearchedOnce;				// Has the corpse been searched at least once.
+var travel bool   VM_bSearchedOnce;             // Has the corpse been searched at least once.
 
 defaultproperties
 {

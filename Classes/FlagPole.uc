@@ -5,11 +5,11 @@ class FlagPole extends DeusExDecoration;
 
 enum ESkinColor
 {
-	SC_China,
-	SC_France,
-	SC_President,
-	SC_UNATCO,
-	SC_USA
+    SC_China,
+    SC_France,
+    SC_President,
+    SC_UNATCO,
+    SC_USA
 };
 
 var() travel ESkinColor SkinColor;
@@ -20,9 +20,9 @@ var() travel ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	SetSkin();
+    SetSkin();
 }
 
 // ----------------------------------------------------------------------
@@ -31,9 +31,9 @@ function BeginPlay()
 
 function TravelPostAccept()
 {
-	Super.TravelPostAccept();
+    Super.TravelPostAccept();
 
-	SetSkin();
+    SetSkin();
 }
 
 // ----------------------------------------------------------------------
@@ -42,14 +42,14 @@ function TravelPostAccept()
 
 function SetSkin()
 {
-	switch (SkinColor)
-	{
-		case SC_China:		Skin = Texture'FlagPoleTex1'; break;
-		case SC_France:		Skin = Texture'FlagPoleTex2'; break;
-		case SC_President:	Skin = Texture'FlagPoleTex3'; break;
-		case SC_UNATCO:		Skin = Texture'FlagPoleTex4'; break;
-		case SC_USA:		Skin = Texture'FlagPoleTex5'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_China:      Skin = Texture'FlagPoleTex1'; break;
+        case SC_France:     Skin = Texture'FlagPoleTex2'; break;
+        case SC_President:  Skin = Texture'FlagPoleTex3'; break;
+        case SC_UNATCO:     Skin = Texture'FlagPoleTex4'; break;
+        case SC_USA:        Skin = Texture'FlagPoleTex5'; break;
+    }
 }
 
 // ----------------------------------------------------------------------

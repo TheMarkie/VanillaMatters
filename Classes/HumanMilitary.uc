@@ -2,28 +2,28 @@
 // HumanMilitary.
 //=============================================================================
 class HumanMilitary extends ScriptedPawn
-	abstract;
+    abstract;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// change the sounds for chicks
-	if (bIsFemale)
-	{
-		HitSound1 = Sound'FemalePainMedium';
-		HitSound2 = Sound'FemalePainLarge';
-		Die = Sound'FemaleDeath';
-	}
+    // change the sounds for chicks
+    if (bIsFemale)
+    {
+        HitSound1 = Sound'FemalePainMedium';
+        HitSound2 = Sound'FemalePainLarge';
+        Die = Sound'FemaleDeath';
+    }
 }
 
 function bool WillTakeStompDamage(actor stomper)
 {
-	// This blows chunks!
-	if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
-		return false;
-	else
-		return true;
+    // This blows chunks!
+    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
+        return false;
+    else
+        return true;
 }
 
 defaultproperties

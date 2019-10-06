@@ -12,7 +12,7 @@ class MenuChoice_FriendlyFire extends MenuUIChoiceSlider;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetActionButtonWidth(179);
 

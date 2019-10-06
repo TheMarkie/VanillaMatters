@@ -5,23 +5,23 @@ class HKHangingLantern2 extends HangingDecoration;
 
 enum ESkinColor
 {
-	SC_RedGreen,
-	SC_YellowBlue,
-	SC_BluePurple
+    SC_RedGreen,
+    SC_YellowBlue,
+    SC_BluePurple
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_RedGreen:	Skin = Texture'HKHangingLantern2Tex1'; break;
-		case SC_YellowBlue:	Skin = Texture'HKHangingLantern2Tex2'; break;
-		case SC_BluePurple:	Skin = Texture'HKHangingLantern2Tex3'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_RedGreen:   Skin = Texture'HKHangingLantern2Tex1'; break;
+        case SC_YellowBlue: Skin = Texture'HKHangingLantern2Tex2'; break;
+        case SC_BluePurple: Skin = Texture'HKHangingLantern2Tex3'; break;
+    }
 }
 
 defaultproperties

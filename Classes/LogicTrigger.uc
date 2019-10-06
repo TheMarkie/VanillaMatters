@@ -10,9 +10,9 @@ class LogicTrigger expands Trigger;
 
 enum ELogicType
 {
-	GATE_AND,
-	GATE_OR,
-	GATE_XOR
+    GATE_AND,
+    GATE_OR,
+    GATE_XOR
 };
 
 var() name inGroup1, inGroup2;
@@ -23,37 +23,37 @@ var bool in1, in2, out, outhit;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	local Actor A;
+    local Actor A;
 
-	if (Other.Group == inGroup1)
-		in1 = !in1;
-	if (Other.Group == inGroup2)
-		in2 = !in2;
+    if (Other.Group == inGroup1)
+        in1 = !in1;
+    if (Other.Group == inGroup2)
+        in2 = !in2;
 
-	switch(Op)
-	{
-		case GATE_AND:	out = in1 && in2;
-						break;
-		case GATE_OR:	out = in1 || in2;
-						break;
-		case GATE_XOR:	out = bool(int(in1) ^ int(in2));	// why isn't there a boolean XOR?
-						break;
-	}
+    switch(Op)
+    {
+        case GATE_AND:  out = in1 && in2;
+                        break;
+        case GATE_OR:   out = in1 || in2;
+                        break;
+        case GATE_XOR:  out = bool(int(in1) ^ int(in2));    // why isn't there a boolean XOR?
+                        break;
+    }
 
-	if (Not)
-		out = !out;
+    if (Not)
+        out = !out;
 
-	// Trigger event on out==true
-	if (out && !outhit)
-	{
-		if (OneShot)
-			outhit = True;
-		if(Event != '')
-			foreach AllActors(class 'Actor', A, Event)
-				A.Trigger(Self, Instigator);
-	}
+    // Trigger event on out==true
+    if (out && !outhit)
+    {
+        if (OneShot)
+            outhit = True;
+        if(Event != '')
+            foreach AllActors(class 'Actor', A, Event)
+                A.Trigger(Self, Instigator);
+    }
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 }
 
 defaultproperties

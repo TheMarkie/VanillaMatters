@@ -11,40 +11,40 @@ var bool bIsMoving;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
-	bIsMoving = False;
+    Super.BeginPlay();
+    bIsMoving = False;
 }
 
 function SetSeq(int seqnum)
 {
-	if (bIsMoving)
-		return;
+    if (bIsMoving)
+        return;
 
-	if (KeyNum != seqnum)
-	{
-		KeyNum = seqnum;
-		GotoState('ElevatorMover', 'Next');
-	}
+    if (KeyNum != seqnum)
+    {
+        KeyNum = seqnum;
+        GotoState('ElevatorMover', 'Next');
+    }
 }
 
 auto state() ElevatorMover
 {
-	function InterpolateEnd(actor Other)
-	{
-		if (bFollowKeyframes)
-			Super.InterpolateEnd(Other);
-	}
+    function InterpolateEnd(actor Other)
+    {
+        if (bFollowKeyframes)
+            Super.InterpolateEnd(Other);
+    }
 
 Next:
-	bIsMoving = True;
-	PlaySound(OpeningSound);
-	AmbientSound = MoveAmbientSound;
-	InterpolateTo(KeyNum, MoveTime);
-	FinishInterpolation();
-	AmbientSound = None;
-	FinishedOpening();
-	bIsMoving = False;
-	Stop;
+    bIsMoving = True;
+    PlaySound(OpeningSound);
+    AmbientSound = MoveAmbientSound;
+    InterpolateTo(KeyNum, MoveTime);
+    FinishInterpolation();
+    AmbientSound = None;
+    FinishedOpening();
+    bIsMoving = False;
+    Stop;
 }
 
 defaultproperties

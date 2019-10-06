@@ -5,17 +5,17 @@ class WeaponGasGrenade extends DeusExWeapon;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+    }
 }
 
 function PostBeginPlay()
@@ -26,28 +26,28 @@ function PostBeginPlay()
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the GasGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
+    // if facing a wall, affix the GasGrenade to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
 
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // otherwise, throw as usual
+    Super.Fire(Value);
 }
 
 // Become a pickup
 // Weapons that carry their ammo with them don't vanish when dropped
 function BecomePickup()
 {
-	Super.BecomePickup();
+    Super.BecomePickup();
    if (Level.NetMode != NM_Standalone)
       if (bTossedOut)
          Lifespan = 0.0;

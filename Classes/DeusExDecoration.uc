@@ -2,8 +2,8 @@
 // DeusExDecoration.
 //=============================================================================
 class DeusExDecoration extends Decoration
-	abstract
-	native;
+    abstract
+    native;
 
 #exec OBJ LOAD FILE=Effects
 
@@ -21,34 +21,34 @@ var rotator origRot;
 var() name moverTag;
 
 // object properties
-var() bool bFlammable;				// can this object catch on fire?
-var() float Flammability;			// how long does the object burn?
-var() bool bExplosive;				// does this object explode when destroyed?
-var() int explosionDamage;			// how much damage does the explosion cause?
-var() float explosionRadius;		// how big is the explosion?
+var() bool bFlammable;              // can this object catch on fire?
+var() float Flammability;           // how long does the object burn?
+var() bool bExplosive;              // does this object explode when destroyed?
+var() int explosionDamage;          // how much damage does the explosion cause?
+var() float explosionRadius;        // how big is the explosion?
 
-var() bool bHighlight;				// should this object not highlight when focused?
+var() bool bHighlight;              // should this object not highlight when focused?
 
-var() bool bCanBeBase;				// can an actor stand on this decoration?
+var() bool bCanBeBase;              // can an actor stand on this decoration?
 
-var() bool bGenerateFlies;			// does this actor generate flies?
+var() bool bGenerateFlies;          // does this actor generate flies?
 
-var int pushSoundId;				// used to stop playing the push sound
+var int pushSoundId;                // used to stop playing the push sound
 
-var int gradualHurtSteps;			// how many separate explosions for the staggered HurtRadius
-var int gradualHurtCounter;			// which one are we currently doing
+var int gradualHurtSteps;           // how many separate explosions for the staggered HurtRadius
+var int gradualHurtCounter;         // which one are we currently doing
 
-var name NextState;					// for queueing states
-var name NextLabel;					// for queueing states
+var name NextState;                 // for queueing states
+var name NextLabel;                 // for queueing states
 
-var FlyGenerator flyGen;			// fly generator
+var FlyGenerator flyGen;            // fly generator
 
-var localized string itemArticle;	
-var localized string itemName;		// human readable name
+var localized string itemArticle;
+var localized string itemName;      // human readable name
 
 // Vanilla Matters
-var bool VM_bPowerthrown;			// Is this decoration being powerthrown with AugMuscle?
-var Actor VM_powerThrower;			// The actor powerthrowing this.
+var bool VM_bPowerthrown;           // Is this decoration being powerthrown with AugMuscle?
+var Actor VM_powerThrower;          // The actor powerthrowing this.
 
 native(2101) final function ConBindEvents();
 
@@ -57,21 +57,21 @@ native(2101) final function ConBindEvents();
 //
 replication
 {
-	// Things the server should send to the client.
-	reliable if( Role==ROLE_Authority )
-		HitPoints, bInvincible, fragType, bFloating, origRot, moverTag;
+    // Things the server should send to the client.
+    reliable if( Role==ROLE_Authority )
+        HitPoints, bInvincible, fragType, bFloating, origRot, moverTag;
 /*
-	// Things the client should send to the server
-	reliable if ( Role<ROLE_Authority )
-		WeaponPriority, Password;
+    // Things the client should send to the server
+    reliable if ( Role<ROLE_Authority )
+        WeaponPriority, Password;
 
-	// Functions client can call.
-	reliable if( Role<ROLE_Authority )
-		Fire, AltFire, ServerRequestScores;
+    // Functions client can call.
+    reliable if( Role<ROLE_Authority )
+        Fire, AltFire, ServerRequestScores;
 
-	// Functions server can call.
-	reliable if( Role==ROLE_Authority )
-		ClientAdjustGlow, ClientTravel, ClientSetMusic, SetDesiredFOV;
+    // Functions server can call.
+    reliable if( Role==ROLE_Authority )
+        ClientAdjustGlow, ClientTravel, ClientSetMusic, SetDesiredFOV;
 */
 }
 
@@ -81,15 +81,15 @@ replication
 
 function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// Bind any conversation events to this Decoration
-//	ConBindEvents();
+    // Bind any conversation events to this Decoration
+//  ConBindEvents();
 
-	if (bGenerateFlies && (FRand() < 0.1))
-		flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
-	else
-		flyGen = None;
+    if (bGenerateFlies && (FRand() < 0.1))
+        flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
+    else
+        flyGen = None;
 }
 
 // ----------------------------------------------------------------------
@@ -98,10 +98,10 @@ function PreBeginPlay()
 
 function PostPostBeginPlay()
 {
-	Super.PostPostBeginPlay();
+    Super.PostPostBeginPlay();
 
-	// Bind any conversation events to this DeusExPlayer
-	ConBindEvents();
+    // Bind any conversation events to this DeusExPlayer
+    ConBindEvents();
 }
 
 // ----------------------------------------------------------------------
@@ -112,35 +112,35 @@ function PostPostBeginPlay()
 
 function BeginPlay()
 {
-	local Mover M;
+    local Mover M;
 
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	if (bFloating)
-		origRot = Rotation;
+    if (bFloating)
+        origRot = Rotation;
 
-	// attach us to the mover that was tagged
-	if (moverTag != '')
-		foreach AllActors(class'Mover', M, moverTag)
-		{
-			SetBase(M);
-			SetPhysics(PHYS_None);
-			bInvincible = True;
-			bCollideWorld = False;
-		}
+    // attach us to the mover that was tagged
+    if (moverTag != '')
+        foreach AllActors(class'Mover', M, moverTag)
+        {
+            SetBase(M);
+            SetPhysics(PHYS_None);
+            bInvincible = True;
+            bCollideWorld = False;
+        }
 
-	if (fragType == class'GlassFragment')
-		pushSound = sound'PushPlastic';
-	else if (fragType == class'MetalFragment')
-		pushSound = sound'PushMetal';
-	else if (fragType == class'PaperFragment')
-		pushSound = sound'PushPlastic';
-	else if (fragType == class'PlasticFragment')
-		pushSound = sound'PushPlastic';
-	else if (fragType == class'WoodFragment')
-		pushSound = sound'PushWood';
-	else if (fragType == class'Rockchip')
-		pushSound = sound'PushPlastic';
+    if (fragType == class'GlassFragment')
+        pushSound = sound'PushPlastic';
+    else if (fragType == class'MetalFragment')
+        pushSound = sound'PushMetal';
+    else if (fragType == class'PaperFragment')
+        pushSound = sound'PushPlastic';
+    else if (fragType == class'PlasticFragment')
+        pushSound = sound'PushPlastic';
+    else if (fragType == class'WoodFragment')
+        pushSound = sound'PushWood';
+    else if (fragType == class'Rockchip')
+        pushSound = sound'PushPlastic';
 }
 
 // ----------------------------------------------------------------------
@@ -153,90 +153,90 @@ function TravelPostAccept()
 
 // ----------------------------------------------------------------------
 // Landed()
-// 
+//
 // Called when we hit the ground
 // ----------------------------------------------------------------------
 
 function Landed(vector HitNormal)
 {
-	local Rotator rot;
-	local sound hitSound;
+    local Rotator rot;
+    local sound hitSound;
 
-	// make it lay flat on the ground
-	bFixedRotationDir = False;
-	rot = Rotation;
-	rot.Pitch = 0;
-	rot.Roll = 0;
-	SetRotation(rot);
+    // make it lay flat on the ground
+    bFixedRotationDir = False;
+    rot = Rotation;
+    rot.Pitch = 0;
+    rot.Roll = 0;
+    SetRotation(rot);
 
-	// play a sound effect if it's falling fast enough
-	if (Velocity.Z <= -200)
-	{
-		if (fragType == class'WoodFragment')
-		{
-			if (Mass <= 20)
-				hitSound = sound'WoodHit1';
-			else
-				hitSound = sound'WoodHit2';
-		}
-		else if (fragType == class'MetalFragment')
-		{
-			if (Mass <= 20)
-				hitSound = sound'MetalHit1';
-			else
-				hitSound = sound'MetalHit2';
-		}
-		else if (fragType == class'PlasticFragment')
-		{
-			if (Mass <= 20)
-				hitSound = sound'PlasticHit1';
-			else
-				hitSound = sound'PlasticHit2';
-		}
-		else if (fragType == class'GlassFragment')
-		{
-			if (Mass <= 20)
-				hitSound = sound'GlassHit1';
-			else
-				hitSound = sound'GlassHit2';
-		}
-		else	// paper sound
-		{
-			if (Mass <= 20)
-				hitSound = sound'PaperHit1';
-			else
-				hitSound = sound'PaperHit2';
-		}
+    // play a sound effect if it's falling fast enough
+    if (Velocity.Z <= -200)
+    {
+        if (fragType == class'WoodFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'WoodHit1';
+            else
+                hitSound = sound'WoodHit2';
+        }
+        else if (fragType == class'MetalFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'MetalHit1';
+            else
+                hitSound = sound'MetalHit2';
+        }
+        else if (fragType == class'PlasticFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'PlasticHit1';
+            else
+                hitSound = sound'PlasticHit2';
+        }
+        else if (fragType == class'GlassFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'GlassHit1';
+            else
+                hitSound = sound'GlassHit2';
+        }
+        else    // paper sound
+        {
+            if (Mass <= 20)
+                hitSound = sound'PaperHit1';
+            else
+                hitSound = sound'PaperHit2';
+        }
 
-		if (hitSound != None)
-			PlaySound(hitSound, SLOT_None);
+        if (hitSound != None)
+            PlaySound(hitSound, SLOT_None);
 
-		// alert NPCs that I've landed
-		AISendEvent('LoudNoise', EAITYPE_Audio);
-	}
+        // alert NPCs that I've landed
+        AISendEvent('LoudNoise', EAITYPE_Audio);
+    }
 
-	bWasCarried = false;
-	bBobbing    = false;
+    bWasCarried = false;
+    bBobbing    = false;
 
-	// Vanilla Matters: Reset bPowerthrown.
-	if ( VM_bPowerthrown ) {
-		TakeDamage( 0.5 * Mass * ( VSize( Velocity ) / 52.5 ), Pawn( VM_powerThrower ), Location, Velocity, 'Exploded' );
+    // Vanilla Matters: Reset bPowerthrown.
+    if ( VM_bPowerthrown ) {
+        TakeDamage( 0.5 * Mass * ( VSize( Velocity ) / 52.5 ), Pawn( VM_powerThrower ), Location, Velocity, 'Exploded' );
 
-		VM_bPowerthrown = false;
-		VM_powerThrower = None;
-	}
+        VM_bPowerthrown = false;
+        VM_powerThrower = None;
+    }
 
-	// The crouch height is higher in multiplayer, so we need to be more forgiving on the drop velocity to explode
-	if ( Level.NetMode != NM_Standalone )
-	{
-		if ((bExplosive && (VSize(Velocity) > 478)) || (!bExplosive && (Velocity.Z < -500)))
-			TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
-	}
-	else
-	{
-		if ((bExplosive && (VSize(Velocity) > 425)) || (!bExplosive && (Velocity.Z < -500)))
-			TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
-	}
+    // The crouch height is higher in multiplayer, so we need to be more forgiving on the drop velocity to explode
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ((bExplosive && (VSize(Velocity) > 478)) || (!bExplosive && (Velocity.Z < -500)))
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+    }
+    else
+    {
+        if ((bExplosive && (VSize(Velocity) > 425)) || (!bExplosive && (Velocity.Z < -500)))
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -247,36 +247,36 @@ function Landed(vector HitNormal)
 
 singular function SupportActor(Actor standingActor)
 {
-	local vector newVelocity;
-	local float  angle;
-	local float  zVelocity;
-	local float  baseMass;
-	local float  standingMass;
+    local vector newVelocity;
+    local float  angle;
+    local float  zVelocity;
+    local float  baseMass;
+    local float  standingMass;
 
-	zVelocity = standingActor.Velocity.Z;
-	// We've been stomped!
-	if (zVelocity < -500)
-	{
-		standingMass = FMax(1, standingActor.Mass);
-		baseMass     = FMax(1, Mass);
-		TakeDamage((1 - standingMass/baseMass * zVelocity/30),
-		           standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
-	}
+    zVelocity = standingActor.Velocity.Z;
+    // We've been stomped!
+    if (zVelocity < -500)
+    {
+        standingMass = FMax(1, standingActor.Mass);
+        baseMass     = FMax(1, Mass);
+        TakeDamage((1 - standingMass/baseMass * zVelocity/30),
+                   standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
+    }
 
-	if (!bCanBeBase)
-	{
-		angle = FRand()*Pi*2;
-		newVelocity.X = cos(angle);
-		newVelocity.Y = sin(angle);
-		newVelocity.Z = 0;
-		newVelocity *= FRand()*25 + 25;
-		newVelocity += standingActor.Velocity;
-		newVelocity.Z = 50;
-		standingActor.Velocity = newVelocity;
-		standingActor.SetPhysics(PHYS_Falling);
-	}
-	else
-		standingActor.SetBase(self);
+    if (!bCanBeBase)
+    {
+        angle = FRand()*Pi*2;
+        newVelocity.X = cos(angle);
+        newVelocity.Y = sin(angle);
+        newVelocity.Z = 0;
+        newVelocity *= FRand()*25 + 25;
+        newVelocity += standingActor.Velocity;
+        newVelocity.Z = 50;
+        standingActor.Velocity = newVelocity;
+        standingActor.SetPhysics(PHYS_Falling);
+    }
+    else
+        standingActor.SetBase(self);
 }
 
 
@@ -289,8 +289,8 @@ singular function SupportActor(Actor standingActor)
 
 function ResetScaleGlow()
 {
-	if (!bInvincible)
-		ScaleGlow = float(HitPoints) / float(Default.HitPoints) * 0.9 + 0.1;
+    if (!bInvincible)
+        ScaleGlow = float(HitPoints) / float(Default.HitPoints) * 0.9 + 0.1;
 }
 
 // ----------------------------------------------------------------------
@@ -302,17 +302,17 @@ function ResetScaleGlow()
 
 singular function BaseChange()
 {
-	bBobbing = false;
+    bBobbing = false;
 
-	if( (base == None) && (bPushable || IsA('Carcass')) && (Physics == PHYS_None) )
-		SetPhysics(PHYS_Falling);
+    if( (base == None) && (bPushable || IsA('Carcass')) && (Physics == PHYS_None) )
+        SetPhysics(PHYS_Falling);
 
-	// make sure if a decoration is accidentally dropped,
-	// we reset it's parameters correctly
-	SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
-	Style = Default.Style;
-	bUnlit = Default.bUnlit;
-	ResetScaleGlow();
+    // make sure if a decoration is accidentally dropped,
+    // we reset it's parameters correctly
+    SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
+    Style = Default.Style;
+    bUnlit = Default.bUnlit;
+    ResetScaleGlow();
 }
 
 // ----------------------------------------------------------------------
@@ -323,46 +323,46 @@ singular function BaseChange()
 
 simulated function Tick(float deltaTime)
 {
-	local float        ang;
-	local rotator      rot;
-	local DeusExPlayer player;
+    local float        ang;
+    local rotator      rot;
+    local DeusExPlayer player;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bFloating)
-	{
-		ang = 2 * Pi * Level.TimeSeconds / 4.0;
-		rot = origRot;
-		rot.Pitch += Sin(ang) * 512;
-		rot.Roll += Cos(ang) * 512;
-		rot.Yaw += Sin(ang) * 256;
-		SetRotation(rot);
-	}
+    if (bFloating)
+    {
+        ang = 2 * Pi * Level.TimeSeconds / 4.0;
+        rot = origRot;
+        rot.Pitch += Sin(ang) * 512;
+        rot.Roll += Cos(ang) * 512;
+        rot.Yaw += Sin(ang) * 256;
+        SetRotation(rot);
+    }
 
-	// BOOGER!  This is a hack!
-	// Ideally, we'd set the base of the fly generator to this decoration,
-	// but unfortunately this prevents the player from picking up the
-	// decoration... need to fix!
+    // BOOGER!  This is a hack!
+    // Ideally, we'd set the base of the fly generator to this decoration,
+    // but unfortunately this prevents the player from picking up the
+    // decoration... need to fix!
 
-	if (flyGen != None)
-	{
-		if ((flyGen.Location != Location) || (flyGen.Rotation != Rotation))
-		{
-			flyGen.SetLocation(Location);
-			flyGen.SetRotation(Rotation);
-		}
-	}
+    if (flyGen != None)
+    {
+        if ((flyGen.Location != Location) || (flyGen.Rotation != Rotation))
+        {
+            flyGen.SetLocation(Location);
+            flyGen.SetRotation(Rotation);
+        }
+    }
 
-	// If we have any conversations, check to see if we're close enough
-	// to the player to start one (and all the other checks that take place
-	// when a valid conversation can be started);
+    // If we have any conversations, check to see if we're close enough
+    // to the player to start one (and all the other checks that take place
+    // when a valid conversation can be started);
 
-	if (conListItems != None)
-	{
-		player = DeusExPlayer(GetPlayerPawn());
-		if (player != None)
-			player.StartConversation(Self, IM_Radius);
-	}
+    if (conListItems != None)
+    {
+        player = DeusExPlayer(GetPlayerPawn());
+        if (player != None)
+            player.StartConversation(Self, IM_Radius);
+    }
 
    if ((Level.Netmode != NM_Standalone) && (VSize(Velocity) > 0) && (VSize(Velocity) < 5))
    {
@@ -378,52 +378,52 @@ simulated function Tick(float deltaTime)
 
 function ZoneChange(ZoneInfo NewZone)
 {
-	Super.ZoneChange(NewZone);
+    Super.ZoneChange(NewZone);
 
-	if (bFloating && !NewZone.bWaterZone)
-	{
-		bFloating = False;
-		SetRotation(origRot);
-		return;
-	}
+    if (bFloating && !NewZone.bWaterZone)
+    {
+        bFloating = False;
+        SetRotation(origRot);
+        return;
+    }
 
-	if (NewZone.bWaterZone)
-		ExtinguishFire();
+    if (NewZone.bWaterZone)
+        ExtinguishFire();
 
-	if (NewZone.bWaterZone && !bFloating && (Buoyancy > Mass))
-	{
-		bFloating = True;
-		origRot = Rotation;
-	}
+    if (NewZone.bWaterZone && !bFloating && (Buoyancy > Mass))
+    {
+        bFloating = True;
+        origRot = Rotation;
+    }
 }
 
 // Vanilla Matters: Function to scale powerthrow damage based on material.
 function float GetPowerThrowMaterialMult() {
-	local float mult;
+    local float mult;
 
-	if ( fragType == class'GlassFragment' ) {
-		mult = 0.75;
-	}
-	else if ( fragType == class'MetalFragment' ) {
-		mult = 0.9;
-	}
-	else if ( fragType == class'PaperFragment' ) {
-		mult = 0.15;
-	}
-	else if ( fragType == class'PlasticFragment' ) {
-		mult = 0.3;
-	}
-	else if ( fragType == class'WoodFragment' ) {
-		return 0.6;
-	}
-	else if ( fragType == class'Rockchip' ) {
-		mult = 1.2;
-	}
-	else {
-		mult = 1.0;
-	}
+    if ( fragType == class'GlassFragment' ) {
+        mult = 0.75;
+    }
+    else if ( fragType == class'MetalFragment' ) {
+        mult = 0.9;
+    }
+    else if ( fragType == class'PaperFragment' ) {
+        mult = 0.15;
+    }
+    else if ( fragType == class'PlasticFragment' ) {
+        mult = 0.3;
+    }
+    else if ( fragType == class'WoodFragment' ) {
+        return 0.6;
+    }
+    else if ( fragType == class'Rockchip' ) {
+        mult = 1.2;
+    }
+    else {
+        mult = 1.0;
+    }
 
-	return mult;
+    return mult;
 }
 
 // ----------------------------------------------------------------------
@@ -434,147 +434,147 @@ function float GetPowerThrowMaterialMult() {
 
 function Bump(actor Other)
 {
-	local int augLevel, augMult;
-	local float maxPush, velscale;
-	local DeusExPlayer player;
-	local Rotator rot;
+    local int augLevel, augMult;
+    local float maxPush, velscale;
+    local DeusExPlayer player;
+    local Rotator rot;
 
-	// Vanilla Matters
-	local Vector HitLocation;
-	local float realVelocity, kEnergy, powerThrowDamage, mult;
+    // Vanilla Matters
+    local Vector HitLocation;
+    local float realVelocity, kEnergy, powerThrowDamage, mult;
 
-	player = DeusExPlayer(Other);
+    player = DeusExPlayer(Other);
 
-	// if we are bumped by a burning pawn, then set us on fire
-	if (Other.IsA('Pawn') && Pawn(Other).bOnFire && !Other.IsA('Robot') && !Region.Zone.bWaterZone && bFlammable)
-		GotoState('Burning');
+    // if we are bumped by a burning pawn, then set us on fire
+    if (Other.IsA('Pawn') && Pawn(Other).bOnFire && !Other.IsA('Robot') && !Region.Zone.bWaterZone && bFlammable)
+        GotoState('Burning');
 
-	// if we are bumped by a burning decoration, then set us on fire
-	if (Other.IsA('DeusExDecoration') && DeusExDecoration(Other).IsInState('Burning') &&
-		DeusExDecoration(Other).bFlammable && !Region.Zone.bWaterZone && bFlammable)
-		GotoState('Burning');
+    // if we are bumped by a burning decoration, then set us on fire
+    if (Other.IsA('DeusExDecoration') && DeusExDecoration(Other).IsInState('Burning') &&
+        DeusExDecoration(Other).bFlammable && !Region.Zone.bWaterZone && bFlammable)
+        GotoState('Burning');
 
-	// Check to see if the actor touched is the Player Character
-	if (player != None)
-	{
-		// if we are being carried, ignore Bump()
-		if (player.CarriedDecoration == Self)
-			return;
+    // Check to see if the actor touched is the Player Character
+    if (player != None)
+    {
+        // if we are being carried, ignore Bump()
+        if (player.CarriedDecoration == Self)
+            return;
 
-		// check for convos
-		// NO convos on bump
-//		if ( player.StartConversation(Self, IM_Bump) )
-//			return;
-	}
+        // check for convos
+        // NO convos on bump
+//      if ( player.StartConversation(Self, IM_Bump) )
+//          return;
+    }
 
-	// Vanilla Matters: Add in impact damage if powerthrown.
-	if ( VM_bPowerthrown ) {
-		// VM: Make the thrower immune to their own powerthrow, to prevent wonky hitbox.
-		if ( Other == VM_powerThrower ) {
-			return;
-		}
+    // Vanilla Matters: Add in impact damage if powerthrown.
+    if ( VM_bPowerthrown ) {
+        // VM: Make the thrower immune to their own powerthrow, to prevent wonky hitbox.
+        if ( Other == VM_powerThrower ) {
+            return;
+        }
 
-		// VM: Damage formula based on real physics formula for impact force.
-		realVelocity = ( VSize( Velocity ) / 16 ) * 0.3048;
-		kEnergy = 0.5 * ( Mass * 0.6 ) * ( realVelocity * realVelocity );
-		mult = GetPowerThrowMaterialMult();
-		// VM: Damage scales with deco material.
-		powerThrowDamage = kEnergy * 0.01 * mult;
+        // VM: Damage formula based on real physics formula for impact force.
+        realVelocity = ( VSize( Velocity ) / 16 ) * 0.3048;
+        kEnergy = 0.5 * ( Mass * 0.6 ) * ( realVelocity * realVelocity );
+        mult = GetPowerThrowMaterialMult();
+        // VM: Damage scales with deco material.
+        powerThrowDamage = kEnergy * 0.01 * mult;
 
-		if ( Pawn( Other ) != None ) {
-			Pawn( Other ).AdjustHitLocation( HitLocation, Velocity );
-		}
-		else {
-			HitLocation = Other.Location;
-		}
+        if ( Pawn( Other ) != None ) {
+            Pawn( Other ).AdjustHitLocation( HitLocation, Velocity );
+        }
+        else {
+            HitLocation = Other.Location;
+        }
 
-		Other.TakeDamage( powerThrowDamage, Pawn( VM_powerThrower ), HitLocation, Velocity, 'Shot' );
+        Other.TakeDamage( powerThrowDamage, Pawn( VM_powerThrower ), HitLocation, Velocity, 'Shot' );
 
-		// VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
-		Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
+        // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
+        Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
 
-		TakeDamage( powerThrowDamage, Pawn( Other ), Location, Velocity, 'Shot' );
+        TakeDamage( powerThrowDamage, Pawn( Other ), Location, Velocity, 'Shot' );
 
-		VM_bPowerthrown = false;
-		VM_powerThrower = none;
-	}
+        VM_bPowerthrown = false;
+        VM_powerThrower = none;
+    }
 
-	if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
-	{
-		// A little bit of a hack...
-		// Make sure this decoration isn't being bumped from above or below
-		if (abs(Location.Z-Other.Location.Z) < (CollisionHeight+Other.CollisionHeight-1))
-		{
-			maxPush = 100;
-			augMult = 1;
-			if (player != None)
-			{
-				if (player.AugmentationSystem != None)
-				{
-					augLevel = player.AugmentationSystem.GetClassLevel(class'AugMuscle');
+    if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
+    {
+        // A little bit of a hack...
+        // Make sure this decoration isn't being bumped from above or below
+        if (abs(Location.Z-Other.Location.Z) < (CollisionHeight+Other.CollisionHeight-1))
+        {
+            maxPush = 100;
+            augMult = 1;
+            if (player != None)
+            {
+                if (player.AugmentationSystem != None)
+                {
+                    augLevel = player.AugmentationSystem.GetClassLevel(class'AugMuscle');
 
-					// Vanilla Matters: Makes bonus from augmuscle bigger.
-					if ( augLevel >= 0 ) {
-						augMult = augLevel + 2.5;
-						maxPush = maxPush * ( augLevel + 2 );
-					}
-				}
-			}
+                    // Vanilla Matters: Makes bonus from augmuscle bigger.
+                    if ( augLevel >= 0 ) {
+                        augMult = augLevel + 2.5;
+                        maxPush = maxPush * ( augLevel + 2 );
+                    }
+                }
+            }
 
-			if (Mass <= maxPush)
-			{
-				// slow it down based on how heavy it is and what level my augmentation is
+            if (Mass <= maxPush)
+            {
+                // slow it down based on how heavy it is and what level my augmentation is
 
-				// Vanilla Matters: Tweak the formula to promote augmuscle.
-				velscale = FClamp( ( 50 * augMult ) / ( Mass * 2 ), 0, 1.0 );
-				if ( velscale <= 0.25 ) {
-					velscale = 0;
-				}
+                // Vanilla Matters: Tweak the formula to promote augmuscle.
+                velscale = FClamp( ( 50 * augMult ) / ( Mass * 2 ), 0, 1.0 );
+                if ( velscale <= 0.25 ) {
+                    velscale = 0;
+                }
 
-				// apply more velocity than normal if we're floating
-				if (bFloating)
-					Velocity = Other.Velocity;
-				else
-					Velocity = Other.Velocity * velscale;
+                // apply more velocity than normal if we're floating
+                if (bFloating)
+                    Velocity = Other.Velocity;
+                else
+                    Velocity = Other.Velocity * velscale;
 
-				if (Physics != PHYS_Falling)
-					Velocity.Z = 0;
+                if (Physics != PHYS_Falling)
+                    Velocity.Z = 0;
 
-				if (!bFloating && !bPushSoundPlaying && (Mass > 15))
-				{
-					pushSoundId = PlaySound(PushSound, SLOT_Misc,,, 128);
-					AIStartEvent('LoudNoise', EAITYPE_Audio, , 128);
-					bPushSoundPlaying = True;
-				}
+                if (!bFloating && !bPushSoundPlaying && (Mass > 15))
+                {
+                    pushSoundId = PlaySound(PushSound, SLOT_Misc,,, 128);
+                    AIStartEvent('LoudNoise', EAITYPE_Audio, , 128);
+                    bPushSoundPlaying = True;
+                }
 
-				if (!bFloating && (Physics != PHYS_Falling))
-					SetPhysics(PHYS_Rolling);
+                if (!bFloating && (Physics != PHYS_Falling))
+                    SetPhysics(PHYS_Rolling);
 
-				SetTimer(0.2, False);
-				Instigator = Pawn(Other);
+                SetTimer(0.2, False);
+                Instigator = Pawn(Other);
 
-				// Impart angular velocity (yaw only) based on where we are bumped from
-				// NOTE: This is faked, but it looks cool
-				rot = Rotator((Other.Location - Location) << Rotation);
-				rot.Pitch = 0;
-				rot.Roll = 0;
+                // Impart angular velocity (yaw only) based on where we are bumped from
+                // NOTE: This is faked, but it looks cool
+                rot = Rotator((Other.Location - Location) << Rotation);
+                rot.Pitch = 0;
+                rot.Roll = 0;
 
-				// ignore which side we're pushing from
-				if (rot.Yaw >= 24576)
-					rot.Yaw -= 32768;
-				else if (rot.Yaw >= 8192)
-					rot.Yaw -= 16384;
-				else if (rot.Yaw <= -24576)
-					rot.Yaw += 32768;
-				else if (rot.Yaw <= -8192)
-					rot.Yaw += 16384;
+                // ignore which side we're pushing from
+                if (rot.Yaw >= 24576)
+                    rot.Yaw -= 32768;
+                else if (rot.Yaw >= 8192)
+                    rot.Yaw -= 16384;
+                else if (rot.Yaw <= -24576)
+                    rot.Yaw += 32768;
+                else if (rot.Yaw <= -8192)
+                    rot.Yaw += 16384;
 
-				// scale it down based on mass and apply the new "rotational force"
-				rot.Yaw *= velscale * 0.025;
-				SetRotation(Rotation+rot);
-			}
-		}
-	}
+                // scale it down based on mass and apply the new "rotational force"
+                rot.Yaw *= velscale * 0.025;
+                SetRotation(Rotation+rot);
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -585,28 +585,28 @@ function Bump(actor Other)
 
 function Timer()
 {
-	if (bPushSoundPlaying)
-	{
-		StopSound(pushSoundId);
-		AIEndEvent('LoudNoise', EAITYPE_Audio);
-		bPushSoundPlaying = False;
-	}
+    if (bPushSoundPlaying)
+    {
+        StopSound(pushSoundId);
+        AIEndEvent('LoudNoise', EAITYPE_Audio);
+        bPushSoundPlaying = False;
+    }
 }
 
 // ----------------------------------------------------------------------
 // DropThings()
-// 
+//
 // drops everything that is based on this decoration
 // ----------------------------------------------------------------------
 
 function DropThings()
 {
-	local actor A;
+    local actor A;
 
-	// drop everything that is on us
-	foreach BasedActors(class'Actor', A)
-		if (!A.IsA('ParticleGenerator'))
-			A.SetPhysics(PHYS_Falling);
+    // drop everything that is on us
+    foreach BasedActors(class'Actor', A)
+        if (!A.IsA('ParticleGenerator'))
+            A.SetPhysics(PHYS_Falling);
 }
 
 
@@ -616,24 +616,24 @@ function DropThings()
 
 function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
-	// First check to see if we're already in a conversation state, 
-	// in which case we'll abort immediately
+    // First check to see if we're already in a conversation state,
+    // in which case we'll abort immediately
 
-	if ((GetStateName() == 'Conversation') || (GetStateName() == 'FirstPersonConversation'))
-		return;
+    if ((GetStateName() == 'Conversation') || (GetStateName() == 'FirstPersonConversation'))
+        return;
 
-	NextState = GetStateName();
+    NextState = GetStateName();
 
-	// If bAvoidState is set, then we don't want to jump into the conversaton state
-	// because bad things might happen otherwise.
+    // If bAvoidState is set, then we don't want to jump into the conversaton state
+    // because bad things might happen otherwise.
 
-	if (!bAvoidState)
-	{
-		if (bFirstPerson)
-			GotoState('FirstPersonConversation');
-		else
-			GotoState('Conversation');
-	}
+    if (!bAvoidState)
+    {
+        if (bFirstPerson)
+            GotoState('FirstPersonConversation');
+        else
+            GotoState('Conversation');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -642,52 +642,52 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 
 function EndConversation()
 {
-	Super.EndConversation();
+    Super.EndConversation();
 
-	Enable('Bump');
+    Enable('Bump');
 
-	GotoState(NextState);
+    GotoState(NextState);
 }
 
 // ----------------------------------------------------------------------
-// state Conversation 
+// state Conversation
 //
 // Just sit here until the conversation is over
 // ----------------------------------------------------------------------
 
 state Conversation
 {
-	ignores bump, frob;
+    ignores bump, frob;
 
 Idle:
-	Sleep(1.0);
-	goto('Idle');
+    Sleep(1.0);
+    goto('Idle');
 
 Begin:
 
-	// Make sure we're not on fire!
-	ExtinguishFire();
+    // Make sure we're not on fire!
+    ExtinguishFire();
 
-	goto('Idle');
+    goto('Idle');
 }
 
 
 // ----------------------------------------------------------------------
-// state FirstPersonConversation 
+// state FirstPersonConversation
 //
 // Just sit here until the conversation is over
 // ----------------------------------------------------------------------
 
 state FirstPersonConversation
 {
-	ignores bump, frob;
+    ignores bump, frob;
 
 Idle:
-	Sleep(1.0);
-	goto('Idle');
+    Sleep(1.0);
+    goto('Idle');
 
 Begin:
-	goto('Idle');
+    goto('Idle');
 }
 
 // ----------------------------------------------------------------------
@@ -696,65 +696,65 @@ Begin:
 // ----------------------------------------------------------------------
 function Explode(vector HitLocation)
 {
-	local ShockRing ring;
-	local ScorchMark s;
-	local ExplosionLight light;
-	local int i;
+    local ShockRing ring;
+    local ScorchMark s;
+    local ExplosionLight light;
+    local int i;
 
-	// make sure we wake up when taking damage
-	bStasis = False;
+    // make sure we wake up when taking damage
+    bStasis = False;
 
-	// alert NPCs that I'm exploding
-	AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius * 16);
+    // alert NPCs that I'm exploding
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius * 16);
 
-	if (explosionRadius <= 128)
-		PlaySound(Sound'SmallExplosion1', SLOT_None,,, explosionRadius*16);
-	else
-		PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+    if (explosionRadius <= 128)
+        PlaySound(Sound'SmallExplosion1', SLOT_None,,, explosionRadius*16);
+    else
+        PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
 
-	// draw a pretty explosion
-	light = Spawn(class'ExplosionLight',,, HitLocation);
-	if (explosionRadius < 128)
-	{
-		Spawn(class'ExplosionSmall',,, HitLocation);
-		light.size = 2;
-	}
-	else if (explosionRadius < 256)
-	{
-		Spawn(class'ExplosionMedium',,, HitLocation);
-		light.size = 4;
-	}
-	else
-	{
-		Spawn(class'ExplosionLarge',,, HitLocation);
-		light.size = 8;
-	}
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, HitLocation);
+    if (explosionRadius < 128)
+    {
+        Spawn(class'ExplosionSmall',,, HitLocation);
+        light.size = 2;
+    }
+    else if (explosionRadius < 256)
+    {
+        Spawn(class'ExplosionMedium',,, HitLocation);
+        light.size = 4;
+    }
+    else
+    {
+        Spawn(class'ExplosionLarge',,, HitLocation);
+        light.size = 8;
+    }
 
-	// draw a pretty shock ring
-	ring = Spawn(class'ShockRing',,, HitLocation, rot(16384,0,0));
-	if (ring != None)
-		ring.size = explosionRadius / 32.0;
-	ring = Spawn(class'ShockRing',,, HitLocation, rot(0,0,0));
-	if (ring != None)
-		ring.size = explosionRadius / 32.0;
-	ring = Spawn(class'ShockRing',,, HitLocation, rot(0,16384,0));
-	if (ring != None)
-		ring.size = explosionRadius / 32.0;
+    // draw a pretty shock ring
+    ring = Spawn(class'ShockRing',,, HitLocation, rot(16384,0,0));
+    if (ring != None)
+        ring.size = explosionRadius / 32.0;
+    ring = Spawn(class'ShockRing',,, HitLocation, rot(0,0,0));
+    if (ring != None)
+        ring.size = explosionRadius / 32.0;
+    ring = Spawn(class'ShockRing',,, HitLocation, rot(0,16384,0));
+    if (ring != None)
+        ring.size = explosionRadius / 32.0;
 
-	// spawn a mark
-	s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
-	if (s != None)
-	{
-		s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
-		s.ReattachDecal();
-	}
+    // spawn a mark
+    s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
+    if (s != None)
+    {
+        s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
+        s.ReattachDecal();
+    }
 
-	// spawn some rocks
-	for (i=0; i<explosionDamage/30+1; i++)
-		if (FRand() < 0.8)
-			spawn(class'Rockchip',,,HitLocation);
+    // spawn some rocks
+    for (i=0; i<explosionDamage/30+1; i++)
+        if (FRand() < 0.8)
+            spawn(class'Rockchip',,,HitLocation);
 
-	GotoState('Exploding');
+    GotoState('Exploding');
 }
 
 // ----------------------------------------------------------------------
@@ -763,48 +763,48 @@ function Explode(vector HitLocation)
 
 state Exploding
 {
-	ignores Explode;
+    ignores Explode;
 
-	function Timer()
-	{
-		local Pawn apawn;
-		local float damageRadius;
-		local Vector dist;
+    function Timer()
+    {
+        local Pawn apawn;
+        local float damageRadius;
+        local Vector dist;
 
-		if ( Level.NetMode != NM_Standalone )
-		{
-			damageRadius = (explosionRadius / gradualHurtSteps) * gradualHurtCounter;
+        if ( Level.NetMode != NM_Standalone )
+        {
+            damageRadius = (explosionRadius / gradualHurtSteps) * gradualHurtCounter;
 
-			for ( apawn = Level.PawnList; apawn != None; apawn = apawn.nextPawn )
-			{
-				if ( apawn.IsA('DeusExPlayer') )
-				{
-					dist = apawn.Location - Location;
-					if ( VSize(dist) < damageRadius )
-						DeusExPlayer(apawn).myProjKiller = Self;
-				}
-			}
-		}
-		HurtRadius
-		(
-			(2 * explosionDamage) / gradualHurtSteps,
-			(explosionRadius / gradualHurtSteps) * gradualHurtCounter,
-			'Exploded',
-			(explosionDamage / gradualHurtSteps) * 100,
-			Location
-		);
-		if (++gradualHurtCounter >= gradualHurtSteps)
-			Destroy();
-	}
+            for ( apawn = Level.PawnList; apawn != None; apawn = apawn.nextPawn )
+            {
+                if ( apawn.IsA('DeusExPlayer') )
+                {
+                    dist = apawn.Location - Location;
+                    if ( VSize(dist) < damageRadius )
+                        DeusExPlayer(apawn).myProjKiller = Self;
+                }
+            }
+        }
+        HurtRadius
+        (
+            (2 * explosionDamage) / gradualHurtSteps,
+            (explosionRadius / gradualHurtSteps) * gradualHurtCounter,
+            'Exploded',
+            (explosionDamage / gradualHurtSteps) * 100,
+            Location
+        );
+        if (++gradualHurtCounter >= gradualHurtSteps)
+            Destroy();
+    }
 
 Begin:
-	// stagger the HurtRadius outward using Timer()
-	// do five separate blast rings increasing in size
-	gradualHurtCounter = 1;
-	gradualHurtSteps = 5;
-	bHidden = True;
-	SetCollision(False, False, False);
-	SetTimer(0.5/float(gradualHurtSteps), True);
+    // stagger the HurtRadius outward using Timer()
+    // do five separate blast rings increasing in size
+    gradualHurtCounter = 1;
+    gradualHurtSteps = 5;
+    bHidden = True;
+    SetCollision(False, False, False);
+    SetTimer(0.5/float(gradualHurtSteps), True);
 }
 
 // ----------------------------------------------------------------------
@@ -812,104 +812,104 @@ Begin:
 // ----------------------------------------------------------------------
 auto state Active
 {
-	function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
-	{
-		local float avg;
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        local float avg;
 
-		// Vanilla Matters
-		local DeusExPlayer player;
-		local Containers c;
+        // Vanilla Matters
+        local DeusExPlayer player;
+        local Containers c;
 
-		local int origHP;
+        local int origHP;
 
-		player = DeusExPlayer( EventInstigator );
-		origHP = HitPoints;
+        player = DeusExPlayer( EventInstigator );
+        origHP = HitPoints;
 
-		if (bStatic || bInvincible)
-			return;
+        if (bStatic || bInvincible)
+            return;
 
-		if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
-			return;
+        if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
+            return;
 
-		if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
-			return;
+        if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
+            return;
 
-		if (DamageType == 'HalonGas')
-			ExtinguishFire();
+        if (DamageType == 'HalonGas')
+            ExtinguishFire();
 
-		if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
-		{
-			if (bExplosive)		// blow up if we are hit by fire
-				HitPoints = 0;
-			else if (bFlammable && !Region.Zone.bWaterZone)
-			{
-				GotoState('Burning');
-				return;
-			}
-		}
+        if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+        {
+            if (bExplosive)     // blow up if we are hit by fire
+                HitPoints = 0;
+            else if (bFlammable && !Region.Zone.bWaterZone)
+            {
+                GotoState('Burning');
+                return;
+            }
+        }
 
-		if (Damage >= minDamageThreshold)
-			HitPoints -= Damage;
-		else
-		{
-			// sabot damage at 50%
-			// explosion damage at 25%
-			if (damageType == 'Sabot')
-				HitPoints -= Damage * 0.5;
-			else if (damageType == 'Exploded')
-				HitPoints -= Damage * 0.25;
-		}
+        if (Damage >= minDamageThreshold)
+            HitPoints -= Damage;
+        else
+        {
+            // sabot damage at 50%
+            // explosion damage at 25%
+            if (damageType == 'Sabot')
+                HitPoints -= Damage * 0.5;
+            else if (damageType == 'Exploded')
+                HitPoints -= Damage * 0.25;
+        }
 
-		if (HitPoints > 0)		// darken it to show damage (from 1.0 to 0.1 - don't go completely black)
-		{
-			ResetScaleGlow();
-		}
-		else	// destroy it!
-		{
-			DropThings();
+        if (HitPoints > 0)      // darken it to show damage (from 1.0 to 0.1 - don't go completely black)
+        {
+            ResetScaleGlow();
+        }
+        else    // destroy it!
+        {
+            DropThings();
 
-			// clear the event to keep Destroyed() from triggering the event
-			Event = '';
-			avg = (CollisionRadius + CollisionHeight) / 2;
-			Instigator = EventInstigator;
-			if (Instigator != None)
-				MakeNoise(1.0);
+            // clear the event to keep Destroyed() from triggering the event
+            Event = '';
+            avg = (CollisionRadius + CollisionHeight) / 2;
+            Instigator = EventInstigator;
+            if (Instigator != None)
+                MakeNoise(1.0);
 
-			if (fragType == class'WoodFragment')
-			{
-				if (avg > 20)
-					PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 512);
-				else
-					PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 512);
-				AISendEvent('LoudNoise', EAITYPE_Audio, , 512);
-			}
+            if (fragType == class'WoodFragment')
+            {
+                if (avg > 20)
+                    PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 512);
+                else
+                    PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 512);
+                AISendEvent('LoudNoise', EAITYPE_Audio, , 512);
+            }
 
-			// if we have been blown up, then destroy our contents
-			// CNN - don't destroy contents now
-//			if (DamageType == 'Exploded')
-//			{
-//				Contents = None;
-//				Content2 = None;
-//				Content3 = None;
-//			}
+            // if we have been blown up, then destroy our contents
+            // CNN - don't destroy contents now
+//          if (DamageType == 'Exploded')
+//          {
+//              Contents = None;
+//              Content2 = None;
+//              Content3 = None;
+//          }
 
-			if (bExplosive)
-			{
-				Frag(fragType, Momentum * explosionRadius / 4, avg/20.0, avg/5 + 1);
-				Explode(HitLocation);
-			}
-			else
-				Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
-		}
+            if (bExplosive)
+            {
+                Frag(fragType, Momentum * explosionRadius / 4, avg/20.0, avg/5 + 1);
+                Explode(HitLocation);
+            }
+            else
+                Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
+        }
 
-		// Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		c = Containers( self );
-		if ( c != none && c.VM_isSupply && player != None ) {
-			if ( player.FPSystem != none ) {
-				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-			}
-		}
-	}
+        // Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+        c = Containers( self );
+        if ( c != none && c.VM_isSupply && player != None ) {
+            if ( player.FPSystem != none ) {
+                player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -918,15 +918,15 @@ auto state Active
 
 function ExtinguishFire()
 {
-	local Fire f;
+    local Fire f;
 
-	if (IsInState('Burning'))
-	{
-		foreach BasedActors(class'Fire', f)
-			f.Destroy();
+    if (IsInState('Burning'))
+    {
+        foreach BasedActors(class'Fire', f)
+            f.Destroy();
 
-		GotoState('Active');
-	}
+        GotoState('Active');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -937,125 +937,125 @@ function ExtinguishFire()
 
 state Burning
 {
-	function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
-	{
-		local float avg;
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        local float avg;
 
-		// Vanilla Matters
-		local DeusExPlayer player;
-		local Containers c;
+        // Vanilla Matters
+        local DeusExPlayer player;
+        local Containers c;
 
-		local int origHP;
+        local int origHP;
 
-		player = DeusExPlayer( EventInstigator );
-		origHP = HitPoints;
+        player = DeusExPlayer( EventInstigator );
+        origHP = HitPoints;
 
-		if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
-			return;
+        if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
+            return;
 
-		if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
-			return;
+        if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
+            return;
 
-		if (DamageType == 'HalonGas')
-			ExtinguishFire();
+        if (DamageType == 'HalonGas')
+            ExtinguishFire();
 
-		// if we are already burning, we can't take any more damage
-		if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
-		{
-			HitPoints -= Damage/2;
-		}
-		else
-		{
-			if (Damage >= minDamageThreshold)
-				HitPoints -= Damage;
-		}
+        // if we are already burning, we can't take any more damage
+        if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+        {
+            HitPoints -= Damage/2;
+        }
+        else
+        {
+            if (Damage >= minDamageThreshold)
+                HitPoints -= Damage;
+        }
 
-		if (bExplosive)
-			HitPoints = 0;
+        if (bExplosive)
+            HitPoints = 0;
 
-		if (HitPoints > 0)		// darken it to show damage (from 1.0 to 0.1 - don't go completely black)
-		{
-			ResetScaleGlow();
-		}
-		else	// destroy it!
-		{
-			DropThings();
+        if (HitPoints > 0)      // darken it to show damage (from 1.0 to 0.1 - don't go completely black)
+        {
+            ResetScaleGlow();
+        }
+        else    // destroy it!
+        {
+            DropThings();
 
-			// clear the event to keep Destroyed() from triggering the event
-			Event = '';
-			avg = (CollisionRadius + CollisionHeight) / 2;
-			Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
-			Instigator = EventInstigator;
-			if (Instigator != None)
-				MakeNoise(1.0);
+            // clear the event to keep Destroyed() from triggering the event
+            Event = '';
+            avg = (CollisionRadius + CollisionHeight) / 2;
+            Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
+            Instigator = EventInstigator;
+            if (Instigator != None)
+                MakeNoise(1.0);
 
-			// if we have been blown up, then destroy our contents
-			if (bExplosive)
-			{
-				Contents = None;
-				Content2 = None;
-				Content3 = None;
-				Explode(HitLocation);
-			}
-		}
+            // if we have been blown up, then destroy our contents
+            if (bExplosive)
+            {
+                Contents = None;
+                Content2 = None;
+                Content3 = None;
+                Explode(HitLocation);
+            }
+        }
 
-		// Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
-		c = Containers( self );
-		if ( c != none && c.VM_isSupply && player != None ) {
-			if ( player.FPSystem != none ) {
-				player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-			}
-		}
-	}
+        // Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
+        c = Containers( self );
+        if ( c != none && c.VM_isSupply && player != None ) {
+            if ( player.FPSystem != none ) {
+                player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+            }
+        }
+    }
 
-	// continually burn and do damage
-	function Timer()
-	{
-		if (bPushSoundPlaying)
-		{
-			StopSound(pushSoundId);
-			AIEndEvent('LoudNoise', EAITYPE_Audio);
-			bPushSoundPlaying = False;
-		}
-		TakeDamage(2, None, Location, vect(0,0,0), 'Burned');
-	}
+    // continually burn and do damage
+    function Timer()
+    {
+        if (bPushSoundPlaying)
+        {
+            StopSound(pushSoundId);
+            AIEndEvent('LoudNoise', EAITYPE_Audio);
+            bPushSoundPlaying = False;
+        }
+        TakeDamage(2, None, Location, vect(0,0,0), 'Burned');
+    }
 
-	function BeginState()
-	{
-		local Fire f;
-		local int i;
-		local vector loc;
+    function BeginState()
+    {
+        local Fire f;
+        local int i;
+        local vector loc;
 
-		for (i=0; i<8; i++)
-		{
-			loc.X = 0.9*CollisionRadius * (1.0-2.0*FRand());
-			loc.Y = 0.9*CollisionRadius * (1.0-2.0*FRand());
-			loc.Z = 0.9*CollisionHeight * (1.0-2.0*FRand());
-			loc += Location;
-			f = Spawn(class'Fire', Self,, loc);
-			if (f != None)
-			{
-				f.DrawScale = FRand() + 1.0;
-				f.LifeSpan = Flammability;
+        for (i=0; i<8; i++)
+        {
+            loc.X = 0.9*CollisionRadius * (1.0-2.0*FRand());
+            loc.Y = 0.9*CollisionRadius * (1.0-2.0*FRand());
+            loc.Z = 0.9*CollisionHeight * (1.0-2.0*FRand());
+            loc += Location;
+            f = Spawn(class'Fire', Self,, loc);
+            if (f != None)
+            {
+                f.DrawScale = FRand() + 1.0;
+                f.LifeSpan = Flammability;
 
-				// turn off the sound and lights for all but the first one
-				if (i > 0)
-				{
-					f.AmbientSound = None;
-					f.LightType = LT_None;
-				}
+                // turn off the sound and lights for all but the first one
+                if (i > 0)
+                {
+                    f.AmbientSound = None;
+                    f.LightType = LT_None;
+                }
 
-				// turn on/off extra fire and smoke
-				if (FRand() < 0.5)
-					f.smokeGen.Destroy();
-				if (FRand() < 0.5)
-					f.AddFire(1.5);
-			}
-		}
+                // turn on/off extra fire and smoke
+                if (FRand() < 0.5)
+                    f.smokeGen.Destroy();
+                if (FRand() < 0.5)
+                    f.AddFire(1.5);
+            }
+        }
 
-		// set the burn timer
-		SetTimer(1.0, True);
-	}
+        // set the burn timer
+        SetTimer(1.0, True);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1065,71 +1065,71 @@ state Burning
 // ----------------------------------------------------------------------
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local Actor A;
-	local Pawn P;
-	local DeusExPlayer Player;
+    local Actor A;
+    local Pawn P;
+    local DeusExPlayer Player;
 
-	P = Pawn(Frobber);
-	Player = DeusExPlayer(Frobber);
+    P = Pawn(Frobber);
+    Player = DeusExPlayer(Frobber);
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	// First check to see if there's a conversation associated with this 
-	// decoration.  If so, trigger the conversation instead of triggering
-	// the event for this decoration
+    // First check to see if there's a conversation associated with this
+    // decoration.  If so, trigger the conversation instead of triggering
+    // the event for this decoration
 
-	if ( Player != None )
-	{
-		if ( player.StartConversation(Self, IM_Frob) )
-			return;
-	}
+    if ( Player != None )
+    {
+        if ( player.StartConversation(Self, IM_Frob) )
+            return;
+    }
 
-	// Trigger event if we aren't hackable
-	if (!IsA('HackableDevices'))
-		if (Event != '')
-			foreach AllActors(class 'Actor', A, Event)
-				A.Trigger(Self, P);
+    // Trigger event if we aren't hackable
+    if (!IsA('HackableDevices'))
+        if (Event != '')
+            foreach AllActors(class 'Actor', A, Event)
+                A.Trigger(Self, P);
 }
 
 // ----------------------------------------------------------------------
 // Frag()
 //
 // copied from Engine.Decoration
-// modified so fragments will smoke	and use the skin of their parent object
+// modified so fragments will smoke and use the skin of their parent object
 // ----------------------------------------------------------------------
 
-simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags) 
+simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags)
 {
-	local int i;
-	local actor A, Toucher;
-	local DeusExFragment s;
+    local int i;
+    local actor A, Toucher;
+    local DeusExFragment s;
 
-	if ( bOnlyTriggerable )
-		return; 
-	if (Event!='')
-		foreach AllActors( class 'Actor', A, Event )
-			A.Trigger( Toucher, pawn(Toucher) );
-	if ( Region.Zone.bDestructive )
-	{
-		Destroy();
-		return;
-	}
-	for (i=0 ; i<NumFrags ; i++) 
-	{
-		s = DeusExFragment(Spawn(FragType, Owner));
-		if (s != None)
-		{
-			s.Instigator = Instigator;
-			s.CalcVelocity(Momentum,0);
-			s.DrawScale = DSize*0.5+0.7*DSize*FRand();
-			s.Skin = GetMeshTexture();
-			if (bExplosive)
-				s.bSmoking = True;
-		}
-	}
+    if ( bOnlyTriggerable )
+        return;
+    if (Event!='')
+        foreach AllActors( class 'Actor', A, Event )
+            A.Trigger( Toucher, pawn(Toucher) );
+    if ( Region.Zone.bDestructive )
+    {
+        Destroy();
+        return;
+    }
+    for (i=0 ; i<NumFrags ; i++)
+    {
+        s = DeusExFragment(Spawn(FragType, Owner));
+        if (s != None)
+        {
+            s.Instigator = Instigator;
+            s.CalcVelocity(Momentum,0);
+            s.DrawScale = DSize*0.5+0.7*DSize*FRand();
+            s.Skin = GetMeshTexture();
+            if (bExplosive)
+                s.bSmoking = True;
+        }
+    }
 
-	if (!bExplosive)
-		Destroy();
+    if (!bExplosive)
+        Destroy();
 }
 
 // ----------------------------------------------------------------------
@@ -1138,35 +1138,35 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
 
 function Destroyed()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	if (bPushSoundPlaying)
-	{
-		StopSound(pushSoundId);
-		AIEndEvent('LoudNoise', EAITYPE_Audio);
-		bPushSoundPlaying = False;
-	}
+    if (bPushSoundPlaying)
+    {
+        StopSound(pushSoundId);
+        AIEndEvent('LoudNoise', EAITYPE_Audio);
+        bPushSoundPlaying = False;
+    }
 
-	if (flyGen != None)
-	{
-		flyGen.Burst();
-		flyGen.StopGenerator();
-		flyGen = None;
-	}
+    if (flyGen != None)
+    {
+        flyGen.Burst();
+        flyGen.StopGenerator();
+        flyGen = None;
+    }
 
-	// Pass a message to conPlay, if it exists in the player, that 
-	// this object has been destroyed.  This is used to prevent 
-	// bad things from happening in converseations.
+    // Pass a message to conPlay, if it exists in the player, that
+    // this object has been destroyed.  This is used to prevent
+    // bad things from happening in converseations.
 
-	player = DeusExPlayer(GetPlayerPawn());
+    player = DeusExPlayer(GetPlayerPawn());
 
-	if ((player != None) && (player.conPlay != None))
-	{
-		player.conPlay.ActorDestroyed(Self);
-	}
+    if ((player != None) && (player.conPlay != None))
+    {
+        player.conPlay.ActorDestroyed(Self);
+    }
 
-	if (!IsA('Containers'))
-		Super.Destroyed();		
+    if (!IsA('Containers'))
+        Super.Destroyed();
 }
 
 // ----------------------------------------------------------------------
@@ -1177,11 +1177,11 @@ function Destroyed()
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	if (bExplosive)
-	{
-		Explode(Location);
-		Super.Trigger(Other, Instigator);
-	}
+    if (bExplosive)
+    {
+        Explode(Location);
+        Super.Trigger(Other, Instigator);
+    }
 }
 
 // ----------------------------------------------------------------------

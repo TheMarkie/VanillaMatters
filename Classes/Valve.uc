@@ -10,29 +10,29 @@ var() bool bOpen;
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	bOpen = !bOpen;
-	if (bOpen)
-	{
-		PlaySound(sound'ValveOpen',,,, 256);
-		PlayAnim('Open',, 0.001);
-	}
-	else
-	{
-		PlaySound(sound'ValveClose',,,, 256);
-		PlayAnim('Close',, 0.001);
-	}
+    bOpen = !bOpen;
+    if (bOpen)
+    {
+        PlaySound(sound'ValveOpen',,,, 256);
+        PlayAnim('Open',, 0.001);
+    }
+    else
+    {
+        PlaySound(sound'ValveClose',,,, 256);
+        PlayAnim('Close',, 0.001);
+    }
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	if (bOpen)
-		PlayAnim('Open', 10.0, 0.001);
-	else
-		PlayAnim('Close', 10.0, 0.001);
+    if (bOpen)
+        PlayAnim('Open', 10.0, 0.001);
+    else
+        PlayAnim('Close', 10.0, 0.001);
 }
 
 defaultproperties

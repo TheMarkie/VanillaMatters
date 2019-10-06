@@ -14,7 +14,7 @@ var Actor PrevBase;
 
 simulated function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
    if ((Base != PrevBase) && (Base != None))
       SetOffset();
@@ -22,39 +22,39 @@ simulated function Tick(float deltaTime)
    if ((Role == ROLE_SimulatedProxy) && (Base != None))
       CorrectLocation();
 
-	// if our owner or base is destroyed, destroy us
-	if (Owner == None)
-		Destroy();
+    // if our owner or base is destroyed, destroy us
+    if (Owner == None)
+        Destroy();
 }
 
 simulated function BaseChange()
 {
-	Super.BaseChange();
+    Super.BaseChange();
 
-	if (Base == None)
-		SetBase(origBase);
+    if (Base == None)
+        SetBase(origBase);
 }
 
 simulated function Destroyed()
 {
-	if (smokeGen != None)
-		smokeGen.DelayedDestroy();
+    if (smokeGen != None)
+        smokeGen.DelayedDestroy();
 
-	if (fireGen != None)
-		fireGen.DelayedDestroy();
+    if (fireGen != None)
+        fireGen.DelayedDestroy();
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 simulated function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	SetBase(Owner);
-	origBase = Owner;
+    SetBase(Owner);
+    origBase = Owner;
 
    PrevBase = Base;
-   if (Base != None)   
+   if (Base != None)
       SetOffset();
 
    if (Role == ROLE_Authority)
@@ -69,7 +69,7 @@ simulated function PostNetBeginPlay()
    origBase = Owner;
 
    PrevBase = Base;
-   if (Base != None)   
+   if (Base != None)
       SetOffset();
 
    if (Role < ROLE_Authority)
@@ -101,45 +101,45 @@ simulated function CorrectLocation()
 //DEUS_EX AMSD SpawnSmokeEffects should only be called client side.
 simulated function SpawnSmokeEffects()
 {
-	smokeGen = Spawn(class'ParticleGenerator', Self,, Location, rot(16384,0,0));
-	if (smokeGen != None)
-	{
-		smokeGen.particleDrawScale = 0.5;
-		smokeGen.particleLifeSpan = 2.0;
-		smokeGen.checkTime = 0.15;
-		smokeGen.frequency = 0.9;
-		smokeGen.riseRate = 90.0;
-		smokeGen.ejectSpeed = 40.0;
-		smokeGen.bRandomEject = True;
-		smokeGen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
-		smokeGen.SetBase(Self);
+    smokeGen = Spawn(class'ParticleGenerator', Self,, Location, rot(16384,0,0));
+    if (smokeGen != None)
+    {
+        smokeGen.particleDrawScale = 0.5;
+        smokeGen.particleLifeSpan = 2.0;
+        smokeGen.checkTime = 0.15;
+        smokeGen.frequency = 0.9;
+        smokeGen.riseRate = 90.0;
+        smokeGen.ejectSpeed = 40.0;
+        smokeGen.bRandomEject = True;
+        smokeGen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
+        smokeGen.SetBase(Self);
       smokeGen.RemoteRole = ROLE_None;
-	}
+    }
 }
 
 //DEUS_EX AMSD Unfortunately, this needs to be called from the serverside.
 simulated function AddFire(optional float fireLifeSpan)
 {
-	if (fireLifeSpan == 0.0)
-		fireLifeSpan = 0.5;
+    if (fireLifeSpan == 0.0)
+        fireLifeSpan = 0.5;
 
-	if (fireGen == None)
-	{
-		fireGen = Spawn(class'ParticleGenerator', Self,, Location, rot(16384,0,0));
-		if (fireGen != None)
-		{
-			fireGen.particleDrawScale = 0.7;
-			fireGen.particleLifeSpan = fireLifeSpan;
-			fireGen.checkTime = 0.075;
-			fireGen.frequency = 0.9;
-			fireGen.riseRate = 30.0;
-			fireGen.ejectSpeed = 20.0;
-			fireGen.bScale = False;
-			fireGen.bRandomEject = True;
-			fireGen.particleTexture = Texture'Effects.Fire.OneFlame_J';
-			fireGen.SetBase(Self);
-		}
-	}
+    if (fireGen == None)
+    {
+        fireGen = Spawn(class'ParticleGenerator', Self,, Location, rot(16384,0,0));
+        if (fireGen != None)
+        {
+            fireGen.particleDrawScale = 0.7;
+            fireGen.particleLifeSpan = fireLifeSpan;
+            fireGen.checkTime = 0.075;
+            fireGen.frequency = 0.9;
+            fireGen.riseRate = 30.0;
+            fireGen.ejectSpeed = 20.0;
+            fireGen.bScale = False;
+            fireGen.bRandomEject = True;
+            fireGen.particleTexture = Texture'Effects.Fire.OneFlame_J';
+            fireGen.SetBase(Self);
+        }
+    }
 }
 
 defaultproperties

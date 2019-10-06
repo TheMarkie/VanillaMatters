@@ -2,7 +2,7 @@
 // WeaponNPCMelee.
 //=============================================================================
 class WeaponNPCMelee extends DeusExWeapon
-	abstract;
+    abstract;
 
 defaultproperties
 {

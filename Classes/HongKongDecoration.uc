@@ -2,7 +2,7 @@
 // HongKongDecoration.
 //=============================================================================
 class HongKongDecoration extends DeusExDecoration
-	abstract;
+    abstract;
 
 defaultproperties
 {

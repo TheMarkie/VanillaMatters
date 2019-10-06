@@ -5,19 +5,19 @@ class HUDObjectSlot expands ToggleWindow;
 
 var DeusExPlayer player;
 
-var int			objectNum;
-var Inventory	item;
-var Color		colObjectNum;
-var Color		colObjectDesc;
-var Color		colOutline;
-var Color		fillColor;
-var Color		colDropGood;
-var Color		colDropBad;
-var Color		colNone;
-var Color		colSelected;
+var int         objectNum;
+var Inventory   item;
+var Color       colObjectNum;
+var Color       colObjectDesc;
+var Color       colOutline;
+var Color       fillColor;
+var Color       colDropGood;
+var Color       colDropBad;
+var Color       colNone;
+var Color       colSelected;
 var Color       colSelectionBorder;
-var int			slotFillWidth;
-var int			slotFillHeight;
+var int         slotFillWidth;
+var int         slotFillHeight;
 var int         borderWidth;
 var int         borderHeight;
 
@@ -25,30 +25,30 @@ var int         borderHeight;
 var String      itemText;
 
 // Drag/Drop Stuff
-var PersonaScreenInventory winInv;		// Pointer back to the inventory window
+var PersonaScreenInventory winInv;      // Pointer back to the inventory window
 var Int  clickX;
 var Int  clickY;
 var bool bDragStart;
-var bool bDimIcon;	
+var bool bDimIcon;
 var bool bAllowDragging;
-var bool bDragging;					// Set to True when we're dragging
+var bool bDragging;                 // Set to True when we're dragging
 
 enum FillModes
 {
-	FM_Selected,
-	FM_DropGood,
-	FM_DropBad,
-	FM_None
+    FM_Selected,
+    FM_DropGood,
+    FM_DropBad,
+    FM_None
 };
 
 var FillModes fillMode;
 
 // Variables used to draw belt
-var Texture		slotTextures;
-var int			slotIconX;
-var int			slotIconY;
-var int			slotNumberX;
-var int			slotNumberY;
+var Texture     slotTextures;
+var int         slotIconX;
+var int         slotIconY;
+var int         slotNumberX;
+var int         slotNumberY;
 
 // Used by DrawWindow()
 var int itemTextPosY;
@@ -71,23 +71,23 @@ var localized String CountLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	objectNum	= -1;
-	item        = None;
+    objectNum   = -1;
+    item        = None;
 
-	SetSelectability(false);
+    SetSelectability(false);
 
-	SetSize(51, 54);
-	SetFont(Font'FontTiny');
+    SetSize(51, 54);
+    SetFont(Font'FontTiny');
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	// Position where we'll be drawing the item-dependent text
-	itemTextPosY = slotFillHeight - 8 + slotIconY;
+    // Position where we'll be drawing the item-dependent text
+    itemTextPosY = slotFillHeight - 8 + slotIconY;
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -96,15 +96,15 @@ event InitWindow()
 
 event bool ToggleChanged(Window button, bool bNewToggle)
 {
-	if ((item == None) && (bNewToggle))
-	{
-		SetToggle(False);
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+    if ((item == None) && (bNewToggle))
+    {
+        SetToggle(False);
+        return True;
+    }
+    else
+    {
+        return False;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ event bool ToggleChanged(Window button, bool bNewToggle)
 
 function SetObjectNumber(int newNumber)
 {
-	objectNum = newNumber;
+    objectNum = newNumber;
 }
 
 // ----------------------------------------------------------------------
@@ -122,20 +122,20 @@ function SetObjectNumber(int newNumber)
 
 function SetItem(Inventory newItem)
 {
-	item = newItem;
-	if ( newItem != None )
-	{
-		newItem.bInObjectBelt = True;
-		newItem.beltPos       = objectNum;
-	}
-	else
-	{
-		HighlightSelect(False);
-		SetToggle(False);
-	}
+    item = newItem;
+    if ( newItem != None )
+    {
+        newItem.bInObjectBelt = True;
+        newItem.beltPos       = objectNum;
+    }
+    else
+    {
+        HighlightSelect(False);
+        SetToggle(False);
+    }
 
-	// Update the text that will be displayed above the icon (if any)
-	UpdateItemText();
+    // Update the text that will be displayed above the icon (if any)
+    UpdateItemText();
 }
 
 // ----------------------------------------------------------------------
@@ -144,37 +144,37 @@ function SetItem(Inventory newItem)
 
 function UpdateItemText()
 {
-	local DeusExWeapon weapon;
+    local DeusExWeapon weapon;
 
-	itemText = "";
+    itemText = "";
 
-	if (item != None)
-	{
-		if (item.IsA('DeusExWeapon'))
-		{
-			// If this is a weapon, show the number of remaining rounds 
-			weapon = DeusExWeapon(item);
+    if (item != None)
+    {
+        if (item.IsA('DeusExWeapon'))
+        {
+            // If this is a weapon, show the number of remaining rounds
+            weapon = DeusExWeapon(item);
 
-			// Ammo loaded
-			if ((weapon.AmmoName != class'AmmoNone') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
-				itemText = weapon.AmmoType.beltDescription;
+            // Ammo loaded
+            if ((weapon.AmmoName != class'AmmoNone') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
+                itemText = weapon.AmmoType.beltDescription;
 
-			// If this is a grenade
-			// Vanilla Matters: We now have a grenade flag.
-			if ( weapon.VM_isGrenade ) {
-				if (weapon.AmmoType.AmmoAmount > 1)
-					itemText = CountLabel @ weapon.AmmoType.AmmoAmount;
-			}
+            // If this is a grenade
+            // Vanilla Matters: We now have a grenade flag.
+            if ( weapon.VM_isGrenade ) {
+                if (weapon.AmmoType.AmmoAmount > 1)
+                    itemText = CountLabel @ weapon.AmmoType.AmmoAmount;
+            }
 
-		}
-		else if (item.IsA('DeusExPickup') && (!item.IsA('NanoKeyRing')))
-		{
-			// If the object is a SkilledTool (but not the NanoKeyRing) then show the 
-			// number of uses
-			if (DeusExPickup(item).NumCopies > 1)
-				itemText = DeusExPickup(item).CountLabel @ String(DeusExPickup(item).NumCopies);
-		}
-	}
+        }
+        else if (item.IsA('DeusExPickup') && (!item.IsA('NanoKeyRing')))
+        {
+            // If the object is a SkilledTool (but not the NanoKeyRing) then show the
+            // number of uses
+            if (DeusExPickup(item).NumCopies > 1)
+                itemText = DeusExPickup(item).CountLabel @ String(DeusExPickup(item).NumCopies);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -183,7 +183,7 @@ function UpdateItemText()
 
 function Inventory GetItem()
 {
-	return (item);
+    return (item);
 }
 
 // ----------------------------------------------------------------------
@@ -192,60 +192,60 @@ function Inventory GetItem()
 
 event DrawWindow(GC gc)
 {
-	// First draw the background
+    // First draw the background
    DrawHUDBackground(gc);
 
-	// Now fill the area under the icon, which can be different 
-	// colors based on the state of the item.
-	//
-	// Don't waste time drawing the fill if the fillMode is set
-	// to None
+    // Now fill the area under the icon, which can be different
+    // colors based on the state of the item.
+    //
+    // Don't waste time drawing the fill if the fillMode is set
+    // to None
 
-	if (fillMode != FM_None)
-	{
-		SetFillColor();
-		gc.SetStyle(DSTY_Translucent);
-		gc.SetTileColor(fillColor);
-		gc.DrawPattern( 
-			slotIconX, slotIconY, 
-			slotFillWidth, slotFillHeight, 
-			0, 0, Texture'Solid' );
-	}
+    if (fillMode != FM_None)
+    {
+        SetFillColor();
+        gc.SetStyle(DSTY_Translucent);
+        gc.SetTileColor(fillColor);
+        gc.DrawPattern(
+            slotIconX, slotIconY,
+            slotFillWidth, slotFillHeight,
+            0, 0, Texture'Solid' );
+    }
 
-	// Don't draw any of this if we're dragging
-	if ((item != None) && (item.Icon != None) && (!bDragging))
-	{
-		// Draw the icon
+    // Don't draw any of this if we're dragging
+    if ((item != None) && (item.Icon != None) && (!bDragging))
+    {
+        // Draw the icon
       DrawHUDIcon(gc);
 
-		// Text defaults
-		gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-		gc.EnableWordWrap(false);
-		gc.SetTextColor(colObjectNum);
+        // Text defaults
+        gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+        gc.EnableWordWrap(false);
+        gc.SetTextColor(colObjectNum);
 
-		// Draw the item description at the bottom
-		gc.DrawText(1, 42, 42, 7, item.BeltDescription);
+        // Draw the item description at the bottom
+        gc.DrawText(1, 42, 42, 7, item.BeltDescription);
 
-		// If there's any additional text (say, for an ammo or weapon), draw it
-		if (itemText != "")
-			gc.DrawText(slotIconX, itemTextPosY, slotFillWidth, 8, itemText);
+        // If there's any additional text (say, for an ammo or weapon), draw it
+        if (itemText != "")
+            gc.DrawText(slotIconX, itemTextPosY, slotFillWidth, 8, itemText);
 
-		// Draw selection border
-		if (bButtonPressed)
-		{
-			gc.SetTileColor(colSelectionBorder);
-			gc.SetStyle(DSTY_Masked);
-			gc.DrawBorders(slotIconX - 1, slotIconY - 1, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
-		}
-	}
+        // Draw selection border
+        if (bButtonPressed)
+        {
+            gc.SetTileColor(colSelectionBorder);
+            gc.SetStyle(DSTY_Masked);
+            gc.DrawBorders(slotIconX - 1, slotIconY - 1, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
+        }
+    }
    else if ((item == None) && (player != None) && (player.Level.NetMode != NM_Standalone) && (player.bBeltIsMPInventory))
    {
-		// Text defaults
-		gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-		gc.EnableWordWrap(false);
-		gc.SetTextColor(colObjectNum);
+        // Text defaults
+        gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+        gc.EnableWordWrap(false);
+        gc.SetTextColor(colObjectNum);
 
-		if ((objectNum >=1) && (objectNum <=3))
+        if ((objectNum >=1) && (objectNum <=3))
       {
          gc.DrawText(1, 42, 42, 7, "WEAPONS");
       }
@@ -258,34 +258,34 @@ event DrawWindow(GC gc)
          gc.DrawText(1, 42, 42, 7, "TOOLS");
       }
    }
-	
-	// Draw the Object Slot Number in upper-right corner
-	gc.SetAlignments(HALIGN_Right, VALIGN_Center);
-	gc.SetTextColor(colObjectNum);
-	gc.DrawText(slotNumberX - 1, slotNumberY, 6, 7, objectNum);
+
+    // Draw the Object Slot Number in upper-right corner
+    gc.SetAlignments(HALIGN_Right, VALIGN_Center);
+    gc.SetTextColor(colObjectNum);
+    gc.DrawText(slotNumberX - 1, slotNumberY, 6, 7, objectNum);
 }
 
 function DrawHUDIcon(GC gc)
 {
-		gc.SetStyle(DSTY_Masked);
-		gc.SetTileColorRGB(255, 255, 255);
-		gc.DrawTexture(slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, item.Icon);
+        gc.SetStyle(DSTY_Masked);
+        gc.SetTileColorRGB(255, 255, 255);
+        gc.DrawTexture(slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, item.Icon);
 }
 
 function DrawHUDBackground(GC gc)
 {
-	local Color newBackground;
-			
-	gc.SetStyle(backgroundDrawStyle);
-	if (( player != None ) && (player.Level.NetMode != NM_Standalone) && (player.bBuySkills))
-	{
-		newBackground.r = colBackground.r / 2;
-		newBackground.g = colBackground.g / 2;
-		newBackground.b = colBackground.b / 2;
-		gc.SetTileColor(newBackground);
-	}
-	else
-		gc.SetTileColor(colBackground);
+    local Color newBackground;
+
+    gc.SetStyle(backgroundDrawStyle);
+    if (( player != None ) && (player.Level.NetMode != NM_Standalone) && (player.bBuySkills))
+    {
+        newBackground.r = colBackground.r / 2;
+        newBackground.g = colBackground.g / 2;
+        newBackground.b = colBackground.b / 2;
+        gc.SetTileColor(newBackground);
+    }
+    else
+        gc.SetTileColor(colBackground);
 
    // DEUS_EX AMSD Warning.  This background delineates specific item locations on the belt, which
    // are usually only known to the items themselves.
@@ -293,7 +293,7 @@ function DrawHUDBackground(GC gc)
    {
       gc.DrawTexture(0, 0, width, height, 0, 0, mpBorderTex);
    }
-   else	
+   else
       gc.DrawTexture(0, 0, width, height, 0, 0, texBackground);
 }
 
@@ -303,10 +303,10 @@ function DrawHUDBackground(GC gc)
 
 function SetDropFill(bool bGoodDrop)
 {
-	if (bGoodDrop)
-		fillMode = FM_DropGood;
-	else
-		fillMode = FM_DropBad;
+    if (bGoodDrop)
+        fillMode = FM_DropGood;
+    else
+        fillMode = FM_DropBad;
 }
 
 // ----------------------------------------------------------------------
@@ -315,7 +315,7 @@ function SetDropFill(bool bGoodDrop)
 
 function AllowDragging(bool bNewAllowDragging)
 {
-	bAllowDragging = bNewAllowDragging;
+    bAllowDragging = bNewAllowDragging;
 }
 
 // ----------------------------------------------------------------------
@@ -324,7 +324,7 @@ function AllowDragging(bool bNewAllowDragging)
 
 function ResetFill()
 {
-	fillMode = FM_None;
+    fillMode = FM_None;
 }
 
 // ----------------------------------------------------------------------
@@ -333,10 +333,10 @@ function ResetFill()
 
 function HighlightSelect(bool bHighlight)
 {
-	if (bHighlight) 
-		fillMode = FM_Selected;
-	else
-		fillMode = FM_None;
+    if (bHighlight)
+        fillMode = FM_Selected;
+    else
+        fillMode = FM_None;
 }
 
 // ----------------------------------------------------------------------
@@ -345,27 +345,27 @@ function HighlightSelect(bool bHighlight)
 
 function SetFillColor()
 {
-	switch(fillMode)
-	{
-		case FM_Selected:
-			fillColor = colSelected;
-			break;
-		case FM_DropBad:
-			fillColor = colDropBad;
-			break;
-		case FM_DropGood:
-			fillColor = colDropGood;
-			break;
-		case FM_None:
-			fillColor = colNone;
-			break;
-	}
+    switch(fillMode)
+    {
+        case FM_Selected:
+            fillColor = colSelected;
+            break;
+        case FM_DropBad:
+            fillColor = colDropBad;
+            break;
+        case FM_DropGood:
+            fillColor = colDropGood;
+            break;
+        case FM_None:
+            fillColor = colNone;
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------
 // MouseButtonPressed()
 //
-// If the user presses the mouse button, initiate drag mode, 
+// If the user presses the mouse button, initiate drag mode,
 // but only if this button has an inventory item associated
 // with it.
 // ----------------------------------------------------------------------
@@ -373,40 +373,40 @@ function SetFillColor()
 event bool MouseButtonPressed(float pointX, float pointY, EInputKey button,
                               int numClicks)
 {
-	local Bool bResult;
+    local Bool bResult;
 
-	bResult = False;
+    bResult = False;
 
-	if ((item != None) && (button == IK_LeftMouse))
-	{
-		bDragStart = True;
-		clickX = pointX;
-		clickY = pointY;
-		bResult = True;
-	}
-	return bResult;
+    if ((item != None) && (button == IK_LeftMouse))
+    {
+        bDragStart = True;
+        clickX = pointX;
+        clickY = pointY;
+        bResult = True;
+    }
+    return bResult;
 }
 
 // ----------------------------------------------------------------------
 // MouseButtonReleased()
 //
 // If we were in drag mode, then release the mouse button.
-// If the player is over a new (and valid) inventory location or 
+// If the player is over a new (and valid) inventory location or
 // object belt location, drop the item here.
 // ----------------------------------------------------------------------
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
                                int numClicks)
 {
-	if (button == IK_LeftMouse)
-	{
-		FinishButtonDrag();
-		return True;
-	}
-	else
-	{
-		return false;  // don't handle
-	}
+    if (button == IK_LeftMouse)
+    {
+        FinishButtonDrag();
+        return True;
+    }
+    else
+    {
+        return false;  // don't handle
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -415,66 +415,66 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
 
 event MouseMoved(float newX, float newY)
 {
-	local Float invX;
-	local Float invY;
+    local Float invX;
+    local Float invY;
 
-	if (bAllowDragging)
-	{
-		if (bDragStart)
-		{
-			// Only start a drag even if the cursor has moved more than, say,
-			// two pixels.  This prevents problems if the user just wants to 
-			// click on an item to select it but is a little sloppy.  :)
-			if (( Abs(newX - clickX) > 2 ) || ( Abs(newY- clickY) > 2 ))
-			{
-				StartButtonDrag();
-				SetCursorPos(
-					slotIconX + slotFillWidth/2, 
-					slotIconY + slotFillHeight/2);
-			}
-		}
+    if (bAllowDragging)
+    {
+        if (bDragStart)
+        {
+            // Only start a drag even if the cursor has moved more than, say,
+            // two pixels.  This prevents problems if the user just wants to
+            // click on an item to select it but is a little sloppy.  :)
+            if (( Abs(newX - clickX) > 2 ) || ( Abs(newY- clickY) > 2 ))
+            {
+                StartButtonDrag();
+                SetCursorPos(
+                    slotIconX + slotFillWidth/2,
+                    slotIconY + slotFillHeight/2);
+            }
+        }
 
-		if (bDragging)
-		{
-			// Call the InventoryWindow::MouseMoved function, with translated
-			// coordinates.
-			ConvertCoordinates(Self, newX, newY, winInv, invX, invY);
-			winInv.UpdateDragMouse(invX, invY);
-		}
-	}
+        if (bDragging)
+        {
+            // Call the InventoryWindow::MouseMoved function, with translated
+            // coordinates.
+            ConvertCoordinates(Self, newX, newY, winInv, invX, invY);
+            winInv.UpdateDragMouse(invX, invY);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
 // CursorRequested()
 //
-// If we're dragging an inventory item, then set the cursor to that 
+// If we're dragging an inventory item, then set the cursor to that
 // icon.  Otherwise return None, meaning use the default cursor icon.
 // ----------------------------------------------------------------------
 
 event texture CursorRequested(window win, float pointX, float pointY,
-                              out float hotX, out float hotY, out color newColor, 
-							  out Texture shadowTexture)
+                              out float hotX, out float hotY, out color newColor,
+                              out Texture shadowTexture)
 {
     shadowTexture = None;
 
-	hotX = slotFillWidth / 2;
-	hotY = slotFillHeight / 2;
+    hotX = slotFillWidth / 2;
+    hotY = slotFillHeight / 2;
 
-	if ((item != None) && (bDragging))
-	{
-		if (bDimIcon)
-		{
-			newColor.R = 64;
-			newColor.G = 64;
-			newColor.B = 64;
-		}
+    if ((item != None) && (bDragging))
+    {
+        if (bDimIcon)
+        {
+            newColor.R = 64;
+            newColor.G = 64;
+            newColor.B = 64;
+        }
 
-		return item.Icon;
-	}
-	else
-	{
-		return None;
-	}
+        return item.Icon;
+    }
+    else
+    {
+        return None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -483,10 +483,10 @@ event texture CursorRequested(window win, float pointX, float pointY,
 
 function StartButtonDrag()
 {
-	bDragStart = False;
-	bDragging  = True;
+    bDragStart = False;
+    bDragging  = True;
 
-	winInv.StartButtonDrag(Self);
+    winInv.StartButtonDrag(Self);
 }
 
 // ----------------------------------------------------------------------
@@ -495,10 +495,10 @@ function StartButtonDrag()
 
 function FinishButtonDrag()
 {
-	winInv.FinishButtonDrag();
-	
-	bDragStart = False;
-	bDragging  = False;
+    winInv.FinishButtonDrag();
+
+    bDragStart = False;
+    bDragging  = False;
 }
 
 // ----------------------------------------------------------------------
@@ -507,7 +507,7 @@ function FinishButtonDrag()
 
 function AssignWinInv(PersonaScreenInventory newWinInventory)
 {
-	winInv = newWinInventory;
+    winInv = newWinInventory;
 }
 
 // ----------------------------------------------------------------------
@@ -518,8 +518,8 @@ function AssignWinInv(PersonaScreenInventory newWinInventory)
 
 function GetIconPos(out int iconPosX, out int iconPosY)
 {
-	iconPosX = slotIconX;
-	iconPosY = slotIconY;
+    iconPosX = slotIconX;
+    iconPosY = slotIconY;
 }
 
 // ----------------------------------------------------------------------
@@ -528,21 +528,21 @@ function GetIconPos(out int iconPosX, out int iconPosY)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colObjectNum  = theme.GetColorFromName('HUDColor_NormalText');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colObjectNum  = theme.GetColorFromName('HUDColor_NormalText');
 
-	colSelected.r = Int(Float(colBackground.r) * 0.50);
-	colSelected.g = Int(Float(colBackground.g) * 0.50);
-	colSelected.b = Int(Float(colBackground.b) * 0.50);
+    colSelected.r = Int(Float(colBackground.r) * 0.50);
+    colSelected.g = Int(Float(colBackground.g) * 0.50);
+    colSelected.b = Int(Float(colBackground.b) * 0.50);
 
-	if (player.GetHUDBackgroundTranslucency())
-		backgroundDrawStyle = DSTY_Translucent;
-	else
-		backgroundDrawStyle = DSTY_Masked;
+    if (player.GetHUDBackgroundTranslucency())
+        backgroundDrawStyle = DSTY_Translucent;
+    else
+        backgroundDrawStyle = DSTY_Masked;
 }
 
 // ----------------------------------------------------------------------

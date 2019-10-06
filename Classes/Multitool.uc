@@ -16,12 +16,12 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-		MaxCopies = 10;
-   
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+        MaxCopies = 10;
+
 }
 
 defaultproperties

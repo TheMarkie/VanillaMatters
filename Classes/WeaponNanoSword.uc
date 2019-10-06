@@ -5,44 +5,44 @@ class WeaponNanoSword extends DeusExWeapon;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+    }
 }
 
 state DownWeapon
 {
-	function BeginState()
-	{
-		Super.BeginState();
-		LightType = LT_None;
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+        LightType = LT_None;
+    }
 }
 
 state Idle
 {
-	function BeginState()
-	{
-		Super.BeginState();
-		LightType = LT_Steady;
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+        LightType = LT_Steady;
+    }
 }
 
 auto state Pickup
 {
-	function EndState()
-	{
-		Super.EndState();
-		LightType = LT_None;
-	}
+    function EndState()
+    {
+        Super.EndState();
+        LightType = LT_None;
+    }
 }
 
 defaultproperties

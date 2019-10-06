@@ -7,7 +7,7 @@ var TileWindow   winScroll;
 var Window       winFadeBottom;
 var Window       winFadeTop;
 var String       ScrollMusicString;
-var int		     savedSongSection;
+var int          savedSongSection;
 var Bool         bRenderingEnabled;
 var Float        currentScrollSpeed;
 var Bool         bBold;
@@ -36,22 +36,22 @@ var Color        colText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetWindowAlignments(HALIGN_Full, VALIGN_Full);
-	SetBackgroundStyle(DSTY_Normal);
-	SetBackground(Texture'Solid');
-	SetTileColor(colBlack);
+    SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    SetBackgroundStyle(DSTY_Normal);
+    SetBackground(Texture'Solid');
+    SetTileColor(colBlack);
 
-	StopRendering();
-	CreateControls();
-	StartMusic();
-	ProcessText();
+    StopRendering();
+    CreateControls();
+    StartMusic();
+    ProcessText();
 
-	// Hide the mousey
-	root.ShowCursor(False);
+    // Hide the mousey
+    root.ShowCursor(False);
 
-	bTickEnabled = True;
+    bTickEnabled = True;
 }
 
 // ----------------------------------------------------------------------
@@ -60,16 +60,16 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	StopMusic();
+    StopMusic();
 
-	// Re-enable rendering
-	if (bRenderingEnabled)
-		root.EnableRendering(True);
+    // Re-enable rendering
+    if (bRenderingEnabled)
+        root.EnableRendering(True);
 
-	// Show the mousey
-	root.ShowCursor(True);
+    // Show the mousey
+    root.ShowCursor(True);
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -78,11 +78,11 @@ event DestroyWindow()
 
 function StopRendering()
 {
-	// Stop the renderer to speed things up
-	bRenderingEnabled = root.IsRenderingEnabled();
+    // Stop the renderer to speed things up
+    bRenderingEnabled = root.IsRenderingEnabled();
 
-	if (bRenderingEnabled)
-		root.EnableRendering(False);
+    if (bRenderingEnabled)
+        root.EnableRendering(False);
 }
 
 // ----------------------------------------------------------------------
@@ -91,28 +91,28 @@ function StopRendering()
 
 function CreateControls()
 {
-	winScroll = TileWindow(NewChild(Class'TileWindow'));
+    winScroll = TileWindow(NewChild(Class'TileWindow'));
 
-	winScroll.SetWidth(maxTileWidth);
-	winScroll.SetOrder(ORDER_Down);
-	winScroll.SetChildAlignments(HALIGN_Center, VALIGN_Top);
-	winScroll.SetMargins(0, 0);
-	winScroll.SetMinorSpacing(0);
-	winScroll.SetMajorSpacing(0);
-	winScroll.MakeWidthsEqual(False);
-	winScroll.MakeHeightsEqual(False);
-	winScroll.SetPos(0, root.Height);
-	winScroll.FillParent(False);
+    winScroll.SetWidth(maxTileWidth);
+    winScroll.SetOrder(ORDER_Down);
+    winScroll.SetChildAlignments(HALIGN_Center, VALIGN_Top);
+    winScroll.SetMargins(0, 0);
+    winScroll.SetMinorSpacing(0);
+    winScroll.SetMajorSpacing(0);
+    winScroll.MakeWidthsEqual(False);
+    winScroll.MakeHeightsEqual(False);
+    winScroll.SetPos(0, root.Height);
+    winScroll.FillParent(False);
 
-	// Create the two fading windows (top and bottom)
+    // Create the two fading windows (top and bottom)
 
-	winFadeTop = NewChild(Class'Window');
-	winFadeTop.SetBackground(Texture'FadeTop');
-	winFadeTop.SetBackgroundStyle(DSTY_Modulated);
+    winFadeTop = NewChild(Class'Window');
+    winFadeTop.SetBackground(Texture'FadeTop');
+    winFadeTop.SetBackgroundStyle(DSTY_Modulated);
 
-	winFadeBottom = NewChild(Class'Window');
-	winFadeBottom.SetBackground(Texture'FadeBottom');
-	winFadeBottom.SetBackgroundStyle(DSTY_Modulated);
+    winFadeBottom = NewChild(Class'Window');
+    winFadeBottom.SetBackground(Texture'FadeBottom');
+    winFadeBottom.SetBackgroundStyle(DSTY_Modulated);
 }
 
 // ----------------------------------------------------------------------
@@ -121,18 +121,18 @@ function CreateControls()
 
 function StartMusic()
 {
-	local Music CreditsMusic;
+    local Music CreditsMusic;
 
-	if (ScrollMusicString != "")
-	{
-		CreditsMusic = Music(DynamicLoadObject(ScrollMusicString, class'Music'));
+    if (ScrollMusicString != "")
+    {
+        CreditsMusic = Music(DynamicLoadObject(ScrollMusicString, class'Music'));
 
-		if (CreditsMusic != None)
-		{
-			savedSongSection = player.SongSection;
-			player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
-		}
-	}
+        if (CreditsMusic != None)
+        {
+            savedSongSection = player.SongSection;
+            player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -141,8 +141,8 @@ function StartMusic()
 
 function StopMusic()
 {
-	// Shut down the music
-	player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
+    // Shut down the music
+    player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
 }
 
 // ----------------------------------------------------------------------
@@ -151,7 +151,7 @@ function StopMusic()
 
 function SetLoadIntro(bool bNewLoadIntro)
 {
-	bLoadIntro = bNewLoadIntro;
+    bLoadIntro = bNewLoadIntro;
 }
 
 // ----------------------------------------------------------------------
@@ -160,31 +160,31 @@ function SetLoadIntro(bool bNewLoadIntro)
 
 function Tick(float deltaTime)
 {
-	local int diff;
+    local int diff;
 
-	if (bScrolling)
-	{
-		scrollSpeed -= deltaTime;
+    if (bScrolling)
+    {
+        scrollSpeed -= deltaTime;
 
-		diff = 0;
-		while (scrollSpeed < 0.0)
-		{
-			scrollSpeed += currentScrollSpeed;
-			diff++;
-		}
+        diff = 0;
+        while (scrollSpeed < 0.0)
+        {
+            scrollSpeed += currentScrollSpeed;
+            diff++;
+        }
 
-		if (diff > 0)
-		{
-			winScroll.SetPos(winScroll.x, winScroll.y - diff);
+        if (diff > 0)
+        {
+            winScroll.SetPos(winScroll.x, winScroll.y - diff);
 
-			// Check to see if we've finished scrolling
-			if ((winScroll.y + winScroll.height) < 0)
-			{
-				bScrolling = False;
-				FinishedScrolling();
-			}
-		}
-	}
+            // Check to see if we've finished scrolling
+            if ((winScroll.y + winScroll.height) < 0)
+            {
+                bScrolling = False;
+                FinishedScrolling();
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -193,7 +193,7 @@ function Tick(float deltaTime)
 
 function FinishedScrolling()
 {
-	root.PopWindow();
+    root.PopWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -202,15 +202,15 @@ function FinishedScrolling()
 
 function PrintHeader(String headerText)
 {
-	local TextWindow winText;
+    local TextWindow winText;
 
-	winText = TextWindow(winScroll.NewChild(Class'TextWindow'));
-	winText.SetWidth(maxTextWidth);
-	winText.SetText(headerText);
-	winText.SetTextColor(colHeader);
-	winText.SetFont(fontHeader);
-	winText.SetTextMargins(0, 0);
-	winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
+    winText = TextWindow(winScroll.NewChild(Class'TextWindow'));
+    winText.SetWidth(maxTextWidth);
+    winText.SetText(headerText);
+    winText.SetTextColor(colHeader);
+    winText.SetFont(fontHeader);
+    winText.SetTextMargins(0, 0);
+    winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -219,19 +219,19 @@ function PrintHeader(String headerText)
 
 function PrintText(String itemText, optional bool bLeftJustify)
 {
-	local TextWindow winText;
+    local TextWindow winText;
 
-	winText = TextWindow(winScroll.NewChild(Class'TextWindow'));
-	winText.SetWidth(maxTextWidth);
-	winText.SetText(itemText);
-	winText.SetTextColor(colText);
-	winText.SetFont(fontText);
-	winText.SetTextMargins(0, 0);
+    winText = TextWindow(winScroll.NewChild(Class'TextWindow'));
+    winText.SetWidth(maxTextWidth);
+    winText.SetText(itemText);
+    winText.SetTextColor(colText);
+    winText.SetFont(fontText);
+    winText.SetTextMargins(0, 0);
 
-	if (bLeftJustify)
-		winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	else
-		winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
+    if (bLeftJustify)
+        winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    else
+        winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -240,28 +240,28 @@ function PrintText(String itemText, optional bool bLeftJustify)
 
 function PrintAlignText(String itemLabel, String itemText)
 {
-	local AlignWindow winAlign;
-	local TextWindow  winText;
+    local AlignWindow winAlign;
+    local TextWindow  winText;
 
-	winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
-	winAlign.SetChildVAlignment(VALIGN_Top);
-	winAlign.SetChildSpacing(5);
-	winAlign.SetWidth(maxTextWidth);
+    winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
+    winAlign.SetChildVAlignment(VALIGN_Top);
+    winAlign.SetChildSpacing(5);
+    winAlign.SetWidth(maxTextWidth);
 
-	winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
-	winText.SetFont(fontText);
-	winText.SetTextColor(colText);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winText.SetTextMargins(0, 0);
-	winText.SetText(itemLabel);
+    winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText.SetTextMargins(0, 0);
+    winText.SetText(itemLabel);
 
-	winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winText.SetFont(fontText);
-	winText.SetTextColor(colText);
-	winText.SetTextMargins(0, 0);
-	winText.SetWordWrap(True);
-	winText.SetText(itemText);
+    winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.SetTextMargins(0, 0);
+    winText.SetWordWrap(True);
+    winText.SetText(itemText);
 }
 
 // ----------------------------------------------------------------------
@@ -270,10 +270,10 @@ function PrintAlignText(String itemLabel, String itemText)
 
 function PrintLn()
 {
-	local Window winLine;
+    local Window winLine;
 
-	winLine = winScroll.NewChild(Class'Window');
-	winLine.SetSize(4, blankLineHeight);
+    winLine = winScroll.NewChild(Class'Window');
+    winLine.SetSize(4, blankLineHeight);
 }
 
 // ----------------------------------------------------------------------
@@ -282,11 +282,11 @@ function PrintLn()
 
 function PrintGraphic(Texture graphic, int sizeX, int sizeY)
 {
-	local Window winGraphic;
+    local Window winGraphic;
 
-	winGraphic = winScroll.NewChild(Class'Window');
-	winGraphic.SetSize(sizeX, sizeY);
-	winGraphic.SetBackground(graphic);
+    winGraphic = winScroll.NewChild(Class'Window');
+    winGraphic.SetSize(sizeX, sizeY);
+    winGraphic.SetBackground(graphic);
 }
 
 // ----------------------------------------------------------------------
@@ -294,17 +294,17 @@ function PrintGraphic(Texture graphic, int sizeX, int sizeY)
 // ----------------------------------------------------------------------
 
 function PrintPicture(
-	Texture pictureTextures[6], 
-	int textureCols,
-	int textureRows,
-	int imageX, 
-	int imageY)
+    Texture pictureTextures[6],
+    int textureCols,
+    int textureRows,
+    int imageX,
+    int imageY)
 {
-	local PictureWindow winPicture;
+    local PictureWindow winPicture;
 
-	winPicture = PictureWindow(winScroll.NewChild(Class'PictureWindow'));
-	winPicture.SetTextures(pictureTextures, textureCols, textureRows);
-	winPicture.SetSize(imageX, imageY);
+    winPicture = PictureWindow(winScroll.NewChild(Class'PictureWindow'));
+    winPicture.SetTextures(pictureTextures, textureCols, textureRows);
+    winPicture.SetSize(imageX, imageY);
 }
 
 // ----------------------------------------------------------------------
@@ -316,8 +316,8 @@ function PrintPicture(
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
                                int numClicks)
 {
-	FinishedScrolling();
-	return True;
+    FinishedScrolling();
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -328,48 +328,48 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = Super.VirtualKeyPressed(key, bRepeat);
+    local bool bKeyHandled;
+    bKeyHandled = Super.VirtualKeyPressed(key, bRepeat);
 
-	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) )
-		return False;
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) )
+        return False;
 
-	switch( key ) 
-	{	
-		// Decrease print rate
-		case IK_Down:
-		case IK_Minus:
-			if (currentScrollSpeed < minScrollSpeed)
-				currentScrollSpeed += speedAdjustment;
-			break;
+    switch( key )
+    {
+        // Decrease print rate
+        case IK_Down:
+        case IK_Minus:
+            if (currentScrollSpeed < minScrollSpeed)
+                currentScrollSpeed += speedAdjustment;
+            break;
 
-		// Increase print rate
-		case IK_Equals:
-		case IK_Up:
-			if (currentScrollSpeed > maxScrollSpeed)
-				currentScrollSpeed -= speedAdjustment;
- 			break;
+        // Increase print rate
+        case IK_Equals:
+        case IK_Up:
+            if (currentScrollSpeed > maxScrollSpeed)
+                currentScrollSpeed -= speedAdjustment;
+            break;
 
-		// Pause
-		case IK_S:
-			if (IsKeyDown(IK_Ctrl))
-				bTickEnabled = False;
-			break;
+        // Pause
+        case IK_S:
+            if (IsKeyDown(IK_Ctrl))
+                bTickEnabled = False;
+            break;
 
-		case IK_Q:
-			if (IsKeyDown(IK_Ctrl))
-				bTickEnabled = True;
-			break;
+        case IK_Q:
+            if (IsKeyDown(IK_Ctrl))
+                bTickEnabled = True;
+            break;
 
-		case IK_Space:
-			if (bTickEnabled)
-				bTickEnabled = False;
-			else
-				bTickEnabled = True;
-			break;
-	}
+        case IK_Space:
+            if (bTickEnabled)
+                bTickEnabled = False;
+            else
+                bTickEnabled = True;
+            break;
+    }
 
-	return bKeyHandled;
+    return bKeyHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -378,25 +378,25 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function ConfigurationChanged()
 {
-	local float qWidth, qHeight;
+    local float qWidth, qHeight;
 
-	if (winFadeTop != None)
-	{
-		winFadeTop.QueryPreferredSize(qWidth, qHeight);
-		winFadeTop.ConfigureChild(0, 0, width, qHeight);
-	}
+    if (winFadeTop != None)
+    {
+        winFadeTop.QueryPreferredSize(qWidth, qHeight);
+        winFadeTop.ConfigureChild(0, 0, width, qHeight);
+    }
 
-	if (winFadeBottom != None)
-	{
-		winFadeBottom.QueryPreferredSize(qWidth, qHeight);
-		winFadeBottom.ConfigureChild(0, height - qHeight, width, qHeight);
-	}
+    if (winFadeBottom != None)
+    {
+        winFadeBottom.QueryPreferredSize(qWidth, qHeight);
+        winFadeBottom.ConfigureChild(0, height - qHeight, width, qHeight);
+    }
 
-	if (winScroll != None)
-	{
-		winScroll.QueryPreferredSize(qWidth, qHeight);
-		winScroll.ConfigureChild((width / 2) - (qwidth / 2), winScroll.vMargin0, qWidth, qHeight);
-	}
+    if (winScroll != None)
+    {
+        winScroll.QueryPreferredSize(qWidth, qHeight);
+        winScroll.ConfigureChild((width / 2) - (qwidth / 2), winScroll.vMargin0, qWidth, qHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -405,27 +405,27 @@ function ConfigurationChanged()
 
 function ProcessText()
 {
-	local DeusExTextParser parser;
+    local DeusExTextParser parser;
 
-	// First check to see if we have a name
-	if (textName != '')
-	{
-		// Create the text parser
-		parser = new(None) Class'DeusExTextParser';
+    // First check to see if we have a name
+    if (textName != '')
+    {
+        // Create the text parser
+        parser = new(None) Class'DeusExTextParser';
 
-		// Attempt to find the text object
-		if (parser.OpenText(textName))
-		{
-			while(parser.ProcessText())
-				ProcessTextTag(parser);
+        // Attempt to find the text object
+        if (parser.OpenText(textName))
+        {
+            while(parser.ProcessText())
+                ProcessTextTag(parser);
 
-			parser.CloseText();
-		}
+            parser.CloseText();
+        }
 
-		CriticalDelete(parser);
-	}
+        CriticalDelete(parser);
+    }
 
-	ProcessFinished();
+    ProcessFinished();
 }
 
 // ----------------------------------------------------------------------
@@ -442,54 +442,54 @@ function ProcessFinished()
 
 function ProcessTextTag(DeusExTextParser parser)
 {
-	local String text;
-	local byte tag;
-	local Name fontName;
-	local String textPart;
-	local String fileStringName;
-	local String fileStringDesc;
+    local String text;
+    local byte tag;
+    local Name fontName;
+    local String textPart;
+    local String fileStringName;
+    local String fileStringDesc;
 
-	tag  = parser.GetTag();
+    tag  = parser.GetTag();
 
-	switch(tag)
-	{
-		case 0:				// TT_Text:
-			text = parser.GetText();
+    switch(tag)
+    {
+        case 0:             // TT_Text:
+            text = parser.GetText();
 
-			if (text == "")
-			{
-				PrintLn();
-			}
-			else
-			{
-				if (bBold)
-				{
-					bBold = False;
-					PrintHeader(parser.GetText());
-				}
-				else
-				{
-					PrintText(parser.GetText());
-				}
-			}
-			break;
+            if (text == "")
+            {
+                PrintLn();
+            }
+            else
+            {
+                if (bBold)
+                {
+                    bBold = False;
+                    PrintHeader(parser.GetText());
+                }
+                else
+                {
+                    PrintText(parser.GetText());
+                }
+            }
+            break;
 
-		case 1:				// TT_File (graphic, baby!)
-			parser.GetFileInfo(fileStringName, fileStringDesc);
-//			PrintGraphic(Texture(DynamicLoadObject(fileStringName, Class'Texture')));
-			break;
+        case 1:             // TT_File (graphic, baby!)
+            parser.GetFileInfo(fileStringName, fileStringDesc);
+//          PrintGraphic(Texture(DynamicLoadObject(fileStringName, Class'Texture')));
+            break;
 
-		// Bold
-		case 19:	// header
-			bBold = True;
-			break;
+        // Bold
+        case 19:    // header
+            bBold = True;
+            break;
 
-		case 13:				// TT_LeftJustify:
-			break;
+        case 13:                // TT_LeftJustify:
+            break;
 
-		case 12:				// TT_CenterText:
-			break;
-	}
+        case 12:                // TT_CenterText:
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------

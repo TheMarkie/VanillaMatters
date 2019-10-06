@@ -11,12 +11,12 @@ class WeaponModAccuracy extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-	{
-		// Vanilla Matters: Handle mod bonus inside the weapon.
+    if (weapon != None)
+    {
+        // Vanilla Matters: Handle mod bonus inside the weapon.
 
-		weapon.ModBaseAccuracy += WeaponModifier;
-	}
+        weapon.ModBaseAccuracy += WeaponModifier;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -25,10 +25,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveModBaseAccuracy && !weapon.HasMaxAccuracyMod());
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveModBaseAccuracy && !weapon.HasMaxAccuracyMod());
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

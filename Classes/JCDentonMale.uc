@@ -9,18 +9,18 @@ class JCDentonMale extends Human;
 
 event TravelPostAccept()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	Super.TravelPostAccept();
+    Super.TravelPostAccept();
 
-	switch(PlayerSkin)
-	{
-		case 0:	MultiSkins[0] = Texture'JCDentonTex0'; break;
-		case 1:	MultiSkins[0] = Texture'JCDentonTex4'; break;
-		case 2:	MultiSkins[0] = Texture'JCDentonTex5'; break;
-		case 3:	MultiSkins[0] = Texture'JCDentonTex6'; break;
-		case 4:	MultiSkins[0] = Texture'JCDentonTex7'; break;
-	}
+    switch(PlayerSkin)
+    {
+        case 0: MultiSkins[0] = Texture'JCDentonTex0'; break;
+        case 1: MultiSkins[0] = Texture'JCDentonTex4'; break;
+        case 2: MultiSkins[0] = Texture'JCDentonTex5'; break;
+        case 3: MultiSkins[0] = Texture'JCDentonTex6'; break;
+        case 4: MultiSkins[0] = Texture'JCDentonTex7'; break;
+    }
 }
 
 // ----------------------------------------------------------------------

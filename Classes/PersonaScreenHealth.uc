@@ -37,9 +37,9 @@ var localized String PointsHealedLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -48,19 +48,19 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateTitleWindow(9, 5, HealthTitleText);
-	CreateInfoWindow();
-	CreateOverlaysWindow();
-	CreateBodyWindow();
-	CreateRegionWindows();
-	CreateButtons();
-	CreateMedKitWindow();
-	CreatePartButtons();
-	CreateStatusWindow();
+    CreateTitleWindow(9, 5, HealthTitleText);
+    CreateInfoWindow();
+    CreateOverlaysWindow();
+    CreateBodyWindow();
+    CreateRegionWindows();
+    CreateButtons();
+    CreateMedKitWindow();
+    CreatePartButtons();
+    CreateStatusWindow();
 
-	PersonaNavBarWindow(winNavBar).btnHealth.SetSensitivity(False);
+    PersonaNavBarWindow(winNavBar).btnHealth.SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -69,8 +69,8 @@ function CreateControls()
 
 function CreateStatusWindow()
 {
-	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(348, 269);
+    winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
+    winStatus.SetPos(348, 269);
 }
 
 // ----------------------------------------------------------------------
@@ -79,9 +79,9 @@ function CreateStatusWindow()
 
 function CreateInfoWindow()
 {
-	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 22);
-	winInfo.SetSize(238, 239);
+    winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
+    winInfo.SetPos(348, 22);
+    winInfo.SetSize(238, 239);
 }
 
 // ----------------------------------------------------------------------
@@ -90,15 +90,15 @@ function CreateInfoWindow()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(13, 407);
-	winActionButtons.SetWidth(92);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(13, 407);
+    winActionButtons.SetWidth(92);
+    winActionButtons.FillAllSpace(False);
 
-	btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnHealAll.SetButtonText(HealAllButtonLabel);
+    btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnHealAll.SetButtonText(HealAllButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -107,15 +107,15 @@ function CreateButtons()
 
 function CreateMedKitWindow()
 {
-	winMedKits = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winMedKits.SetPos(346, 307);
-	winMedKits.SetWidth(242);
-	winMedKits.SetIcon(Class'MedKit'.Default.LargeIcon);
-	winMedKits.SetIconSize(
-		Class'MedKit'.Default.largeIconWidth,
-		Class'MedKit'.Default.largeIconHeight);
+    winMedKits = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
+    winMedKits.SetPos(346, 307);
+    winMedKits.SetWidth(242);
+    winMedKits.SetIcon(Class'MedKit'.Default.LargeIcon);
+    winMedKits.SetIconSize(
+        Class'MedKit'.Default.largeIconWidth,
+        Class'MedKit'.Default.largeIconHeight);
 
-	UpdateMedKits();
+    UpdateMedKits();
 }
 
 // ----------------------------------------------------------------------
@@ -124,12 +124,12 @@ function CreateMedKitWindow()
 
 function CreatePartButtons()
 {
-	partButtons[0] = CreatePartButton(0, 141,  42, 40, 54, HealthPartDesc[0], HealthLocationHead);
-	partButtons[1] = CreatePartButton(1, 133,  98, 56, 73, HealthPartDesc[1], HealthLocationTorso);
-	partButtons[2] = CreatePartButton(2,  90, 131, 28, 65, HealthPartDesc[2], HealthLocationRightArm);
-	partButtons[3] = CreatePartButton(3, 204, 131, 28, 65, HealthPartDesc[2], HealthLocationLeftArm);
-	partButtons[4] = CreatePartButton(4, 119, 234, 41, 94, HealthPartDesc[3], HealthLocationRightLeg);
-	partButtons[5] = CreatePartButton(5, 162, 234, 41, 94, HealthPartDesc[3], HealthLocationLeftLeg);
+    partButtons[0] = CreatePartButton(0, 141,  42, 40, 54, HealthPartDesc[0], HealthLocationHead);
+    partButtons[1] = CreatePartButton(1, 133,  98, 56, 73, HealthPartDesc[1], HealthLocationTorso);
+    partButtons[2] = CreatePartButton(2,  90, 131, 28, 65, HealthPartDesc[2], HealthLocationRightArm);
+    partButtons[3] = CreatePartButton(3, 204, 131, 28, 65, HealthPartDesc[2], HealthLocationLeftArm);
+    partButtons[4] = CreatePartButton(4, 119, 234, 41, 94, HealthPartDesc[3], HealthLocationRightLeg);
+    partButtons[5] = CreatePartButton(5, 162, 234, 41, 94, HealthPartDesc[3], HealthLocationLeftLeg);
 }
 
 // ----------------------------------------------------------------------
@@ -137,21 +137,21 @@ function CreatePartButtons()
 // ----------------------------------------------------------------------
 
 function PersonaHealthItemButton CreatePartButton(
-	int partIndex,
-	int posX, int posY, 
-	int sizeX, int sizeY, 
-	String partDesc, String partTitle)
+    int partIndex,
+    int posX, int posY,
+    int sizeX, int sizeY,
+    String partDesc, String partTitle)
 {
-	local PersonaHealthItemButton newPart;
+    local PersonaHealthItemButton newPart;
 
-	newPart = PersonaHealthItemButton(winClient.NewChild(Class'PersonaHealthItemButton'));
-	newPart.SetPos(posX, posY);
-	newPart.SetSize(sizeX, sizeY);
-	newPart.SetBorderSize(sizeX, sizeY);
-	newPart.SetDesc(partDesc);
-	newPart.SetTitle(partTitle);
+    newPart = PersonaHealthItemButton(winClient.NewChild(Class'PersonaHealthItemButton'));
+    newPart.SetPos(posX, posY);
+    newPart.SetSize(sizeX, sizeY);
+    newPart.SetBorderSize(sizeX, sizeY);
+    newPart.SetDesc(partDesc);
+    newPart.SetTitle(partTitle);
 
-	return newPart;
+    return newPart;
 }
 
 // ----------------------------------------------------------------------
@@ -160,12 +160,12 @@ function PersonaHealthItemButton CreatePartButton(
 
 function CreateRegionWindows()
 {
-	regionWindows[0] = CreateRegionWindow(0, 218,  29, player.HealthHead,     player.default.HealthHead,     HealthLocationHead);
-	regionWindows[1] = CreateRegionWindow(1,  27,  43, player.HealthTorso,    player.default.HealthTorso,    HealthLocationTorso);
-	regionWindows[2] = CreateRegionWindow(2,  19, 237, player.HealthArmRight, player.default.HealthArmRight, HealthLocationRightArm);
-	regionWindows[3] = CreateRegionWindow(3, 230, 237, player.HealthArmLeft,  player.default.HealthArmLeft,  HealthLocationLeftArm);
-	regionWindows[4] = CreateRegionWindow(4,  24, 347, player.HealthLegRight, player.default.HealthLegRight, HealthLocationRightLeg);
-	regionWindows[5] = CreateRegionWindow(5, 222, 347, player.HealthLegLeft,  player.default.HealthLegLeft,  HealthLocationLeftLeg);
+    regionWindows[0] = CreateRegionWindow(0, 218,  29, player.HealthHead,     player.default.HealthHead,     HealthLocationHead);
+    regionWindows[1] = CreateRegionWindow(1,  27,  43, player.HealthTorso,    player.default.HealthTorso,    HealthLocationTorso);
+    regionWindows[2] = CreateRegionWindow(2,  19, 237, player.HealthArmRight, player.default.HealthArmRight, HealthLocationRightArm);
+    regionWindows[3] = CreateRegionWindow(3, 230, 237, player.HealthArmLeft,  player.default.HealthArmLeft,  HealthLocationLeftArm);
+    regionWindows[4] = CreateRegionWindow(4,  24, 347, player.HealthLegRight, player.default.HealthLegRight, HealthLocationRightLeg);
+    regionWindows[5] = CreateRegionWindow(5, 222, 347, player.HealthLegLeft,  player.default.HealthLegLeft,  HealthLocationLeftLeg);
 }
 
 // ----------------------------------------------------------------------
@@ -173,23 +173,23 @@ function CreateRegionWindows()
 // ----------------------------------------------------------------------
 
 function PersonaHealthRegionWindow CreateRegionWindow(
-	int partIndex,
-	int posX, int posY, 
-	int healthValue, int maxHealthValue, 
-	String partTitle)
+    int partIndex,
+    int posX, int posY,
+    int healthValue, int maxHealthValue,
+    String partTitle)
 {
-	local PersonaHealthRegionWindow newRegion;
+    local PersonaHealthRegionWindow newRegion;
 
-	newRegion = PersonaHealthRegionWindow(winClient.NewChild(Class'PersonaHealthRegionWindow'));
-	newRegion.SetPos(posX, posY);
-	newRegion.SetMaxHealth(maxHealthValue);
-	newRegion.SetHealth(healthValue);
-	newRegion.SetPartIndex(partIndex);
-	newRegion.SetTitle(partTitle);
-	newRegion.ShowHealButton(bShowHealButtons);
-	newRegion.Raise();
+    newRegion = PersonaHealthRegionWindow(winClient.NewChild(Class'PersonaHealthRegionWindow'));
+    newRegion.SetPos(posX, posY);
+    newRegion.SetMaxHealth(maxHealthValue);
+    newRegion.SetHealth(healthValue);
+    newRegion.SetPartIndex(partIndex);
+    newRegion.SetTitle(partTitle);
+    newRegion.ShowHealButton(bShowHealButtons);
+    newRegion.Raise();
 
-	return newRegion;
+    return newRegion;
 }
 
 // ----------------------------------------------------------------------
@@ -198,12 +198,12 @@ function PersonaHealthRegionWindow CreateRegionWindow(
 
 function UpdateRegionWindows()
 {
-	local int partIndex;
+    local int partIndex;
 
-	for(partIndex=0; partIndex<arrayCount(regionWindows); partIndex++)
-		regionWindows[partIndex].Destroy();
+    for(partIndex=0; partIndex<arrayCount(regionWindows); partIndex++)
+        regionWindows[partIndex].Destroy();
 
-	CreateRegionWindows();
+    CreateRegionWindows();
 }
 
 // ----------------------------------------------------------------------
@@ -212,9 +212,9 @@ function UpdateRegionWindows()
 
 function CreateBodyWindow()
 {
-	winBody = PersonaHealthBodyWindow(winClient.NewChild(Class'PersonaHealthBodyWindow'));
-	winBody.SetPos(24, 36);
-	winBody.Lower();
+    winBody = PersonaHealthBodyWindow(winClient.NewChild(Class'PersonaHealthBodyWindow'));
+    winBody.SetPos(24, 36);
+    winBody.Lower();
 }
 
 // ----------------------------------------------------------------------
@@ -223,9 +223,9 @@ function CreateBodyWindow()
 
 function CreateOverlaysWindow()
 {
-	winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'PersonaHealthOverlaysWindow'));
-	winOverlays.SetPos(24, 36);
-	winOverlays.Lower();
+    winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'PersonaHealthOverlaysWindow'));
+    winOverlays.SetPos(24, 36);
+    winOverlays.Lower();
 }
 
 // ----------------------------------------------------------------------
@@ -234,19 +234,19 @@ function CreateOverlaysWindow()
 
 function UpdateMedKits()
 {
-	local MedKit medKit;
+    local MedKit medKit;
 
-	if (winMedKits != None)
-	{
-		winMedKits.SetText(MedKitUseText);
+    if (winMedKits != None)
+    {
+        winMedKits.SetText(MedKitUseText);
 
-		medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+        medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-		if (medKit != None)
-			winMedKits.SetCount(medKit.NumCopies);
-		else
-			winMedKits.SetCount(0);	
-	}
+        if (medKit != None)
+            winMedKits.SetCount(medKit.NumCopies);
+        else
+            winMedKits.SetCount(0);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -255,47 +255,47 @@ function UpdateMedKits()
 
 function bool ButtonActivated(Window buttonPressed)
 {
-	local bool bHandled;
-	local int  pointsHealed;
+    local bool bHandled;
+    local int  pointsHealed;
 
-	if (Super.ButtonActivated(buttonPressed))
-		return True;
+    if (Super.ButtonActivated(buttonPressed))
+        return True;
 
-	bHandled   = True;
+    bHandled   = True;
 
-	// Check if this is one of our Augmentation buttons
-	if (buttonPressed.IsA('PersonaHealthItemButton'))
-	{
-		SelectHealth(PersonaHealthItemButton(buttonPressed));
-	}
-	else if (buttonPressed.IsA('PersonaHealthActionButtonWindow'))
-	{
-		PushHealth();
-		pointsHealed = HealPart(regionWindows[PersonaHealthActionButtonWindow(buttonPressed).GetPartIndex()]);
-		player.PopHealth( playerHealth[0],playerHealth[1],playerHealth[2],playerHealth[3],playerHealth[4],playerHealth[5]);
-		winStatus.AddText(Sprintf(PointsHealedLabel, pointsHealed));
+    // Check if this is one of our Augmentation buttons
+    if (buttonPressed.IsA('PersonaHealthItemButton'))
+    {
+        SelectHealth(PersonaHealthItemButton(buttonPressed));
+    }
+    else if (buttonPressed.IsA('PersonaHealthActionButtonWindow'))
+    {
+        PushHealth();
+        pointsHealed = HealPart(regionWindows[PersonaHealthActionButtonWindow(buttonPressed).GetPartIndex()]);
+        player.PopHealth( playerHealth[0],playerHealth[1],playerHealth[2],playerHealth[3],playerHealth[4],playerHealth[5]);
+        winStatus.AddText(Sprintf(PointsHealedLabel, pointsHealed));
 
-		EnableButtons();
-	}
-	else if (buttonPressed.GetParent().IsA('PersonaHealthRegionWindow'))
-	{
-		partButtons[PersonaHealthRegionWindow(buttonPressed.GetParent()).GetPartIndex()].PressButton(IK_None);
-	}
-	else
-	{
-		switch(buttonPressed)
-		{
-			case btnHealAll:
-				HealAllParts();
-				break;
+        EnableButtons();
+    }
+    else if (buttonPressed.GetParent().IsA('PersonaHealthRegionWindow'))
+    {
+        partButtons[PersonaHealthRegionWindow(buttonPressed.GetParent()).GetPartIndex()].PressButton(IK_None);
+    }
+    else
+    {
+        switch(buttonPressed)
+        {
+            case btnHealAll:
+                HealAllParts();
+                break;
 
-			default:
-				bHandled = False;
-				break;
-		}
-	}
+            default:
+                bHandled = False;
+                break;
+        }
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -304,22 +304,22 @@ function bool ButtonActivated(Window buttonPressed)
 
 function SelectHealth(PersonaHealthItemButton buttonPressed)
 {
-	// Don't do extra work.
-	if (selectedHealthButton != buttonPressed)
-	{
-		// Deselect current button
-		if (selectedHealthButton != None)
-			selectedHealthButton.SelectButton(False);
+    // Don't do extra work.
+    if (selectedHealthButton != buttonPressed)
+    {
+        // Deselect current button
+        if (selectedHealthButton != None)
+            selectedHealthButton.SelectButton(False);
 
-		selectedHealthButton = buttonPressed;
-		selectedHealthButton.SelectButton(True);
+        selectedHealthButton = buttonPressed;
+        selectedHealthButton.SelectButton(True);
 
-		// Update the display
-		winInfo.SetTitle(selectedHealthButton.GetTitle());
-		winInfo.SetText(selectedHealthButton.GetDesc());
+        // Update the display
+        winInfo.SetTitle(selectedHealthButton.GetTitle());
+        winInfo.SetText(selectedHealthButton.GetDesc());
 
-		EnableButtons();
-	}
+        EnableButtons();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -328,12 +328,12 @@ function SelectHealth(PersonaHealthItemButton buttonPressed)
 
 function PushHealth()
 {
-	playerHealth[0] = player.HealthHead;
-	playerHealth[1] = player.HealthTorso;
-	playerHealth[2] = player.HealthArmRight;
-	playerHealth[3] = player.HealthArmLeft;
-	playerHealth[4] = player.HealthLegRight;
-	playerHealth[5] = player.HealthLegLeft;
+    playerHealth[0] = player.HealthHead;
+    playerHealth[1] = player.HealthTorso;
+    playerHealth[2] = player.HealthArmRight;
+    playerHealth[3] = player.HealthArmLeft;
+    playerHealth[4] = player.HealthLegRight;
+    playerHealth[5] = player.HealthLegLeft;
 }
 
 // ----------------------------------------------------------------------
@@ -345,60 +345,60 @@ function PushHealth()
 
 function int HealAllParts()
 {
-	local MedKit medkit;
-	local int    healPointsAvailable;
-	local int    healPointsRemaining;
-	local int    pointsHealed;
-	local int    regionIndex;
-	local float  damageAmount;
-	local bool   bPartDamaged;
+    local MedKit medkit;
+    local int    healPointsAvailable;
+    local int    healPointsRemaining;
+    local int    pointsHealed;
+    local int    regionIndex;
+    local float  damageAmount;
+    local bool   bPartDamaged;
 
-	pointsHealed = 0;
-	PushHealth();
+    pointsHealed = 0;
+    PushHealth();
 
-	// First determine how many medkits the player has
-	healPointsAvailable = GetMedKitHealPoints();
-	healPointsRemaining = healPointsAvailable;
+    // First determine how many medkits the player has
+    healPointsAvailable = GetMedKitHealPoints();
+    healPointsRemaining = healPointsAvailable;
 
-	// Now loop through all the parts repeatedly until 
-	// we either:
-	// 
-	// A) Run out of parts to heal or 
-	// B) Run out of points to distribute.
+    // Now loop through all the parts repeatedly until
+    // we either:
+    //
+    // A) Run out of parts to heal or
+    // B) Run out of points to distribute.
 
-	while(healPointsRemaining > 0) 
-	{
-		bPartDamaged = False;
+    while(healPointsRemaining > 0)
+    {
+        bPartDamaged = False;
 
-		// Loop through all the parts
-		for(regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
-		{
-			damageAmount = regionWindows[regionIndex].maxHealth - regionWindows[regionIndex].currentHealth;
+        // Loop through all the parts
+        for(regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
+        {
+            damageAmount = regionWindows[regionIndex].maxHealth - regionWindows[regionIndex].currentHealth;
 
-			if ((damageAmount > 0) && (healPointsRemaining > 0))
-			{
-				// Heal this part
-				pointsHealed += HealPart(regionWindows[regionIndex], 1, True);
+            if ((damageAmount > 0) && (healPointsRemaining > 0))
+            {
+                // Heal this part
+                pointsHealed += HealPart(regionWindows[regionIndex], 1, True);
 
-				healPointsRemaining--;
-				bPartDamaged = True;
-			}
-		}
+                healPointsRemaining--;
+                bPartDamaged = True;
+            }
+        }
 
-		if (!bPartDamaged)
-			break;
-	}
-		
-	// Now remove any medkits we may have used
-	RemoveMedKits(healPointsAvailable - healPointsRemaining);
+        if (!bPartDamaged)
+            break;
+    }
 
-	player.PopHealth( playerHealth[0],playerHealth[1],playerHealth[2],playerHealth[3],playerHealth[4],playerHealth[5]);
+    // Now remove any medkits we may have used
+    RemoveMedKits(healPointsAvailable - healPointsRemaining);
 
-	EnableButtons();
+    player.PopHealth( playerHealth[0],playerHealth[1],playerHealth[2],playerHealth[3],playerHealth[4],playerHealth[5]);
 
-	winStatus.AddText(Sprintf(PointsHealedLabel, pointsHealed));
+    EnableButtons();
 
-	return pointsHealed;
+    winStatus.AddText(Sprintf(PointsHealedLabel, pointsHealed));
+
+    return pointsHealed;
 }
 
 // ----------------------------------------------------------------------
@@ -407,14 +407,14 @@ function int HealAllParts()
 
 function int GetMedKitHealPoints()
 {
-	local MedKit medkit;
+    local MedKit medkit;
 
-	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-	if (medKit != None)
-		return player.CalculateSkillHealAmount(medKit.NumCopies * medKit.healAmount);
-	else
-		return 0;
+    if (medKit != None)
+        return player.CalculateSkillHealAmount(medKit.NumCopies * medKit.healAmount);
+    else
+        return 0;
 }
 
 // ----------------------------------------------------------------------
@@ -423,18 +423,18 @@ function int GetMedKitHealPoints()
 
 function RemoveMedKits(int healPointsUsed)
 {
-	local MedKit medkit;
-	local int    healPointsRemaining;
+    local MedKit medkit;
+    local int    healPointsRemaining;
 
-	healPointsRemaining = healPointsUsed;
-	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    healPointsRemaining = healPointsUsed;
+    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-	while((medKit != None) && (healPointsRemaining > 0))
-	{
-		healPointsRemaining -= player.CalculateSkillHealAmount(medkit.healAmount);
-		UseMedKit(medkit);
-		medKit = MedKit(player.FindInventoryType(Class'MedKit'));
-	}
+    while((medKit != None) && (healPointsRemaining > 0))
+    {
+        healPointsRemaining -= player.CalculateSkillHealAmount(medkit.healAmount);
+        UseMedKit(medkit);
+        medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -445,123 +445,123 @@ function RemoveMedKits(int healPointsUsed)
 
 function int HealPart(PersonaHealthRegionWindow region, optional float pointsToHeal, optional bool bLeaveMedKit)
 {
-	local float healthAdded;
-	local float newHealth;
-	local medKit medKit;
+    local float healthAdded;
+    local float newHealth;
+    local medKit medKit;
 
-	// First make sure the player has a medkit
-	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
-	
-	if ((region == None) || (medKit == None))
-		return 0;
+    // First make sure the player has a medkit
+    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-	// If a point value was passesd in, use it as the amount of 
-	// points to heal for this body part.  Otherwise use the 
-	// medkit's default heal amount.
+    if ((region == None) || (medKit == None))
+        return 0;
 
-	if (pointsToHeal == 0)
-		pointsToHeal = player.CalculateSkillHealAmount(medKit.healAmount);
+    // If a point value was passesd in, use it as the amount of
+    // points to heal for this body part.  Otherwise use the
+    // medkit's default heal amount.
 
-	// Heal the selected body part by the number of 
-	// points available in the part
+    if (pointsToHeal == 0)
+        pointsToHeal = player.CalculateSkillHealAmount(medKit.healAmount);
+
+    // Heal the selected body part by the number of
+    // points available in the part
 
 
-	// If our player is in a multiplayer game, heal across 3 hit locations
-	if ( player.PlayerIsClient() )
-	{
-		switch(region.GetPartIndex())
-		{
-			case 0:		// head
-				newHealth = FMin(playerHealth[0] + pointsToHeal, player.default.HealthHead);
-				healthAdded = newHealth - playerHealth[0];
-				playerHealth[0] = newHealth;
-				break;
+    // If our player is in a multiplayer game, heal across 3 hit locations
+    if ( player.PlayerIsClient() )
+    {
+        switch(region.GetPartIndex())
+        {
+            case 0:     // head
+                newHealth = FMin(playerHealth[0] + pointsToHeal, player.default.HealthHead);
+                healthAdded = newHealth - playerHealth[0];
+                playerHealth[0] = newHealth;
+                break;
 
-			case 1:		// torso, right arm, left arm
-			case 2:
-			case 3:
-				pointsToHeal *= 0.333;	// Divide heal points among parts
-				newHealth = FMin(playerHealth[1] + pointsToHeal, player.default.HealthTorso);
-				healthAdded = newHealth - playerHealth[1];
-				playerHealth[1] = newHealth;
-				regionWindows[1].SetHealth(newHealth);
-				newHealth = FMin(playerHealth[2] + pointsToHeal, player.default.HealthArmRight);
-				healthAdded = newHealth - playerHealth[2];
-				playerHealth[2] = newHealth;
-				regionWindows[2].SetHealth(newHealth);
-				newHealth = FMin(playerHealth[3] + pointsToHeal, player.default.HealthArmLeft);
-				healthAdded = newHealth - playerHealth[3];
-				playerHealth[3] = newHealth;
-				regionWindows[3].SetHealth(newHealth);
-				break;
-			case 4:		// right leg, left leg
-			case 5:
-				pointsToHeal *= 0.5;		// Divide heal points among parts
-				newHealth = FMin(playerHealth[4] + pointsToHeal, player.default.HealthLegRight);
-				healthAdded = newHealth - playerHealth[4];
-				playerHealth[4] = newHealth;
-				regionWindows[4].SetHealth(newHealth);
-				newHealth = FMin(playerHealth[5] + pointsToHeal, player.default.HealthLegLeft);
-				healthAdded = newHealth - playerHealth[5];
-				playerHealth[5] = newHealth;
-				regionWindows[5].SetHealth(newHealth);
-				break;
-		}
-	}
-	else
-	{
-		switch(region.GetPartIndex())
-		{
-			case 0:		// head
-				newHealth = FMin(playerHealth[0] + pointsToHeal, player.default.HealthHead);
-				healthAdded = newHealth - playerHealth[0];
-				playerHealth[0] = newHealth;
-				break;
+            case 1:     // torso, right arm, left arm
+            case 2:
+            case 3:
+                pointsToHeal *= 0.333;  // Divide heal points among parts
+                newHealth = FMin(playerHealth[1] + pointsToHeal, player.default.HealthTorso);
+                healthAdded = newHealth - playerHealth[1];
+                playerHealth[1] = newHealth;
+                regionWindows[1].SetHealth(newHealth);
+                newHealth = FMin(playerHealth[2] + pointsToHeal, player.default.HealthArmRight);
+                healthAdded = newHealth - playerHealth[2];
+                playerHealth[2] = newHealth;
+                regionWindows[2].SetHealth(newHealth);
+                newHealth = FMin(playerHealth[3] + pointsToHeal, player.default.HealthArmLeft);
+                healthAdded = newHealth - playerHealth[3];
+                playerHealth[3] = newHealth;
+                regionWindows[3].SetHealth(newHealth);
+                break;
+            case 4:     // right leg, left leg
+            case 5:
+                pointsToHeal *= 0.5;        // Divide heal points among parts
+                newHealth = FMin(playerHealth[4] + pointsToHeal, player.default.HealthLegRight);
+                healthAdded = newHealth - playerHealth[4];
+                playerHealth[4] = newHealth;
+                regionWindows[4].SetHealth(newHealth);
+                newHealth = FMin(playerHealth[5] + pointsToHeal, player.default.HealthLegLeft);
+                healthAdded = newHealth - playerHealth[5];
+                playerHealth[5] = newHealth;
+                regionWindows[5].SetHealth(newHealth);
+                break;
+        }
+    }
+    else
+    {
+        switch(region.GetPartIndex())
+        {
+            case 0:     // head
+                newHealth = FMin(playerHealth[0] + pointsToHeal, player.default.HealthHead);
+                healthAdded = newHealth - playerHealth[0];
+                playerHealth[0] = newHealth;
+                break;
 
-			case 1:		// torso
-				newHealth = FMin(playerHealth[1] + pointsToHeal, player.default.HealthTorso);
-				healthAdded = newHealth - playerHealth[1];
-				playerHealth[1] = newHealth;
-				break;
+            case 1:     // torso
+                newHealth = FMin(playerHealth[1] + pointsToHeal, player.default.HealthTorso);
+                healthAdded = newHealth - playerHealth[1];
+                playerHealth[1] = newHealth;
+                break;
 
-			case 2:		// right arm
-				newHealth = FMin(playerHealth[2] + pointsToHeal, player.default.HealthArmRight);
-				healthAdded = newHealth - playerHealth[2];
-				playerHealth[2] = newHealth;
-				break;
+            case 2:     // right arm
+                newHealth = FMin(playerHealth[2] + pointsToHeal, player.default.HealthArmRight);
+                healthAdded = newHealth - playerHealth[2];
+                playerHealth[2] = newHealth;
+                break;
 
-			case 3:		// left arm
-				newHealth = FMin(playerHealth[3] + pointsToHeal, player.default.HealthArmLeft);
-				healthAdded = newHealth - playerHealth[3];
-				playerHealth[3] = newHealth;
-				break;
+            case 3:     // left arm
+                newHealth = FMin(playerHealth[3] + pointsToHeal, player.default.HealthArmLeft);
+                healthAdded = newHealth - playerHealth[3];
+                playerHealth[3] = newHealth;
+                break;
 
-			case 4:		// right leg
-				newHealth = FMin(playerHealth[4] + pointsToHeal, player.default.HealthLegRight);
-				healthAdded = newHealth - playerHealth[4];
-				playerHealth[4] = newHealth;
-				break;
+            case 4:     // right leg
+                newHealth = FMin(playerHealth[4] + pointsToHeal, player.default.HealthLegRight);
+                healthAdded = newHealth - playerHealth[4];
+                playerHealth[4] = newHealth;
+                break;
 
-			case 5:		// left leg
-				newHealth = FMin(playerHealth[5] + pointsToHeal, player.default.HealthLegLeft);
-				healthAdded = newHealth - playerHealth[5];
-				playerHealth[5] = newHealth;
-				break;
-		}
-	}
+            case 5:     // left leg
+                newHealth = FMin(playerHealth[5] + pointsToHeal, player.default.HealthLegLeft);
+                healthAdded = newHealth - playerHealth[5];
+                playerHealth[5] = newHealth;
+                break;
+        }
+    }
 
-	region.SetHealth(newHealth);
+    region.SetHealth(newHealth);
 
-	// Remove the item from the player's invenory and this screen
-	if (!bLeaveMedKit)
-		UseMedKit(medkit);
+    // Remove the item from the player's invenory and this screen
+    if (!bLeaveMedKit)
+        UseMedKit(medkit);
 
-	// Vanilla Matters: Add in FP rate for health restored.
-	if ( player.FPSystem != none ) {
-		player.FPSystem.AddForwardPressure( FMax( healthAdded, 0 ) * ( player.FPSystem.VM_fpHeal + player.FPSystem.fpHealS ) );
-	}
+    // Vanilla Matters: Add in FP rate for health restored.
+    if ( player.FPSystem != none ) {
+        player.FPSystem.AddForwardPressure( FMax( healthAdded, 0 ) * ( player.FPSystem.VM_fpHeal + player.FPSystem.fpHealS ) );
+    }
 
-	return healthAdded;
+    return healthAdded;
 }
 
 // ----------------------------------------------------------------------
@@ -570,13 +570,13 @@ function int HealPart(PersonaHealthRegionWindow region, optional float pointsToH
 
 function UseMedKit(MedKit medkit)
 {
-	if (medKit != None)
-	{
-		medKit.UseOnce();
-		UpdateMedKits();
+    if (medKit != None)
+    {
+        medKit.UseOnce();
+        UpdateMedKits();
 
-		EnableButtons();
-	}
+        EnableButtons();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -585,22 +585,22 @@ function UseMedKit(MedKit medkit)
 
 function EnableButtons()
 {
-	local int regionIndex;
-	local medKit medKit;
+    local int regionIndex;
+    local medKit medKit;
 
-	// First make sure the player has a medkit
-	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    // First make sure the player has a medkit
+    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-	// Heal All button available as long as one or more
-	// parts is damaged and the player has at least one
-	// kit
+    // Heal All button available as long as one or more
+    // parts is damaged and the player has at least one
+    // kit
 
-	btnHealAll.EnableWindow((medKit != None) && (IsPlayerDamaged()));
+    btnHealAll.EnableWindow((medKit != None) && (IsPlayerDamaged()));
 
-	// Loop through the region windows, since they have Heal buttons
-	// attached to them
-	for (regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
-		regionWindows[regionIndex].EnableButtons();
+    // Loop through the region windows, since they have Heal buttons
+    // attached to them
+    for (regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
+        regionWindows[regionIndex].EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -611,21 +611,21 @@ function EnableButtons()
 
 function bool IsPlayerDamaged()
 {
-	local int regionIndex;
-	local bool bDamaged;
+    local int regionIndex;
+    local bool bDamaged;
 
-	bDamaged = False;
+    bDamaged = False;
 
-	for(regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
-	{
-		if (regionWindows[regionIndex].maxHealth > regionWindows[regionIndex].currentHealth)
-		{
-			bDamaged = True;
-			break;
-		}
-	}
+    for(regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
+    {
+        if (regionWindows[regionIndex].maxHealth > regionWindows[regionIndex].currentHealth)
+        {
+            bDamaged = True;
+            break;
+        }
+    }
 
-	return bDamaged;
+    return bDamaged;
 }
 
 // ----------------------------------------------------------------------

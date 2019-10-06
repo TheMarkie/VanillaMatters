@@ -2,21 +2,21 @@
 // ColorTheme
 //=============================================================================
 class ColorTheme extends Actor
-	abstract;
+    abstract;
 
 Enum EColorThemeTypes
 {
-	CTT_Menu,
-	CTT_HUD
+    CTT_Menu,
+    CTT_HUD
 };
 
 var EColorThemeTypes themeType;
 var String themeName;
-var Bool bSystemTheme;			// Cannot delete these
+var Bool bSystemTheme;          // Cannot delete these
 var Name colorNames[15];
 var Color colors[15];
 var travel ColorTheme next;
-var Color colBad;				// Used when invalid index or color requested
+var Color colBad;               // Used when invalid index or color requested
 
 // ----------------------------------------------------------------------
 // GetColorFromName()
@@ -24,14 +24,14 @@ var Color colBad;				// Used when invalid index or color requested
 
 function Color GetColorFromName(Name colorName)
 {
-	local int  colorIndex;
+    local int  colorIndex;
 
-	colorIndex = GetColorIndex(colorName);
+    colorIndex = GetColorIndex(colorName);
 
-	if (colorIndex != -1)
-		return colors[colorIndex];
-	else
-		return colBad;
+    if (colorIndex != -1)
+        return colors[colorIndex];
+    else
+        return colBad;
 }
 
 // ----------------------------------------------------------------------
@@ -40,22 +40,22 @@ function Color GetColorFromName(Name colorName)
 
 function int GetColorIndex(Name colorName)
 {
-	local int colorIndex;
-	local bool bColorNameFound;
+    local int colorIndex;
+    local bool bColorNameFound;
 
-	for(colorIndex=0; colorIndex<arrayCount(colorNames); colorIndex++)
-	{
-		if (colorNames[colorIndex] == colorName) 
-		{
-			bColorNameFound = True;
-			break;
-		}
-	}
+    for(colorIndex=0; colorIndex<arrayCount(colorNames); colorIndex++)
+    {
+        if (colorNames[colorIndex] == colorName)
+        {
+            bColorNameFound = True;
+            break;
+        }
+    }
 
-	if (bColorNameFound)
-		return colorIndex;
-	else
-		return -1;
+    if (bColorNameFound)
+        return colorIndex;
+    else
+        return -1;
 }
 
 // ----------------------------------------------------------------------
@@ -64,10 +64,10 @@ function int GetColorIndex(Name colorName)
 
 function Color GetColor(Int colorIndex)
 {
-	if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
-		return colors[colorIndex];
-	else
-		return colBad;
+    if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
+        return colors[colorIndex];
+    else
+        return colBad;
 }
 
 // ----------------------------------------------------------------------
@@ -76,10 +76,10 @@ function Color GetColor(Int colorIndex)
 
 function SetColor(Int colorIndex, Color newColor)
 {
-	if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
-	{
-		colors[colorIndex] = newColor;
-	}
+    if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
+    {
+        colors[colorIndex] = newColor;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -88,12 +88,12 @@ function SetColor(Int colorIndex, Color newColor)
 
 function SetColorFromName(Name colorName, Color newColor)
 {
-	local int colorIndex;
+    local int colorIndex;
 
-	colorIndex = GetColorIndex(colorName);
+    colorIndex = GetColorIndex(colorName);
 
-	if (colorIndex != -1)
-		SetColor(colorIndex, newColor);
+    if (colorIndex != -1)
+        SetColor(colorIndex, newColor);
 }
 
 // ----------------------------------------------------------------------
@@ -101,16 +101,16 @@ function SetColorFromName(Name colorName, Color newColor)
 // ----------------------------------------------------------------------
 
 function int GetColorCount()
-{	
-	local int colorIndex;
-	
-	for(colorIndex=0; colorIndex<arrayCount(colors); colorIndex++)
-	{
-		if (colorNames[colorIndex] == '')
-			break;
-	}
-	
-	return colorIndex;
+{
+    local int colorIndex;
+
+    for(colorIndex=0; colorIndex<arrayCount(colors); colorIndex++)
+    {
+        if (colorNames[colorIndex] == '')
+            break;
+    }
+
+    return colorIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -119,10 +119,10 @@ function int GetColorCount()
 
 function Name GetColorName(Int colorIndex)
 {
-	if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
-		return colorNames[colorIndex];
-	else
-		return '';
+    if ((colorIndex >= 0) && (colorIndex < arrayCount(colorNames)))
+        return colorNames[colorIndex];
+    else
+        return '';
 }
 
 // ----------------------------------------------------------------------
@@ -131,7 +131,7 @@ function Name GetColorName(Int colorIndex)
 
 function Bool IsSystemTheme()
 {
-	return bSystemTheme;
+    return bSystemTheme;
 }
 
 // ----------------------------------------------------------------------
@@ -140,7 +140,7 @@ function Bool IsSystemTheme()
 
 function SetThemeName(String newThemeName)
 {
-	themeName = newThemeName;
+    themeName = newThemeName;
 }
 
 // ----------------------------------------------------------------------
@@ -149,7 +149,7 @@ function SetThemeName(String newThemeName)
 
 function String GetThemeName()
 {
-	return themeName;
+    return themeName;
 }
 
 // ----------------------------------------------------------------------
@@ -158,13 +158,13 @@ function String GetThemeName()
 
 function ResetThemeToDefault()
 {
-	local int colorIndex;
+    local int colorIndex;
 
-	for(colorIndex=0; colorIndex<arrayCount(colors); colorIndex++)
-	{
-		if (colorNames[colorIndex] != '')
-			colors[colorIndex] = default.colors[colorIndex];
-	}
+    for(colorIndex=0; colorIndex<arrayCount(colors); colorIndex++)
+    {
+        if (colorNames[colorIndex] != '')
+            colors[colorIndex] = default.colors[colorIndex];
+    }
 }
 
 // ----------------------------------------------------------------------

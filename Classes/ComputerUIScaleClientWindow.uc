@@ -15,41 +15,41 @@ var int bottomHeight;
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	local int textureIndex;
-	local int middlePosY;
-	local int colIndex;
-	local int middleIndex;
-	local int middleTextureIndex;
+{
+    local int textureIndex;
+    local int middlePosY;
+    local int colIndex;
+    local int middleIndex;
+    local int middleTextureIndex;
 
-	// Draw window background
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
+    // Draw window background
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
 
-	textureIndex = 0;
-	middlePosY   = 0;
+    textureIndex = 0;
+    middlePosY   = 0;
 
-	// Draw top textures
-	for(colIndex=0; colIndex<textureCols; colIndex++)
-		gc.DrawIcon(colIndex * 256, 0, clientTextures[textureIndex++]);
+    // Draw top textures
+    for(colIndex=0; colIndex<textureCols; colIndex++)
+        gc.DrawIcon(colIndex * 256, 0, clientTextures[textureIndex++]);
 
-	// Draw middle textures
-	for(middleIndex=0; middleIndex<numMiddleTextures; middleIndex++)
-	{
-		middleTextureIndex = textureIndex;
-		for(colIndex=0; colIndex<textureCols; colIndex++)
-		{
-			gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[middleTextureIndex++]);		
-		}
+    // Draw middle textures
+    for(middleIndex=0; middleIndex<numMiddleTextures; middleIndex++)
+    {
+        middleTextureIndex = textureIndex;
+        for(colIndex=0; colIndex<textureCols; colIndex++)
+        {
+            gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[middleTextureIndex++]);
+        }
 
-		middlePosY += middleHeight;
-	}
+        middlePosY += middleHeight;
+    }
 
-	textureIndex = middleTextureIndex;
+    textureIndex = middleTextureIndex;
 
-	// Draw bottom textures
-	for(colIndex=0; colIndex<textureCols; colIndex++)
-		gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[textureIndex++]);
+    // Draw bottom textures
+    for(colIndex=0; colIndex<textureCols; colIndex++)
+        gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[textureIndex++]);
 }
 
 // ----------------------------------------------------------------------
@@ -58,9 +58,9 @@ event DrawWindow(GC gc)
 
 function SetTextureHeights(int newTopHeight, int newMiddleHeight, int newBottomHeight)
 {
-	topHeight    = newTopHeight;
-	middleHeight = newMiddleHeight;
-	bottomHeight = newBottomHeight;
+    topHeight    = newTopHeight;
+    middleHeight = newMiddleHeight;
+    bottomHeight = newBottomHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -69,12 +69,12 @@ function SetTextureHeights(int newTopHeight, int newMiddleHeight, int newBottomH
 
 function SetNumMiddleTextures(int newNum)
 {
-	numMiddleTextures = newNum;
+    numMiddleTextures = newNum;
 
-	// Now calculate and set the height of the window
-	// (width should already be set at this point)
+    // Now calculate and set the height of the window
+    // (width should already be set at this point)
 
-	SetHeight(topHeight + (middleHeight * numMiddleTextures) + bottomHeight);
+    SetHeight(topHeight + (middleHeight * numMiddleTextures) + bottomHeight);
 }
 
 // ----------------------------------------------------------------------

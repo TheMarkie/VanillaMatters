@@ -23,28 +23,28 @@ var int NumTypes;
 
 function string GetNextMap()
 {
-	local string CurrentMap;
+    local string CurrentMap;
    local int NumMaps;
-	local int i;
+    local int i;
 
-	CurrentMap = GetURLMap();
-	if ( CurrentMap != "" )
-	{
+    CurrentMap = GetURLMap();
+    if ( CurrentMap != "" )
+    {
       //Strip off any .dx
-		if ( Right(CurrentMap,3) ~= ".dx" )
-			CurrentMap = Left(CurrentMap,Len(CurrentMap)-3);
-		else
-			CurrentMap = CurrentMap;
+        if ( Right(CurrentMap,3) ~= ".dx" )
+            CurrentMap = Left(CurrentMap,Len(CurrentMap)-3);
+        else
+            CurrentMap = CurrentMap;
 
-		for ( i=0; i<ArrayCount(Maps); i++ )
-		{
-			if ( CurrentMap ~= Maps[i] )
-			{
-				MapNum = i;
-				break;
-			}
-		}
-	}
+        for ( i=0; i<ArrayCount(Maps); i++ )
+        {
+            if ( CurrentMap ~= Maps[i] )
+            {
+                MapNum = i;
+                break;
+            }
+        }
+    }
 
    //Count number of maps
    for (i = 0; ( (i < ArrayCount(Maps)) && (Maps[i] != "") ); i++);

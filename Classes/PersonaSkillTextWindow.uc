@@ -12,8 +12,8 @@ var bool bSelected;
 
 function SetSelected(bool bNewSelected)
 {
-	bSelected = bNewSelected;
-	StyleChanged();
+    bSelected = bNewSelected;
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -22,18 +22,18 @@ function SetSelected(bool bNewSelected)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colText;
+    local ColorTheme theme;
+    local Color colText;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	if (bSelected)
-		colText = theme.GetColorFromName('HUDColor_ButtonTextFocus');
-	else
-		colText = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+    // Title colors
+    if (bSelected)
+        colText = theme.GetColorFromName('HUDColor_ButtonTextFocus');
+    else
+        colText = theme.GetColorFromName('HUDColor_ButtonTextNormal');
 
-	SetTextColor(colText);
+    SetTextColor(colText);
 }
 
 // ----------------------------------------------------------------------

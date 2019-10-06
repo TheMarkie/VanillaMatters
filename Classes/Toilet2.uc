@@ -5,8 +5,8 @@ class Toilet2 extends DeusExDecoration;
 
 enum ESkinColor
 {
-	SC_Clean,
-	SC_Filthy
+    SC_Clean,
+    SC_Filthy
 };
 
 var() ESkinColor SkinColor;
@@ -14,32 +14,32 @@ var bool bUsing;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Clean:	Skin = Texture'Toilet2Tex1'; break;
-		case SC_Filthy:	Skin = Texture'Toilet2Tex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Clean:  Skin = Texture'Toilet2Tex1'; break;
+        case SC_Filthy: Skin = Texture'Toilet2Tex2'; break;
+    }
 }
 
 function Timer()
 {
-	bUsing = False;
+    bUsing = False;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	if (bUsing)
-		return;
+    if (bUsing)
+        return;
 
-	SetTimer(2.0, False);
-	bUsing = True;
+    SetTimer(2.0, False);
+    bUsing = True;
 
-	PlaySound(sound'FlushUrinal',,,, 256);
-	PlayAnim('Flush');
+    PlaySound(sound'FlushUrinal',,,, 256);
+    PlayAnim('Flush');
 }
 
 defaultproperties

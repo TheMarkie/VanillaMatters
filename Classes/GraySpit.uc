@@ -5,10 +5,10 @@ class GraySpit extends DeusExProjectile;
 
 simulated function Tick(float deltaTime)
 {
-	time += deltaTime;
+    time += deltaTime;
 
-	// scale it up as it flies
-	DrawScale = FClamp(2.5*(time+0.5), 1.0, 6.0);
+    // scale it up as it flies
+    DrawScale = FClamp(2.5*(time+0.5), 1.0, 6.0);
 }
 
 defaultproperties

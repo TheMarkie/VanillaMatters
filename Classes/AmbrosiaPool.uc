@@ -9,12 +9,12 @@ var float time;
 
 simulated function Tick(float deltaTime)
 {
-	time += deltaTime;
-	if (time <= spreadTime)
-	{
-		DrawScale = maxDrawScale * time / spreadTime;
-		ReattachDecal(vect(0.1,0.1,0));
-	}
+    time += deltaTime;
+    if (time <= spreadTime)
+    {
+        DrawScale = maxDrawScale * time / spreadTime;
+        ReattachDecal(vect(0.1,0.1,0));
+    }
 }
 
 defaultproperties

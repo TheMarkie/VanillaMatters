@@ -14,11 +14,11 @@ function Query()
 {
    Link = GetPlayerPawn().GetEntryLevel().Spawn(class'DeusExGSpyLink');
 
-	Link.MasterServerAddress = MasterServerAddress;
-	Link.MasterServerTCPPort = MasterServerTCPPort;
-	Link.Region = Region;
-	Link.MasterServerTimeout = MasterServerTimeout;
-	Link.GameName = GameName;
+    Link.MasterServerAddress = MasterServerAddress;
+    Link.MasterServerTCPPort = MasterServerTCPPort;
+    Link.Region = Region;
+    Link.MasterServerTimeout = MasterServerTimeout;
+    Link.GameName = GameName;
    Link.OwnerWindow = Self;
 
    Link.Start();
@@ -30,8 +30,8 @@ function Query()
 
 function QueryFinished(bool bSuccess, optional string ErrorMsg)
 {
-	Link.Destroy();
-	Link = None;
+    Link.Destroy();
+    Link = None;
 
    PingUnpingedServers();
 }
@@ -42,34 +42,34 @@ function QueryFinished(bool bSuccess, optional string ErrorMsg)
 
 function ShutdownLink()
 {
-	if(Link != None)
-		Link.Destroy();
-	Link = None;
+    if(Link != None)
+        Link.Destroy();
+    Link = None;
 }
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case HostButton:
+    switch( buttonPressed )
+    {
+        case HostButton:
          ProcessMenuAction(MA_MenuScreen,Class'MenuScreenHostNet');
-			break;
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------

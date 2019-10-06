@@ -30,12 +30,12 @@ var int   MaxLogLines;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Create Controls
-	CreateControls();
+    // Create Controls
+    CreateControls();
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -44,19 +44,19 @@ event InitWindow()
 
 function CreateControls()
 {
-	// Create the icon in the upper left corner
-	winIcon = NewChild(Class'Window');
-	winIcon.SetSize(32, 32);
-	winIcon.SetPos(logMargin * 2, topMargin + 5);
-	winIcon.SetBackgroundStyle(DSTY_Masked);
-	winIcon.SetBackground(Texture'LogIcon');
+    // Create the icon in the upper left corner
+    winIcon = NewChild(Class'Window');
+    winIcon.SetSize(32, 32);
+    winIcon.SetPos(logMargin * 2, topMargin + 5);
+    winIcon.SetBackgroundStyle(DSTY_Masked);
+    winIcon.SetBackground(Texture'LogIcon');
 
-	// Create the text log
-	winLog = TextLogWindow(NewChild(Class'TextLogWindow'));
-	winLog.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winLog.SetTextMargins(0, 0);
-	winLog.SetFont(fontLog);
-	winLog.SetLines(MinLogLines, MaxLogLines);
+    // Create the text log
+    winLog = TextLogWindow(NewChild(Class'TextLogWindow'));
+    winLog.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winLog.SetTextMargins(0, 0);
+    winLog.SetFont(fontLog);
+    winLog.SetLines(MinLogLines, MaxLogLines);
 }
 
 // ----------------------------------------------------------------------
@@ -67,45 +67,45 @@ function CreateControls()
 
 function ConfigurationChanged()
 {
-	local float qWidth, qHeight;
-	local float windowStart;
+    local float qWidth, qHeight;
+    local float windowStart;
 
-	winIcon.QueryPreferredSize(windowStart, qHeight);
-	windowStart += (logMargin * 3);
+    winIcon.QueryPreferredSize(windowStart, qHeight);
+    windowStart += (logMargin * 3);
 
-	// Text Log
-	qHeight = winLog.QueryPreferredHeight(width - windowStart - logMargin);
-	winLog.ConfigureChild(windowStart, topMargin, width - windowStart - logMargin, qHeight);
+    // Text Log
+    qHeight = winLog.QueryPreferredHeight(width - windowStart - logMargin);
+    winLog.ConfigureChild(windowStart, topMargin, width - windowStart - logMargin, qHeight);
 }
 
 // ----------------------------------------------------------------------
-// ParentRequestedPreferredSize() 
+// ParentRequestedPreferredSize()
 // ----------------------------------------------------------------------
 
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local float qHeight;
-	local float logWidth;
-	local float windowStart;
-	local float minWindowHeight;
+    local float qHeight;
+    local float logWidth;
+    local float windowStart;
+    local float minWindowHeight;
 
-	if ( bWidthSpecified )
-	{
-		preferredHeight =  topMargin;
+    if ( bWidthSpecified )
+    {
+        preferredHeight =  topMargin;
 
-		winIcon.QueryPreferredSize(windowStart, minWindowHeight);
+        winIcon.QueryPreferredSize(windowStart, minWindowHeight);
 
-		if (minWindowHeight < minHeight)
-			minWindowHeight = minHeight;
+        if (minWindowHeight < minHeight)
+            minWindowHeight = minHeight;
 
-		windowStart += (logMargin * 3);
+        windowStart += (logMargin * 3);
 
-		logWidth  = preferredWidth - windowStart - logMargin;
-		preferredHeight += winLog.QueryPreferredHeight(logWidth) + logMargin;
+        logWidth  = preferredWidth - windowStart - logMargin;
+        preferredHeight += winLog.QueryPreferredHeight(logWidth) + logMargin;
 
-		preferredHeight = Max(minWindowHeight, preferredHeight);
-	}
+        preferredHeight = Max(minWindowHeight, preferredHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -114,7 +114,7 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 event bool ChildRequestedReconfiguration(window childWin)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -123,21 +123,21 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 event VisibilityChanged(bool bNewVisibility)
 {
-	Super.VisibilityChanged( bNewVisibility );
+    Super.VisibilityChanged( bNewVisibility );
 
-	bTickEnabled = bNewVisibility;
+    bTickEnabled = bNewVisibility;
 
-	if ( winLog != None )
-		winLog.PauseLog( !bNewVisibility );
+    if ( winLog != None )
+        winLog.PauseLog( !bNewVisibility );
 
-	// If we just became visible and we have a log sound to play,
-	// then do it now
+    // If we just became visible and we have a log sound to play,
+    // then do it now
 
-	if ( bNewVisibility && ( logSoundToPlay != None ))
-	{
-		PlaySound(logSoundToPlay, 0.75);
-		logSoundToPlay = None;
-	}
+    if ( bNewVisibility && ( logSoundToPlay != None ))
+    {
+        PlaySound(logSoundToPlay, 0.75);
+        logSoundToPlay = None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -146,7 +146,7 @@ event VisibilityChanged(bool bNewVisibility)
 
 function Bool MessagesWaiting()
 {
-	return bMessagesWaiting;
+    return bMessagesWaiting;
 }
 
 // ----------------------------------------------------------------------
@@ -158,23 +158,23 @@ function Bool MessagesWaiting()
 
 event Tick(float deltaSeconds)
 {
-	// If a DataLink or Conversation is being played, then don't count down,
-	// so we don't miss any log messages the player might receive.
+    // If a DataLink or Conversation is being played, then don't count down,
+    // so we don't miss any log messages the player might receive.
 
-	if ((player.dataLinkPlay == None) && 
-	    ((player.conPlay == None) ||
-		 ((player.conPlay != None) && (player.conPlay.GetDisplayMode() == DM_FirstPerson))))
-	{
-		if (( lastLogMsg > 0.0 ) && ( lastLogMsg + deltaSeconds > displayTime ))
-		{
-			bTickEnabled     = False;
-			bMessagesWaiting = False;
-			Hide();
-			winLog.PauseLog(False);
-			AskParentForReconfigure();
-		}
-		lastLogMsg = lastLogMsg + deltaSeconds;
-	}
+    if ((player.dataLinkPlay == None) &&
+        ((player.conPlay == None) ||
+         ((player.conPlay != None) && (player.conPlay.GetDisplayMode() == DM_FirstPerson))))
+    {
+        if (( lastLogMsg > 0.0 ) && ( lastLogMsg + deltaSeconds > displayTime ))
+        {
+            bTickEnabled     = False;
+            bMessagesWaiting = False;
+            Hide();
+            winLog.PauseLog(False);
+            AskParentForReconfigure();
+        }
+        lastLogMsg = lastLogMsg + deltaSeconds;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -183,40 +183,40 @@ event Tick(float deltaSeconds)
 
 function AddLog(coerce String newLog, Color linecol)
 {
-	local DeusExRootWindow root;
-	local PersonaScreenBaseWindow winPersona;
+    local DeusExRootWindow root;
+    local PersonaScreenBaseWindow winPersona;
 
-	if ( newLog != "" )
-	{
-		root = DeusExRootWindow(GetRootWindow());
+    if ( newLog != "" )
+    {
+        root = DeusExRootWindow(GetRootWindow());
 
-		// If a PersonaBaseWindow is visible, send the log message 
-		// that way as well.
+        // If a PersonaBaseWindow is visible, send the log message
+        // that way as well.
 
-		winPersona = PersonaScreenBaseWindow(root.GetTopWindow());
-		if (winPersona != None)
-			winPersona.AddLog(newLog);
+        winPersona = PersonaScreenBaseWindow(root.GetTopWindow());
+        if (winPersona != None)
+            winPersona.AddLog(newLog);
 
-		// If the Hud is not visible, then pause the log
-		// until we become visible again
-		//
-		// Don't show the log if a DataLink is playing
+        // If the Hud is not visible, then pause the log
+        // until we become visible again
+        //
+        // Don't show the log if a DataLink is playing
 
-		if (( GetParent().IsVisible() ) && ( root.hud.infolink == None ))
-		{
-			Show();
-		}
-		else
-		{
-			bMessagesWaiting = True;
-			winLog.PauseLog( True );
-		}
+        if (( GetParent().IsVisible() ) && ( root.hud.infolink == None ))
+        {
+            Show();
+        }
+        else
+        {
+            bMessagesWaiting = True;
+            winLog.PauseLog( True );
+        }
 
-		bTickEnabled = TRUE;
-		winLog.AddLog(newLog, linecol);
-		lastLogMsg = 0.0;
-		AskParentForReconfigure();
-	}
+        bTickEnabled = TRUE;
+        winLog.AddLog(newLog, linecol);
+        lastLogMsg = 0.0;
+        AskParentForReconfigure();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -225,7 +225,7 @@ function AddLog(coerce String newLog, Color linecol)
 
 function SetIcon(Texture newIcon)
 {
-	winIcon.SetBackground(newIcon);
+    winIcon.SetBackground(newIcon);
 }
 
 // ----------------------------------------------------------------------
@@ -234,8 +234,8 @@ function SetIcon(Texture newIcon)
 
 function SetLogTimeout(Float newTimeout)
 {
-	displayTime = newTimeout;
-	winLog.SetTextTimeout(newTimeout);
+    displayTime = newTimeout;
+    winLog.SetTextTimeout(newTimeout);
 }
 
 // ----------------------------------------------------------------------
@@ -244,7 +244,7 @@ function SetLogTimeout(Float newTimeout)
 
 function SetMaxLogLines(Byte newLogLines)
 {
-	winLog.SetLines(MinLogLines, newLogLines);
+    winLog.SetLines(MinLogLines, newLogLines);
 }
 
 // ----------------------------------------------------------------------
@@ -253,18 +253,18 @@ function SetMaxLogLines(Byte newLogLines)
 
 function PlayLogSound(Sound newLogSound)
 {
-	// If the log is visible, play this sound right now.
-	// Otherwise wait until we become visible
+    // If the log is visible, play this sound right now.
+    // Otherwise wait until we become visible
 
-	if ( IsVisible() )
-	{
-		PlaySound(newLogSound, 0.75);
-		logSoundToPlay = None;
-	}
-	else
-	{
-		logSoundToPlay = newLogSound;
-	}
+    if ( IsVisible() )
+    {
+        PlaySound(newLogSound, 0.75);
+        logSoundToPlay = None;
+    }
+    else
+    {
+        logSoundToPlay = newLogSound;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -273,10 +273,10 @@ function PlayLogSound(Sound newLogSound)
 
 event StyleChanged()
 {
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	if (winLog != None)
-		winLog.SetTextColor(colText);
+    if (winLog != None)
+        winLog.SetTextColor(colText);
 }
 
 // ----------------------------------------------------------------------

@@ -5,19 +5,19 @@ class Ammo3006 extends DeusExAmmo;
 
 function bool UseAmmo(int AmountNeeded)
 {
-	local vector offset, tempvec, X, Y, Z;
-	local ShellCasing shell;
-	local DeusExWeapon W;
+    local vector offset, tempvec, X, Y, Z;
+    local ShellCasing shell;
+    local DeusExWeapon W;
 
-	if (Super.UseAmmo(AmountNeeded))
-	{
-		GetAxes(Pawn(Owner).ViewRotation, X, Y, Z);
-		offset = Owner.CollisionRadius * X + 0.3 * Owner.CollisionRadius * Y;
-		tempvec = 0.8 * Owner.CollisionHeight * Z;
-		offset.Z += tempvec.Z;
+    if (Super.UseAmmo(AmountNeeded))
+    {
+        GetAxes(Pawn(Owner).ViewRotation, X, Y, Z);
+        offset = Owner.CollisionRadius * X + 0.3 * Owner.CollisionRadius * Y;
+        tempvec = 0.8 * Owner.CollisionHeight * Z;
+        offset.Z += tempvec.Z;
 
-		// use silent shells if the weapon has been silenced
-		W = DeusExWeapon(Pawn(Owner).Weapon);
+        // use silent shells if the weapon has been silenced
+        W = DeusExWeapon(Pawn(Owner).Weapon);
       if ((DeusExMPGame(Level.Game) != None) && (!DeusExMPGame(Level.Game).bSpawnEffects))
       {
          shell = None;
@@ -30,15 +30,15 @@ function bool UseAmmo(int AmountNeeded)
             shell = spawn(class'ShellCasing',,, Owner.Location + offset);
       }
 
-		if (shell != None)
-		{
-			shell.Velocity = (FRand()*20+90) * Y + (10-FRand()*20) * X;
-			shell.Velocity.Z = 0;
-		}
-		return True;
-	}
+        if (shell != None)
+        {
+            shell.Velocity = (FRand()*20+90) * Y + (10-FRand()*20) * X;
+            shell.Velocity.Z = 0;
+        }
+        return True;
+    }
 
-	return False;
+    return False;
 }
 
 defaultproperties

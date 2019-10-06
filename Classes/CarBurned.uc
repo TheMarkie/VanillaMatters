@@ -5,21 +5,21 @@ class CarBurned expands OutdoorThings;
 
 enum ESkinColor
 {
-	SC_Yellow,
-	SC_DarkBlue
+    SC_Yellow,
+    SC_DarkBlue
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Yellow:		Skin = Texture'CarBurnedTex1'; break;
-		case SC_DarkBlue:	Skin = Texture'CarBurnedTex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Yellow:     Skin = Texture'CarBurnedTex1'; break;
+        case SC_DarkBlue:   Skin = Texture'CarBurnedTex2'; break;
+    }
 }
 
 defaultproperties

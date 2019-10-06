@@ -27,16 +27,16 @@ var localized String LogsButtonLabel;
 
 function CreateButtons()
 {
-	btnLogs      = CreateNavButton(winNavButtons, LogsButtonLabel);
-	btnImages    = CreateNavButton(winNavButtons, ImagesButtonLabel);
-	btnCons      = CreateNavButton(winNavButtons, ConsButtonLabel);
-	btnGoals     = CreateNavButton(winNavButtons, GoalsButtonLabel);
-	btnSkills    = CreateNavButton(winNavButtons, SkillsButtonLabel);
-	btnAugs      = CreateNavButton(winNavButtons, AugsButtonLabel);
-	btnHealth    = CreateNavButton(winNavButtons, HealthButtonLabel);
-	btnInventory = CreateNavButton(winNavButtons, InventoryButtonLabel);
+    btnLogs      = CreateNavButton(winNavButtons, LogsButtonLabel);
+    btnImages    = CreateNavButton(winNavButtons, ImagesButtonLabel);
+    btnCons      = CreateNavButton(winNavButtons, ConsButtonLabel);
+    btnGoals     = CreateNavButton(winNavButtons, GoalsButtonLabel);
+    btnSkills    = CreateNavButton(winNavButtons, SkillsButtonLabel);
+    btnAugs      = CreateNavButton(winNavButtons, AugsButtonLabel);
+    btnHealth    = CreateNavButton(winNavButtons, HealthButtonLabel);
+    btnInventory = CreateNavButton(winNavButtons, InventoryButtonLabel);
 
-	Super.CreateButtons();
+    Super.CreateButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -45,60 +45,60 @@ function CreateButtons()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
-	local Class<PersonaScreenBaseWindow> winClass;
+    local bool bHandled;
+    local Class<PersonaScreenBaseWindow> winClass;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch(buttonPressed)
-	{
-		case btnInventory:
-			winClass = Class'PersonaScreenInventory';
-			break;
+    switch(buttonPressed)
+    {
+        case btnInventory:
+            winClass = Class'PersonaScreenInventory';
+            break;
 
-		case btnHealth:
-			winClass = Class'PersonaScreenHealth';
-			break;
+        case btnHealth:
+            winClass = Class'PersonaScreenHealth';
+            break;
 
-		case btnAugs:
-			winClass = Class'PersonaScreenAugmentations';
-			break;
+        case btnAugs:
+            winClass = Class'PersonaScreenAugmentations';
+            break;
 
-		case btnSkills:
-			winClass = Class'PersonaScreenSkills';
-			break;
+        case btnSkills:
+            winClass = Class'PersonaScreenSkills';
+            break;
 
-		case btnGoals:
-			winClass = Class'PersonaScreenGoals';
-			break;
+        case btnGoals:
+            winClass = Class'PersonaScreenGoals';
+            break;
 
-		case btnCons:
-			winClass = Class'PersonaScreenConversations';
-			break;
+        case btnCons:
+            winClass = Class'PersonaScreenConversations';
+            break;
 
-		case btnImages:
-			winClass = Class'PersonaScreenImages';
-			break;
+        case btnImages:
+            winClass = Class'PersonaScreenImages';
+            break;
 
-		case btnLogs:
-			winClass = Class'PersonaScreenLogs';
-			break;
+        case btnLogs:
+            winClass = Class'PersonaScreenLogs';
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-	{
-		PersonaScreenBaseWindow(GetParent()).SaveSettings();
-		root.InvokeUIScreen(winClass);
-		return bHandled;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
+    if (bHandled)
+    {
+        PersonaScreenBaseWindow(GetParent()).SaveSettings();
+        root.InvokeUIScreen(winClass);
+        return bHandled;
+    }
+    else
+    {
+        return Super.ButtonActivated(buttonPressed);
+    }
 }
 
 // ----------------------------------------------------------------------

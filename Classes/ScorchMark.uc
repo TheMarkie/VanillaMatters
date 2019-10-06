@@ -5,10 +5,10 @@ class ScorchMark extends DeusExDecal;
 
 function BeginPlay()
 {
-	if (FRand() < 0.5)
-		Texture = Texture'FlatFXTex39';
+    if (FRand() < 0.5)
+        Texture = Texture'FlatFXTex39';
 
-	Super.BeginPlay();
+    Super.BeginPlay();
 }
 
 defaultproperties

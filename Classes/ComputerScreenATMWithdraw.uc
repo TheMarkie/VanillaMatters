@@ -12,9 +12,9 @@ var MenuUIActionButtonWindow btnClose;
 var MenuUIEditWindow         editBalance;
 var MenuUIEditWindow         editWithdraw;
 
-var ATM atmOwner;				// what ATM owns this window?
+var ATM atmOwner;               // what ATM owns this window?
 var float balanceModifier;
-var float disabledDelay;		// Amount of time before ATM disabled when hacking
+var float disabledDelay;        // Amount of time before ATM disabled when hacking
 
 var localized String ButtonLabelWithdraw;
 var localized String ButtonLabelClose;
@@ -33,23 +33,23 @@ var localized String HackedText;
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnWithdraw = winButtonBar.AddButton(ButtonLabelWithdraw, HALIGN_Right);
-	btnClose    = winButtonBar.AddButton(ButtonLabelClose,  HALIGN_Right);
+    btnWithdraw = winButtonBar.AddButton(ButtonLabelWithdraw, HALIGN_Right);
+    btnClose    = winButtonBar.AddButton(ButtonLabelClose,  HALIGN_Right);
 
-	CreateMenuLabel(20, 91, BalanceLabel, winClient);
-	CreateMenuLabel(20, 121, WithdrawAmountLabel, winClient);
+    CreateMenuLabel(20, 91, BalanceLabel, winClient);
+    CreateMenuLabel(20, 121, WithdrawAmountLabel, winClient);
 
-	editBalance  = CreateMenuEditWindow(231, 89, 143, 10, winClient);
-	editBalance.SetSensitivity(False);	// cannot edit balance!!
-	editWithdraw = CreateMenuEditWindow(231, 119, 143, 10, winClient);
+    editBalance  = CreateMenuEditWindow(231, 89, 143, 10, winClient);
+    editBalance.SetSensitivity(False);  // cannot edit balance!!
+    editWithdraw = CreateMenuEditWindow(231, 119, 143, 10, winClient);
 
-	CreateInstructionsWindow();
-	CreateInfoWindow();
+    CreateInstructionsWindow();
+    CreateInfoWindow();
 
-	winTitle.SetTitle(Title);
-	winStatus.SetText(StatusText);
+    winTitle.SetTitle(Title);
+    winStatus.SetText(StatusText);
 }
 
 // ----------------------------------------------------------------------
@@ -58,15 +58,15 @@ function CreateControls()
 
 function Tick(float deltaTime)
 {
-	disabledDelay -= deltaTime;
+    disabledDelay -= deltaTime;
 
-	if (disabledDelay <= 0.0)
-	{
-		bTickEnabled = False;
+    if (disabledDelay <= 0.0)
+    {
+        bTickEnabled = False;
 
-		// Go to the ATM Disabled screen
-		CloseScreen("ATMDISABLED");
-	}
+        // Go to the ATM Disabled screen
+        CloseScreen("ATMDISABLED");
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -75,12 +75,12 @@ function Tick(float deltaTime)
 
 function CreateInstructionsWindow()
 {
-	winInstructions = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
+    winInstructions = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winInstructions.SetPos(8, 10);
-	winInstructions.SetSize(381, 50);
-	winInstructions.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winInstructions.SetTextMargins(0, 0);
+    winInstructions.SetPos(8, 10);
+    winInstructions.SetSize(381, 50);
+    winInstructions.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winInstructions.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -89,12 +89,12 @@ function CreateInstructionsWindow()
 
 function CreateInfoWindow()
 {
-	winInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
+    winInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winInfo.SetPos(8, 152);
-	winInfo.SetSize(385, 25);
-	winInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winInfo.SetTextMargins(0, 0);
+    winInfo.SetPos(8, 152);
+    winInfo.SetSize(385, 25);
+    winInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winInfo.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -103,29 +103,29 @@ function CreateInfoWindow()
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local String test;
+    local String test;
 
-	Super.SetCompOwner(newCompOwner);
-	atmowner = ATM(compOwner);
+    Super.SetCompOwner(newCompOwner);
+    atmowner = ATM(compOwner);
 
-	balanceModifier = winTerm.GetSkillLevel() * 0.5;
-	UpdateBalance();
+    balanceModifier = winTerm.GetSkillLevel() * 0.5;
+    UpdateBalance();
 
-	if (winTerm.bHacked)
-	{
-		// Once hacked, an ATM can't be returned to
-		atmOwner.bSuckedDryByHack = True;
-		test = Sprintf(InstructionText, HackedText);
-	}
-	else
-	{
-		test = Sprintf(InstructionText, atmOwner.GetAccountNumber(winTerm.GetUserIndex()));
-	}
+    if (winTerm.bHacked)
+    {
+        // Once hacked, an ATM can't be returned to
+        atmOwner.bSuckedDryByHack = True;
+        test = Sprintf(InstructionText, HackedText);
+    }
+    else
+    {
+        test = Sprintf(InstructionText, atmOwner.GetAccountNumber(winTerm.GetUserIndex()));
+    }
 
-	winInstructions.SetText(test);
+    winInstructions.SetText(test);
 
-	EnableButtons();
-	SetFocusWindow(editWithdraw);
+    EnableButtons();
+    SetFocusWindow(editWithdraw);
 }
 
 // ----------------------------------------------------------------------
@@ -134,10 +134,10 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function UpdateBalance()
 {
-	if (winTerm.bHacked)
-		editBalance.SetText(String(atmOwner.GetBalance(-1, balanceModifier)));
-	else
-		editBalance.SetText(String(atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier)));
+    if (winTerm.bHacked)
+        editBalance.SetText(String(atmOwner.GetBalance(-1, balanceModifier)));
+    else
+        editBalance.SetText(String(atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier)));
 }
 
 // ----------------------------------------------------------------------
@@ -146,29 +146,29 @@ function UpdateBalance()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnWithdraw:
-			WithdrawCredits();
-			break;
+    switch( buttonPressed )
+    {
+        case btnWithdraw:
+            WithdrawCredits();
+            break;
 
-		case btnClose:
-			CloseScreen("LOGOUT");
-			break;
+        case btnClose:
+            CloseScreen("LOGOUT");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -177,7 +177,7 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool EditActivated(window edit, bool bModified)
 {
-	WithdrawCredits();
+    WithdrawCredits();
 }
 
 // ----------------------------------------------------------------------
@@ -186,69 +186,69 @@ event bool EditActivated(window edit, bool bModified)
 
 function WithdrawCredits()
 {
-	local int numCredits;
-	local int balance;
+    local int numCredits;
+    local int balance;
 
-	numCredits = Int(editWithdraw.GetText());
+    numCredits = Int(editWithdraw.GetText());
 
-	// withdrawal
-	if (numCredits > 0)
-	{
-		if (winTerm.bHacked)
-			balance = atmOwner.GetBalance(-1, balanceModifier);
-		else
-			balance = atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier);
+    // withdrawal
+    if (numCredits > 0)
+    {
+        if (winTerm.bHacked)
+            balance = atmOwner.GetBalance(-1, balanceModifier);
+        else
+            balance = atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier);
 
-		if (balance >= numCredits)
-		{
-			if (winTerm.bHacked)
-				atmOwner.ModBalance(-1, numCredits, True);
-			else
-				atmOwner.ModBalance(winTerm.GetUserIndex(), numCredits, True);
+        if (balance >= numCredits)
+        {
+            if (winTerm.bHacked)
+                atmOwner.ModBalance(-1, numCredits, True);
+            else
+                atmOwner.ModBalance(winTerm.GetUserIndex(), numCredits, True);
 
-			player.Credits += numCredits;
-			winInfo.SetText(String(numCredits) @ CreditsWithdrawnLabel);
+            player.Credits += numCredits;
+            winInfo.SetText(String(numCredits) @ CreditsWithdrawnLabel);
 
-			// If the user withdrew *ALL* the money and this ATM machine 
-			// was hacked, then set a timer which will cause the 
-			// ATM Disabled screen to come up after a few seconds.
+            // If the user withdrew *ALL* the money and this ATM machine
+            // was hacked, then set a timer which will cause the
+            // ATM Disabled screen to come up after a few seconds.
 
-			if ((winTerm.bHacked) && (balance - numCredits <= 0))
-			{
-				bTickEnabled = True;
-				atmOwner.bSuckedDryByHack = True;
-			}
+            if ((winTerm.bHacked) && (balance - numCredits <= 0))
+            {
+                bTickEnabled = True;
+                atmOwner.bSuckedDryByHack = True;
+            }
 
-			// Vanilla Matters: Trigger the drain depending on how much the player took.
-			if ( winTerm.bHacked ) {
-				winTerm.winHack.AddTimeCost( FMin( numCredits / 50.0, winTerm.winHack.GetSaveDetectionTime() ) );
-			}
-		}
-		else
-		{
-			winInfo.SetText(InsufficientCreditsLabel);
-		}
-	}
-	else
-	{
-		winInfo.SetText(InvalidAmountLabel);
-	}
+            // Vanilla Matters: Trigger the drain depending on how much the player took.
+            if ( winTerm.bHacked ) {
+                winTerm.winHack.AddTimeCost( FMin( numCredits / 50.0, winTerm.winHack.GetSaveDetectionTime() ) );
+            }
+        }
+        else
+        {
+            winInfo.SetText(InsufficientCreditsLabel);
+        }
+    }
+    else
+    {
+        winInfo.SetText(InvalidAmountLabel);
+    }
 
-	// Blank withdraw box and reset focus to that window
-	editWithdraw.SetText("");
-	UpdateBalance();
-	SetFocusWindow(editWithdraw);
+    // Blank withdraw box and reset focus to that window
+    editWithdraw.SetText("");
+    UpdateBalance();
+    SetFocusWindow(editWithdraw);
 }
 
 // ----------------------------------------------------------------------
-// TextChanged() 
+// TextChanged()
 // ----------------------------------------------------------------------
 
 event bool TextChanged(window edit, bool bModified)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -257,17 +257,17 @@ event bool TextChanged(window edit, bool bModified)
 
 function EnableButtons()
 {
-	local float balance;
+    local float balance;
 
-	// Only allow withdraw if there's money to be withdrawn and the user has typed
-	// something into the editWithdraw field
+    // Only allow withdraw if there's money to be withdrawn and the user has typed
+    // something into the editWithdraw field
 
-	if (winTerm.bHacked)
-		balance = atmOwner.GetBalance(-1, balanceModifier);
-	else
-		balance = atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier);
+    if (winTerm.bHacked)
+        balance = atmOwner.GetBalance(-1, balanceModifier);
+    else
+        balance = atmOwner.GetBalance(winTerm.GetUserIndex(), balanceModifier);
 
-	btnWithdraw.SetSensitivity((editWithdraw.GetText() != "") && (balance > 0));
+    btnWithdraw.SetSensitivity((editWithdraw.GetText() != "") && (balance > 0));
 }
 
 // ----------------------------------------------------------------------

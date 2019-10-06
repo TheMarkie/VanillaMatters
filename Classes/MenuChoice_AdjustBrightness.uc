@@ -10,9 +10,9 @@ class MenuChoice_AdjustBrightness extends MenuUIChoiceSlider;
 
 function LoadSetting()
 {
-	saveValue = float(player.ConsoleCommand("get" @ configSetting));
+    saveValue = float(player.ConsoleCommand("get" @ configSetting));
 
-	Super.LoadSetting();
+    Super.LoadSetting();
 }
 
 // ----------------------------------------------------------------------
@@ -21,8 +21,8 @@ function LoadSetting()
 
 function CancelSetting()
 {
-	player.ConsoleCommand("set" @ configSetting @ saveValue);
-	player.ConsoleCommand("FLUSH");
+    player.ConsoleCommand("set" @ configSetting @ saveValue);
+    player.ConsoleCommand("FLUSH");
 }
 
 // ----------------------------------------------------------------------
@@ -31,9 +31,9 @@ function CancelSetting()
 
 function ResetToDefault()
 {
-	Super.ResetToDefault();
+    Super.ResetToDefault();
 
-	player.ConsoleCommand("FLUSH");
+    player.ConsoleCommand("FLUSH");
 }
 
 // ----------------------------------------------------------------------
@@ -44,16 +44,16 @@ function ResetToDefault()
 event bool ScalePositionChanged(Window scale, int newTickPosition,
                                 float newValue, bool bFinal)
 {
-	// Don't do anything while initializing as we get several 
-	// ScalePositionChanged() events before LoadSetting() is called.
+    // Don't do anything while initializing as we get several
+    // ScalePositionChanged() events before LoadSetting() is called.
 
-	if (bInitializing)
-		return False;
+    if (bInitializing)
+        return False;
 
-	player.ConsoleCommand("set" @ configSetting @ GetValue());
-	player.ConsoleCommand("FLUSH");
+    player.ConsoleCommand("set" @ configSetting @ GetValue());
+    player.ConsoleCommand("FLUSH");
 
-	return false;
+    return false;
 }
 
 // ----------------------------------------------------------------------

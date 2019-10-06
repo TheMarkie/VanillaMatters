@@ -28,11 +28,11 @@ var localized string TypeButtonLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	PersonaNavBarWindow(winNavBar).btnCons.SetSensitivity(False);
+    PersonaNavBarWindow(winNavBar).btnCons.SetSensitivity(False);
 
-	PopulateConversations();
+    PopulateConversations();
 }
 
 // ----------------------------------------------------------------------
@@ -41,40 +41,40 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateTitleWindow(9, 5, ConversationsTitleText);
+    CreateTitleWindow(9, 5, ConversationsTitleText);
 
-	CreateConversationWindow();
-	CreateHistoryListWindow();
-	CreateButtons();
+    CreateConversationWindow();
+    CreateHistoryListWindow();
+    CreateButtons();
 }
 
 // ----------------------------------------------------------------------
 // CreateHistoryListWindow()
 //
-// Creates the upper window with the conversations 
+// Creates the upper window with the conversations
 // ----------------------------------------------------------------------
 
 function CreateHistoryListWindow()
 {
-	sortColumn   = 0;
-	bSortReverse = False;
+    sortColumn   = 0;
+    bSortReverse = False;
 
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(16, 38);
-	winScroll.SetSize(395, 133);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(16, 38);
+    winScroll.SetSize(395, 133);
 
-	lstCons = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
-	lstCons.EnableMultiSelect(False);
-	lstCons.SetNumColumns(3);
-	lstCons.SetSortColumn(sortColumn, bSortReverse);
-	lstCons.EnableAutoSort(False);
-	lstCons.SetColumnWidth(0, 161);
-	lstCons.SetColumnWidth(1, 194);
-	lstCons.SetColumnWidth(2, 40);
-	lstCons.SetColumnFont(2, Font'FontHUDWingDings');
-	lstCons.SetColumnAlignment(2, HALIGN_Center);
+    lstCons = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
+    lstCons.EnableMultiSelect(False);
+    lstCons.SetNumColumns(3);
+    lstCons.SetSortColumn(sortColumn, bSortReverse);
+    lstCons.EnableAutoSort(False);
+    lstCons.SetColumnWidth(0, 161);
+    lstCons.SetColumnWidth(1, 194);
+    lstCons.SetColumnWidth(2, 40);
+    lstCons.SetColumnFont(2, Font'FontHUDWingDings');
+    lstCons.SetColumnAlignment(2, HALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -83,25 +83,25 @@ function CreateHistoryListWindow()
 
 function PopulateConversations()
 {
-	local ConHistory history;
-	local int rowIndex;
+    local ConHistory history;
+    local int rowIndex;
 
-	// Now loop through all the conversations and add them to the list
-	history = player.ConHistory;
+    // Now loop through all the conversations and add them to the list
+    history = player.ConHistory;
 
-	while( history != None )
-	{
-		rowIndex = lstCons.AddRow( history.conOwnerName $ ";" $ history.strLocation );
+    while( history != None )
+    {
+        rowIndex = lstCons.AddRow( history.conOwnerName $ ";" $ history.strLocation );
 
-		if (history.bInfoLink)
-			lstCons.SetField(rowIndex, 2, "B");
-		else
-			lstCons.SetField(rowIndex, 2, "A");
+        if (history.bInfoLink)
+            lstCons.SetField(rowIndex, 2, "B");
+        else
+            lstCons.SetField(rowIndex, 2, "A");
 
-		lstCons.SetRowClientObject(rowIndex, history);
+        lstCons.SetRowClientObject(rowIndex, history);
 
-		history = history.next;
-	}
+        history = history.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -112,7 +112,7 @@ function PopulateConversations()
 
 function CreateConversationWindow()
 {
-	conWindow = CreateScrollTileWindow(16, 190, 394, 204);
+    conWindow = CreateScrollTileWindow(16, 190, 394, 204);
 }
 
 // ----------------------------------------------------------------------
@@ -121,16 +121,16 @@ function CreateConversationWindow()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winButtonBar;
+    local PersonaButtonBarWindow winButtonBar;
 
-	winButtonBar = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winButtonBar.SetPos(14, 19);
-	winButtonBar.SetWidth(402);
-	winButtonBar.FillAllSpace(False);
+    winButtonBar = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winButtonBar.SetPos(14, 19);
+    winButtonBar.SetWidth(402);
+    winButtonBar.FillAllSpace(False);
 
-	btnType     = CreateBarButton(winButtonBar,  46, TypeButtonLabel);
-	btnLocation = CreateBarButton(winButtonBar, 194, LocationButtonLabel);
-	btnActor    = CreateBarButton(winButtonBar, 162, ActorButtonLabel);
+    btnType     = CreateBarButton(winButtonBar,  46, TypeButtonLabel);
+    btnLocation = CreateBarButton(winButtonBar, 194, LocationButtonLabel);
+    btnActor    = CreateBarButton(winButtonBar, 162, ActorButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -138,18 +138,18 @@ function CreateButtons()
 // ----------------------------------------------------------------------
 
 function PersonaActionButtonWindow CreateBarButton(
-	Window winParent, 
-	int buttonWidth, 
-	string buttonLabel)
+    Window winParent,
+    int buttonWidth,
+    string buttonLabel)
 {
-	local PersonaButtonBarWindow winButtonBar;
-	local PersonaActionButtonWindow newButton;
+    local PersonaButtonBarWindow winButtonBar;
+    local PersonaActionButtonWindow newButton;
 
-	newButton = PersonaActionButtonWindow(winParent.NewChild(Class'PersonaActionButtonWindow'));
-	newButton.SetWidth(buttonWidth);
-	newButton.SetButtonText(buttonLabel);
+    newButton = PersonaActionButtonWindow(winParent.NewChild(Class'PersonaActionButtonWindow'));
+    newButton.SetWidth(buttonWidth);
+    newButton.SetButtonText(buttonLabel);
 
-	return newButton;
+    return newButton;
 }
 
 // ----------------------------------------------------------------------
@@ -161,12 +161,12 @@ function PersonaActionButtonWindow CreateBarButton(
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	local ConHistory history;
+    local ConHistory history;
 
-	history = ConHistory(ListWindow(list).GetRowClientObject(focusRowId));
-	DisplayHistory(history);
+    history = ConHistory(ListWindow(list).GetRowClientObject(focusRowId));
+    DisplayHistory(history);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -177,40 +177,40 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 function DisplayHistory(ConHistory history)
 {
-	local ConHistoryEvent event;
-	local PersonaHeaderTextWindow txtName;
-	local PersonaNormalTextWindow txtSpeech;
+    local ConHistoryEvent event;
+    local PersonaHeaderTextWindow txtName;
+    local PersonaNormalTextWindow txtSpeech;
 
-	// First clear out any existing windows in the tile window
-	conWindow.DestroyAllChildren();
+    // First clear out any existing windows in the tile window
+    conWindow.DestroyAllChildren();
 
-	// Now loop through all the events, creating a TextWindow
-	// for each.  
+    // Now loop through all the events, creating a TextWindow
+    // for each.
 
-	event = history.firstEvent;
-	while(event != None)
-	{
-		// First create a window for the name
-		txtName = PersonaHeaderTextWindow(conWindow.NewChild(Class'PersonaHeaderTextWindow'));
-		txtName.SetTextMargins(5, 2);
-		txtName.SetText(event.conSpeaker);
+    event = history.firstEvent;
+    while(event != None)
+    {
+        // First create a window for the name
+        txtName = PersonaHeaderTextWindow(conWindow.NewChild(Class'PersonaHeaderTextWindow'));
+        txtName.SetTextMargins(5, 2);
+        txtName.SetText(event.conSpeaker);
 
-		// Now create a window for the text
-		txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
-		txtSpeech.SetTextMargins(10, 2);
-		txtSpeech.SetText(event.speech);
+        // Now create a window for the text
+        txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
+        txtSpeech.SetTextMargins(10, 2);
+        txtSpeech.SetText(event.speech);
 
-		// If there's another event, create an empty window for spacing
-		if (event.next != None)
-		{
-			txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
-			txtSpeech.SetSize(10, 5);
-			txtSpeech.SetSensitivity(False);		// Can't be selected
-		}
+        // If there's another event, create an empty window for spacing
+        if (event.next != None)
+        {
+            txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
+            txtSpeech.SetSize(10, 5);
+            txtSpeech.SetSensitivity(False);        // Can't be selected
+        }
 
-		// Continue on to the next event
-		event = event.next;
-	}
+        // Continue on to the next event
+        event = event.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -219,33 +219,33 @@ function DisplayHistory(ConHistory history)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (Super.ButtonActivated(buttonPressed))
-		return True;
+    if (Super.ButtonActivated(buttonPressed))
+        return True;
 
-	bHandled   = True;
+    bHandled   = True;
 
-	switch(buttonPressed)
-	{
-		case btnActor:
-			SetSortColumn(0);
-			break;
+    switch(buttonPressed)
+    {
+        case btnActor:
+            SetSortColumn(0);
+            break;
 
-		case btnLocation:
-			SetSortColumn(1);
-			break;
+        case btnLocation:
+            SetSortColumn(1);
+            break;
 
-		case btnType:
-			SetSortColumn(2);
-			break;
+        case btnType:
+            SetSortColumn(2);
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -254,19 +254,19 @@ function bool ButtonActivated( Window buttonPressed )
 
 function SetSortColumn(int newSortColumn)
 {
-	if (newSortColumn == sortColumn)
-		bSortReverse = !bSortReverse;
-	else
-		bSortReverse = False;
+    if (newSortColumn == sortColumn)
+        bSortReverse = !bSortReverse;
+    else
+        bSortReverse = False;
 
-	sortColumn = newSortColumn;
+    sortColumn = newSortColumn;
 
-	lstCons.ResetSortColumns(False);
-	lstCons.SetSortColumn(newSortColumn, bSortReverse);
+    lstCons.ResetSortColumns(False);
+    lstCons.SetSortColumn(newSortColumn, bSortReverse);
 
-	// Update the button
+    // Update the button
 
-	lstCons.Sort();
+    lstCons.Sort();
 }
 
 // ----------------------------------------------------------------------

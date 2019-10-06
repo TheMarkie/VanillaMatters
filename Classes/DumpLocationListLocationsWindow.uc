@@ -3,12 +3,12 @@
 //=============================================================================
 class DumpLocationListLocationsWindow expands DumpLocationBaseWindow;
 
-// Windows 
+// Windows
 var ToolButtonWindow btnView;
 var ToolButtonWindow btnDetails;
 var ToolButtonWindow btnDelete;
 var ToolButtonWindow btnFiles;
-var ToolButtonWindow btnCancel; 
+var ToolButtonWindow btnCancel;
 var ToolListWindow   lstLocs;
 
 // Other stuff
@@ -22,11 +22,11 @@ var String dumpFile;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Center this window	
-	SetSize(520, 430);
-	SetTitle("Dump File Locations");
+    // Center this window
+    SetSize(520, 430);
+    SetTitle("Dump File Locations");
 }
 
 // ----------------------------------------------------------------------
@@ -35,14 +35,14 @@ event InitWindow()
 
 function CreateControls()
 {
-	// Buttons
-	btnView    = CreateToolButton(430, 287, "|&View");
-	btnDetails = CreateToolButton(430, 312, "|&Details");
-	btnDelete  = CreateToolButton(430, 337, "De|&lete");
-	btnFiles   = CreateToolButton(430, 362, "|&Files");
-	btnCancel  = CreateToolButton(430, 387, "|&Close");
+    // Buttons
+    btnView    = CreateToolButton(430, 287, "|&View");
+    btnDetails = CreateToolButton(430, 312, "|&Details");
+    btnDelete  = CreateToolButton(430, 337, "De|&lete");
+    btnFiles   = CreateToolButton(430, 362, "|&Files");
+    btnCancel  = CreateToolButton(430, 387, "|&Close");
 
-	CreateLocationsList();
+    CreateLocationsList();
 }
 
 // ----------------------------------------------------------------------
@@ -51,13 +51,13 @@ function CreateControls()
 
 function CreateLocationsList()
 {
-	// Now create the List Window
-	lstLocs = CreateToolList(15, 38, 405, 372);
-	lstLocs.SetColumns(4);
-	lstLocs.EnableMultiSelect(False);
-	lstLocs.EnableAutoExpandColumns(True);
+    // Now create the List Window
+    lstLocs = CreateToolList(15, 38, 405, 372);
+    lstLocs.SetColumns(4);
+    lstLocs.EnableMultiSelect(False);
+    lstLocs.EnableAutoExpandColumns(True);
 
-	lstLocs.HideColumn(3);
+    lstLocs.HideColumn(3);
 }
 
 // ----------------------------------------------------------------------
@@ -66,42 +66,42 @@ function CreateLocationsList()
 
 function PopulateLocationsList()
 {
-	local int locIndex;
-	local Bool locationFound;
+    local int locIndex;
+    local Bool locationFound;
 
-	if (dumpFile == "")
-		return;
+    if (dumpFile == "")
+        return;
 
-	lstLocs.DeleteAllRows();
+    lstLocs.DeleteAllRows();
 
-	if (dumpLoc.OpenDumpFile(dumpFile) == False)
-	{
-		DisplayOpenFileError();
-		return;
-	}
+    if (dumpLoc.OpenDumpFile(dumpFile) == False)
+    {
+        DisplayOpenFileError();
+        return;
+    }
 
-	// Loop through all the Locations in this file
+    // Loop through all the Locations in this file
 
-	locationFound = dumpLoc.GetFirstDumpFileLocation();
+    locationFound = dumpLoc.GetFirstDumpFileLocation();
 
-	while(locationFound)
-	{
-		locIndex = dumpLoc.GetDumpLocationIndex();
+    while(locationFound)
+    {
+        locIndex = dumpLoc.GetDumpLocationIndex();
 
-		lstLocs.AddRow( 
-			String(dumpLoc.currentDumpLocation.LocationID) $ ";" $ 
-			dumpLoc.currentDumpLocation.MapName $ ";" $
-			dumpLoc.currentDumpLocation.Title $ ";" $
-			dumpLoc.currentDumpLocation.LocationID);
+        lstLocs.AddRow(
+            String(dumpLoc.currentDumpLocation.LocationID) $ ";" $
+            dumpLoc.currentDumpLocation.MapName $ ";" $
+            dumpLoc.currentDumpLocation.Title $ ";" $
+            dumpLoc.currentDumpLocation.LocationID);
 
-		locIndex++;
-		locationFound = dumpLoc.GetNextDumpFileLocation();
-	}
+        locIndex++;
+        locationFound = dumpLoc.GetNextDumpFileLocation();
+    }
 
-	// Sort the maps by name
-	lstLocs.Sort();
+    // Sort the maps by name
+    lstLocs.Sort();
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -110,11 +110,11 @@ function PopulateLocationsList()
 
 function SetDumpFile(String newDumpFile)
 {
-	dumpFile = newDumpFile;
+    dumpFile = newDumpFile;
 
-	// Attempt to open the file
+    // Attempt to open the file
 
-	PopulateLocationsList();
+    PopulateLocationsList();
 }
 
 // ----------------------------------------------------------------------
@@ -123,42 +123,42 @@ function SetDumpFile(String newDumpFile)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnView:
-			ViewDumpLocation();
-			break;
+    switch( buttonPressed )
+    {
+        case btnView:
+            ViewDumpLocation();
+            break;
 
-		case btnDetails:
-			ViewLocationDetails();
-			break;
+        case btnDetails:
+            ViewLocationDetails();
+            break;
 
-		case btnDelete:
-			DeleteDumpLocation();
-			break;
+        case btnDelete:
+            DeleteDumpLocation();
+            break;
 
-		case btnFiles:
-			root.PopWindow();
-			root.PushWindow(Class'DumpLocationListWindow', True);
-			break;
+        case btnFiles:
+            root.PopWindow();
+            root.PushWindow(Class'DumpLocationListWindow', True);
+            break;
 
-		case btnCancel:
-			root.PopWindow();
-			break;
+        case btnCancel:
+            root.PopWindow();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled ) 
-		bHandled = Super.ButtonActivated( buttonPressed );
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated( buttonPressed );
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -169,30 +169,30 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = True;
+    local bool bKeyHandled;
+    bKeyHandled = True;
 
-	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
-		return False;
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
+        return False;
 
-	switch( key ) 
-	{	
-		case IK_Delete:
-			DeleteDumpLocation();
-			break;
+    switch( key )
+    {
+        case IK_Delete:
+            DeleteDumpLocation();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	if ( !bKeyHandled )
-		return Super.VirtualKeyPressed(key, bRepeat);
-	else
-		return bKeyHandled;
+    if ( !bKeyHandled )
+        return Super.VirtualKeyPressed(key, bRepeat);
+    else
+        return bKeyHandled;
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the buttons
 // appropriately
@@ -200,7 +200,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -209,8 +209,8 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	ViewDumpLocation();
-	return TRUE;
+    ViewDumpLocation();
+    return TRUE;
 }
 
 // ----------------------------------------------------------------------
@@ -222,9 +222,9 @@ event bool ListRowActivated(window list, int rowId)
 
 function EnableButtons()
 {
-	btnView.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
-	btnDetails.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
-	btnDelete.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
+    btnView.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
+    btnDetails.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
+    btnDelete.SetSensitivity(lstLocs.GetNumSelectedRows() > 0);
 }
 
 // ----------------------------------------------------------------------
@@ -233,39 +233,39 @@ function EnableButtons()
 
 function ViewDumpLocation()
 {
-	local String mapName;
-	local Int locationID;
-	local DeusExPlayer localPlayer;
-	local DeusExLevelInfo dxInfo;
+    local String mapName;
+    local Int locationID;
+    local DeusExPlayer localPlayer;
+    local DeusExLevelInfo dxInfo;
 
-	locationID = Int(lstLocs.GetField(lstLocs.GetSelectedRow(), 3));
+    locationID = Int(lstLocs.GetField(lstLocs.GetSelectedRow(), 3));
 
-	if (dumpLoc.SelectDumpFileLocation(locationID) == False)
-		return;
+    if (dumpLoc.SelectDumpFileLocation(locationID) == False)
+        return;
 
-	dumpLoc.SaveLocation();
-	mapName	= dumpLoc.currentDumpLocation.MapName;
-	localPlayer = player;
+    dumpLoc.SaveLocation();
+    mapName = dumpLoc.currentDumpLocation.MapName;
+    localPlayer = player;
 
-	foreach player.AllActors(class'DeusExLevelInfo', dxInfo)
-		break;
+    foreach player.AllActors(class'DeusExLevelInfo', dxInfo)
+        break;
 
-	// Make sure the map isn't already loaded to save time
-	if ((dxInfo != None) && (dxInfo.MapName == mapName))
-	{
-		dumpLoc.LoadLocation();
-		player.Ghost();
-		player.SetLocation(dumpLoc.currentDumpLocation.Location);
-		player.SetRotation(dumpLoc.currentDumpLocation.ViewRotation);
-		player.ViewRotation = dumpLoc.currentDumpLocation.ViewRotation;
-		player.ClientSetRotation(dumpLoc.currentDumpLocation.ViewRotation);
-		root.ClearWindowStack();
-	}
-	else
-	{
-		root.ClearWindowStack();
-		player.ConsoleCommand("Open" @ mapName $ "?loadonly");	
-	}
+    // Make sure the map isn't already loaded to save time
+    if ((dxInfo != None) && (dxInfo.MapName == mapName))
+    {
+        dumpLoc.LoadLocation();
+        player.Ghost();
+        player.SetLocation(dumpLoc.currentDumpLocation.Location);
+        player.SetRotation(dumpLoc.currentDumpLocation.ViewRotation);
+        player.ViewRotation = dumpLoc.currentDumpLocation.ViewRotation;
+        player.ClientSetRotation(dumpLoc.currentDumpLocation.ViewRotation);
+        root.ClearWindowStack();
+    }
+    else
+    {
+        root.ClearWindowStack();
+        player.ConsoleCommand("Open" @ mapName $ "?loadonly");
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -274,10 +274,10 @@ function ViewDumpLocation()
 
 function ViewLocationDetails()
 {
-	local DumpLocationEditWindow winLocation;
+    local DumpLocationEditWindow winLocation;
 
-	winLocation = DumpLocationEditWindow(root.PushWindow(Class'DumpLocationEditWindow', True));
-	winLocation.SetEditMode(dumpFile, Int(lstLocs.GetField(lstLocs.GetSelectedRow(), 3)));
+    winLocation = DumpLocationEditWindow(root.PushWindow(Class'DumpLocationEditWindow', True));
+    winLocation.SetEditMode(dumpFile, Int(lstLocs.GetField(lstLocs.GetSelectedRow(), 3)));
 }
 
 // ----------------------------------------------------------------------
@@ -286,38 +286,38 @@ function ViewLocationDetails()
 
 function DeleteDumpLocation()
 {
-	local int rowID;
-	local int rowIndex;
+    local int rowID;
+    local int rowIndex;
 
-	rowID = lstLocs.GetSelectedRow();
+    rowID = lstLocs.GetSelectedRow();
 
-	// Get the row index so we can highlight it after we delete this item
-	rowIndex = lstLocs.RowIdToIndex(rowID);
+    // Get the row index so we can highlight it after we delete this item
+    rowIndex = lstLocs.RowIdToIndex(rowID);
 
-	if (rowID > 0)
-	{
-		dumpLoc.DeleteDumpFileLocation(Int(lstLocs.GetField(rowID, 3)));
+    if (rowID > 0)
+    {
+        dumpLoc.DeleteDumpFileLocation(Int(lstLocs.GetField(rowID, 3)));
 
-		// Remove the row and select the next item
-		lstLocs.DeleteRow(rowID);
-		  
-		// Attempt to highlight the next row
-		if ( lstLocs.GetNumRows() > 0 )
-		{
-			if ( rowIndex >= lstLocs.GetNumRows() )
-				rowIndex = lstLocs.GetNumRows() - 1;
-			
-			rowID = lstLocs.IndexToRowId(rowIndex);
+        // Remove the row and select the next item
+        lstLocs.DeleteRow(rowID);
 
-			lstLocs.SetRow(rowID);
+        // Attempt to highlight the next row
+        if ( lstLocs.GetNumRows() > 0 )
+        {
+            if ( rowIndex >= lstLocs.GetNumRows() )
+                rowIndex = lstLocs.GetNumRows() - 1;
 
-			EnableButtons();
-		}
-		else
-		{
-			root.PopWindow();
-		}
-	}
+            rowID = lstLocs.IndexToRowId(rowIndex);
+
+            lstLocs.SetRow(rowID);
+
+            EnableButtons();
+        }
+        else
+        {
+            root.PopWindow();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -326,10 +326,10 @@ function DeleteDumpLocation()
 
 function DisplayOpenFileError()
 {
-	root.ToolMessageBox(
-		"Error Opening File!", 
-		"An error occured attempting to open the " $ dumpFile $ ".dmp file!", 
-		1, False, Self);
+    root.ToolMessageBox(
+        "Error Opening File!",
+        "An error occured attempting to open the " $ dumpFile $ ".dmp file!",
+        1, False, Self);
 }
 
 // ----------------------------------------------------------------------
@@ -338,10 +338,10 @@ function DisplayOpenFileError()
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Nuke the msgbox
-	root.PopWindow();
-	root.PopWindow();
-	return true;
+    // Nuke the msgbox
+    root.PopWindow();
+    root.PopWindow();
+    return true;
 }
 
 // ----------------------------------------------------------------------

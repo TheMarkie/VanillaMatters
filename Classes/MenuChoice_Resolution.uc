@@ -14,15 +14,15 @@ var string CurrentRes;
 
 event InitWindow()
 {
-	// Get a pointer to the player.  Need to do this here since we 
-	// need access to player in GetScreenResolutions() before 
-	// we can call Super.InitWindow().
+    // Get a pointer to the player.  Need to do this here since we
+    // need access to player in GetScreenResolutions() before
+    // we can call Super.InitWindow().
 
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	GetScreenResolutions();
+    GetScreenResolutions();
 
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -31,24 +31,24 @@ event InitWindow()
 
 function LoadSetting()
 {
-	local int choiceIndex;
-	local int currentChoice;
+    local int choiceIndex;
+    local int currentChoice;
 
-	currentChoice = 0;
+    currentChoice = 0;
 
-	for(choiceIndex=0; choiceIndex<arrayCount(enumText); choiceIndex++)
-	{
-		if (enumText[choiceIndex] == "")	
-			break;
+    for(choiceIndex=0; choiceIndex<arrayCount(enumText); choiceIndex++)
+    {
+        if (enumText[choiceIndex] == "")
+            break;
 
-		if (enumText[choiceIndex] == CurrentRes)
-		{
-			currentChoice = choiceIndex;
-			break;
-		}
-	}
+        if (enumText[choiceIndex] == CurrentRes)
+        {
+            currentChoice = choiceIndex;
+            break;
+        }
+    }
 
-	SetValue(currentChoice);
+    SetValue(currentChoice);
 }
 
 // ----------------------------------------------------------------------
@@ -57,16 +57,16 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	local String resText;
+    local String resText;
 
-	// Only attempt to change resolutions if the resolution has 
-	// actually changed.
-	resText = enumText[GetValue()];
+    // Only attempt to change resolutions if the resolution has
+    // actually changed.
+    resText = enumText[GetValue()];
 
-	if ( resText != player.ConsoleCommand("GetCurrentRes") )
-	{
-		player.ConsoleCommand("SetRes " $ resText);
-	}
+    if ( resText != player.ConsoleCommand("GetCurrentRes") )
+    {
+        player.ConsoleCommand("SetRes " $ resText);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -75,15 +75,15 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	// Reset to the current resolution
-	LoadSetting();
+    // Reset to the current resolution
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------
 // GetScreenResolutions()
 //
 // Called when the user selects a new rendering device.  Looks
-// through the list of rendering devices and updates the 
+// through the list of rendering devices and updates the
 // MenuChoices[] array with the available resolutions.
 //
 // Does not allow resolutions under 640x480 to be selected.
@@ -91,56 +91,56 @@ function ResetToDefault()
 
 function GetScreenResolutions()
 {
-	local int p;
-	local int resX;
-	local int resWidth;
-	local int choiceCount;
-	local string ParseString;
-	local string Resolutions[16];
-	local string AvailableRes;
-	local string resString;
-	local int resNum;
+    local int p;
+    local int resX;
+    local int resWidth;
+    local int choiceCount;
+    local string ParseString;
+    local string Resolutions[16];
+    local string AvailableRes;
+    local string resString;
+    local int resNum;
 
-	CurrentRes   = player.ConsoleCommand("GetCurrentRes");
-	AvailableRes = player.ConsoleCommand("GetRes");
+    CurrentRes   = player.ConsoleCommand("GetCurrentRes");
+    AvailableRes = player.ConsoleCommand("GetRes");
 
-	// Vanilla Matters: Use a custom command specific to the VM launcher to fetch default resolutions if none is found.
-	if ( AvailableRes == "" ) {
-		AvailableRes = player.ConsoleCommand( "GetDefaultRes" );
-	}
+    // Vanilla Matters: Use a custom command specific to the VM launcher to fetch default resolutions if none is found.
+    if ( AvailableRes == "" ) {
+        AvailableRes = player.ConsoleCommand( "GetDefaultRes" );
+    }
 
-	resNum = 0;
-	choiceCount = 0;
-	ParseString = AvailableRes;
+    resNum = 0;
+    choiceCount = 0;
+    ParseString = AvailableRes;
 
-	p = InStr(ParseString, " ");
-	resString = Left(ParseString, p);
+    p = InStr(ParseString, " ");
+    resString = Left(ParseString, p);
 
-	while ( ResNum < ArrayCount(Resolutions) ) 
-	{
-		// Only support resolutions >= 640x480
-		resX = InStr(resString,"x");
-		resWidth = int(Left(resString, resX));
+    while ( ResNum < ArrayCount(Resolutions) )
+    {
+        // Only support resolutions >= 640x480
+        resX = InStr(resString,"x");
+        resWidth = int(Left(resString, resX));
 
-		if ( resWidth >= 640 )
-		{
-			enumText[choiceCount] = resString;
-			choiceCount++;
-		}
+        if ( resWidth >= 640 )
+        {
+            enumText[choiceCount] = resString;
+            choiceCount++;
+        }
 
-		if ( p == -1 ) 
-			break;
+        if ( p == -1 )
+            break;
 
-		ParseString = Right(ParseString, Len(ParseString) - p - 1);
-		p = InStr(ParseString, " ");
+        ParseString = Right(ParseString, Len(ParseString) - p - 1);
+        p = InStr(ParseString, " ");
 
-		if ( p != -1 )
-			resString = Left(ParseString, p);
-		else
-			resString = ParseString;
+        if ( p != -1 )
+            resString = Left(ParseString, p);
+        else
+            resString = ParseString;
 
-		ResNum++;
-	}
+        ResNum++;
+    }
 }
 
 // ----------------------------------------------------------------------

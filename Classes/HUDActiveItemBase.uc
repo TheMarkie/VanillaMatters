@@ -7,7 +7,7 @@ class HUDActiveItemBase extends HUDBaseWindow;
 var Color colItemIcon;
 
 var EDrawStyle iconDrawStyle;
-var int	iconWidth;
+var int iconWidth;
 var int iconHeight;
 
 var Texture icon;
@@ -19,9 +19,9 @@ var Texture texBackground;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(iconWidth, iconHeight);
+    SetSize(iconWidth, iconHeight);
 }
 
 // ----------------------------------------------------------------------
@@ -29,18 +29,18 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	Super.DrawWindow(gc);
+{
+    Super.DrawWindow(gc);
 
-	if (icon != None)
-	{
-		// Now draw the icon
-		gc.SetStyle(iconDrawStyle);
-		gc.SetTileColor(colItemIcon);
-		gc.DrawTexture(2, 2, 32, 32, 0, 0, icon);
-	}
+    if (icon != None)
+    {
+        // Now draw the icon
+        gc.SetStyle(iconDrawStyle);
+        gc.SetTileColor(colItemIcon);
+        gc.DrawTexture(2, 2, 32, 32, 0, 0, icon);
+    }
 
-	DrawHotKey(gc);
+    DrawHotKey(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -57,9 +57,9 @@ function DrawHotKey(GC gc)
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(0, 0, width, height, 0, 0, texBackground);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(0, 0, width, height, 0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ function DrawBackground(GC gc)
 
 function SetIcon(Texture newIcon)
 {
-	icon = newIcon;
+    icon = newIcon;
 }
 
 // ----------------------------------------------------------------------
@@ -77,10 +77,10 @@ function SetIcon(Texture newIcon)
 
 function SetIconMasked(bool bNewMask)
 {
-	if (bNewMask)
-		iconDrawStyle = DSTY_Masked;
-	else
-		iconDrawStyle = DSTY_Translucent;
+    if (bNewMask)
+        iconDrawStyle = DSTY_Masked;
+    else
+        iconDrawStyle = DSTY_Translucent;
 }
 
 // ----------------------------------------------------------------------

@@ -20,11 +20,11 @@ var int defaultHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetHeight(defaultHeight);
+    SetHeight(defaultHeight);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -33,15 +33,15 @@ event InitWindow()
 
 function CreateControls()
 {
-	winIcon = PersonaItemDetailButton(NewChild(Class'PersonaItemDetailButton'));
-	winIcon.SetPos(0, 0);
+    winIcon = PersonaItemDetailButton(NewChild(Class'PersonaItemDetailButton'));
+    winIcon.SetPos(0, 0);
 
-	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
 
-	winText = PersonaNormalTextWindow(winScroll.ClipWindow.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetTextMargins(2, 2);
-	winText.SetWordWrap(True);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText = PersonaNormalTextWindow(winScroll.ClipWindow.NewChild(Class'PersonaNormalTextWindow'));
+    winText.SetTextMargins(2, 2);
+    winText.SetWordWrap(True);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ function CreateControls()
 
 function PersonaItemDetailButton GetItemButton()
 {
-	return winIcon;
+    return winIcon;
 }
 
 // ----------------------------------------------------------------------
@@ -59,8 +59,8 @@ function PersonaItemDetailButton GetItemButton()
 
 function SetIcon(Texture newIcon)
 {
-	if (winIcon != None)
-		winIcon.SetIcon(newIcon);
+    if (winIcon != None)
+        winIcon.SetIcon(newIcon);
 }
 
 // ----------------------------------------------------------------------
@@ -69,11 +69,11 @@ function SetIcon(Texture newIcon)
 
 function SetIconSize(int newWidth, int newHeight)
 {
-	if (winIcon != None)
-	{
-		winIcon.iconPosWidth  = newWidth;
-		winIcon.iconPosHeight = newHeight;
-	}
+    if (winIcon != None)
+    {
+        winIcon.iconPosWidth  = newWidth;
+        winIcon.iconPosHeight = newHeight;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -82,11 +82,11 @@ function SetIconSize(int newWidth, int newHeight)
 
 function SetItem(DeusExPickup newItem)
 {
-	if (winIcon != None)
-	{
-		winIcon.SetItem(newItem);
-		winIcon.SetIconSize(newItem.largeIconWidth, newItem.largeIconHeight);
-	}
+    if (winIcon != None)
+    {
+        winIcon.SetItem(newItem);
+        winIcon.SetIconSize(newItem.largeIconWidth, newItem.largeIconHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -95,8 +95,8 @@ function SetItem(DeusExPickup newItem)
 
 function SetTextFont(Font newFont)
 {
-	if (newFont != None)
-		winText.SetFont(newFont);
+    if (newFont != None)
+        winText.SetFont(newFont);
 }
 
 // ----------------------------------------------------------------------
@@ -105,7 +105,7 @@ function SetTextFont(Font newFont)
 
 function SetText(String newText)
 {
-	winText.SetText(newText);
+    winText.SetText(newText);
 }
 
 // ----------------------------------------------------------------------
@@ -114,7 +114,7 @@ function SetText(String newText)
 
 function SetTextAlignments(EHAlign newHAlign, EVAlign newVAlign)
 {
-	winText.SetTextAlignments(newHAlign, newVAlign);
+    winText.SetTextAlignments(newHAlign, newVAlign);
 }
 
 // ----------------------------------------------------------------------
@@ -123,7 +123,7 @@ function SetTextAlignments(EHAlign newHAlign, EVAlign newVAlign)
 
 function AppendText(String newText)
 {
-	winText.AppendText(newText);
+    winText.AppendText(newText);
 }
 
 // ----------------------------------------------------------------------
@@ -132,8 +132,8 @@ function AppendText(String newText)
 
 function SetIgnoreCount(bool bIgnore)
 {
-	if (winIcon != None)
-		winIcon.SetIgnoreCount(bIgnore);
+    if (winIcon != None)
+        winIcon.SetIgnoreCount(bIgnore);
 }
 
 // ----------------------------------------------------------------------
@@ -142,8 +142,8 @@ function SetIgnoreCount(bool bIgnore)
 
 function SetCount(int newCount)
 {
-	if (winIcon != None)
-		winIcon.SetCount(newCount);
+    if (winIcon != None)
+        winIcon.SetCount(newCount);
 }
 
 // ----------------------------------------------------------------------
@@ -152,8 +152,8 @@ function SetCount(int newCount)
 
 function SetCountLabel(String newLabel)
 {
-	if (winIcon != None)
-		winIcon.SetCountLabel(newLabel);
+    if (winIcon != None)
+        winIcon.SetCountLabel(newLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -162,8 +162,8 @@ function SetCountLabel(String newLabel)
 
 function SetIconSensitivity(bool bSensitive)
 {
-	if (winIcon != None)
-		winIcon.SetSensitivity(bSensitive);
+    if (winIcon != None)
+        winIcon.SetSensitivity(bSensitive);
 }
 
 // ----------------------------------------------------------------------
@@ -172,22 +172,22 @@ function SetIconSensitivity(bool bSensitive)
 
 function ConfigurationChanged()
 {
-	local float iconWidth, iconHeight;
-	local float scrollWidth, scrollHeight;
+    local float iconWidth, iconHeight;
+    local float scrollWidth, scrollHeight;
 
-	if (winIcon != None)
-	{
-		winIcon.QueryPreferredSize(iconWidth, iconHeight);
-		winIcon.ConfigureChild(0, 0, iconWidth, iconHeight);
-	}
+    if (winIcon != None)
+    {
+        winIcon.QueryPreferredSize(iconWidth, iconHeight);
+        winIcon.ConfigureChild(0, 0, iconWidth, iconHeight);
+    }
 
-	if (winScroll != None)
-	{
-		winScroll.QueryPreferredSize(scrollWidth, scrollHeight);
-		winScroll.ConfigureChild(
-			iconWidth + 1, 2, 
-			width - iconWidth - 3, height - 4);
-	}
+    if (winScroll != None)
+    {
+        winScroll.QueryPreferredSize(scrollWidth, scrollHeight);
+        winScroll.ConfigureChild(
+            iconWidth + 1, 2,
+            width - iconWidth - 3, height - 4);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -196,9 +196,9 @@ function ConfigurationChanged()
 
 function bool ChildRequestedReconfiguration(window child)
 {
-	ConfigurationChanged();
+    ConfigurationChanged();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

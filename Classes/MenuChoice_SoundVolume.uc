@@ -10,13 +10,13 @@ class MenuChoice_SoundVolume extends MenuChoice_Volume;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	btnSlider.winSlider.SetScaleSounds(None, None, None);
+    btnSlider.winSlider.SetScaleSounds(None, None, None);
 }
 
 // ----------------------------------------------------------------------
-// ScalePositionChanged() 
+// ScalePositionChanged()
 //
 // Update the Mouse Sensitivity value
 // ----------------------------------------------------------------------
@@ -24,16 +24,16 @@ event InitWindow()
 event bool ScalePositionChanged(Window scale, int newTickPosition,
                                 float newValue, bool bFinal)
 {
-	// Don't do anything while initializing as we get several 
-	// ScalePositionChanged() events before LoadSetting() is called.
+    // Don't do anything while initializing as we get several
+    // ScalePositionChanged() events before LoadSetting() is called.
 
-	if (bInitializing)
-		return False;
+    if (bInitializing)
+        return False;
 
-	Player.SetInstantSoundVolume(byte(newValue));
-	Player.PlaySound(sound'Menu_SoundTest', SLOT_None,, True);
+    Player.SetInstantSoundVolume(byte(newValue));
+    Player.PlaySound(sound'Menu_SoundTest', SLOT_None,, True);
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -42,8 +42,8 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
 
 function LoadSetting()
 {
-	Super.LoadSetting();
-	Player.SetInstantSoundVolume(GetValue());
+    Super.LoadSetting();
+    Player.SetInstantSoundVolume(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -52,8 +52,8 @@ function LoadSetting()
 
 function CancelSetting()
 {
-	Super.CancelSetting();
-	LoadSetting();
+    Super.CancelSetting();
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------

@@ -5,13 +5,13 @@ class Beam expands Light;
 
 function BeginPlay()
 {
-	DrawType = DT_None;
-	SetTimer(1.0, True);
+    DrawType = DT_None;
+    SetTimer(1.0, True);
 }
 
 function Timer()
 {
-	MakeNoise(0.3);
+    MakeNoise(0.3);
 }
 
 defaultproperties

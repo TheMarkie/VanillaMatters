@@ -7,9 +7,9 @@ var vector faceDirection;
 
 function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	faceDirection = 200 * vector(Rotation);
+    faceDirection = 200 * vector(Rotation);
 }
 
 defaultproperties

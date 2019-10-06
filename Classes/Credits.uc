@@ -13,22 +13,22 @@ var localized String msgCreditsAdded;
 // ----------------------------------------------------------------------
 auto state Pickup
 {
-	function Frob(Actor Frobber, Inventory frobWith)
-	{
-		local DeusExPlayer player;
+    function Frob(Actor Frobber, Inventory frobWith)
+    {
+        local DeusExPlayer player;
 
-		Super.Frob(Frobber, frobWith);
+        Super.Frob(Frobber, frobWith);
 
-		player = DeusExPlayer(Frobber);
+        player = DeusExPlayer(Frobber);
 
-		if (player != None)
-		{
-			player.Credits += numCredits;
-			player.ClientMessage(Sprintf(msgCreditsAdded, numCredits));
-			player.FrobTarget = None;
-			Destroy();
-		}
-	}
+        if (player != None)
+        {
+            player.Credits += numCredits;
+            player.ClientMessage(Sprintf(msgCreditsAdded, numCredits));
+            player.FrobTarget = None;
+            Destroy();
+        }
+    }
 }
 
 defaultproperties

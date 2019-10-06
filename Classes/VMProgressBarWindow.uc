@@ -6,18 +6,18 @@ class VMProgressBarWindow extends ProgressBarWindow;
 var Texture texForeground;
 
 event DrawWindow( GC gc ) {
-	gc.SetTileColor( colForeground );
+    gc.SetTileColor( colForeground );
 
-	if ( bVertical ) {
-		gc.DrawPattern( 0, height - barSize, width, barSize, 0, height - barSize, texForeground );
-	}
-	else {
-		gc.DrawPattern(0, 0, barSize, height, 0, 0, texForeground );
-	}
+    if ( bVertical ) {
+        gc.DrawPattern( 0, height - barSize, width, barSize, 0, height - barSize, texForeground );
+    }
+    else {
+        gc.DrawPattern(0, 0, barSize, height, 0, 0, texForeground );
+    }
 }
 
 function SetForegroundTexture( Texture tex ) {
-	texForeground = tex;
+    texForeground = tex;
 }
 
 defaultproperties

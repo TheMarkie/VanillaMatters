@@ -5,27 +5,27 @@ class ChairLeather extends Seat;
 
 enum ESkinColor
 {
-	SC_Black,
-	SC_Blue,
-	SC_Brown,
-	SC_LitGray,
-	SC_Tan
+    SC_Black,
+    SC_Blue,
+    SC_Brown,
+    SC_LitGray,
+    SC_Tan
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Black:		Skin = Texture'ChairLeatherTex1'; break;
-		case SC_Blue:		Skin = Texture'ChairLeatherTex1'; break;
-		case SC_Brown:		Skin = Texture'ChairLeatherTex1'; break;
-		case SC_LitGray:	Skin = Texture'ChairLeatherTex1'; break;
-		case SC_Tan:		Skin = Texture'ChairLeatherTex1'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Black:      Skin = Texture'ChairLeatherTex1'; break;
+        case SC_Blue:       Skin = Texture'ChairLeatherTex1'; break;
+        case SC_Brown:      Skin = Texture'ChairLeatherTex1'; break;
+        case SC_LitGray:    Skin = Texture'ChairLeatherTex1'; break;
+        case SC_Tan:        Skin = Texture'ChairLeatherTex1'; break;
+    }
 }
 
 defaultproperties

@@ -13,43 +13,43 @@ var localized string MustBeUsedOn;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-		MaxCopies = 5;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+        MaxCopies = 5;
 }
 
 // ----------------------------------------------------------------------
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			player.HealPlayer(healAmount, True);
+        Super.BeginState();
 
-			// Medkits kill all status effects when used in multiplayer
-			if ( player.Level.NetMode != NM_Standalone )
-			{
-				player.StopPoison();
-				player.ExtinguishFire();
-				player.drugEffectTimer = 0;
-			}
-		}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            player.HealPlayer(healAmount, True);
 
-		UseOnce();
-	}
+            // Medkits kill all status effects when used in multiplayer
+            if ( player.Level.NetMode != NM_Standalone )
+            {
+                player.StopPoison();
+                player.ExtinguishFire();
+                player.drugEffectTimer = 0;
+            }
+        }
+
+        UseOnce();
+    }
 Begin:
 }
 
@@ -60,37 +60,37 @@ Begin:
 
 function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
-	local DeusExPlayer player;
-	local String outText;
+    local PersonaInfoWindow winInfo;
+    local DeusExPlayer player;
+    local String outText;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	player = DeusExPlayer(Owner);
+    player = DeusExPlayer(Owner);
 
-	if (player != None)
-	{
-		winInfo.SetTitle(itemName);
-		winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
+    if (player != None)
+    {
+        winInfo.SetTitle(itemName);
+        winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
 
-		if (!bNoPrintMustBeUsed)
-		{
-			winInfo.AppendText(winInfo.CR() $ MustBeUsedOn $ winInfo.CR());
-		}
-		else
-		{
-			bNoPrintMustBeUsed = False;
-		}
+        if (!bNoPrintMustBeUsed)
+        {
+            winInfo.AppendText(winInfo.CR() $ MustBeUsedOn $ winInfo.CR());
+        }
+        else
+        {
+            bNoPrintMustBeUsed = False;
+        }
 
-		// Print the number of copies
-		outText = CountLabel @ String(NumCopies);
+        // Print the number of copies
+        outText = CountLabel @ String(NumCopies);
 
-		winInfo.AppendText(winInfo.CR() $ outText);
-	}
+        winInfo.AppendText(winInfo.CR() $ outText);
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -99,7 +99,7 @@ function bool UpdateInfo(Object winObject)
 
 function NoPrintMustBeUsed()
 {
-	bNoPrintMustBeUsed = True;
+    bNoPrintMustBeUsed = True;
 }
 
 // ----------------------------------------------------------------------
@@ -110,41 +110,41 @@ function NoPrintMustBeUsed()
 
 function float GetHealAmount(int bodyPart, optional float pointsToHeal)
 {
-	local float amt;
-	
-	if (pointsToHeal == 0)
-		pointsToHeal = healAmount;
+    local float amt;
 
-	// CNN - just make all body parts equal to avoid confusion
-	return pointsToHeal;
+    if (pointsToHeal == 0)
+        pointsToHeal = healAmount;
+
+    // CNN - just make all body parts equal to avoid confusion
+    return pointsToHeal;
 /*
-	switch (bodyPart)
-	{
-		case 0:		// head
-			amt = pointsToHeal * 2; break;
-			break;
+    switch (bodyPart)
+    {
+        case 0:     // head
+            amt = pointsToHeal * 2; break;
+            break;
 
-		case 1:		// torso
-			amt = pointstoHeal;
-			break;
+        case 1:     // torso
+            amt = pointstoHeal;
+            break;
 
-		case 2:		// right arm
-			amt = pointsToHeal * 1.5; break;
+        case 2:     // right arm
+            amt = pointsToHeal * 1.5; break;
 
-		case 3:		// left arm
-			amt = pointsToHeal * 1.5; break;
+        case 3:     // left arm
+            amt = pointsToHeal * 1.5; break;
 
-		case 4:		// right leg
-			amt = pointsToHeal * 1.5; break;
+        case 4:     // right leg
+            amt = pointsToHeal * 1.5; break;
 
-		case 5:		// left leg
-			amt = pointsToHeal * 1.5; break;
+        case 5:     // left leg
+            amt = pointsToHeal * 1.5; break;
 
-		default:
-			amt = pointstoHeal;
-	}
+        default:
+            amt = pointstoHeal;
+    }
 
-	return amt;*/
+    return amt;*/
 }
 
 // ----------------------------------------------------------------------

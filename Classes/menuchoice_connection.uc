@@ -15,9 +15,9 @@ var localized String     ConnectionNames[2]; //Human readable connection speed n
 
 event InitWindow()
 {
-	PopulateConnectionSpeeds();
+    PopulateConnectionSpeeds();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialConnection();
 
@@ -32,7 +32,7 @@ event InitWindow()
 
 function PopulateConnectionSpeeds()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    for (typeIndex = 0; typeIndex < arrayCount(ConnectionNames); typeIndex++)
    {
@@ -49,9 +49,9 @@ function SetInitialConnection()
    local string TypeString;
    local int typeIndex;
 
-   
+
    TypeString = player.ConsoleCommand("get" @ configsetting);
-  
+
    for (typeIndex = 0; typeIndex < arrayCount(ConnectionNames); typeIndex++)
    {
       if (TypeString==GetModuleName(typeIndex))
@@ -76,7 +76,7 @@ function LoadSetting()
 {
    local string TypeString;
    local int typeIndex;
-   
+
    TypeString = player.ConsoleCommand("get" @ configsetting);
 
    for (typeIndex = 0; typeIndex < arrayCount(ConnectionNames); typeIndex++)
@@ -91,7 +91,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ GetModuleName(defaultValue));
    LoadSetting();
 }

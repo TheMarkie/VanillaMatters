@@ -12,7 +12,7 @@ class MenuUINavBarWindow extends Window;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 

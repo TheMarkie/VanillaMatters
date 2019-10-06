@@ -3,7 +3,7 @@
 //=============================================================================
 class PersonaAugmentationBarSlot expands ToggleWindow;
 
-#exec TEXTURE IMPORT FILE="Textures\AugBarSlot.bmp"		NAME="AugBarSlot"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugBarSlot.bmp"     NAME="AugBarSlot"       GROUP="VMUI" MIPS=Off
 
 var DeusExPlayer player;
 var AugmentationManager augManager;
@@ -40,10 +40,10 @@ var PersonaScreenAugmentations augWnd;
 var Texture dragIcon;
 
 enum FillModes {
-	FM_Selected,
-	FM_DropGood,
-	FM_DropBad,
-	FM_None
+    FM_Selected,
+    FM_DropGood,
+    FM_DropBad,
+    FM_None
 };
 
 var FillModes fillMode;
@@ -65,20 +65,20 @@ var Texture texBorders[9];
 // ----------------------------------------------------------------------
 
 function InitWindow() {
-	super.InitWindow();
+    super.InitWindow();
 
-	slot = -1;
-	aug = none;
+    slot = -1;
+    aug = none;
 
-	SetSelectability( false );
+    SetSelectability( false );
 
-	SetSize( 51, 54 );
-	SetFont( Font'FontTiny' );
+    SetSize( 51, 54 );
+    SetFont( Font'FontTiny' );
 
-	player = DeusExPlayer( GetRootWindow().parentPawn );
-	augManager = player.AugmentationSystem;
+    player = DeusExPlayer( GetRootWindow().parentPawn );
+    augManager = player.AugmentationSystem;
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -86,13 +86,13 @@ function InitWindow() {
 // ----------------------------------------------------------------------
 
 function bool ToggleChanged( Window button, bool bNewToggle ) {
-	if ( aug == none && bNewToggle ) {
-		SetToggle( false );
+    if ( aug == none && bNewToggle ) {
+        SetToggle( false );
 
-		return true;
-	}
-	
-	return false;
+        return true;
+    }
+
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -100,7 +100,7 @@ function bool ToggleChanged( Window button, bool bNewToggle ) {
 // ----------------------------------------------------------------------
 
 function SetSlot( int pos ) {
-	slot = pos;
+    slot = pos;
 }
 
 // ----------------------------------------------------------------------
@@ -108,24 +108,24 @@ function SetSlot( int pos ) {
 // ----------------------------------------------------------------------
 
 function SetAug( Augmentation newAug ) {
-	if ( newAug != None ) {
-		newAug.HotKeyNum = slot;
-		augManager.VM_augSlots[slot] = newAug;
-		dragIcon = newAug.VM_dragIcon;
-	}
-	else {
-		HighlightSelect( false );
-		SetToggle( false );
+    if ( newAug != None ) {
+        newAug.HotKeyNum = slot;
+        augManager.VM_augSlots[slot] = newAug;
+        dragIcon = newAug.VM_dragIcon;
+    }
+    else {
+        HighlightSelect( false );
+        SetToggle( false );
 
-		dragIcon = none;
-		augManager.VM_augSlots[slot] = none;
-	}
+        dragIcon = none;
+        augManager.VM_augSlots[slot] = none;
+    }
 
-	if ( aug != none ) {
-		aug.HotKeyNum = -1;
-	}
+    if ( aug != none ) {
+        aug.HotKeyNum = -1;
+    }
 
-	aug = newAug;
+    aug = newAug;
 }
 
 // ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ function SetAug( Augmentation newAug ) {
 // ----------------------------------------------------------------------
 
 function Augmentation GetAug() {
-	return aug;
+    return aug;
 }
 
 // ----------------------------------------------------------------------
@@ -141,53 +141,53 @@ function Augmentation GetAug() {
 // ----------------------------------------------------------------------
 
 function DrawWindow( GC gc ) {
-	DrawSlotBackground( gc );
+    DrawSlotBackground( gc );
 
-	if ( fillMode != FM_None ) {
-		SetFillColor();
-		gc.SetStyle( DSTY_Translucent );
-		gc.SetTileColor( fillColor );
-		gc.DrawPattern( borderX + 1, borderY + 1, slotFillWidth, slotFillHeight, 0, 0, Texture'Solid' );
-	}
+    if ( fillMode != FM_None ) {
+        SetFillColor();
+        gc.SetStyle( DSTY_Translucent );
+        gc.SetTileColor( fillColor );
+        gc.DrawPattern( borderX + 1, borderY + 1, slotFillWidth, slotFillHeight, 0, 0, Texture'Solid' );
+    }
 
-	if ( aug != none && aug.smallIcon != none && !dragging ) {
-		DrawSlotIcon( gc );
+    if ( aug != none && aug.smallIcon != none && !dragging ) {
+        DrawSlotIcon( gc );
 
-		gc.SetAlignments( HALIGN_Center, VALIGN_Center );
-		gc.EnableWordWrap( false );
-		gc.SetTextColor( colSlotNum );
+        gc.SetAlignments( HALIGN_Center, VALIGN_Center );
+        gc.EnableWordWrap( false );
+        gc.SetTextColor( colSlotNum );
 
-		if ( bButtonPressed ) {
-			gc.SetTileColor( colSelectionBorder );
-			gc.SetStyle( DSTY_Masked );
-			gc.DrawBorders( borderX, borderY, borderWidth, borderHeight, 0, 0, 0, 0, texBorders );
-		}
-	}
+        if ( bButtonPressed ) {
+            gc.SetTileColor( colSelectionBorder );
+            gc.SetStyle( DSTY_Masked );
+            gc.DrawBorders( borderX, borderY, borderWidth, borderHeight, 0, 0, 0, 0, texBorders );
+        }
+    }
 
-	gc.SetAlignments( HALIGN_Right, VALIGN_Center );
-	gc.SetTextColor( colSlotNum );
-	gc.DrawText( slotNumberX - 1, slotNumberY, 6, 7, slot );
+    gc.SetAlignments( HALIGN_Right, VALIGN_Center );
+    gc.SetTextColor( colSlotNum );
+    gc.DrawText( slotNumberX - 1, slotNumberY, 6, 7, slot );
 }
 
 function DrawSlotIcon( GC gc ) {
-	gc.SetStyle( DSTY_Translucent );
-	
-	if ( aug.bIsActive ) {
-		gc.SetTileColor( colIconActive );
-	}
-	else {
-		gc.SetTileColor( colIconNormal );
-	}
+    gc.SetStyle( DSTY_Translucent );
 
-	gc.DrawTexture( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, aug.smallIcon );
+    if ( aug.bIsActive ) {
+        gc.SetTileColor( colIconActive );
+    }
+    else {
+        gc.SetTileColor( colIconNormal );
+    }
+
+    gc.DrawTexture( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, aug.smallIcon );
 }
 
 function DrawSlotBackground( GC gc ) {
-	local Color newBackground;
+    local Color newBackground;
 
-	gc.SetStyle( backgroundDrawStyle );
-	gc.SetTileColor( colBackground );
-	gc.DrawTexture( 0, 0, width, height, 0, 0, texBackground );
+    gc.SetStyle( backgroundDrawStyle );
+    gc.SetTileColor( colBackground );
+    gc.DrawTexture( 0, 0, width, height, 0, 0, texBackground );
 }
 
 // ----------------------------------------------------------------------
@@ -195,12 +195,12 @@ function DrawSlotBackground( GC gc ) {
 // ----------------------------------------------------------------------
 
 function SetDropFill( bool bGoodDrop ) {
-	if ( bGoodDrop ) {
-		fillMode = FM_DropGood;
-	}
-	else {
-		fillMode = FM_DropBad;
-	}
+    if ( bGoodDrop ) {
+        fillMode = FM_DropGood;
+    }
+    else {
+        fillMode = FM_DropBad;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -208,7 +208,7 @@ function SetDropFill( bool bGoodDrop ) {
 // ----------------------------------------------------------------------
 
 function ResetFill() {
-	fillMode = FM_None;
+    fillMode = FM_None;
 }
 
 // ----------------------------------------------------------------------
@@ -216,12 +216,12 @@ function ResetFill() {
 // ----------------------------------------------------------------------
 
 function HighlightSelect( bool bHighlight ) {
-	if ( bHighlight ) {
-		fillMode = FM_Selected;
-	}
-	else {
-		fillMode = FM_None;
-	}
+    if ( bHighlight ) {
+        fillMode = FM_Selected;
+    }
+    else {
+        fillMode = FM_None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -229,20 +229,20 @@ function HighlightSelect( bool bHighlight ) {
 // ----------------------------------------------------------------------
 
 function SetFillColor() {
-	switch( fillMode ) {
-		case FM_Selected:
-			fillColor = colSelected;
-			break;
-		case FM_DropBad:
-			fillColor = colDropBad;
-			break;
-		case FM_DropGood:
-			fillColor = colDropGood;
-			break;
-		case FM_None:
-			fillColor = colNone;
-			break;
-	}
+    switch( fillMode ) {
+        case FM_Selected:
+            fillColor = colSelected;
+            break;
+        case FM_DropBad:
+            fillColor = colDropBad;
+            break;
+        case FM_DropGood:
+            fillColor = colDropGood;
+            break;
+        case FM_None:
+            fillColor = colNone;
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -250,15 +250,15 @@ function SetFillColor() {
 // ----------------------------------------------------------------------
 
 function bool MouseButtonPressed( float pointX, float pointY, EInputKey button, int numClicks ) {
-	if ( button == IK_LeftMouse ) {
-		dragStart = true;
-		dragStartX = pointX;
-		dragStartY = pointY;
-		
-		return true;
-	}
-	
-	return false;
+    if ( button == IK_LeftMouse ) {
+        dragStart = true;
+        dragStartX = pointX;
+        dragStartY = pointY;
+
+        return true;
+    }
+
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -266,13 +266,13 @@ function bool MouseButtonPressed( float pointX, float pointY, EInputKey button, 
 // ----------------------------------------------------------------------
 
 function bool MouseButtonReleased( float pointX, float pointY, EInputKey button, int numClicks ) {
-	if ( button == IK_LeftMouse ) {
-		FinishButtonDrag();
+    if ( button == IK_LeftMouse ) {
+        FinishButtonDrag();
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -280,22 +280,22 @@ function bool MouseButtonReleased( float pointX, float pointY, EInputKey button,
 // ----------------------------------------------------------------------
 
 function MouseMoved( float newX, float newY ) {
-	local float invX, invY;
+    local float invX, invY;
 
-	if ( draggable ) {
-		if ( dragStart ) {
-			if ( Abs( newX - dragStartX ) > 2 || Abs( newY- dragStartY ) > 2 ) {
-				StartButtonDrag();
-				SetCursorPos( width / 2, height / 2 );
-			}
-		}
+    if ( draggable ) {
+        if ( dragStart ) {
+            if ( Abs( newX - dragStartX ) > 2 || Abs( newY- dragStartY ) > 2 ) {
+                StartButtonDrag();
+                SetCursorPos( width / 2, height / 2 );
+            }
+        }
 
-		if ( dragging ) {
-			ConvertCoordinates( self, newX, newY, augWnd, invX, invY );
+        if ( dragging ) {
+            ConvertCoordinates( self, newX, newY, augWnd, invX, invY );
 
-			augWnd.UpdateDragMouse( invX, invY );
-		}
-	}
+            augWnd.UpdateDragMouse( invX, invY );
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -303,19 +303,19 @@ function MouseMoved( float newX, float newY ) {
 // ----------------------------------------------------------------------
 
 function texture CursorRequested( window win, float pointX, float pointY, out float hotX, out float hotY, out color newColor, out Texture shadowTexture ) {
-	shadowTexture = None;
+    shadowTexture = None;
 
-	if ( dragging ) {
-		if ( dimIcon ) {
-			newColor.R = 64;
-			newColor.G = 64;
-			newColor.B = 64;
-		}
-		
-		return dragIcon;
-	}
-	
-	return none;
+    if ( dragging ) {
+        if ( dimIcon ) {
+            newColor.R = 64;
+            newColor.G = 64;
+            newColor.B = 64;
+        }
+
+        return dragIcon;
+    }
+
+    return none;
 }
 
 // ----------------------------------------------------------------------
@@ -323,10 +323,10 @@ function texture CursorRequested( window win, float pointX, float pointY, out fl
 // ----------------------------------------------------------------------
 
 function StartButtonDrag() {
-	dragStart = false;
-	dragging = true;
+    dragStart = false;
+    dragging = true;
 
-	augWnd.StartButtonDrag( self );
+    augWnd.StartButtonDrag( self );
 }
 
 // ----------------------------------------------------------------------
@@ -334,10 +334,10 @@ function StartButtonDrag() {
 // ----------------------------------------------------------------------
 
 function FinishButtonDrag() {
-	dragStart = false;
-	dragging = false;
+    dragStart = false;
+    dragging = false;
 
-	augWnd.FinishButtonDrag();
+    augWnd.FinishButtonDrag();
 }
 
 // ----------------------------------------------------------------------
@@ -345,7 +345,7 @@ function FinishButtonDrag() {
 // ----------------------------------------------------------------------
 
 function SetAugWnd( PersonaScreenAugmentations newAugWnd ) {
-	augWnd = newAugWnd;
+    augWnd = newAugWnd;
 }
 
 // ----------------------------------------------------------------------
@@ -353,8 +353,8 @@ function SetAugWnd( PersonaScreenAugmentations newAugWnd ) {
 // ----------------------------------------------------------------------
 
 function GetIconPos( out int iconPosX, out int iconPosY ) {
-	iconPosX = slotIconX;
-	iconPosY = slotIconY;
+    iconPosX = slotIconX;
+    iconPosY = slotIconY;
 }
 
 // ----------------------------------------------------------------------
@@ -362,23 +362,23 @@ function GetIconPos( out int iconPosX, out int iconPosY ) {
 // ----------------------------------------------------------------------
 
 function StyleChanged() {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName( 'HUDColor_Background' );
-	colSlotNum = theme.GetColorFromName( 'HUDColor_NormalText' );
+    colBackground = theme.GetColorFromName( 'HUDColor_Background' );
+    colSlotNum = theme.GetColorFromName( 'HUDColor_NormalText' );
 
-	colSelected.r = int( float( colBackground.r ) * 0.50 );
-	colSelected.g = int( float( colBackground.g ) * 0.50 );
-	colSelected.b = int( float( colBackground.b ) * 0.50 );
+    colSelected.r = int( float( colBackground.r ) * 0.50 );
+    colSelected.g = int( float( colBackground.g ) * 0.50 );
+    colSelected.b = int( float( colBackground.b ) * 0.50 );
 
-	if ( player.GetHUDBackgroundTranslucency() ) {
-		backgroundDrawStyle = DSTY_Translucent;
-	}
-	else {
-		backgroundDrawStyle = DSTY_Masked;
-	}
+    if ( player.GetHUDBackgroundTranslucency() ) {
+        backgroundDrawStyle = DSTY_Translucent;
+    }
+    else {
+        backgroundDrawStyle = DSTY_Masked;
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -21,23 +21,23 @@ var int fontAcceleratorLineHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	SetTextMargins(0, 0);
-	SetCheckboxTextures(Texture'MenuCheckBox_Off', Texture'MenuCheckBox_On', 13, 13);
-	SetCheckboxSpacing(6);
-	SetCheckboxStyle(DSTY_Masked);
-	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
+    SetFont(fontText);
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetTextMargins(0, 0);
+    SetCheckboxTextures(Texture'MenuCheckBox_Off', Texture'MenuCheckBox_On', 13, 13);
+    SetCheckboxSpacing(6);
+    SetCheckboxStyle(DSTY_Masked);
+    SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 
-	SetButtonSounds(None, Sound'Menu_Press');
-	SetSoundVolume(0.25);
+    SetButtonSounds(None, Sound'Menu_Press');
+    SetSoundVolume(0.25);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -46,16 +46,16 @@ event InitWindow()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	colText       = theme.GetColorFromName('MenuColor_ButtonTextNormal');
-	colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
+    colText       = theme.GetColorFromName('MenuColor_ButtonTextNormal');
+    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
 
-	SetTextColors(colText, colText, colText, colText);
-	SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                colButtonFace, colButtonFace, colButtonFace);
+    SetTextColors(colText, colText, colText, colText);
+    SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                    colButtonFace, colButtonFace, colButtonFace);
 }
 
 // ----------------------------------------------------------------------

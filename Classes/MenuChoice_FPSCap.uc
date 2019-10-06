@@ -9,8 +9,8 @@ class MenuChoice_FPSCap extends MenuUIChoiceSlider;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	saveValue = int( player.ConsoleCommand( "GetFPSCap" ) );
-	SetValue( saveValue );
+    saveValue = int( player.ConsoleCommand( "GetFPSCap" ) );
+    SetValue( saveValue );
 }
 
 // ----------------------------------------------------------------------
@@ -18,7 +18,7 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	player.ConsoleCommand( "FPSCap" @ GetValue() );
+    player.ConsoleCommand( "FPSCap" @ GetValue() );
 }
 
 // ----------------------------------------------------------------------
@@ -26,7 +26,7 @@ function SaveSetting() {
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( defaultValue );
+    SetValue( defaultValue );
 }
 
 // ----------------------------------------------------------------------
@@ -34,13 +34,13 @@ function ResetToDefault() {
 // ----------------------------------------------------------------------
 
 function SetEnumerators() {
-	local int fps;
-	local int enumIndex;
+    local int fps;
+    local int enumIndex;
 
-	enumIndex = 0;
-	for( fps = 0; fps <= 120; fps = fps + 10 ) {
-		SetEnumeration( enumIndex++, string( fps ) );
-	}
+    enumIndex = 0;
+    for( fps = 0; fps <= 120; fps = fps + 10 ) {
+        SetEnumeration( enumIndex++, string( fps ) );
+    }
 }
 
 // ----------------------------------------------------------------------

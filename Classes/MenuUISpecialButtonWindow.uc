@@ -17,14 +17,14 @@ var Texture texFocus;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    Super.InitWindow();
 
-	SetSize(25, 19);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    SetSize(25, 19);
+
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -33,15 +33,15 @@ event InitWindow()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colButtonFace;
+    local ColorTheme theme;
+    local Color colButtonFace;
 
-	theme         = player.ThemeManager.GetCurrentMenuColorTheme();
-	colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
+    theme         = player.ThemeManager.GetCurrentMenuColorTheme();
+    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
 
-	SetButtonColors(
-		colButtonFace, colButtonFace, colButtonFace,
-		colButtonFace, colButtonFace, colButtonFace);
+    SetButtonColors(
+        colButtonFace, colButtonFace, colButtonFace,
+        colButtonFace, colButtonFace, colButtonFace);
 }
 
 // ----------------------------------------------------------------------

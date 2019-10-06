@@ -1,5 +1,5 @@
 //
-//	MPDeathWindow - Is used for the death notification in multiplayer
+//  MPDeathWindow - Is used for the death notification in multiplayer
 //
 
 class MultiplayerMessageWin extends DeusExBaseWindow;
@@ -9,7 +9,7 @@ var String killerMethod;
 var bool bKilledSelf;
 var bool bValidMethod;
 
-var localized String	KilledByString, WereKilledString;
+var localized String    KilledByString, WereKilledString;
 var localized String KilledYourselfString;
 var localized String FireToContinueMsg;
 
@@ -17,8 +17,8 @@ var localized String ActiveAugsString;
 var localized String WeaponString;
 var localized String RelevantSkillString;
 var localized String LevelString;
-var localized String	FinalBlowString;
-var localized String	ToTheString;
+var localized String    FinalBlowString;
+var localized String    ToTheString;
 var localized String RemHealthString;
 var localized String RemHealth2String;
 var localized String RemEnergyString;
@@ -29,22 +29,22 @@ var localized String HealthLowString;
 var localized String StreakString;
 var localized String Detail1String;
 var localized String Detail2String;
-var localized String	KeyNotBoundString;
-var localized String	VSString;
+var localized String    KeyNotBoundString;
+var localized String    VSString;
 
-var Color	redColor, blueColor, whiteColor, greenColor, BrightRedColor;
-var bool		bDestroy;
+var Color   redColor, blueColor, whiteColor, greenColor, BrightRedColor;
+var bool        bDestroy;
 var bool    bKilled;
 var bool    bDisplayProgress;
-var float	lockoutTime;
+var float   lockoutTime;
 
-const msgY		= 0.25;
+const msgY      = 0.25;
 const kpStartY = 0.4;
 
 const kpColumn1X = 0.20;
 const kpColumn2X = 0.60;
 
-var String	curDetailKeyName;
+var String  curDetailKeyName;
 
 //
 // InitWindow()
@@ -52,32 +52,32 @@ var String	curDetailKeyName;
 
 event InitWindow()
 {
-	local int i;
-	local String KeyName, Alias;
+    local int i;
+    local String KeyName, Alias;
 
-	Super.InitWindow();
-	bDestroy = False;
-	SetWindowAlignments(HALIGN_Full, VALIGN_Full);
-	Show();
-	root.ShowCursor( False );
-	lockoutTime = Player.Level.Timeseconds + 3.0;
-	Player.bKillerProfile = False;
-	curDetailKeyName="";
-	for ( i=0; i<255; i++ )
-	{
-		KeyName = player.ConsoleCommand ( "KEYNAME "$i );
-		if ( KeyName != "" )
-		{
-			Alias = player.ConsoleCommand( "KEYBINDING "$KeyName );
-			if ( Alias ~= "KillerProfile" )
-			{
-				curDetailKeyName = KeyName;
-				break;
-			}
-		}
-	}
-	if ( curDetailKeyName ~= "" )
-		curDetailKeyName=KeyNotBoundString;
+    Super.InitWindow();
+    bDestroy = False;
+    SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    Show();
+    root.ShowCursor( False );
+    lockoutTime = Player.Level.Timeseconds + 3.0;
+    Player.bKillerProfile = False;
+    curDetailKeyName="";
+    for ( i=0; i<255; i++ )
+    {
+        KeyName = player.ConsoleCommand ( "KEYNAME "$i );
+        if ( KeyName != "" )
+        {
+            Alias = player.ConsoleCommand( "KEYBINDING "$KeyName );
+            if ( Alias ~= "KillerProfile" )
+            {
+                curDetailKeyName = KeyName;
+                break;
+            }
+        }
+    }
+    if ( curDetailKeyName ~= "" )
+        curDetailKeyName=KeyNotBoundString;
 }
 
 //
@@ -86,11 +86,11 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	root.ShowCursor( True );
+    root.ShowCursor( True );
    Player.ProgressTimeout = Player.Level.TimeSeconds;
-	Player.bKillerProfile = False;
-	lockoutTime = 0.0;
-	Super.DestroyWindow();
+    Player.bKillerProfile = False;
+    lockoutTime = 0.0;
+    Super.DestroyWindow();
 }
 
 //
@@ -98,112 +98,112 @@ event DestroyWindow()
 //
 function ShowKillerProfile( GC gc )
 {
-	local float w, h, x, y, w2, oldy, barLen, by, by2;
-	local String str;
-	local int i;
-	local KillerProfile kp;
+    local float w, h, x, y, w2, oldy, barLen, by, by2;
+    local String str;
+    local int i;
+    local KillerProfile kp;
 
-	kp = Player.killProfile;
+    kp = Player.killProfile;
 
-	if ( kp.bValid )
-	{
+    if ( kp.bValid )
+    {
       gc.SetTextColor( whiteColor );
-		gc.SetFont(Font'FontMenuSmall_DS');
-		y = kpStartY * height;
-		str = FinalBlowString $ kp.damage $ ToTheString $ kp.bodyLoc $ ".";
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
-		y += h;
-		str = RemHealthString $ kp.name $ RemHealth2String $ HealthHeadString $ kp.healthHigh $ HealthMidString $ kp.healthMid $ HealthLowString $ kp.healthLow $ RemEnergyString $ kp.remainingBio $ RemEnergy2String;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
-		y += h;
-		str = kp.name $ StreakString $ kp.streak $ ".";
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
-		y += (2.0*h);
+        gc.SetFont(Font'FontMenuSmall_DS');
+        y = kpStartY * height;
+        str = FinalBlowString $ kp.damage $ ToTheString $ kp.bodyLoc $ ".";
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
+        y += h;
+        str = RemHealthString $ kp.name $ RemHealth2String $ HealthHeadString $ kp.healthHigh $ HealthMidString $ kp.healthMid $ HealthLowString $ kp.healthLow $ RemEnergyString $ kp.remainingBio $ RemEnergy2String;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
+        y += h;
+        str = kp.name $ StreakString $ kp.streak $ ".";
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( width*0.5 - w*0.5, y, w, h, str );
+        y += (2.0*h);
 
-		// Enemey profile
+        // Enemey profile
       gc.SetTextColor( BrightRedColor );
-		x = kpColumn1X * width;
-		oldy = y;
-		str = kp.name;
-		gc.GetTextExtent( 0, w, h, str );
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		barLen = width * 0.2;
-		gc.SetTileColor( BrightRedColor );
-		gc.DrawBox( x, y, barLen, 1, 0, 0, 1, Texture'Solid');
-		y += (0.25*h);
-		str = WeaponString $ kp.activeWeapon;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = RelevantSkillString $ kp.activeSkill;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = LevelString $ kp.activeSkillLevel;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = ActiveAugsString $ kp.numActiveAugs;
-		gc.GetTextExtent(0,w2,h,str);
-		gc.DrawText( x, y, w2, h, str );
-		y += h;
-		for ( i = 0; i < kp.numActiveAugs; i++ )
-		{
-			gc.GetTextExtent( 0, w, h, kp.activeAugs[i] );
-			gc.DrawText( x+(w2*0.25), y, w, h, kp.activeAugs[i] );
-			y += h;
-		}
-		by = y;
-		// Your profile
-		y = oldy;
-		x = kpColumn2X * width;
-		gc.SetTileColor( greenColor );
-		gc.SetTextColor( greenColor );
-		str = Player.PlayerReplicationInfo.PlayerName;
-		gc.GetTextExtent( 0, w, h, str );
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		barLen = width * 0.2;
-		gc.DrawBox( x, y, barLen, 1, 0, 0, 1, Texture'Solid');
-		y += (0.25*h);
-		str = WeaponString $ kp.myActiveWeapon;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = RelevantSkillString $ kp.myActiveSkill;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = LevelString $ kp.myActiveSkillLevel;
-		gc.GetTextExtent(0,w,h,str);
-		gc.DrawText( x, y, w, h, str );
-		y += h;
-		str = ActiveAugsString $ kp.myNumActiveAugs;
-		gc.GetTextExtent(0,w2,h,str);
-		gc.DrawText( x, y, w2, h, str );
-		y += h;
-		for ( i = 0; i < kp.myNumActiveAugs; i++ )
-		{
-			gc.GetTextExtent( 0, w, h, kp.myActiveAugs[i] );
-			gc.DrawText( x+(w2*0.25), y, w, h, kp.myActiveAugs[i] );
-			y += h;
-		}
-		by2 = y;
+        x = kpColumn1X * width;
+        oldy = y;
+        str = kp.name;
+        gc.GetTextExtent( 0, w, h, str );
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        barLen = width * 0.2;
+        gc.SetTileColor( BrightRedColor );
+        gc.DrawBox( x, y, barLen, 1, 0, 0, 1, Texture'Solid');
+        y += (0.25*h);
+        str = WeaponString $ kp.activeWeapon;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = RelevantSkillString $ kp.activeSkill;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = LevelString $ kp.activeSkillLevel;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = ActiveAugsString $ kp.numActiveAugs;
+        gc.GetTextExtent(0,w2,h,str);
+        gc.DrawText( x, y, w2, h, str );
+        y += h;
+        for ( i = 0; i < kp.numActiveAugs; i++ )
+        {
+            gc.GetTextExtent( 0, w, h, kp.activeAugs[i] );
+            gc.DrawText( x+(w2*0.25), y, w, h, kp.activeAugs[i] );
+            y += h;
+        }
+        by = y;
+        // Your profile
+        y = oldy;
+        x = kpColumn2X * width;
+        gc.SetTileColor( greenColor );
+        gc.SetTextColor( greenColor );
+        str = Player.PlayerReplicationInfo.PlayerName;
+        gc.GetTextExtent( 0, w, h, str );
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        barLen = width * 0.2;
+        gc.DrawBox( x, y, barLen, 1, 0, 0, 1, Texture'Solid');
+        y += (0.25*h);
+        str = WeaponString $ kp.myActiveWeapon;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = RelevantSkillString $ kp.myActiveSkill;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = LevelString $ kp.myActiveSkillLevel;
+        gc.GetTextExtent(0,w,h,str);
+        gc.DrawText( x, y, w, h, str );
+        y += h;
+        str = ActiveAugsString $ kp.myNumActiveAugs;
+        gc.GetTextExtent(0,w2,h,str);
+        gc.DrawText( x, y, w2, h, str );
+        y += h;
+        for ( i = 0; i < kp.myNumActiveAugs; i++ )
+        {
+            gc.GetTextExtent( 0, w, h, kp.myActiveAugs[i] );
+            gc.DrawText( x+(w2*0.25), y, w, h, kp.myActiveAugs[i] );
+            y += h;
+        }
+        by2 = y;
 
-		if ( by2 > y )
-			y = ((by2 - oldy)*0.4) + oldy;
-		else
-			y = ((by - oldy)*0.4) + oldy;
-		str = VSString;
-		gc.SetFont(Font'FontMenuTitle');
-		gc.SetTextColor( whiteColor );
-		gc.GetTextExtent( 0, w, h, str );
-		gc.DrawText( 0.5*width-w*0.5, y, w, h, str );
-	}
+        if ( by2 > y )
+            y = ((by2 - oldy)*0.4) + oldy;
+        else
+            y = ((by - oldy)*0.4) + oldy;
+        str = VSString;
+        gc.SetFont(Font'FontMenuTitle');
+        gc.SetTextColor( whiteColor );
+        gc.GetTextExtent( 0, w, h, str );
+        gc.DrawText( 0.5*width-w*0.5, y, w, h, str );
+    }
 }
 
 //
@@ -212,13 +212,13 @@ function ShowKillerProfile( GC gc )
 
 event DrawWindow(GC gc)
 {
-	local float w, h, cury, x, y;
-	local String str;
-	local bool bContinueMsg;
+    local float w, h, cury, x, y;
+    local String str;
+    local bool bContinueMsg;
 
-	// Don't show if match has ended
-	if (( DeusExMPGame(Player.DXGame) != None ) && DeusExMPGame(Player.DXGame).bClientNewMap )
-		return;
+    // Don't show if match has ended
+    if (( DeusExMPGame(Player.DXGame) != None ) && DeusExMPGame(Player.DXGame).bClientNewMap )
+        return;
 
    if (bKilled)
    {
@@ -245,7 +245,7 @@ event DrawWindow(GC gc)
          // Killed by another
          gc.SetTextColor( RedColor );
          gc.SetFont(Font'FontMenuExtraLarge');
-         str = KilledByString $ 	killerName;
+         str = KilledByString $     killerName;
          gc.GetTextExtent( 0, w, h, str );
          cury = msgY * height;
          gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, str );
@@ -254,23 +254,23 @@ event DrawWindow(GC gc)
          gc.GetTextExtent( 0, w, h, str );
          gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, str );
       }
-		if ( Player.Level.Timeseconds > lockoutTime )
-		{
-			gc.SetTextColor( whiteColor );
-			gc.SetFont(Font'FontMenuTitle');
-			gc.GetTextExtent( 0, w, h, FireToContinueMsg );
-			x = (width * 0.5) - (w * 0.5);
-			y = height * 0.88;
-			gc.DrawText( x, y, w, h, FireToContinueMsg );
-			if ( !Player.bKillerProfile && Player.killProfile.bValid && (!Player.killProfile.bKilledSelf))
-			{
-				y += h;
-				str = Detail1String $ curDetailKeyName $ Detail2String;
-				gc.GetTextExtent( 0, w, h, str );
-				x = (width * 0.5) - (w * 0.5);
-				gc.DrawText( x, y, w, h, str );
-			}
-		}
+        if ( Player.Level.Timeseconds > lockoutTime )
+        {
+            gc.SetTextColor( whiteColor );
+            gc.SetFont(Font'FontMenuTitle');
+            gc.GetTextExtent( 0, w, h, FireToContinueMsg );
+            x = (width * 0.5) - (w * 0.5);
+            y = height * 0.88;
+            gc.DrawText( x, y, w, h, FireToContinueMsg );
+            if ( !Player.bKillerProfile && Player.killProfile.bValid && (!Player.killProfile.bKilledSelf))
+            {
+                y += h;
+                str = Detail1String $ curDetailKeyName $ Detail2String;
+                gc.GetTextExtent( 0, w, h, str );
+                x = (width * 0.5) - (w * 0.5);
+                gc.DrawText( x, y, w, h, str );
+            }
+        }
    }
    else if ((bDisplayProgress))
    {
@@ -287,10 +287,10 @@ event DrawWindow(GC gc)
       gc.GetTextExtent( 0, w, h, str );
       gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, str );
    }
-	if ( Player.bKillerProfile && Player.killProfile.bValid && (!Player.killProfile.bKilledSelf) )
-		ShowKillerProfile( gc );
+    if ( Player.bKillerProfile && Player.killProfile.bValid && (!Player.killProfile.bKilledSelf) )
+        ShowKillerProfile( gc );
 
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 }
 
 //
@@ -299,19 +299,19 @@ event DrawWindow(GC gc)
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	if ( Player.Level.Timeseconds < lockoutTime )
-		return True;
+    if ( Player.Level.Timeseconds < lockoutTime )
+        return True;
 
-	if ( ( button == IK_LeftMouse ) || ( button == IK_RightMouse ) )
-	{
-		if ( !bDestroy )
-		{
-			bDestroy = True;
-			player.Fire(0);
-			root.PopWindow();
-		}
-	}
-	return True;
+    if ( ( button == IK_LeftMouse ) || ( button == IK_RightMouse ) )
+    {
+        if ( !bDestroy )
+        {
+            bDestroy = True;
+            player.Fire(0);
+            root.PopWindow();
+        }
+    }
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -322,10 +322,10 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	local String KeyName, Alias;
+    local bool bKeyHandled;
+    local String KeyName, Alias;
 
-	bKeyHandled = False;
+    bKeyHandled = False;
 
    if ((key == IK_F10) && (bDisplayProgress))
    {
@@ -333,25 +333,25 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
       return True;
    }
 
-	// Let them send chat messages
-	KeyName = player.ConsoleCommand("KEYNAME "$key );
-	Alias = 	player.ConsoleCommand( "KEYBINDING "$KeyName );
+    // Let them send chat messages
+    KeyName = player.ConsoleCommand("KEYNAME "$key );
+    Alias =     player.ConsoleCommand( "KEYBINDING "$KeyName );
 
-	if ( Alias ~= "Talk" )
-		Player.Player.Console.Talk();
-	else if ( Alias ~= "TeamTalk" )
-		Player.Player.Console.TeamTalk();
+    if ( Alias ~= "Talk" )
+        Player.Player.Console.Talk();
+    else if ( Alias ~= "TeamTalk" )
+        Player.Player.Console.TeamTalk();
 
-	if ( Player.Level.Timeseconds < lockoutTime )
-		return True;
+    if ( Player.Level.Timeseconds < lockoutTime )
+        return True;
 
-	if ( Alias ~= "KillerProfile" )
-	{
-		Player.bKillerProfile = True;
-		return True;
-	}
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if ( Alias ~= "KillerProfile" )
+    {
+        Player.bKillerProfile = True;
+        return True;
+    }
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 defaultproperties

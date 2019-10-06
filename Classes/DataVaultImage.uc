@@ -2,23 +2,23 @@
 // DataVaultImage
 //=============================================================================
 class DataVaultImage extends Inventory
-	abstract;
+    abstract;
 
 var Texture         imageTextures[4];
-var Int				sizeX;
-var Int				sizeY;
-var localized String			imageDescription;
-var localized String			floorDescription;
-var Int				sortKey;
+var Int             sizeX;
+var Int             sizeY;
+var localized String            imageDescription;
+var localized String            floorDescription;
+var Int             sortKey;
 
-var travel DataVaultImageNote	firstNote;
-var travel DataVaultImage		prevImage;
-var travel DataVaultImage		nextImage;
-var travel Bool					bPlayerViewedImage;
+var travel DataVaultImageNote   firstNote;
+var travel DataVaultImage       prevImage;
+var travel DataVaultImage       nextImage;
+var travel Bool                 bPlayerViewedImage;
 
-var Color			colNoteTextNormal;
-var Color			colNoteTextFocus;
-var Color			colNoteBackground;
+var Color           colNoteTextNormal;
+var Color           colNoteTextFocus;
+var Color           colNoteBackground;
 
 // ----------------------------------------------------------------------
 // UnloadTextures()
@@ -28,10 +28,10 @@ var Color			colNoteBackground;
 
 function UnloadTextures(DeusExPlayer player)
 {
-	local int texIndex;
+    local int texIndex;
 
-	for(texIndex=0; texIndex<arrayCount(imageTextures); texIndex++)
-		player.UnloadTexture(imageTextures[texIndex]);
+    for(texIndex=0; texIndex<arrayCount(imageTextures); texIndex++)
+        player.UnloadTexture(imageTextures[texIndex]);
 }
 
 // ----------------------------------------------------------------------
@@ -40,11 +40,11 @@ function UnloadTextures(DeusExPlayer player)
 
 function inventory SpawnCopy( Pawn Other )
 {
-	local Inventory Copy;
+    local Inventory Copy;
 
-	Copy = Super.SpawnCopy(Other);
+    Copy = Super.SpawnCopy(Other);
 
-	return Copy;
+    return Copy;
 }
 
 // ----------------------------------------------------------------------
@@ -55,10 +55,10 @@ function inventory SpawnCopy( Pawn Other )
 
 function AddNote(DataVaultImageNote newNote)
 {
-	// Insert this note at the beginning
+    // Insert this note at the beginning
 
-	newNote.nextNote = firstNote;
-	firstNote        = newNote;
+    newNote.nextNote = firstNote;
+    firstNote        = newNote;
 }
 
 // ----------------------------------------------------------------------
@@ -69,29 +69,29 @@ function AddNote(DataVaultImageNote newNote)
 
 function DeleteNote(DataVaultImageNote deleteNote)
 {
-	local DataVaultImageNote note;
-	local DataVaultImageNote prevNote;
+    local DataVaultImageNote note;
+    local DataVaultImageNote prevNote;
 
-	note = firstNote;
+    note = firstNote;
 
-	while( note != None )
-	{
-		if ( note == deleteNote )
-		{
-			// Update the links and then delete the offending note
-			if (firstNote == deleteNote)
-				firstNote = deleteNote.nextNote;
+    while( note != None )
+    {
+        if ( note == deleteNote )
+        {
+            // Update the links and then delete the offending note
+            if (firstNote == deleteNote)
+                firstNote = deleteNote.nextNote;
 
-			if ( prevNote != None )
-				prevNote.nextNote = note.nextNote;
+            if ( prevNote != None )
+                prevNote.nextNote = note.nextNote;
 
-			CriticalDelete(deleteNote);
-			deleteNote = None;
-			break;
-		}
-		prevNote = note;
-		note = note.nextNote;
-	}
+            CriticalDelete(deleteNote);
+            deleteNote = None;
+            break;
+        }
+        prevNote = note;
+        note = note.nextNote;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -100,15 +100,15 @@ function DeleteNote(DataVaultImageNote deleteNote)
 
 auto state Pickup
 {
-	function Frob(Actor Other, Inventory frobWith)
-	{
-		if ( DeusExPlayer(Other) != None )
-		{
-			bHidden = True;
-			DeusExPlayer(Other).AddImage(Self);
-		}
-		Super.Frob(Other, frobWith);
-	}
+    function Frob(Actor Other, Inventory frobWith)
+    {
+        if ( DeusExPlayer(Other) != None )
+        {
+            bHidden = True;
+            DeusExPlayer(Other).AddImage(Self);
+        }
+        Super.Frob(Other, frobWith);
+    }
 
 }
 

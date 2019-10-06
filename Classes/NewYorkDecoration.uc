@@ -2,7 +2,7 @@
 // NewYorkDecoration.
 //=============================================================================
 class NewYorkDecoration extends DeusExDecoration
-	abstract;
+    abstract;
 
 defaultproperties
 {

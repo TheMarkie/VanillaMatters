@@ -11,8 +11,8 @@ class WeaponModScope extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		weapon.bHasScope = True;
+    if (weapon != None)
+        weapon.bHasScope = True;
 }
 
 // ----------------------------------------------------------------------
@@ -21,10 +21,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveScope && !weapon.bHasScope);
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveScope && !weapon.bHasScope);
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

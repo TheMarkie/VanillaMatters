@@ -16,14 +16,14 @@ var localized String StatusText;
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnClose = winButtonBar.AddButton(ButtonLabelClose, HALIGN_Right);
+    btnClose = winButtonBar.AddButton(ButtonLabelClose, HALIGN_Right);
 
-	CreateLoginInfoWindow();
+    CreateLoginInfoWindow();
 
-	winTitle.SetTitle(Title);
-	winStatus.SetText(StatusText);
+    winTitle.SetTitle(Title);
+    winStatus.SetText(StatusText);
 }
 
 // ----------------------------------------------------------------------
@@ -32,13 +32,13 @@ function CreateControls()
 
 function CreateLoginInfoWindow()
 {
-	winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
+    winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winLoginInfo.SetPos(10, 12);
-	winLoginInfo.SetSize(377, 122);
-	winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winLoginInfo.SetTextMargins(0, 0);
-	winLoginInfo.SetText(LoginInfoText);
+    winLoginInfo.SetPos(10, 12);
+    winLoginInfo.SetSize(377, 122);
+    winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winLoginInfo.SetTextMargins(0, 0);
+    winLoginInfo.SetText(LoginInfoText);
 }
 
 // ----------------------------------------------------------------------
@@ -47,11 +47,11 @@ function CreateLoginInfoWindow()
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	// Hide the Hack window
-	if (winTerm != None)
-		winTerm.CloseHackWindow();
+    // Hide the Hack window
+    if (winTerm != None)
+        winTerm.CloseHackWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -60,25 +60,25 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnClose:
-			CloseScreen("EXIT");
-			break;
+    switch( buttonPressed )
+    {
+        case btnClose:
+            CloseScreen("EXIT");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------

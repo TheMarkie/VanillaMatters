@@ -10,7 +10,7 @@ class MenuChoice_MenuTranslucency extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(player.bMenusTranslucent));
+    SetValue(int(player.bMenusTranslucent));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bMenusTranslucent = bool(GetValue());
+    player.bMenusTranslucent = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,9 +28,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	player.bMenusTranslucent = bool(defaultValue);
-	SetValue(defaultValue);
-	ChangeStyle();
+    player.bMenusTranslucent = bool(defaultValue);
+    SetValue(defaultValue);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -39,9 +39,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	player.bMenusTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CycleNextValue();
+    player.bMenusTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	player.bMenusTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    player.bMenusTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

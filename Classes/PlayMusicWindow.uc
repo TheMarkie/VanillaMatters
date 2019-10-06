@@ -3,18 +3,18 @@
 //=============================================================================
 class PlayMusicWindow expands ToolWindow;
 
-// Windows 
+// Windows
 var RadioBoxWindow      radSongType;
 var Window              winSongType;
-var ToolListWindow		lstSongs;
-var ToolButtonWindow	btnPlay;    
-var ToolButtonWindow	btnClose;  
+var ToolListWindow      lstSongs;
+var ToolButtonWindow    btnPlay;
+var ToolButtonWindow    btnClose;
 
-var ToolRadioButtonWindow	btnAmbient;
-var ToolRadioButtonWindow	btnCombat;
-var ToolRadioButtonWindow	btnConversation;
-var ToolRadioButtonWindow	btnOutro;
-var ToolRadioButtonWindow	btnDying;
+var ToolRadioButtonWindow   btnAmbient;
+var ToolRadioButtonWindow   btnCombat;
+var ToolRadioButtonWindow   btnConversation;
+var ToolRadioButtonWindow   btnOutro;
+var ToolRadioButtonWindow   btnDying;
 
 // list of songs
 var String songList[35];
@@ -31,18 +31,18 @@ var int savedSongSection;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Center this window	
-	SetSize(370, 430);
-	SetTitle("Play Song");
+    // Center this window
+    SetSize(370, 430);
+    SetTitle("Play Song");
 
-	// Create the controls
-	CreateControls();
-	PopulateSongsList();
+    // Create the controls
+    CreateControls();
+    PopulateSongsList();
 
-	// Save current song playing
-	savedSongSection = player.SongSection;
+    // Save current song playing
+    savedSongSection = player.SongSection;
 }
 
 // ----------------------------------------------------------------------
@@ -51,8 +51,8 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	// Shut down the music
-	player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
+    // Shut down the music
+    player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
 }
 
 // ----------------------------------------------------------------------
@@ -61,40 +61,40 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	// Songslist box
-	CreateSongsList();
+    // Songslist box
+    CreateSongsList();
 
-	// Create a RadioBox window for the boolean radiobuttons
-	radSongType = RadioBoxWindow(NewChild(Class'RadioBoxWindow'));
-	radSongType.SetPos(280, 65);
-	radSongType.SetSize(100, 130);
-	winSongType = radSongType.NewChild(Class'Window');
+    // Create a RadioBox window for the boolean radiobuttons
+    radSongType = RadioBoxWindow(NewChild(Class'RadioBoxWindow'));
+    radSongType.SetPos(280, 65);
+    radSongType.SetSize(100, 130);
+    winSongType = radSongType.NewChild(Class'Window');
 
-	btnAmbient = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
-	btnAmbient.SetText("|&Ambient");
-	btnAmbient.SetPos(0, 0);
+    btnAmbient = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
+    btnAmbient.SetText("|&Ambient");
+    btnAmbient.SetPos(0, 0);
 
-	btnCombat = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
-	btnCombat.SetText("Co|&mbat");
-	btnCombat.SetPos(0, 20);
+    btnCombat = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
+    btnCombat.SetText("Co|&mbat");
+    btnCombat.SetPos(0, 20);
 
-	btnConversation = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
-	btnConversation.SetText("Co|&nvo");
-	btnConversation.SetPos(0, 40);
+    btnConversation = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
+    btnConversation.SetText("Co|&nvo");
+    btnConversation.SetPos(0, 40);
 
-	btnOutro = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
-	btnOutro.SetText("|&Outro");
-	btnOutro.SetPos(0, 60);
+    btnOutro = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
+    btnOutro.SetText("|&Outro");
+    btnOutro.SetPos(0, 60);
 
-	btnDying = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
-	btnDying.SetText("|&Dying");
-	btnDying.SetPos(0, 80);
+    btnDying = ToolRadioButtonWindow(winSongType.NewChild(Class'ToolRadioButtonWindow'));
+    btnDying.SetText("|&Dying");
+    btnDying.SetPos(0, 80);
 
-	btnAmbient.SetToggle(True);
+    btnAmbient.SetToggle(True);
 
-	// Buttons
-	btnPlay  = CreateToolButton(280, 362, "Play |&Song");
-	btnClose = CreateToolButton(280, 387, "|&Close");
+    // Buttons
+    btnPlay  = CreateToolButton(280, 362, "Play |&Song");
+    btnClose = CreateToolButton(280, 387, "|&Close");
 }
 
 // ----------------------------------------------------------------------
@@ -103,12 +103,12 @@ function CreateControls()
 
 function CreateSongsList()
 {
-	// Now create the List Window
-	lstSongs = CreateToolList(15, 38, 255, 372);
-	lstSongs.EnableMultiSelect(False);
-	lstSongs.EnableAutoExpandColumns(True);
-	lstSongs.SetColumns(2);
-	lstSongs.HideColumn(1);
+    // Now create the List Window
+    lstSongs = CreateToolList(15, 38, 255, 372);
+    lstSongs.EnableMultiSelect(False);
+    lstSongs.EnableAutoExpandColumns(True);
+    lstSongs.SetColumns(2);
+    lstSongs.HideColumn(1);
 }
 
 // ----------------------------------------------------------------------
@@ -117,17 +117,17 @@ function CreateSongsList()
 
 function PopulateSongsList()
 {
-	local int songIndex;
+    local int songIndex;
 
-	lstSongs.DeleteAllRows();
+    lstSongs.DeleteAllRows();
 
-	for( songIndex=0; songIndex<arrayCount(songList); songIndex++)
-		lstSongs.AddRow(songList[songIndex] $ ";" $ songNames[songIndex]);
+    for( songIndex=0; songIndex<arrayCount(songList); songIndex++)
+        lstSongs.AddRow(songList[songIndex] $ ";" $ songNames[songIndex]);
 
-	// Sort the maps by name
-	lstSongs.Sort();
+    // Sort the maps by name
+    lstSongs.Sort();
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -136,33 +136,33 @@ function PopulateSongsList()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnPlay:
-			PlaySong(lstSongs.GetSelectedRow());
-			break;
+    switch( buttonPressed )
+    {
+        case btnPlay:
+            PlaySong(lstSongs.GetSelectedRow());
+            break;
 
-		case btnClose:
-			root.PopWindow();
-			break;
+        case btnClose:
+            root.PopWindow();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled ) 
-		bHandled = Super.ButtonActivated( buttonPressed );
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated( buttonPressed );
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the buttons
 // appropriately
@@ -170,9 +170,9 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -181,8 +181,8 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	PlaySong(rowID);
-	return true;
+    PlaySong(rowID);
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -191,8 +191,8 @@ event bool ListRowActivated(window list, int rowId)
 
 function PlaySong(int rowID)
 {
-	local String songName;
-	local Int songSection;
+    local String songName;
+    local Int songSection;
 
 //   0 - Ambient 1
 //   1 - Dying
@@ -201,19 +201,19 @@ function PlaySong(int rowID)
 //   4 - Conversation
 //   5 - Outro
 
-	if (btnAmbient.GetToggle())
-		songSection = 0;
-	else if (btnCombat.GetToggle())
-		songSection = 3;
-	else if (btnConversation.GetToggle())
-		songSection = 4;
-	else if (btnOutro.GetToggle())
-		songSection = 5;
-	else if (btnDying.GetToggle())
-		songSection = 1;
+    if (btnAmbient.GetToggle())
+        songSection = 0;
+    else if (btnCombat.GetToggle())
+        songSection = 3;
+    else if (btnConversation.GetToggle())
+        songSection = 4;
+    else if (btnOutro.GetToggle())
+        songSection = 5;
+    else if (btnDying.GetToggle())
+        songSection = 1;
 
-	songName = lstSongs.GetField(rowID, 1);
-	player.PlayMusic(songName, songSection);
+    songName = lstSongs.GetField(rowID, 1);
+    player.PlayMusic(songName, songSection);
 }
 
 // ----------------------------------------------------------------------
@@ -225,7 +225,7 @@ function PlaySong(int rowID)
 
 function EnableButtons()
 {
-	btnPlay.SetSensitivity( lstSongs.GetNumSelectedRows() > 0 );
+    btnPlay.SetSensitivity( lstSongs.GetNumSelectedRows() > 0 );
 }
 
 // ----------------------------------------------------------------------

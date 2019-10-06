@@ -12,9 +12,9 @@ class MenuMPMain expands MenuUIMenuWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	UpdateButtonStatus();
+    UpdateButtonStatus();
 }
 
 // ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 function UpdateButtonStatus()
-{   
+{
    if (player.Level.Netmode != NM_Standalone)
    {
       winButtons[0].SetSensitivity(False);
@@ -40,12 +40,12 @@ function UpdateButtonStatus()
 
 function ProcessCustomMenuButton(string key)
 {
-	switch(key)
-	{
-		case "DISCONNECT":
-			Player.DisconnectPlayer();
-			break;
-	}
+    switch(key)
+    {
+        case "DISCONNECT":
+            Player.DisconnectPlayer();
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------

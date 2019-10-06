@@ -5,12 +5,12 @@
 //=============================================================================
 
 class PersonaScreenBaseWindow extends DeusExBaseWindow
-	abstract;
+    abstract;
 
-var PersonaClientWindow			winClient;			// Window that contains all controls
-var PersonaNavBarBaseWindow		winNavBar;			// Navigation Button Bar
-var PersonaTitleTextWindow		txtTitle;			// Title Bar Text
-var PersonaClientBorderWindow   winClientBorder;	// Border around client window
+var PersonaClientWindow         winClient;          // Window that contains all controls
+var PersonaNavBarBaseWindow     winNavBar;          // Navigation Button Bar
+var PersonaTitleTextWindow      txtTitle;           // Title Bar Text
+var PersonaClientBorderWindow   winClientBorder;    // Border around client window
 var PersonaStatusLineWindow     winStatus;
 
 // Defaults
@@ -40,20 +40,20 @@ var int clientBorderTextureCols;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetMouseFocusMode(MFOCUS_Click);
+    SetMouseFocusMode(MFOCUS_Click);
 
-	SetSize(screenWidth, screenHeight);
+    SetSize(screenWidth, screenHeight);
 
-	CreateControls();	
+    CreateControls();
 
-	// Play Menu Activated Sound
+    // Play Menu Activated Sound
 
-	// TODO: Replace Menu sounds with HUD sounds
-	PlaySound(Sound'Menu_Activate', 0.25); 
+    // TODO: Replace Menu sounds with HUD sounds
+    PlaySound(Sound'Menu_Activate', 0.25);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -64,15 +64,15 @@ event InitWindow()
 
 function DestroyWindow()
 {
-	local int texIndex;
+    local int texIndex;
 
-	for(texIndex=0; texIndex<arrayCount(clientTextures); texIndex++)
-		player.UnloadTexture(clientTextures[texIndex]);
-		
-	for(texIndex=0; texIndex<arrayCount(clientBorderTextures); texIndex++)
-		player.UnloadTexture(clientBorderTextures[texIndex]);				
+    for(texIndex=0; texIndex<arrayCount(clientTextures); texIndex++)
+        player.UnloadTexture(clientTextures[texIndex]);
 
-	Super.DestroyWindow();
+    for(texIndex=0; texIndex<arrayCount(clientBorderTextures); texIndex++)
+        player.UnloadTexture(clientBorderTextures[texIndex]);
+
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -81,9 +81,9 @@ function DestroyWindow()
 
 function CreateControls()
 {
-	CreateNavBarWindow();
-	CreateClientBorderWindow();
-	CreateClientWindow();
+    CreateNavBarWindow();
+    CreateClientBorderWindow();
+    CreateClientWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -94,27 +94,27 @@ function CreateControls()
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = True;
+    local bool bKeyHandled;
+    bKeyHandled = True;
 
-	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
-		return False;
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
+        return False;
 
-	switch( key ) 
-	{	
-		case IK_Escape:
-			SaveSettings();
-			root.PopWindow();
-			break;
+    switch( key )
+    {
+        case IK_Escape:
+            SaveSettings();
+            root.PopWindow();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	if (bKeyHandled)
-		return bKeyHandled;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (bKeyHandled)
+        return bKeyHandled;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -123,8 +123,8 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function CreateNavBarWindow()
 {
-	winNavBar = PersonaNavBarBaseWindow(NewChild(Class'PersonaNavBarWindow'));
-	winNavBar.SetPos(0, 0);
+    winNavBar = PersonaNavBarBaseWindow(NewChild(Class'PersonaNavBarWindow'));
+    winNavBar.SetPos(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -133,13 +133,13 @@ function CreateNavBarWindow()
 
 function PersonaTitleTextWindow CreateTitleWindow(int posX, int posY, String titleText)
 {
-	local PersonaTitleTextWindow winTitle;
+    local PersonaTitleTextWindow winTitle;
 
-	winTitle = PersonaTitleTextWindow(winClient.NewChild(Class'PersonaTitleTextWindow'));
-	winTitle.SetPos(posX, posY);
-	winTitle.SetText(titleText);
+    winTitle = PersonaTitleTextWindow(winClient.NewChild(Class'PersonaTitleTextWindow'));
+    winTitle.SetPos(posX, posY);
+    winTitle.SetText(titleText);
 
-	return winTitle;
+    return winTitle;
 }
 
 // ----------------------------------------------------------------------
@@ -148,19 +148,19 @@ function PersonaTitleTextWindow CreateTitleWindow(int posX, int posY, String tit
 
 function CreateClientWindow()
 {
-	local int clientIndex;
+    local int clientIndex;
 
-	winClient = PersonaClientWindow(NewChild(class'PersonaClientWindow'));
+    winClient = PersonaClientWindow(NewChild(class'PersonaClientWindow'));
 
-	winClient.SetPos(clientBorderOffsetX + clientOffsetX, clientBorderOffsetY + clientOffsetY);
-	winClient.SetSize(clientWidth, clientHeight);
-	winClient.SetTextureLayout(clientTextureCols, clientTextureRows);
+    winClient.SetPos(clientBorderOffsetX + clientOffsetX, clientBorderOffsetY + clientOffsetY);
+    winClient.SetSize(clientWidth, clientHeight);
+    winClient.SetTextureLayout(clientTextureCols, clientTextureRows);
 
-	// Set background textures
-	for(clientIndex=0; clientIndex<arrayCount(clientTextures); clientIndex++)
-	{
-		winClient.SetClientTexture(clientIndex, clientTextures[clientIndex]);
-	}
+    // Set background textures
+    for(clientIndex=0; clientIndex<arrayCount(clientTextures); clientIndex++)
+    {
+        winClient.SetClientTexture(clientIndex, clientTextures[clientIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -169,19 +169,19 @@ function CreateClientWindow()
 
 function CreateClientBorderWindow()
 {
-	local int clientBorderIndex;
+    local int clientBorderIndex;
 
-	winClientBorder = PersonaClientBorderWindow(NewChild(class'PersonaClientBorderWindow'));
+    winClientBorder = PersonaClientBorderWindow(NewChild(class'PersonaClientBorderWindow'));
 
-	winClientBorder.SetPos(clientBorderOffsetX, clientBorderOffsetY);
-	winClientBorder.SetSize(clientBorderWidth, clientBorderHeight);
-	winClientBorder.SetTextureLayout(clientBorderTextureCols, clientBorderTextureRows);
+    winClientBorder.SetPos(clientBorderOffsetX, clientBorderOffsetY);
+    winClientBorder.SetSize(clientBorderWidth, clientBorderHeight);
+    winClientBorder.SetTextureLayout(clientBorderTextureCols, clientBorderTextureRows);
 
-	// Set background textures
-	for(clientBorderIndex=0; clientBorderIndex<arrayCount(clientBorderTextures); clientBorderIndex++)
-	{
-		winClientBorder.SetClientTexture(clientBorderIndex, clientBorderTextures[clientBorderIndex]);
-	}
+    // Set background textures
+    for(clientBorderIndex=0; clientBorderIndex<arrayCount(clientBorderTextures); clientBorderIndex++)
+    {
+        winClientBorder.SetClientTexture(clientBorderIndex, clientBorderTextures[clientBorderIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -190,14 +190,14 @@ function CreateClientBorderWindow()
 
 function PersonaHeaderTextWindow CreatePersonaHeaderText(int posX, int posY, String strHeader, Window winParent)
 {
-	local PersonaHeaderTextWindow newHeader;
+    local PersonaHeaderTextWindow newHeader;
 
-	newHeader = PersonaHeaderTextWindow(winParent.NewChild(Class'PersonaHeaderTextWindow'));
+    newHeader = PersonaHeaderTextWindow(winParent.NewChild(Class'PersonaHeaderTextWindow'));
 
-	newHeader.SetPos(posX, posY);
-	newHeader.SetText(strHeader);
+    newHeader.SetPos(posX, posY);
+    newHeader.SetText(strHeader);
 
-	return newHeader;
+    return newHeader;
 }
 
 // ----------------------------------------------------------------------
@@ -205,21 +205,21 @@ function PersonaHeaderTextWindow CreatePersonaHeaderText(int posX, int posY, Str
 // ----------------------------------------------------------------------
 
 function PersonaActionButtonWindow CreatePersonaButton(
-	int posX, 
-	int posY, 
-	int buttonWidth, 
-	String strLabel, 
-	Window winParent)
+    int posX,
+    int posY,
+    int buttonWidth,
+    String strLabel,
+    Window winParent)
 {
-	local PersonaActionButtonWindow newButton;
+    local PersonaActionButtonWindow newButton;
 
-	newButton = PersonaActionButtonWindow(winParent.NewChild(Class'PersonaActionButtonWindow'));
+    newButton = PersonaActionButtonWindow(winParent.NewChild(Class'PersonaActionButtonWindow'));
 
-	newButton.SetPos(posX, posY);
-	newButton.SetWidth(buttonWidth);
-	newButton.SetButtonText(strLabel);
+    newButton.SetPos(posX, posY);
+    newButton.SetWidth(buttonWidth);
+    newButton.SetButtonText(strLabel);
 
-	return newButton;
+    return newButton;
 }
 
 // ----------------------------------------------------------------------
@@ -228,7 +228,7 @@ function PersonaActionButtonWindow CreatePersonaButton(
 
 function PersonaScrollAreaWindow CreateScrollAreaWindow(Window winParent)
 {
-	return PersonaScrollAreaWindow(winParent.NewChild(Class'PersonaScrollAreaWindow'));
+    return PersonaScrollAreaWindow(winParent.NewChild(Class'PersonaScrollAreaWindow'));
 }
 
 // ----------------------------------------------------------------------
@@ -236,19 +236,19 @@ function PersonaScrollAreaWindow CreateScrollAreaWindow(Window winParent)
 // ----------------------------------------------------------------------
 
 function TileWindow CreateScrollTileWindow(
-	int posX, int posY,
-	int sizeX, int sizeY)
+    int posX, int posY,
+    int sizeX, int sizeY)
 {
-	local TileWindow tileWindow;
-	local PersonaScrollAreaWindow winScroll;
+    local TileWindow tileWindow;
+    local PersonaScrollAreaWindow winScroll;
 
-	winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
-	winScroll.SetPos(posX, posY);
-	winScroll.SetSize(sizeX, sizeY);
+    winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
+    winScroll.SetPos(posX, posY);
+    winScroll.SetSize(sizeX, sizeY);
 
-	tileWindow   = CreateTileWindow(winScroll.clipWindow);
+    tileWindow   = CreateTileWindow(winScroll.clipWindow);
 
-	return tileWindow;
+    return tileWindow;
 }
 
 // ----------------------------------------------------------------------
@@ -257,17 +257,17 @@ function TileWindow CreateScrollTileWindow(
 
 function TileWindow CreateTileWindow(Window parent)
 {
-	local TileWindow tileWindow;
+    local TileWindow tileWindow;
 
-	// Create Tile Window inside the scroll window
-	tileWindow = TileWindow(parent.NewChild(Class'TileWindow'));
-	tileWindow.SetFont(Font'FontMenuSmall');
-	tileWindow.SetOrder(ORDER_Down);
-	tileWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	tileWindow.MakeWidthsEqual(False);
-	tileWindow.MakeHeightsEqual(False);
+    // Create Tile Window inside the scroll window
+    tileWindow = TileWindow(parent.NewChild(Class'TileWindow'));
+    tileWindow.SetFont(Font'FontMenuSmall');
+    tileWindow.SetOrder(ORDER_Down);
+    tileWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    tileWindow.MakeWidthsEqual(False);
+    tileWindow.MakeHeightsEqual(False);
 
-	return tileWindow;
+    return tileWindow;
 }
 
 // ----------------------------------------------------------------------
@@ -276,9 +276,9 @@ function TileWindow CreateTileWindow(Window parent)
 
 function SaveSettings()
 {
-	// Play OK Sound
-	// TODO: Change Menu sounds to HUD sounds
-	PlaySound(Sound'Menu_OK', 0.25); 
+    // Play OK Sound
+    // TODO: Change Menu sounds to HUD sounds
+    PlaySound(Sound'Menu_OK', 0.25);
 }
 
 // ----------------------------------------------------------------------
@@ -287,8 +287,8 @@ function SaveSettings()
 
 function AddLog(String logText)
 {
-	if (winStatus != None)
-		winStatus.AddText(logText);
+    if (winStatus != None)
+        winStatus.AddText(logText);
 }
 
 // ----------------------------------------------------------------------
@@ -297,14 +297,14 @@ function AddLog(String logText)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colCursor;
+    local ColorTheme theme;
+    local Color colCursor;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colCursor = theme.GetColorFromName('HUDColor_Cursor');
+    colCursor = theme.GetColorFromName('HUDColor_Cursor');
 
-	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
+    SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
 }
 
 // ----------------------------------------------------------------------

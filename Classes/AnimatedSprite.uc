@@ -2,7 +2,7 @@
 // AnimatedSprite.
 //=============================================================================
 class AnimatedSprite expands Effects
-	abstract;
+    abstract;
 
 var float animSpeed;
 var int numFrames;
@@ -12,28 +12,28 @@ var float time, totalTime, duration;
 
 simulated function Tick(float deltaTime)
 {
-	time += deltaTime;
-	totalTime += deltaTime;
+    time += deltaTime;
+    totalTime += deltaTime;
 
-	DrawScale = 0.5 + (3.0 * totalTime / duration);
-	ScaleGlow = (duration - totalTime) / duration;
+    DrawScale = 0.5 + (3.0 * totalTime / duration);
+    ScaleGlow = (duration - totalTime) / duration;
 
-	if (time >= animSpeed)
-	{
-		Texture = frames[nextFrame++];
-		if (nextFrame >= numFrames)
-			Destroy();
+    if (time >= animSpeed)
+    {
+        Texture = frames[nextFrame++];
+        if (nextFrame >= numFrames)
+            Destroy();
 
-		time -= animSpeed;
-	}
+        time -= animSpeed;
+    }
 }
 
 simulated function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// calculate length of animation
-	duration = animSpeed * numFrames;
+    // calculate length of animation
+    duration = animSpeed * numFrames;
 }
 
 defaultproperties

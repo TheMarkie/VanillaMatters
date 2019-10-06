@@ -6,16 +6,16 @@ class VMMuzzleFlash extends Effects;
 var vector FireOffset;
 
 function Spawned() {
-	FlipFlashTexture();
+    FlipFlashTexture();
 }
 
 function FlipFlashTexture() {
-	if ( FRand() < 0.5 ) {
-		Skin = Texture'FlatFXTex34';
-	}
-	else {
-		Skin = Texture'FlatFXTex37';
-	}
+    if ( FRand() < 0.5 ) {
+        Skin = Texture'FlatFXTex34';
+    }
+    else {
+        Skin = Texture'FlatFXTex37';
+    }
 }
 
 defaultproperties

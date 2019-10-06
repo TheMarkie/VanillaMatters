@@ -9,8 +9,8 @@ class MenuChoice_FOV extends MenuUIChoiceSlider;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	saveValue = player.DefaultFOV;
-	SetValue( FClamp( player.DefaultFOV, startValue, endValue ) );
+    saveValue = player.DefaultFOV;
+    SetValue( FClamp( player.DefaultFOV, startValue, endValue ) );
 }
 
 // ----------------------------------------------------------------------
@@ -18,14 +18,14 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	if ( player.DefaultFOV == player.DesiredFOV ) {
-		player.SetDesiredFOV( GetValue() );
-	}
-	else {
-		player.DefaultFOV = GetValue();
+    if ( player.DefaultFOV == player.DesiredFOV ) {
+        player.SetDesiredFOV( GetValue() );
+    }
+    else {
+        player.DefaultFOV = GetValue();
 
-		player.ConsoleCommand( "set " $ configSetting $ " " $ GetValue() );
-	}
+        player.ConsoleCommand( "set " $ configSetting $ " " $ GetValue() );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -33,7 +33,7 @@ function SaveSetting() {
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( defaultValue );
+    SetValue( defaultValue );
 }
 
 // ----------------------------------------------------------------------
@@ -41,13 +41,13 @@ function ResetToDefault() {
 // ----------------------------------------------------------------------
 
 function SetEnumerators() {
-	local int fov;
-	local int enumIndex;
+    local int fov;
+    local int enumIndex;
 
-	enumIndex = 0;
-	for( fov = 75; fov <= 110; fov++ ) {
-		SetEnumeration( enumIndex++, string( fov ) );
-	}
+    enumIndex = 0;
+    for( fov = 75; fov <= 110; fov++ ) {
+        SetEnumeration( enumIndex++, string( fov ) );
+    }
 }
 
 // ----------------------------------------------------------------------

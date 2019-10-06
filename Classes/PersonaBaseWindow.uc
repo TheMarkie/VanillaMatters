@@ -24,12 +24,12 @@ var Color colText;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    Super.InitWindow();
 
-	StyleChanged();
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
+
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -38,13 +38,13 @@ event InitWindow()
 
 event DrawWindow(GC gc)
 {
-	// First draw the background then the border
-	DrawBackground(gc);
+    // First draw the background then the border
+    DrawBackground(gc);
 
-	// Don't call the DrawBorder routines if 
-	// they are disabled
-	if (bDrawBorder)
-		DrawBorder(gc);
+    // Don't call the DrawBorder routines if
+    // they are disabled
+    if (bDrawBorder)
+        DrawBorder(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -69,26 +69,26 @@ function DrawBorder(GC gc)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colBorder     = theme.GetColorFromName('HUDColor_Borders');
-	colText       = theme.GetColorFromName('HUDColor_NormalText');
-	colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colBorder     = theme.GetColorFromName('HUDColor_Borders');
+    colText       = theme.GetColorFromName('HUDColor_NormalText');
+    colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
 
-	bDrawBorder            = player.GetHUDBordersVisible();
+    bDrawBorder            = player.GetHUDBordersVisible();
 
-	if (player.GetHUDBorderTranslucency())
-		borderDrawStyle = DSTY_Translucent;
-	else
-		borderDrawStyle = DSTY_Masked;
+    if (player.GetHUDBorderTranslucency())
+        borderDrawStyle = DSTY_Translucent;
+    else
+        borderDrawStyle = DSTY_Masked;
 
-	if (player.GetHUDBackgroundTranslucency())
-		backgroundDrawStyle = DSTY_Translucent;
-	else
-		backgroundDrawStyle = DSTY_Masked;
+    if (player.GetHUDBackgroundTranslucency())
+        backgroundDrawStyle = DSTY_Translucent;
+    else
+        backgroundDrawStyle = DSTY_Masked;
 }
 
 // ----------------------------------------------------------------------

@@ -4,14 +4,14 @@
 class WeaponFlamethrower extends DeusExWeapon;
 
 // Vanilla Matters
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire1.wav"		NAME="FlamethrowerFire1"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire2.wav"		NAME="FlamethrowerFire2"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire3.wav"		NAME="FlamethrowerFire3"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire4.wav"		NAME="FlamethrowerFire4"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire5.wav"		NAME="FlamethrowerFire5"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire6.wav"		NAME="FlamethrowerFire6"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire7.wav"		NAME="FlamethrowerFire7"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire8.wav"		NAME="FlamethrowerFire8"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire1.wav"     NAME="FlamethrowerFire1"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire2.wav"     NAME="FlamethrowerFire2"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire3.wav"     NAME="FlamethrowerFire3"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire4.wav"     NAME="FlamethrowerFire4"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire5.wav"     NAME="FlamethrowerFire5"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire6.wav"     NAME="FlamethrowerFire6"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire7.wav"     NAME="FlamethrowerFire7"        GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\Flamethrower\fire8.wav"     NAME="FlamethrowerFire8"        GROUP="VMSounds"
 
 // Vanilla Matters
 var int VM_currentSoundIndex;
@@ -20,16 +20,16 @@ var Sound VM_fireSounds[13];
 
 var int BurnTime, BurnDamage;
 
-var int		mpBurnTime;
-var int		mpBurnDamage;
+var int     mpBurnTime;
+var int     mpBurnDamage;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
       HitDamage = mpHitDamage;
       BaseAccuracy=mpBaseAccuracy;
       ReloadTime = mpReloadTime;
@@ -39,31 +39,31 @@ simulated function PreBeginPlay()
       BurnTime = mpBurnTime;
       BurnDamage = mpBurnDamage;
       PickupAmmoCount = mpReloadCount;
-	}
+    }
 }
 
 // Vanilla Matters: Iterate through all the firing sounds.
 simulated function PlayFiringSound() {
-	FireSound = VM_fireSounds[VM_currentSoundIndex];
+    FireSound = VM_fireSounds[VM_currentSoundIndex];
 
-	VM_currentSoundIndex = VM_currentSoundIndex + 1;
-	if ( VM_currentSoundIndex >= 9 ) {
-		VM_currentSoundIndex = Rand( 4 ) + 3;
-	}
+    VM_currentSoundIndex = VM_currentSoundIndex + 1;
+    if ( VM_currentSoundIndex >= 9 ) {
+        VM_currentSoundIndex = Rand( 4 ) + 3;
+    }
 
-	super.PlayFiringSound();
+    super.PlayFiringSound();
 }
 
 // Vanilla Matters: Reset the sound index when not firing.
 simulated function Tick( float deltaTime ) {
-	local Pawn p;
+    local Pawn p;
 
-	p = Pawn( Owner );
-	if ( p != none && p.bFire == 0 && !bFiring && VM_currentSoundIndex != 0 ) {
-		VM_currentSoundIndex = 0;
-	}
+    p = Pawn( Owner );
+    if ( p != none && p.bFire == 0 && !bFiring && VM_currentSoundIndex != 0 ) {
+        VM_currentSoundIndex = 0;
+    }
 
-	super.Tick( deltaTime );
+    super.Tick( deltaTime );
 }
 
 defaultproperties

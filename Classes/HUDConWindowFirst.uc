@@ -3,11 +3,11 @@
 //=============================================================================
 class HUDConWindowFirst expands HUDSharedBorderWindow;
 
-var TileWindow lowerConWindow;					// Lower letterbox region
-var TextWindow nameWindow;						// Window displaying Actor name
-var TextWindow lastTextWindow;					// Most recent text window added
+var TileWindow lowerConWindow;                  // Lower letterbox region
+var TextWindow nameWindow;                      // Window displaying Actor name
+var TextWindow lastTextWindow;                  // Most recent text window added
 
-var ConPlay conPlay;							// Pointer into current conPlay object
+var ConPlay conPlay;                            // Pointer into current conPlay object
 
 var Color colConTextPlayer;
 var Color colConTextName;
@@ -26,23 +26,23 @@ var int   txtVertMargin;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Initialize some variables and stuff
-	conPlay = None;
-	lastTextWindow	= None;
+    // Initialize some variables and stuff
+    conPlay = None;
+    lastTextWindow  = None;
 
-	// Create text window where we'll display the conversation
-	lowerConWindow = TileWindow(NewChild(Class'TileWindow'));
-	lowerConWindow.SetOrder(ORDER_Down);
-	lowerConWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	lowerConWindow.MakeWidthsEqual(False);
-	lowerConWindow.MakeHeightsEqual(False);
-	lowerConWindow.SetMargins(20, 10);
+    // Create text window where we'll display the conversation
+    lowerConWindow = TileWindow(NewChild(Class'TileWindow'));
+    lowerConWindow.SetOrder(ORDER_Down);
+    lowerConWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    lowerConWindow.MakeWidthsEqual(False);
+    lowerConWindow.MakeHeightsEqual(False);
+    lowerConWindow.SetMargins(20, 10);
 
-	CreateNameWindow();
+    CreateNameWindow();
 
-	conStartTime = player.level.TimeSeconds;
+    conStartTime = player.level.TimeSeconds;
 }
 
 // ----------------------------------------------------------------------
@@ -51,50 +51,50 @@ event InitWindow()
 
 function CreateNameWindow()
 {
-	local Window winLine;
+    local Window winLine;
 
-	// Create the Name Window
-	nameWindow = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
-	nameWindow.SetTextAlignments( HALIGN_Left, VALIGN_Center);
-	nameWindow.SetTextMargins(0, 2);
-	nameWindow.SetFont(fontName);
-	nameWindow.SetTextColor(colConTextName);
+    // Create the Name Window
+    nameWindow = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
+    nameWindow.SetTextAlignments( HALIGN_Left, VALIGN_Center);
+    nameWindow.SetTextMargins(0, 2);
+    nameWindow.SetFont(fontName);
+    nameWindow.SetTextColor(colConTextName);
 
-	// Create line between name and scrolling text
-	winLine = lowerConWindow.NewChild(Class'Window');
-	winLine.SetHeight(1);
-	winLine.SetBackgroundStyle(DSTY_Normal);
-	winLine.SetBackground(Texture'Solid');
-	winLine.SetTileColor(colLine);
+    // Create line between name and scrolling text
+    winLine = lowerConWindow.NewChild(Class'Window');
+    winLine.SetHeight(1);
+    winLine.SetBackgroundStyle(DSTY_Normal);
+    winLine.SetBackground(Texture'Solid');
+    winLine.SetTileColor(colLine);
 }
 
 // ----------------------------------------------------------------------
-// ParentRequestedPreferredSize() 
+// ParentRequestedPreferredSize()
 // ----------------------------------------------------------------------
 
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local float tileWidth, tileHeight;
+    local float tileWidth, tileHeight;
 
-	if ((!bWidthSpecified) && (!bHeightSpecified))
-	{
-		lowerConWindow.QueryPreferredSize(preferredWidth, preferredHeight);
+    if ((!bWidthSpecified) && (!bHeightSpecified))
+    {
+        lowerConWindow.QueryPreferredSize(preferredWidth, preferredHeight);
 
-		if (preferredHeight < minHeight)
-			preferredHeight = minHeight;
-	}
-	else if (bWidthSpecified)
-	{
-		preferredHeight = lowerConWindow.QueryPreferredHeight(preferredWidth);
+        if (preferredHeight < minHeight)
+            preferredHeight = minHeight;
+    }
+    else if (bWidthSpecified)
+    {
+        preferredHeight = lowerConWindow.QueryPreferredHeight(preferredWidth);
 
-		if (preferredHeight < minHeight)
-			preferredHeight = minHeight;
-	}
-	else
-	{
-		preferredWidth = lowerConWindow.QueryPreferredWidth(preferredHeight);
-	}
+        if (preferredHeight < minHeight)
+            preferredHeight = minHeight;
+    }
+    else
+    {
+        preferredWidth = lowerConWindow.QueryPreferredWidth(preferredHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -105,7 +105,7 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function ConfigurationChanged()
 {
-	lowerConWindow.ConfigureChild(0, 0, width, height);
+    lowerConWindow.ConfigureChild(0, 0, width, height);
 }
 
 // ----------------------------------------------------------------------
@@ -116,7 +116,7 @@ function ConfigurationChanged()
 
 function DisplayName(string text)
 {
-	nameWindow.SetText( text );
+    nameWindow.SetText( text );
 }
 
 // ----------------------------------------------------------------------
@@ -127,25 +127,25 @@ function DisplayName(string text)
 
 function DisplayText(string text, Actor speakingActor)
 {
-	local TextWindow newText;
-	local float txtWidth;
-	local GC gc;
+    local TextWindow newText;
+    local float txtWidth;
+    local GC gc;
 
-	newText = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
-	newText.SetTextAlignments( HALIGN_Left, VALIGN_Center);
-	newText.SetTextMargins(10, 5);
-	newText.SetFont(Font'FontMenuSmall_DS');
-	newText.SetText(text);
+    newText = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
+    newText.SetTextAlignments( HALIGN_Left, VALIGN_Center);
+    newText.SetTextMargins(10, 5);
+    newText.SetFont(Font'FontMenuSmall_DS');
+    newText.SetText(text);
 
-	// Use a different color for the player's text
-	if ( DeusExPlayer(speakingActor) != None ) 
-		newText.SetTextColor(colConTextPlayer);
-	else	
-		newText.SetTextColor(colText);
+    // Use a different color for the player's text
+    if ( DeusExPlayer(speakingActor) != None )
+        newText.SetTextColor(colConTextPlayer);
+    else
+        newText.SetTextColor(colText);
 
-	lastTextWindow = newText;
+    lastTextWindow = newText;
 
-	AskParentForReconfigure();
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------
@@ -156,38 +156,38 @@ function DisplayText(string text, Actor speakingActor)
 
 function AppendText(string text)
 {
-	// Make sure we have a text window
-	if ( lastTextWindow == None )
-		return;
-	
-	lastTextWindow.AppendText(text);
+    // Make sure we have a text window
+    if ( lastTextWindow == None )
+        return;
 
-	AskParentForReconfigure();
+    lastTextWindow.AppendText(text);
+
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------
 // DestroyChildren()
 //
-// Destroys all the windows used to display text and choices, 
+// Destroys all the windows used to display text and choices,
 // including the name window
 // ----------------------------------------------------------------------
 
 function DestroyChildren()
 {
-	local Window win;
+    local Window win;
 
-	win = lowerConWindow.GetTopChild();
-	while( win != None )
-	{
-		win.Destroy();
-		win = lowerConWindow.GetTopChild();
-	}
+    win = lowerConWindow.GetTopChild();
+    while( win != None )
+    {
+        win.Destroy();
+        win = lowerConWindow.GetTopChild();
+    }
 
-	// Reset variables
-	lastTextWindow	= None;
+    // Reset variables
+    lastTextWindow  = None;
 
-	// Recreate the Name window
-	CreateNameWindow();
+    // Recreate the Name window
+    CreateNameWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -196,7 +196,7 @@ function DestroyChildren()
 
 function Close()
 {
-	Hide();
+    Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -207,7 +207,7 @@ function Close()
 
 function Clear()
 {
-	DestroyChildren();
+    DestroyChildren();
 }
 
 // ----------------------------------------------------------------------
@@ -216,15 +216,15 @@ function Clear()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colConTextPlayer = theme.GetColorFromName('HUDColor_NormalText');
-	colConTextName   = theme.GetColorFromName('HUDColor_HeaderText');
-	colLine          = colConTextName;
+    colConTextPlayer = theme.GetColorFromName('HUDColor_NormalText');
+    colConTextName   = theme.GetColorFromName('HUDColor_HeaderText');
+    colLine          = colConTextName;
 }
 
 // ----------------------------------------------------------------------

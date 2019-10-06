@@ -19,15 +19,15 @@ var Texture texBorder[3];
 // ----------------------------------------------------------------------
 
 function InitWindow() {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize( 541, 69 );
+    SetSize( 541, 69 );
 
-	player = DeusExPlayer( GetRootWindow().parentPawn );
-	
-	CreateSlots();
+    player = DeusExPlayer( GetRootWindow().parentPawn );
 
-	PopulateBar();
+    CreateSlots();
+
+    PopulateBar();
 }
 
 // ----------------------------------------------------------------------
@@ -35,30 +35,30 @@ function InitWindow() {
 // ----------------------------------------------------------------------
 
 function CreateSlots() {
-	local int i;
-	local RadioBoxWindow winRadio;
+    local int i;
+    local RadioBoxWindow winRadio;
 
-	winRadio = RadioBoxWindow( NewChild( Class'RadioBoxWindow' ) );
-	winRadio.SetSize( 504, 54 );
-	winRadio.SetPos( 10, 6 );
-	winRadio.bOneCheck = false;
+    winRadio = RadioBoxWindow( NewChild( Class'RadioBoxWindow' ) );
+    winRadio.SetSize( 504, 54 );
+    winRadio.SetPos( 10, 6 );
+    winRadio.bOneCheck = false;
 
-	slotWnd = TileWindow( winRadio.NewChild( Class'TileWindow' ) );
-	slotWnd.SetMargins( 0, 0 );
-	slotWnd.SetMinorSpacing( 0 );
-	slotWnd.SetOrder( ORDER_LeftThenUp );
+    slotWnd = TileWindow( winRadio.NewChild( Class'TileWindow' ) );
+    slotWnd.SetMargins( 0, 0 );
+    slotWnd.SetMinorSpacing( 0 );
+    slotWnd.SetOrder( ORDER_LeftThenUp );
 
-	for ( i = 0; i < 10; i++ ) {
-		augs[i] = PersonaAugmentationBarSlot( slotWnd.NewChild( Class'PersonaAugmentationBarSlot' ) );
-		augs[i].SetSlot( i );
-		augs[i].Lower();
+    for ( i = 0; i < 10; i++ ) {
+        augs[i] = PersonaAugmentationBarSlot( slotWnd.NewChild( Class'PersonaAugmentationBarSlot' ) );
+        augs[i].SetSlot( i );
+        augs[i].Lower();
 
-		if ( i == 9 ) {
-			augs[i].SetWidth( 44 );
-		}
-	}
+        if ( i == 9 ) {
+            augs[i].SetWidth( 44 );
+        }
+    }
 
-	augs[9].Lower();
+    augs[9].Lower();
 }
 
 // ----------------------------------------------------------------------
@@ -66,10 +66,10 @@ function CreateSlots() {
 // ----------------------------------------------------------------------
 
 function DrawBackground( GC gc ) {
-	gc.SetStyle( backgroundDrawStyle );
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture( 2, 6, 9, 54, 0, 0, texBackgroundLeft );
-	gc.DrawTexture( 514, 6, 8, 54, 0, 0, texBackgroundRight );
+    gc.SetStyle( backgroundDrawStyle );
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture( 2, 6, 9, 54, 0, 0, texBackgroundLeft );
+    gc.DrawTexture( 514, 6, 8, 54, 0, 0, texBackgroundRight );
 }
 
 // ----------------------------------------------------------------------
@@ -77,13 +77,13 @@ function DrawBackground( GC gc ) {
 // ----------------------------------------------------------------------
 
 function DrawBorder( GC gc ) {
-	if ( bDrawBorder ) {
-		gc.SetStyle( borderDrawStyle );
+    if ( bDrawBorder ) {
+        gc.SetStyle( borderDrawStyle );
 
-		gc.DrawTexture( 0, 0, 256, 69, 0, 0, texBorder[0] );
-		gc.DrawTexture( 256, 0, 256, 69, 0, 0, texBorder[1] );
-		gc.DrawTexture( 512, 0,  29, 69, 0, 0, texBorder[2] );
-	}
+        gc.DrawTexture( 0, 0, 256, 69, 0, 0, texBorder[0] );
+        gc.DrawTexture( 256, 0, 256, 69, 0, 0, texBorder[1] );
+        gc.DrawTexture( 512, 0,  29, 69, 0, 0, texBorder[2] );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ function DrawBorder( GC gc ) {
 // ----------------------------------------------------------------------
 
 function bool IsValid( int pos ) {
-	return ( pos >= 0 && pos < 10 );
+    return ( pos >= 0 && pos < 10 );
 }
 
 // ----------------------------------------------------------------------
@@ -99,9 +99,9 @@ function bool IsValid( int pos ) {
 // ----------------------------------------------------------------------
 
 function ClearPosition( int pos ) {
-	if ( IsValid( pos ) ) {
-		augs[pos].SetAug( none );
-	}
+    if ( IsValid( pos ) ) {
+        augs[pos].SetAug( none );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -109,11 +109,11 @@ function ClearPosition( int pos ) {
 // ----------------------------------------------------------------------
 
 function ClearBar() {
-	local int i;
+    local int i;
 
-	for( i = 0; i < 10; i++ ) {
-		ClearPosition( i );
-	}
+    for( i = 0; i < 10; i++ ) {
+        ClearPosition( i );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -121,13 +121,13 @@ function ClearBar() {
 // ----------------------------------------------------------------------
 
 function RemoveAug( Augmentation aug ) {
-	local int i;
+    local int i;
 
-	for ( i = 0; i < 10; i++ ) {
-		if ( augs[i].GetAug() == aug ) {
-			augs[i].SetAug( none );
-		}
-	}
+    for ( i = 0; i < 10; i++ ) {
+        if ( augs[i].GetAug() == aug ) {
+            augs[i].SetAug( none );
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -135,30 +135,30 @@ function RemoveAug( Augmentation aug ) {
 // ----------------------------------------------------------------------
 
 function bool AddAug( Augmentation aug, int pos ) {
-	local int  i;
-	local int FirstPos;
-	local bool retval;
+    local int  i;
+    local int FirstPos;
+    local bool retval;
 
-	retval = true;
-	if ( aug != None ) {
-		if ( IsValid( pos ) ) {
-			RemoveAug( aug );
+    retval = true;
+    if ( aug != None ) {
+        if ( IsValid( pos ) ) {
+            RemoveAug( aug );
 
-			if ( augs[pos].GetAug() != none ) {
-				ClearPosition( pos );
-			}
+            if ( augs[pos].GetAug() != none ) {
+                ClearPosition( pos );
+            }
 
-			augs[pos].SetAug( aug );
-		}
-		else {
-			retval = false;
-		}
-	}
-	else {
-		retval = false;
-	}
+            augs[pos].SetAug( aug );
+        }
+        else {
+            retval = false;
+        }
+    }
+    else {
+        retval = false;
+    }
 
-	return retval;
+    return retval;
 }
 
 // ----------------------------------------------------------------------
@@ -166,30 +166,30 @@ function bool AddAug( Augmentation aug, int pos ) {
 // ----------------------------------------------------------------------
 
 function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot slot2 ) {
-	local int pos1, pos2;
-	local Augmentation aug1, aug2;
+    local int pos1, pos2;
+    local Augmentation aug1, aug2;
 
-	if ( slot1 == slot2 ) {
-		return;
-	}
+    if ( slot1 == slot2 ) {
+        return;
+    }
 
-	pos1 = slot1.slot;
-	pos2 = slot2.slot;
+    pos1 = slot1.slot;
+    pos2 = slot2.slot;
 
-	aug1 = slot1.aug;
-	aug2 = slot2.aug;
+    aug1 = slot1.aug;
+    aug2 = slot2.aug;
 
-	ClearPosition( pos1 );
+    ClearPosition( pos1 );
 
-	if ( aug2 != none ) {
-		ClearPosition( pos2 );
-	}
+    if ( aug2 != none ) {
+        ClearPosition( pos2 );
+    }
 
-	AddAug( aug1, pos2 );
+    AddAug( aug1, pos2 );
 
-	if ( aug2 != none ) {
-		AddAug( aug2, pos1 );
-	}
+    if ( aug2 != none ) {
+        AddAug( aug2, pos1 );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -197,12 +197,12 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
 // ----------------------------------------------------------------------
 
 function Augmentation GetAug( int pos ) {
-	if ( IsValid( pos ) ) {
-		return ( augs[pos].GetAug() );
-	}
-	else {
-		return none;
-	}
+    if ( IsValid( pos ) ) {
+        return ( augs[pos].GetAug() );
+    }
+    else {
+        return none;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -210,15 +210,15 @@ function Augmentation GetAug( int pos ) {
 // ----------------------------------------------------------------------
 
 function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
-	local int i;
+    local int i;
 
-	for ( i = 0; i < 10; i++ ) {
-		if ( augs[i].aug == aug ) {
-			return augs[i];
-		}
-	}
+    for ( i = 0; i < 10; i++ ) {
+        if ( augs[i].aug == aug ) {
+            return augs[i];
+        }
+    }
 
-	return none;
+    return none;
 }
 
 // ----------------------------------------------------------------------
@@ -226,17 +226,17 @@ function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
 // ----------------------------------------------------------------------
 
 function PopulateBar() {
-	local int i;
-	local AugmentationManager manager;
+    local int i;
+    local AugmentationManager manager;
 
-	manager = player.AugmentationSystem;
-	if ( manager != none ) {
-		for ( i = 0; i < 10; i++ ) {
-			if ( manager.VM_augSlots[i] != none ) {
-				AddAug( manager.VM_augSlots[i], i );
-			}
-		}
-	}
+    manager = player.AugmentationSystem;
+    if ( manager != none ) {
+        for ( i = 0; i < 10; i++ ) {
+            if ( manager.VM_augSlots[i] != none ) {
+                AddAug( manager.VM_augSlots[i], i );
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -244,11 +244,11 @@ function PopulateBar() {
 // ----------------------------------------------------------------------
 
 function SetAugWnd( PersonaScreenAugmentations augWnd ) {
-	local int i;
+    local int i;
 
-	for ( i = 0; i < 10; i++ ) {
-		augs[i].SetAugWnd( augWnd );
-	}
+    for ( i = 0; i < 10; i++ ) {
+        augs[i].SetAugWnd( augWnd );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -256,19 +256,19 @@ function SetAugWnd( PersonaScreenAugmentations augWnd ) {
 // ----------------------------------------------------------------------
 
 function SelectAug( Augmentation aug, bool bNewToggle ) {
-	local int i;
+    local int i;
 
-	for ( i = 0; i < 10; i++ ) {
-		if ( augs[i].aug == aug ) {
-			if ( !augs[i].GetToggle() ) {
-				augs[i].SetToggle( bNewToggle );
-			}
-		}
-		else {
-			augs[i].SetToggle( false );		
-			augs[i].HighlightSelect( false );
-		}
-	}
+    for ( i = 0; i < 10; i++ ) {
+        if ( augs[i].aug == aug ) {
+            if ( !augs[i].GetToggle() ) {
+                augs[i].SetToggle( bNewToggle );
+            }
+        }
+        else {
+            augs[i].SetToggle( false );
+            augs[i].HighlightSelect( false );
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

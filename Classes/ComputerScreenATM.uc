@@ -11,7 +11,7 @@ var MenuUISmallLabelWindow   winLoginError;
 var MenuUIEditWindow         editAccount;
 var MenuUIEditWindow         editPIN;
 
-var ATM atmOwner;		// what ATM owns this window?
+var ATM atmOwner;       // what ATM owns this window?
 
 var localized String AccountLabel;
 var localized String PinLabel;
@@ -28,8 +28,8 @@ var localized String InvalidLoginMessage;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	EnableButtons();
+    Super.InitWindow();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -38,23 +38,23 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
-	btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
+    btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
+    btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
 
-	CreateMenuLabel(10, 111, AccountLabel, winClient);
-	CreateMenuLabel(10, 141, PINLabel, winClient);
+    CreateMenuLabel(10, 111, AccountLabel, winClient);
+    CreateMenuLabel(10, 141, PINLabel, winClient);
 
-	editAccount = CreateMenuEditWindow(131, 109, 143, 24, winClient);
-	editPIN     = CreateMenuEditWindow(131, 139, 143, 24, winClient);
+    editAccount = CreateMenuEditWindow(131, 109, 143, 24, winClient);
+    editPIN     = CreateMenuEditWindow(131, 139, 143, 24, winClient);
 
-	CreateWarningWindow();
-	CreateLoginInfoWindow();
-	CreateLoginErrorWindow();
+    CreateWarningWindow();
+    CreateLoginInfoWindow();
+    CreateLoginErrorWindow();
 
-	winTitle.SetTitle(Title);
-	winStatus.SetText(StatusText);
+    winTitle.SetTitle(Title);
+    winStatus.SetText(StatusText);
 }
 
 // ----------------------------------------------------------------------
@@ -63,8 +63,8 @@ function CreateControls()
 
 function UpdateStatus()
 {
-	// Update the title, texture and description
-	winTitle.SetTitle(Title);
+    // Update the title, texture and description
+    winTitle.SetTitle(Title);
 }
 
 // ----------------------------------------------------------------------
@@ -73,13 +73,13 @@ function UpdateStatus()
 
 function CreateWarningWindow()
 {
-	winWarning = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
+    winWarning = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winWarning.SetPos(8, 10);
-	winWarning.SetSize(273, 50);
-	winWarning.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winWarning.SetTextMargins(0, 0);
-	winWarning.SetText(WarningText);
+    winWarning.SetPos(8, 10);
+    winWarning.SetSize(273, 50);
+    winWarning.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winWarning.SetTextMargins(0, 0);
+    winWarning.SetText(WarningText);
 }
 
 // ----------------------------------------------------------------------
@@ -88,13 +88,13 @@ function CreateWarningWindow()
 
 function CreateLoginInfoWindow()
 {
-	winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
+    winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winLoginInfo.SetPos(8, 66);
-	winLoginInfo.SetSize(273, 31);
-	winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winLoginInfo.SetTextMargins(0, 0);
-	winLoginInfo.SetText(LoginInfoText);
+    winLoginInfo.SetPos(8, 66);
+    winLoginInfo.SetSize(273, 31);
+    winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winLoginInfo.SetTextMargins(0, 0);
+    winLoginInfo.SetText(LoginInfoText);
 }
 
 // ----------------------------------------------------------------------
@@ -103,12 +103,12 @@ function CreateLoginInfoWindow()
 
 function CreateLoginErrorWindow()
 {
-	winLoginError = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
+    winLoginError = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winLoginError.SetPos(80, 172);
-	winLoginError.SetSize(287, 25);
-	winLoginError.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winLoginError.SetTextMargins(0, 0);
+    winLoginError.SetPos(80, 172);
+    winLoginError.SetSize(287, 25);
+    winLoginError.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winLoginError.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -117,16 +117,16 @@ function CreateLoginErrorWindow()
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	Super.SetCompOwner(newCompOwner);
-	atmowner = ATM(compOwner);
+    Super.SetCompOwner(newCompOwner);
+    atmowner = ATM(compOwner);
 
-	SetFocusWindow(editAccount);
+    SetFocusWindow(editAccount);
 
-	// Check to see if this ATM has been sucked dry, in which
-	// case we just want to show the the Disabled screen
+    // Check to see if this ATM has been sucked dry, in which
+    // case we just want to show the the Disabled screen
 
-	if (atmOwner.bSuckedDryByHack == True)
-		CloseScreen("ATMDISABLED");
+    if (atmOwner.bSuckedDryByHack == True)
+        CloseScreen("ATMDISABLED");
 }
 
 // ----------------------------------------------------------------------
@@ -135,12 +135,12 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	// If the user already hacked this computer, then set the 
-	// "Hack" button to "Return"
-	if (winTerm != None)
-		winTerm.SetHackButtonToReturn();
+    // If the user already hacked this computer, then set the
+    // "Hack" button to "Return"
+    if (winTerm != None)
+        winTerm.SetHackButtonToReturn();
 }
 
 // ----------------------------------------------------------------------
@@ -149,29 +149,29 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnLogin:
-			ProcessLogin();
-			break;
+    switch( buttonPressed )
+    {
+        case btnLogin:
+            ProcessLogin();
+            break;
 
-		case btnCancel:
-			CloseScreen("EXIT");
-			break;
+        case btnCancel:
+            CloseScreen("EXIT");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -182,15 +182,15 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool EditActivated(window edit, bool bModified)
 {
-	if (btnLogin.IsSensitive())
-	{
-		ProcessLogin();
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+    if (btnLogin.IsSensitive())
+    {
+        ProcessLogin();
+        return True;
+    }
+    else
+    {
+        return False;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -199,56 +199,56 @@ event bool EditActivated(window edit, bool bModified)
 
 function ProcessLogin()
 {
-	local bool bSuccessfulLogin;
-	local int  accountIndex;
-	local int  userIndex;
+    local bool bSuccessfulLogin;
+    local int  accountIndex;
+    local int  userIndex;
 
-	bSuccessfulLogin = False;
+    bSuccessfulLogin = False;
 
-	// Vanilla Matters: Fix a bug where an invalid account number can qualify login.
-	accountIndex = -1;
+    // Vanilla Matters: Fix a bug where an invalid account number can qualify login.
+    accountIndex = -1;
 
-	for (accountIndex=0; accountIndex<atmOwner.NumUsers(); accountIndex++)
-	{
-		if (Caps(editAccount.GetText()) == atmOwner.GetAccountNumber(accountIndex))
-		{
-			userIndex = accountIndex;
-			break;
-		}
-	}
+    for (accountIndex=0; accountIndex<atmOwner.NumUsers(); accountIndex++)
+    {
+        if (Caps(editAccount.GetText()) == atmOwner.GetAccountNumber(accountIndex))
+        {
+            userIndex = accountIndex;
+            break;
+        }
+    }
 
-	if (userIndex != -1)
-	{
-		if (Caps(editPIN.GetText()) == atmOwner.GetPIN(userIndex))
-			bSuccessfulLogin = True;
-	}
+    if (userIndex != -1)
+    {
+        if (Caps(editPIN.GetText()) == atmOwner.GetPIN(userIndex))
+            bSuccessfulLogin = True;
+    }
 
-	if (bSuccessfulLogin)
-	{
-		winTerm.SetLoginInfo("", userIndex);
-		CloseScreen("LOGIN");
-	}
-	else
-	{
-		// Print a message about invalid login
-		winLoginError.SetText(InvalidLoginMessage);
+    if (bSuccessfulLogin)
+    {
+        winTerm.SetLoginInfo("", userIndex);
+        CloseScreen("LOGIN");
+    }
+    else
+    {
+        // Print a message about invalid login
+        winLoginError.SetText(InvalidLoginMessage);
 
-		// Clear text fields and reset focus
-		editAccount.SetText("");
-		editPIN.SetText("");
-		SetFocusWindow(editAccount);
-	}
+        // Clear text fields and reset focus
+        editAccount.SetText("");
+        editPIN.SetText("");
+        SetFocusWindow(editAccount);
+    }
 }
 
 // ----------------------------------------------------------------------
-// TextChanged() 
+// TextChanged()
 // ----------------------------------------------------------------------
 
 event bool TextChanged(window edit, bool bModified)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -257,10 +257,10 @@ event bool TextChanged(window edit, bool bModified)
 
 function EnableButtons()
 {
-	// Text must be entered in the two fields for the login button to be
-	// enabled
+    // Text must be entered in the two fields for the login button to be
+    // enabled
 
-	btnLogin.SetSensitivity((editAccount.GetText() != "") && (editPIN.GetText() != ""));
+    btnLogin.SetSensitivity((editAccount.GetText() != "") && (editPIN.GetText() != ""));
 }
 
 // ----------------------------------------------------------------------

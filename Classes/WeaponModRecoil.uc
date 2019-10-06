@@ -11,13 +11,13 @@ class WeaponModRecoil extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-	{
-		weapon.recoilStrength    += (weapon.Default.recoilStrength * WeaponModifier);
-		if (weapon.recoilStrength < 0.0)
-			weapon.recoilStrength = 0.0;
-		weapon.ModRecoilStrength += WeaponModifier;
-	}
+    if (weapon != None)
+    {
+        weapon.recoilStrength    += (weapon.Default.recoilStrength * WeaponModifier);
+        if (weapon.recoilStrength < 0.0)
+            weapon.recoilStrength = 0.0;
+        weapon.ModRecoilStrength += WeaponModifier;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -26,10 +26,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveModRecoilStrength && !weapon.HasMaxRecoilMod());
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveModRecoilStrength && !weapon.HasMaxRecoilMod());
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

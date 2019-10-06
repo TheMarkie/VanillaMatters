@@ -6,8 +6,8 @@ class MenuUIActionButtonBarWindow expands Window;
 
 struct S_BarButton
 {
-	var MenuUIActionButtonWindow btn;
-	var EHALIGN align;
+    var MenuUIActionButtonWindow btn;
+    var EHALIGN align;
 };
 
 var S_BarButton actionButtons[5];
@@ -23,9 +23,9 @@ var int buttonSpacing;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetHeight(defaultBarHeight);
+    SetHeight(defaultBarHeight);
 }
 
 // ----------------------------------------------------------------------
@@ -36,42 +36,42 @@ event InitWindow()
 
 function ConfigurationChanged()
 {
-	local float qWidth, qHeight;
-	local int leftX, rightX;
-	local int buttonIndex;
-	local int btnPos;
-	local MenuUIActionButtonWindow btn;
+    local float qWidth, qHeight;
+    local int leftX, rightX;
+    local int buttonIndex;
+    local int btnPos;
+    local MenuUIActionButtonWindow btn;
 
-	leftX  = 0;
-	rightX = width;
+    leftX  = 0;
+    rightX = width;
 
-	// Loop through all buttons and try to place them
-	for(buttonIndex=0; buttonIndex<buttonCount; buttonIndex++)
-	{
-		btn = actionButtons[buttonIndex].btn;
+    // Loop through all buttons and try to place them
+    for(buttonIndex=0; buttonIndex<buttonCount; buttonIndex++)
+    {
+        btn = actionButtons[buttonIndex].btn;
 
- 		if (btn != None)
-		{
-			btn.QueryPreferredSize(qWidth, qHeight);
+        if (btn != None)
+        {
+            btn.QueryPreferredSize(qWidth, qHeight);
 
-			switch(actionButtons[buttonIndex].align)
-			{
-				case HALIGN_Left:
-				case HALIGN_Center:
-				case HALIGN_Full:
-					btnPos = leftX;
-					leftX  += buttonSpacing + qWidth;
-					break;
+            switch(actionButtons[buttonIndex].align)
+            {
+                case HALIGN_Left:
+                case HALIGN_Center:
+                case HALIGN_Full:
+                    btnPos = leftX;
+                    leftX  += buttonSpacing + qWidth;
+                    break;
 
-				case HALIGN_Right:
-					rightX -= qWidth;
-					btnPos = rightX;
-					rightX -= buttonSpacing;
-					break;
-			}
-			btn.ConfigureChild(btnPos, 1, qWidth, qHeight);
-		}			
-	}
+                case HALIGN_Right:
+                    rightX -= qWidth;
+                    btnPos = rightX;
+                    rightX -= buttonSpacing;
+                    break;
+            }
+            btn.ConfigureChild(btnPos, 1, qWidth, qHeight);
+        }
+    }
 }
 
 
@@ -81,7 +81,7 @@ function ConfigurationChanged()
 
 function bool ChildRequestedReconfiguration(window child)
 {
-	return FALSE;
+    return FALSE;
 }
 
 // ----------------------------------------------------------------------
@@ -90,25 +90,25 @@ function bool ChildRequestedReconfiguration(window child)
 
 function MenuUIActionButtonWindow AddButton(string buttonLabel, EHALIGN buttonAlignment)
 {
-	local MenuUIActionButtonWindow newButton;
+    local MenuUIActionButtonWindow newButton;
 
-	// Add button to our list of buttons, make sure we don't try to add
-	// too many buttons
-	if (buttonCount == arrayCount(actionButtons))
-		return None;	
+    // Add button to our list of buttons, make sure we don't try to add
+    // too many buttons
+    if (buttonCount == arrayCount(actionButtons))
+        return None;
 
-	actionButtons[buttonCount].align = buttonAlignment;
+    actionButtons[buttonCount].align = buttonAlignment;
 
-	newButton = MenuUIActionButtonWindow(NewChild(Class'MenuUIActionButtonWindow'));
-	newButton.SetButtonText(buttonLabel);
+    newButton = MenuUIActionButtonWindow(NewChild(Class'MenuUIActionButtonWindow'));
+    newButton.SetButtonText(buttonLabel);
 
-	actionButtons[buttonCount].btn   = newButton;
+    actionButtons[buttonCount].btn   = newButton;
 
-	buttonCount++;
+    buttonCount++;
 
-	AskParentForReconfigure();
-		
-	return newButton;
+    AskParentForReconfigure();
+
+    return newButton;
 }
 
 // ----------------------------------------------------------------------

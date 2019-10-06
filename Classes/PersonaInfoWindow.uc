@@ -7,7 +7,7 @@ class PersonaInfoWindow expands PersonaBaseWindow;
 var PersonaScrollAreaWindow      winScroll;
 var TileWindow                   winTile;
 var PersonaHeaderTextWindow      winTitle;
-var PersonaNormalLargeTextWindow winText;			// Last text
+var PersonaNormalLargeTextWindow winText;           // Last text
 
 var int textVerticalOffset;
 
@@ -19,9 +19,9 @@ var int textVerticalOffset;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -30,19 +30,19 @@ event InitWindow()
 
 function CreateControls()
 {
-	winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winTitle.SetTextMargins(2, 1);
+    winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winTitle.SetTextMargins(2, 1);
 
-	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
 
-	winTile = TileWindow(winScroll.ClipWindow.NewChild(Class'TileWindow'));
-	winTile.SetOrder(ORDER_Down);
-	winTile.SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	winTile.MakeWidthsEqual(True);
-	winTile.MakeHeightsEqual(False);
-	winTile.SetMargins(4, 1);
-	winTile.SetMinorSpacing(0);
-	winTile.SetWindowAlignments(HALIGN_Full, VALIGN_Top);
+    winTile = TileWindow(winScroll.ClipWindow.NewChild(Class'TileWindow'));
+    winTile.SetOrder(ORDER_Down);
+    winTile.SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    winTile.MakeWidthsEqual(True);
+    winTile.MakeHeightsEqual(False);
+    winTile.SetMargins(4, 1);
+    winTile.SetMinorSpacing(0);
+    winTile.SetWindowAlignments(HALIGN_Full, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -54,8 +54,8 @@ function CreateControls()
 
 function SetTitle(String newTitle)
 {
-	Clear();
-	winTitle.SetText(newTitle);
+    Clear();
+    winTitle.SetText(newTitle);
 }
 
 // ----------------------------------------------------------------------
@@ -64,14 +64,14 @@ function SetTitle(String newTitle)
 
 function PersonaNormalLargeTextWindow SetText(String newText)
 {
-	winText = PersonaNormalLargeTextWindow(winTile.NewChild(Class'PersonaNormalLargeTextWindow'));
+    winText = PersonaNormalLargeTextWindow(winTile.NewChild(Class'PersonaNormalLargeTextWindow'));
 
-	winText.SetTextMargins(0, 0);
-	winText.SetWordWrap(True);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winText.SetText(newText);
+    winText.SetTextMargins(0, 0);
+    winText.SetWordWrap(True);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText.SetText(newText);
 
-	return winText;
+    return winText;
 }
 
 // ----------------------------------------------------------------------
@@ -80,10 +80,10 @@ function PersonaNormalLargeTextWindow SetText(String newText)
 
 function AppendText(String newText)
 {
-	if (winText != None)
-		winText.AppendText(newText);
-	else
-		SetText(newText);
+    if (winText != None)
+        winText.AppendText(newText);
+    else
+        SetText(newText);
 }
 
 // ----------------------------------------------------------------------
@@ -92,12 +92,12 @@ function AppendText(String newText)
 
 function PersonaInfoItemWindow AddInfoItem(coerce String newLabel, coerce String newText, optional bool bHighlight)
 {
-	local PersonaInfoItemWindow winItem;
+    local PersonaInfoItemWindow winItem;
 
-	winItem = PersonaInfoItemWindow(winTile.NewChild(Class'PersonaInfoItemWindow'));
-	winItem.SetItemInfo(newLabel, newText, bHighlight);
+    winItem = PersonaInfoItemWindow(winTile.NewChild(Class'PersonaInfoItemWindow'));
+    winItem.SetItemInfo(newLabel, newText, bHighlight);
 
-	return winItem;
+    return winItem;
 }
 
 // ----------------------------------------------------------------------
@@ -106,7 +106,7 @@ function PersonaInfoItemWindow AddInfoItem(coerce String newLabel, coerce String
 
 function AddLine()
 {
-	winTile.NewChild(Class'PersonaInfoLineWindow');
+    winTile.NewChild(Class'PersonaInfoLineWindow');
 }
 
 // ----------------------------------------------------------------------
@@ -115,8 +115,8 @@ function AddLine()
 
 function Clear()
 {
-	winTitle.SetText("");	
-	winTile.DestroyAllChildren();
+    winTitle.SetText("");
+    winTile.DestroyAllChildren();
 }
 
 // ----------------------------------------------------------------------
@@ -125,19 +125,19 @@ function Clear()
 
 function ConfigurationChanged()
 {
-	local float qWidth, qHeight;
+    local float qWidth, qHeight;
 
-	if (winTitle != None)
-	{
-		winTitle.QueryPreferredSize(qWidth, qHeight);
-		winTitle.ConfigureChild(0, 0, width, qHeight);
-	}
+    if (winTitle != None)
+    {
+        winTitle.QueryPreferredSize(qWidth, qHeight);
+        winTitle.ConfigureChild(0, 0, width, qHeight);
+    }
 
-	if (winScroll != None)
-	{
-		winScroll.QueryPreferredSize(qWidth, qHeight);
-		winScroll.ConfigureChild(0, textVerticalOffset, width, height - textVerticalOffset);
-	}
+    if (winScroll != None)
+    {
+        winScroll.QueryPreferredSize(qWidth, qHeight);
+        winScroll.ConfigureChild(0, textVerticalOffset, width, height - textVerticalOffset);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -146,9 +146,9 @@ function ConfigurationChanged()
 
 function bool ChildRequestedReconfiguration(window child)
 {
-	ConfigurationChanged();
+    ConfigurationChanged();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

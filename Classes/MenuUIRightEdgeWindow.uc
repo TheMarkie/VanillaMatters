@@ -6,11 +6,11 @@ class MenuUIRightEdgeWindow extends Window;
 
 var DeusExPlayer player;
 
-var Texture	texture_Top;
-var Texture	texture_TopLeft;
-var Texture	texture_TopRight;
-var Texture	texture_Right;
-var Texture	texture_Bottom;
+var Texture texture_Top;
+var Texture texture_TopLeft;
+var Texture texture_TopRight;
+var Texture texture_Right;
+var Texture texture_Bottom;
 
 var int rightWidth;
 var int topLeftWidth;
@@ -29,12 +29,12 @@ var Color colBackground;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -42,51 +42,51 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the textures
-	gc.SetStyle(DSTY_Masked);
+{
+    // Draw the textures
+    gc.SetStyle(DSTY_Masked);
 
-	gc.SetTileColor(colBackground);
+    gc.SetTileColor(colBackground);
 
-	// Top left
-	gc.DrawTexture(0, 0, topLeftWidth, topHeight, 0, 0, texture_TopLeft);
+    // Top left
+    gc.DrawTexture(0, 0, topLeftWidth, topHeight, 0, 0, texture_TopLeft);
 
-	// Top Edge 
-	gc.DrawPattern(
-		topLeftwidth, 0, 
-		width - topLeftwidth - topRightWidth, topHeight, 
-		0, 0,
-		texture_Top);
+    // Top Edge
+    gc.DrawPattern(
+        topLeftwidth, 0,
+        width - topLeftwidth - topRightWidth, topHeight,
+        0, 0,
+        texture_Top);
 
-	// Top Right Corner
-	gc.DrawTexture(width - topRightWidth, 0, topRightWidth, topRightHeight, 0, 0, texture_TopRight);
+    // Top Right Corner
+    gc.DrawTexture(width - topRightWidth, 0, topRightWidth, topRightHeight, 0, 0, texture_TopRight);
 
-	// Right Edge
-	gc.DrawPattern(
-		width - rightWidth, topRightHeight, 
-		rightWidth, height - topRightHeight - bottomRightHeight,
-		0, 0,
-		texture_Right);
+    // Right Edge
+    gc.DrawPattern(
+        width - rightWidth, topRightHeight,
+        rightWidth, height - topRightHeight - bottomRightHeight,
+        0, 0,
+        texture_Right);
 
-	// Bottom Right
-	gc.DrawTexture(
-		width - rightWidth, height - bottomRightHeight, 
-		rightWidth, bottomRightHeight,
-		0, 0, texture_Bottom);
+    // Bottom Right
+    gc.DrawTexture(
+        width - rightWidth, height - bottomRightHeight,
+        rightWidth, bottomRightHeight,
+        0, 0, texture_Bottom);
 }
-	
+
 // ----------------------------------------------------------------------
 // StyleChanged()
 // ----------------------------------------------------------------------
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colBackground = theme.GetColorFromName('MenuColor_ButtonFace');
+    // Title colors
+    colBackground = theme.GetColorFromName('MenuColor_ButtonFace');
 }
 
 // ----------------------------------------------------------------------

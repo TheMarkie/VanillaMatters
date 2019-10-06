@@ -12,47 +12,47 @@ var float lastDroneTime;
 state Active
 {
 Begin:
-	if (Level.TimeSeconds - lastDroneTime < reconstructTime)
-	{
-		Player.ClientMessage("Reconstruction will be complete in" @ Int(reconstructTime - (Level.TimeSeconds - lastDroneTime)) @ "seconds");
-		Deactivate();
-	}
-	// Vanilla Matters: Allow updating the drone even when it's functioning.
-	else {
-		if ( Player.aDrone != None ) {
-			Player.aDrone.Speed = 75 + ( 25 * CurrentLevel );
-			Player.aDrone.MaxSpeed = Player.aDrone.Speed;
-			Player.aDrone.Damage = LevelValues[CurrentLevel];
-			Player.aDrone.blastRadius = 160 + ( 80 * CurrentLevel );
-		}
+    if (Level.TimeSeconds - lastDroneTime < reconstructTime)
+    {
+        Player.ClientMessage("Reconstruction will be complete in" @ Int(reconstructTime - (Level.TimeSeconds - lastDroneTime)) @ "seconds");
+        Deactivate();
+    }
+    // Vanilla Matters: Allow updating the drone even when it's functioning.
+    else {
+        if ( Player.aDrone != None ) {
+            Player.aDrone.Speed = 75 + ( 25 * CurrentLevel );
+            Player.aDrone.MaxSpeed = Player.aDrone.Speed;
+            Player.aDrone.Damage = LevelValues[CurrentLevel];
+            Player.aDrone.blastRadius = 160 + ( 80 * CurrentLevel );
+        }
 
-		Player.bSpyDroneActive = True;
-		Player.spyDroneLevel = CurrentLevel;
-		Player.spyDroneLevelValue = LevelValues[CurrentLevel];
-	}
+        Player.bSpyDroneActive = True;
+        Player.spyDroneLevel = CurrentLevel;
+        Player.spyDroneLevelValue = LevelValues[CurrentLevel];
+    }
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
-	// record the time if we were just active
-	if (Player.bSpyDroneActive)
-		lastDroneTime = Level.TimeSeconds;
+    // record the time if we were just active
+    if (Player.bSpyDroneActive)
+        lastDroneTime = Level.TimeSeconds;
 
-	Player.bSpyDroneActive = False;
+    Player.bSpyDroneActive = False;
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+    }
 }
 
 defaultproperties

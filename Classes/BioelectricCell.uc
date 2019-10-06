@@ -11,11 +11,11 @@ var localized String RechargesLabel;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-		MaxCopies = 5;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+        MaxCopies = 5;
 }
 
 function PostBeginPlay()
@@ -27,47 +27,47 @@ function PostBeginPlay()
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		// Vanilla Matters
-		local float skillLevelValue;
-		local int actualAmount;
+        // Vanilla Matters
+        local float skillLevelValue;
+        local int actualAmount;
 
-		Super.BeginState();
+        Super.BeginState();
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			// player.ClientMessage(Sprintf(msgRecharged, rechargeAmount));
-	
-			// player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            // player.ClientMessage(Sprintf(msgRecharged, rechargeAmount));
 
-			// player.Energy += rechargeAmount;
-			// if (player.Energy > player.EnergyMax)
-			// 	player.Energy = player.EnergyMax;
+            // player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-			// Vanilla Matters: Make SkillMedicine affect recharge amount.
-			skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillMedicine' );
-			if ( skillLevelValue == -1.0 ) {
-				skillLevelValue = 0;
-			}
+            // player.Energy += rechargeAmount;
+            // if (player.Energy > player.EnergyMax)
+            //  player.Energy = player.EnergyMax;
 
-			actualAmount = player.ChargePlayer( rechargeAmount + ( skillLevelValue / 2.0 ) );
+            // Vanilla Matters: Make SkillMedicine affect recharge amount.
+            skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillMedicine' );
+            if ( skillLevelValue == -1.0 ) {
+                skillLevelValue = 0;
+            }
 
-			player.ClientMessage( Sprintf( msgRecharged, actualAmount ) );
+            actualAmount = player.ChargePlayer( rechargeAmount + ( skillLevelValue / 2.0 ) );
 
-			player.PlaySound( sound'BioElectricHiss', SLOT_None,,, 256 );
-		}
+            player.ClientMessage( Sprintf( msgRecharged, actualAmount ) );
 
-		UseOnce();
-	}
+            player.PlaySound( sound'BioElectricHiss', SLOT_None,,, 256 );
+        }
+
+        UseOnce();
+    }
 Begin:
 }
 
@@ -77,24 +77,24 @@ Begin:
 
 function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
-	local string str;
+    local PersonaInfoWindow winInfo;
+    local string str;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	winInfo.SetTitle(itemName);
-	winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
-	//winInfo.AppendText(Sprintf(RechargesLabel, RechargeAmount));
+    winInfo.SetTitle(itemName);
+    winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
+    //winInfo.AppendText(Sprintf(RechargesLabel, RechargeAmount));
 
-	// Vanilla Matters: Amount recharged varies so we're gonna omit this for now.
+    // Vanilla Matters: Amount recharged varies so we're gonna omit this for now.
 
-	// Print the number of copies
-	str = CountLabel @ String(NumCopies);
-	winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ str);
+    // Print the number of copies
+    str = CountLabel @ String(NumCopies);
+    winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ str);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

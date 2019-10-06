@@ -5,7 +5,7 @@ class GeneratorScout extends Pawn;
 
 auto state StartUpScout
 {
-	// nil
+    // nil
 }
 
 defaultproperties

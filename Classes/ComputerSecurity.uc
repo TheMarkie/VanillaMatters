@@ -5,10 +5,10 @@ class ComputerSecurity extends Computers;
 
 struct sViewInfo
 {
-	var() localized string	titleString;
-	var() name				cameraTag;
-	var() name				turretTag;
-	var() name				doorTag;
+    var() localized string  titleString;
+    var() name              cameraTag;
+    var() name              turretTag;
+    var() name              doorTag;
 };
 
 var() localized sViewInfo Views[3];
@@ -31,30 +31,30 @@ replication
 
 function SetControlledObjectOwners(DeusExPlayer PlayerWhoOwns)
 {
-	local int cameraIndex;
-	local name tag;
-	local SecurityCamera camera;
+    local int cameraIndex;
+    local name tag;
+    local SecurityCamera camera;
    local AutoTurret turret;
    local DeusExMover door;
 
-	for (cameraIndex=0; cameraIndex<ArrayCount(Views); cameraIndex++)
-	{
-		tag = Views[cameraIndex].cameraTag;
-		if (tag != '')
-			foreach AllActors(class'SecurityCamera', camera, tag)
-				camera.SetOwner(PlayerWhoOwns);
+    for (cameraIndex=0; cameraIndex<ArrayCount(Views); cameraIndex++)
+    {
+        tag = Views[cameraIndex].cameraTag;
+        if (tag != '')
+            foreach AllActors(class'SecurityCamera', camera, tag)
+                camera.SetOwner(PlayerWhoOwns);
 
-		tag = Views[cameraIndex].turretTag;
-		if (tag != '')
-			foreach AllActors(class'AutoTurret', turret, tag)
+        tag = Views[cameraIndex].turretTag;
+        if (tag != '')
+            foreach AllActors(class'AutoTurret', turret, tag)
             turret.SetOwner(PlayerWhoOwns);
-				
-		tag = Views[cameraIndex].doorTag;
-		if (tag != '')
-			foreach AllActors(class'DeusExMover', door, tag)
-				door.SetOwner(PlayerWhoOwns);
 
-	}
+        tag = Views[cameraIndex].doorTag;
+        if (tag != '')
+            foreach AllActors(class'DeusExMover', door, tag)
+                door.SetOwner(PlayerWhoOwns);
+
+    }
 
 }
 
@@ -67,7 +67,7 @@ function AdditionalActivation(DeusExPlayer ActivatingPlayer)
 {
    if (Level.NetMode != NM_Standalone)
       SetControlledObjectOwners(ActivatingPlayer);
-   
+
    Super.AdditionalDeactivation(ActivatingPlayer);
 }
 
@@ -79,7 +79,7 @@ function AdditionalDeactivation(DeusExPlayer DeactivatingPlayer)
 {
    if (Level.NetMode != NM_Standalone)
       SetControlledObjectOwners(None);
-   
+
    Super.AdditionalDeactivation(DeactivatingPlayer);
 }
 

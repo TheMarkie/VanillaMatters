@@ -23,7 +23,7 @@ function ResetNonCustomizableOptions()
    Super.ResetNonCustomizableOptions();
 
    if (!bCustomizable)
-   {      
+   {
       // DEUS_EX AMSD Values set by hand because otherwise it just loads the config settings.
       SkillsTotal = 2000;
       SkillsAvail = 2000;

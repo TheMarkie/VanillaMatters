@@ -24,22 +24,22 @@ replication
 
 // Vanilla Matters: Replace EMP Shield with Energy Shield.
 function PostBeginPlay() {
-	local int i;
+    local int i;
 
-	super.PostBeginPlay();
+    super.PostBeginPlay();
 
-	if ( !VM_augReplaced ) {
-		for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
-			if ( AddAugs[i] == 'AugShield' ) {
-				AddAugs[i] = 'AugEnviro';
-			}
-			else if ( AddAugs[i] == 'AugEMP' ) {
-				AddAugs[i] = 'AugShield';
-			}
-		}
+    if ( !VM_augReplaced ) {
+        for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
+            if ( AddAugs[i] == 'AugShield' ) {
+                AddAugs[i] = 'AugEnviro';
+            }
+            else if ( AddAugs[i] == 'AugEMP' ) {
+                AddAugs[i] = 'AugShield';
+            }
+        }
 
-		VM_augReplaced = true;
-	}
+        VM_augReplaced = true;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -48,36 +48,36 @@ function PostBeginPlay() {
 
 simulated function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
-	local String outText;
-	local Int canIndex;
-	local Augmentation aug;
+    local PersonaInfoWindow winInfo;
+    local String outText;
+    local Int canIndex;
+    local Augmentation aug;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	winInfo.Clear();
-	winInfo.SetTitle(itemName);
-	winInfo.SetText(Description);
+    winInfo.Clear();
+    winInfo.SetTitle(itemName);
+    winInfo.SetText(Description);
 
-	winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
-	winInfo.AppendText(winInfo.CR() $ winInfo.CR());
+    winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
+    winInfo.AppendText(winInfo.CR() $ winInfo.CR());
 
-	for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
-	{
-		if (AddAugs[canIndex] != '')
-		{
-			aug = GetAugmentation(canIndex);
+    for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
+    {
+        if (AddAugs[canIndex] != '')
+        {
+            aug = GetAugmentation(canIndex);
 
-			if (aug != None)
-				winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
-		}
-	}	
-	
-	winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
+            if (aug != None)
+                winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
+        }
+    }
 
-	return True;
+    winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
+
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -86,35 +86,35 @@ simulated function bool UpdateInfo(Object winObject)
 
 simulated function Augmentation GetAugmentation(int augIndex)
 {
-	local Augmentation anAug;
-	local DeusExPlayer player;
+    local Augmentation anAug;
+    local DeusExPlayer player;
 
-	// First make sure we have a valid value
-	if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1)))
-		return None;
+    // First make sure we have a valid value
+    if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1)))
+        return None;
 
-	if (AddAugs[augIndex] == '')
-		return None;
+    if (AddAugs[augIndex] == '')
+        return None;
 
-	// Loop through all the augmentation objects and look 
-	// for the augName that matches the one stored in 
-	// this object
+    // Loop through all the augmentation objects and look
+    // for the augName that matches the one stored in
+    // this object
 
-	player = DeusExPlayer(Owner);
+    player = DeusExPlayer(Owner);
 
-	if (player != None)
-	{
-		anAug = player.AugmentationSystem.FirstAug;
-		while(anAug != None)
-		{
-			if (addAugs[augIndex] == anAug.Class.Name)
-				break;
+    if (player != None)
+    {
+        anAug = player.AugmentationSystem.FirstAug;
+        while(anAug != None)
+        {
+            if (addAugs[augIndex] == anAug.Class.Name)
+                break;
 
-			anAug = anAug.next;
-		}
-	}
+            anAug = anAug.next;
+        }
+    }
 
-	return anAug;
+    return anAug;
 }
 
 // ----------------------------------------------------------------------
@@ -125,17 +125,17 @@ simulated function Augmentation GetAugmentation(int augIndex)
 // ----------------------------------------------------------------------
 function inventory SpawnCopy( pawn Other )
 {
-	local inventory Copy;
+    local inventory Copy;
    local Int augIndex;
    local AugmentationCannister CopyCan;
 
-	Copy = Super.SpawnCopy(Other);
+    Copy = Super.SpawnCopy(Other);
    CopyCan = AugmentationCannister(Copy);
    for (augIndex = 0; augIndex < ArrayCount(Addaugs); augIndex++)
    {
       CopyCan.addAugs[augIndex] = addAugs[augIndex];
    }
-   
+
 }
 
 
@@ -186,7 +186,7 @@ auto state Pickup
             Pawn(Other).ClientMessage("No available augmentations found.");
          }
          else if (AugZeroPriority < 0)
-         { 
+         {
             Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugOne.AugmentationName$".");
             DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugOne.Class);
          }
@@ -209,7 +209,7 @@ auto state Pickup
          SetOwner(None);
       }
    }
-   
+
    function BeginState()
    {
       Super.BeginState();

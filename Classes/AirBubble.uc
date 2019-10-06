@@ -8,23 +8,23 @@ var vector OrigVel;
 
 auto state Flying
 {
-	simulated function Tick(float deltaTime)
-	{
-		Velocity.X = OrigVel.X + 8 - FRand() * 17;
-		Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
-		Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
+    simulated function Tick(float deltaTime)
+    {
+        Velocity.X = OrigVel.X + 8 - FRand() * 17;
+        Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
+        Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
 
-		if (!Region.Zone.bWaterZone)
-			Destroy();
-	}
+        if (!Region.Zone.bWaterZone)
+            Destroy();
+    }
 
-	simulated function BeginState()
-	{
-		Super.BeginState();
+    simulated function BeginState()
+    {
+        Super.BeginState();
 
-		OrigVel = Velocity;
-		DrawScale += FRand() * 0.1;
-	}
+        OrigVel = Velocity;
+        DrawScale += FRand() * 0.1;
+    }
 }
 
 defaultproperties

@@ -5,25 +5,25 @@ class CarStripped expands OutdoorThings;
 
 enum ESkinColor
 {
-	SC_LightBlue,
-	SC_DarkBlue,
-	SC_Gray,
-	SC_Black
+    SC_LightBlue,
+    SC_DarkBlue,
+    SC_Gray,
+    SC_Black
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_LightBlue:	Skin = Texture'CarStrippedTex1'; break;
-		case SC_DarkBlue:	Skin = Texture'CarStrippedTex2'; break;
-		case SC_Gray:		Skin = Texture'CarStrippedTex3'; break;
-		case SC_Black:		Skin = Texture'CarStrippedTex4'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_LightBlue:  Skin = Texture'CarStrippedTex1'; break;
+        case SC_DarkBlue:   Skin = Texture'CarStrippedTex2'; break;
+        case SC_Gray:       Skin = Texture'CarStrippedTex3'; break;
+        case SC_Black:      Skin = Texture'CarStrippedTex4'; break;
+    }
 }
 
 defaultproperties

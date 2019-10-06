@@ -17,16 +17,16 @@ var localized String NewLegendLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetOrder(ORDER_Right);
-	SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	SetMargins(0, 0);
-	SetMinorSpacing(0);
-	MakeWidthsEqual(False);
-	MakeHeightsEqual(True);
+    SetOrder(ORDER_Right);
+    SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    SetMargins(0, 0);
+    SetMinorSpacing(0);
+    MakeWidthsEqual(False);
+    MakeHeightsEqual(True);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -35,12 +35,12 @@ event InitWindow()
 
 function CreateControls()
 {
-	winIcon = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winIcon.SetFont(Font'FontHUDWingDings');
-	winIcon.SetText("C");
+    winIcon = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winIcon.SetFont(Font'FontHUDWingDings');
+    winIcon.SetText("C");
 
-	winLegend = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winLegend.SetText(NewLegendLabel);
+    winLegend = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winLegend.SetText(NewLegendLabel);
 }
 
 // ----------------------------------------------------------------------

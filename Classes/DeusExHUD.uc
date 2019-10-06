@@ -3,28 +3,28 @@
 //=============================================================================
 class DeusExHUD expands Window;
 
-var Crosshair						cross;
-var TimerDisplay					timer;
-var FrobDisplayWindow				frobDisplay;
-var DamageHUDDisplay				damageDisplay;
-var AugmentationDisplayWindow		augDisplay;
+var Crosshair                       cross;
+var TimerDisplay                    timer;
+var FrobDisplayWindow               frobDisplay;
+var DamageHUDDisplay                damageDisplay;
+var AugmentationDisplayWindow       augDisplay;
 
 // NEW STUFF!
 
-var HUDHitDisplay					hit;
+var HUDHitDisplay                   hit;
 var HUDCompassDisplay               compass;
-var HUDAmmoDisplay					ammo;
-var HUDObjectBelt					belt;
+var HUDAmmoDisplay                  ammo;
+var HUDObjectBelt                   belt;
 var HUDInformationDisplay           info;
-var HUDInfoLinkDisplay				infolink;
-var HUDLogDisplay					msgLog;
-var HUDConWindowFirst				conWindow;
+var HUDInfoLinkDisplay              infolink;
+var HUDLogDisplay                   msgLog;
+var HUDConWindowFirst               conWindow;
 var HUDMissionStartTextDisplay      startDisplay;
-var HUDActiveItemsDisplay			activeItems;
-var HUDBarkDisplay					barkDisplay;
-var HUDReceivedDisplay				receivedItems;
+var HUDActiveItemsDisplay           activeItems;
+var HUDBarkDisplay                  barkDisplay;
+var HUDReceivedDisplay              receivedItems;
 
-var HUDMultiSkills					hms;
+var HUDMultiSkills                  hms;
 
 // Vanilla Matters
 var DeusExPlayer VM_player;
@@ -38,59 +38,59 @@ var HUDLightIndicator VM_light;
 
 event InitWindow()
 {
-	local DeusExRootWindow root;
-	local DeusExPlayer player;
+    local DeusExRootWindow root;
+    local DeusExPlayer player;
 
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	// Get a pointer to the player
-	player = DeusExPlayer(root.parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(root.parentPawn);
 
-	// Vanilla Matters
-	VM_player = player;
-	VM_rootWnd = root;
+    // Vanilla Matters
+    VM_player = player;
+    VM_rootWnd = root;
 
-	bTickEnabled = true;
+    bTickEnabled = true;
 
-	SetFont(Font'TechMedium');
-	SetSensitivity(false);
+    SetFont(Font'TechMedium');
+    SetSensitivity(false);
 
-	ammo			= HUDAmmoDisplay(NewChild(Class'HUDAmmoDisplay'));
-	hit				= HUDHitDisplay(NewChild(Class'HUDHitDisplay'));
-	cross			= Crosshair(NewChild(Class'Crosshair'));
-	belt			= HUDObjectBelt(NewChild(Class'HUDObjectBelt'));
-	activeItems		= HUDActiveItemsDisplay(NewChild(Class'HUDActiveItemsDisplay'));
-	damageDisplay	= DamageHUDDisplay(NewChild(Class'DamageHUDDisplay'));
-	compass     	= HUDCompassDisplay(NewChild(Class'HUDCompassDisplay'));
-	hms				= HUDMultiSkills(NewChild(Class'HUDMultiSkills'));
+    ammo            = HUDAmmoDisplay(NewChild(Class'HUDAmmoDisplay'));
+    hit             = HUDHitDisplay(NewChild(Class'HUDHitDisplay'));
+    cross           = Crosshair(NewChild(Class'Crosshair'));
+    belt            = HUDObjectBelt(NewChild(Class'HUDObjectBelt'));
+    activeItems     = HUDActiveItemsDisplay(NewChild(Class'HUDActiveItemsDisplay'));
+    damageDisplay   = DamageHUDDisplay(NewChild(Class'DamageHUDDisplay'));
+    compass         = HUDCompassDisplay(NewChild(Class'HUDCompassDisplay'));
+    hms             = HUDMultiSkills(NewChild(Class'HUDMultiSkills'));
 
-	// Vanilla Matters: Create light indicator.
-	VM_light = HUDLightIndicator( NewChild( class'HUDLightIndicator' ) );
+    // Vanilla Matters: Create light indicator.
+    VM_light = HUDLightIndicator( NewChild( class'HUDLightIndicator' ) );
 
-	// Create the InformationWindow
-	info = HUDInformationDisplay(NewChild(Class'HUDInformationDisplay', False));
+    // Create the InformationWindow
+    info = HUDInformationDisplay(NewChild(Class'HUDInformationDisplay', False));
 
-	// Create the log window
-	msgLog	= HUDLogDisplay(NewChild(Class'HUDLogDisplay', False));
-	msgLog.SetLogTimeout(player.GetLogTimeout());
+    // Create the log window
+    msgLog  = HUDLogDisplay(NewChild(Class'HUDLogDisplay', False));
+    msgLog.SetLogTimeout(player.GetLogTimeout());
 
-	frobDisplay = FrobDisplayWindow(NewChild(Class'FrobDisplayWindow'));
-	frobDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    frobDisplay = FrobDisplayWindow(NewChild(Class'FrobDisplayWindow'));
+    frobDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 
-	augDisplay	= AugmentationDisplayWindow(NewChild(Class'AugmentationDisplayWindow'));
-	augDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    augDisplay  = AugmentationDisplayWindow(NewChild(Class'AugmentationDisplayWindow'));
+    augDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 
-	startDisplay = HUDMissionStartTextDisplay(NewChild(Class'HUDMissionStartTextDisplay', False));
-//	startDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    startDisplay = HUDMissionStartTextDisplay(NewChild(Class'HUDMissionStartTextDisplay', False));
+//  startDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 
-	// Bark display
-	barkDisplay = HUDBarkDisplay(NewChild(Class'HUDBarkDisplay', False));
+    // Bark display
+    barkDisplay = HUDBarkDisplay(NewChild(Class'HUDBarkDisplay', False));
 
-	// Received Items Display
-	receivedItems = HUDReceivedDisplay(NewChild(Class'HUDReceivedDisplay', False));
+    // Received Items Display
+    receivedItems = HUDReceivedDisplay(NewChild(Class'HUDReceivedDisplay', False));
 }
 
 // ----------------------------------------------------------------------
@@ -99,46 +99,46 @@ event InitWindow()
 
 event DescendantRemoved(Window descendant)
 {
-	if      (descendant == ammo)
-		ammo  = None;
-	else if (descendant == hit)
-		hit   = None;
-	else if (descendant == cross)
-		cross = None;
-	else if (descendant == belt)
-		belt  = None;
-	else if (descendant == activeItems)
-		activeItems = None;
-	else if (descendant == damageDisplay)
-		damageDisplay = None;
-	else if (descendant == infolink)
-		infolink = None;
-	else if (descendant == timer)
-		timer = None;
-	else if (descendant == msgLog)
-		msgLog = None;
-	else if (descendant == info)
-		info = None;
-	else if (descendant == conWindow)
-		conWindow = None;
-	else if (descendant == frobDisplay)
-		frobDisplay = None;
-	else if (descendant == augDisplay)
-		augDisplay = None;
-	else if (descendant == compass)
-		compass = None;
-	else if (descendant == startDisplay)
-		startDisplay = None;
-	else if (descendant == barkDisplay)
-		barkDisplay = None;
-	else if (descendant == receivedItems)
-		receivedItems = None;
-	else if ( descendant == hms )
-		hms = None;
-	// Vanilla Matters
-	else if ( descendant == VM_light ) {
-		VM_light = none;
-	}
+    if      (descendant == ammo)
+        ammo  = None;
+    else if (descendant == hit)
+        hit   = None;
+    else if (descendant == cross)
+        cross = None;
+    else if (descendant == belt)
+        belt  = None;
+    else if (descendant == activeItems)
+        activeItems = None;
+    else if (descendant == damageDisplay)
+        damageDisplay = None;
+    else if (descendant == infolink)
+        infolink = None;
+    else if (descendant == timer)
+        timer = None;
+    else if (descendant == msgLog)
+        msgLog = None;
+    else if (descendant == info)
+        info = None;
+    else if (descendant == conWindow)
+        conWindow = None;
+    else if (descendant == frobDisplay)
+        frobDisplay = None;
+    else if (descendant == augDisplay)
+        augDisplay = None;
+    else if (descendant == compass)
+        compass = None;
+    else if (descendant == startDisplay)
+        startDisplay = None;
+    else if (descendant == barkDisplay)
+        barkDisplay = None;
+    else if (descendant == receivedItems)
+        receivedItems = None;
+    else if ( descendant == hms )
+        hms = None;
+    // Vanilla Matters
+    else if ( descendant == VM_light ) {
+        VM_light = none;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -147,223 +147,223 @@ event DescendantRemoved(Window descendant)
 
 function ConfigurationChanged()
 {
-	local float qWidth, qHeight;
-	local float compassWidth, compassHeight;
-	local float beltWidth, beltHeight;
-	local float ammoWidth, ammoHeight;
-	local float hitWidth, hitHeight;
-	local float infoX, infoY, infoTop, infoBottom;
-	local float infoWidth, infoHeight, maxInfoWidth, maxInfoHeight;
-	local float itemsWidth, itemsHeight;
-	local float damageWidth, damageHeight;
-	local float conHeight;
-	local float barkWidth, barkHeight;
-	local float recWidth, recHeight, recPosY;
-	local float logTop;
+    local float qWidth, qHeight;
+    local float compassWidth, compassHeight;
+    local float beltWidth, beltHeight;
+    local float ammoWidth, ammoHeight;
+    local float hitWidth, hitHeight;
+    local float infoX, infoY, infoTop, infoBottom;
+    local float infoWidth, infoHeight, maxInfoWidth, maxInfoHeight;
+    local float itemsWidth, itemsHeight;
+    local float damageWidth, damageHeight;
+    local float conHeight;
+    local float barkWidth, barkHeight;
+    local float recWidth, recHeight, recPosY;
+    local float logTop;
 
-	// Vanilla Matters
-	local float lightWidth, lightHeight, offsetX, t;
+    // Vanilla Matters
+    local float lightWidth, lightHeight, offsetX, t;
 
-	if (ammo != None)
-	{
-		if (ammo.IsVisible())
-		{
-			ammo.QueryPreferredSize(ammoWidth, ammoHeight);
-			ammo.ConfigureChild(0, height-ammoHeight, ammoWidth, ammoHeight);
-		}
-		else
-		{
-			ammoWidth  = 0;
-			ammoHeight = 0;
-		}
-	}
+    if (ammo != None)
+    {
+        if (ammo.IsVisible())
+        {
+            ammo.QueryPreferredSize(ammoWidth, ammoHeight);
+            ammo.ConfigureChild(0, height-ammoHeight, ammoWidth, ammoHeight);
+        }
+        else
+        {
+            ammoWidth  = 0;
+            ammoHeight = 0;
+        }
+    }
 
-	if (hit != None)
-	{
-		if (hit.IsVisible())
-		{
-			hit.QueryPreferredSize(hitWidth, hitHeight);
-			hit.ConfigureChild(0, 0, hitWidth, hitHeight);
-		}
-	}
+    if (hit != None)
+    {
+        if (hit.IsVisible())
+        {
+            hit.QueryPreferredSize(hitWidth, hitHeight);
+            hit.ConfigureChild(0, 0, hitWidth, hitHeight);
+        }
+    }
 
-	// Stick the Compass directly under the Hit display
-	if (compass != None)
-	{
-		compass.QueryPreferredSize(compassWidth, compassHeight);
-		compass.ConfigureChild(0, hitHeight + 4, compassWidth, compassHeight);
+    // Stick the Compass directly under the Hit display
+    if (compass != None)
+    {
+        compass.QueryPreferredSize(compassWidth, compassHeight);
+        compass.ConfigureChild(0, hitHeight + 4, compassWidth, compassHeight);
 
-		if (hitWidth == 0)
-			hitWidth = compassWidth;
-	}
+        if (hitWidth == 0)
+            hitWidth = compassWidth;
+    }
 
-	if (cross != None)
-	{
-		cross.QueryPreferredSize(qWidth, qHeight);
-		// cross.ConfigureChild((width-qWidth)*0.5+0.5, (height-qHeight)*0.5+0.5, qWidth, qHeight);
+    if (cross != None)
+    {
+        cross.QueryPreferredSize(qWidth, qHeight);
+        // cross.ConfigureChild((width-qWidth)*0.5+0.5, (height-qHeight)*0.5+0.5, qWidth, qHeight);
 
-		// Vanilla Matters: Move the crosshair by a tiny bit.
-		cross.ConfigureChild( ( ( width - qWidth ) * 0.5 ) + 1, ( ( height - qHeight ) * 0.5 ) + 1, qWidth, qHeight );
-	}
-	if (belt != None)
-	{
-		belt.QueryPreferredSize(beltWidth, beltHeight);
-		belt.ConfigureChild(width - beltWidth, height - beltHeight, beltWidth, beltHeight);
+        // Vanilla Matters: Move the crosshair by a tiny bit.
+        cross.ConfigureChild( ( ( width - qWidth ) * 0.5 ) + 1, ( ( height - qHeight ) * 0.5 ) + 1, qWidth, qHeight );
+    }
+    if (belt != None)
+    {
+        belt.QueryPreferredSize(beltWidth, beltHeight);
+        belt.ConfigureChild(width - beltWidth, height - beltHeight, beltWidth, beltHeight);
 
-		infoBottom = height - beltHeight;
-	}
-	else
-	{
-		infoBottom = height;
-	}
+        infoBottom = height - beltHeight;
+    }
+    else
+    {
+        infoBottom = height;
+    }
 
-	// Vanilla Matters: Light indicator is somewhere on the bottom of the screen.
-	if ( VM_light != none ) {
-		VM_light.QueryPreferredSize( lightWidth, lightHeight );
+    // Vanilla Matters: Light indicator is somewhere on the bottom of the screen.
+    if ( VM_light != none ) {
+        VM_light.QueryPreferredSize( lightWidth, lightHeight );
 
-		VM_light.ConfigureChild( FMin( ( width / 2 ) - ( lightWidth / 2 ), width - beltWidth - lightWidth - 20 ), height - lightHeight, lightWidth, lightHeight );
-	}
+        VM_light.ConfigureChild( FMin( ( width / 2 ) - ( lightWidth / 2 ), width - beltWidth - lightWidth - 20 ), height - lightHeight, lightWidth, lightHeight );
+    }
 
-	// Damage display
-	//
-	// Left side, under the compass
+    // Damage display
+    //
+    // Left side, under the compass
 
-	if (damageDisplay != None)
-	{
-		// Doesn't check to see if it might bump into the Hit Display 
-		damageDisplay.QueryPreferredSize(damageWidth, damageHeight);
+    if (damageDisplay != None)
+    {
+        // Doesn't check to see if it might bump into the Hit Display
+        damageDisplay.QueryPreferredSize(damageWidth, damageHeight);
 
-		// Vanilla Matters: Move the damage display a bit to the right.
-		damageDisplay.ConfigureChild( 4, hitHeight + compassHeight + 4, damageWidth, damageHeight );
-	}
+        // Vanilla Matters: Move the damage display a bit to the right.
+        damageDisplay.ConfigureChild( 4, hitHeight + compassHeight + 4, damageWidth, damageHeight );
+    }
 
-	// Active Items, includes Augmentations and various charged Items
-	// 
-	// Upper right corner
+    // Active Items, includes Augmentations and various charged Items
+    //
+    // Upper right corner
 
-	if (activeItems != None)
-	{
-		itemsWidth = activeItems.QueryPreferredWidth(height - beltHeight);
-		activeItems.ConfigureChild(width - itemsWidth, 0, itemsWidth, height - beltHeight);
-	}
+    if (activeItems != None)
+    {
+        itemsWidth = activeItems.QueryPreferredWidth(height - beltHeight);
+        activeItems.ConfigureChild(width - itemsWidth, 0, itemsWidth, height - beltHeight);
+    }
 
-	// Display the Log in the upper-left corner, to the right of
-	// the hit display.
+    // Display the Log in the upper-left corner, to the right of
+    // the hit display.
 
-	if (msgLog != None)
-	{
-		qHeight = msgLog.QueryPreferredHeight(width - hitWidth - itemsWidth - 40);
-		msgLog.ConfigureChild(hitWidth + 20, 10, width - hitWidth - itemsWidth - 40, qHeight);
+    if (msgLog != None)
+    {
+        qHeight = msgLog.QueryPreferredHeight(width - hitWidth - itemsWidth - 40);
+        msgLog.ConfigureChild(hitWidth + 20, 10, width - hitWidth - itemsWidth - 40, qHeight);
 
-		if (msgLog.IsVisible())
-			logTop = max(infoTop, 10 + qHeight);
-	}
-	
-	// Display the infolink to the right of the hit display
-	// and underneath the Log window if it's visible.
+        if (msgLog.IsVisible())
+            logTop = max(infoTop, 10 + qHeight);
+    }
 
-	if (infolink != None)
-	{
-		infolink.QueryPreferredSize(qWidth, qHeight);
+    // Display the infolink to the right of the hit display
+    // and underneath the Log window if it's visible.
 
-		if ((msgLog != None) && (msgLog.IsVisible()))
-			infolink.ConfigureChild(hitWidth + 20, msgLog.Height + 20, qWidth, qHeight);
-		else
-			infolink.ConfigureChild(hitWidth + 20, 0, qWidth, qHeight);
+    if (infolink != None)
+    {
+        infolink.QueryPreferredSize(qWidth, qHeight);
 
-		if (infolink.IsVisible())
-			infoTop = max(infoTop, 10 + qHeight);
-	}
+        if ((msgLog != None) && (msgLog.IsVisible()))
+            infolink.ConfigureChild(hitWidth + 20, msgLog.Height + 20, qWidth, qHeight);
+        else
+            infolink.ConfigureChild(hitWidth + 20, 0, qWidth, qHeight);
 
-	// First-person conversation window
+        if (infolink.IsVisible())
+            infoTop = max(infoTop, 10 + qHeight);
+    }
 
-	if (conWindow != None)
-	{
-		qWidth  = Min(width - 100, 800);
-		conHeight = conWindow.QueryPreferredHeight(qWidth);
+    // First-person conversation window
 
-		// Stick it above the belt
-		conWindow.ConfigureChild(
-			(width / 2) - (qwidth / 2), (infoBottom - conHeight) - 20, 
-			qWidth, conHeight);
-	}
+    if (conWindow != None)
+    {
+        qWidth  = Min(width - 100, 800);
+        conHeight = conWindow.QueryPreferredHeight(qWidth);
 
-	// Bark Display.  Position where first-person convo window would
-	// go, or above it if the first-person convo is visible
-	if (barkDisplay != None)
-	{
-		qWidth = Min(width - 100, 800);
-		barkHeight = barkDisplay.QueryPreferredHeight(qWidth);
+        // Stick it above the belt
+        conWindow.ConfigureChild(
+            (width / 2) - (qwidth / 2), (infoBottom - conHeight) - 20,
+            qWidth, conHeight);
+    }
 
-		barkDisplay.ConfigureChild(
-			(width / 2) - (qwidth / 2), (infoBottom - barkHeight - conHeight) - 20, 
-			qWidth, barkHeight);
-	}
+    // Bark Display.  Position where first-person convo window would
+    // go, or above it if the first-person convo is visible
+    if (barkDisplay != None)
+    {
+        qWidth = Min(width - 100, 800);
+        barkHeight = barkDisplay.QueryPreferredHeight(qWidth);
 
-	// Received Items display
-	// 
-	// Stick below the crosshair, but above any bark/convo windows that might 
-	// be visible.
+        barkDisplay.ConfigureChild(
+            (width / 2) - (qwidth / 2), (infoBottom - barkHeight - conHeight) - 20,
+            qWidth, barkHeight);
+    }
 
-	if (receivedItems != None)
-	{
-		receivedItems.QueryPreferredSize(recWidth, recHeight);
+    // Received Items display
+    //
+    // Stick below the crosshair, but above any bark/convo windows that might
+    // be visible.
 
-		recPosY = (height / 2) + 20;
+    if (receivedItems != None)
+    {
+        receivedItems.QueryPreferredSize(recWidth, recHeight);
 
-		if ((barkDisplay != None) && (barkDisplay.IsVisible()))
-			recPosY -= barkHeight;
-		if ((conWindow != None) && (conWindow.IsVisible()))
-			recPosY -= conHeight;
+        recPosY = (height / 2) + 20;
 
-		receivedItems.ConfigureChild(
-			(width / 2) - (recWidth / 2), recPosY,
-			recWidth, recHeight);
-	}
+        if ((barkDisplay != None) && (barkDisplay.IsVisible()))
+            recPosY -= barkHeight;
+        if ((conWindow != None) && (conWindow.IsVisible()))
+            recPosY -= conHeight;
 
-	// Display the timer above the object belt if it's visible
+        receivedItems.ConfigureChild(
+            (width / 2) - (recWidth / 2), recPosY,
+            recWidth, recHeight);
+    }
 
-	if (timer != None)
-	{
-		timer.QueryPreferredSize(qWidth, qHeight);
+    // Display the timer above the object belt if it's visible
 
-		if ((belt != None) && (belt.IsVisible()))
-			timer.ConfigureChild(width-qWidth, height-qHeight-beltHeight-10, qWidth, qHeight);
-		else
-			timer.ConfigureChild(width-qWidth, height-qHeight, qWidth, qHeight);
-	}
+    if (timer != None)
+    {
+        timer.QueryPreferredSize(qWidth, qHeight);
 
-	// Mission Start Text
-	if (startDisplay != None)
-	{
-		// Stick this baby right in the middle of the screen.
-		startDisplay.QueryPreferredSize(qWidth, qHeight);
-		startDisplay.ConfigureChild(
-			(width / 2) - (qWidth / 2), (height / 2) - (qHeight / 2) - 75,
-			qWidth, qHeight);
-	}
+        if ((belt != None) && (belt.IsVisible()))
+            timer.ConfigureChild(width-qWidth, height-qHeight-beltHeight-10, qWidth, qHeight);
+        else
+            timer.ConfigureChild(width-qWidth, height-qHeight, qWidth, qHeight);
+    }
 
-	// Display the Info Window sandwiched between all the other windows.  :)
+    // Mission Start Text
+    if (startDisplay != None)
+    {
+        // Stick this baby right in the middle of the screen.
+        startDisplay.QueryPreferredSize(qWidth, qHeight);
+        startDisplay.ConfigureChild(
+            (width / 2) - (qWidth / 2), (height / 2) - (qHeight / 2) - 75,
+            qWidth, qHeight);
+    }
 
-	if ((info != None) && (info.IsVisible(False)))
-	{
-		// Must redo these formulas
-		maxInfoWidth  = Min(width - 170, 800);
-		maxInfoHeight = (infoBottom - infoTop) - 20;
+    // Display the Info Window sandwiched between all the other windows.  :)
 
-		info.QueryPreferredSize(infoWidth, infoHeight);
+    if ((info != None) && (info.IsVisible(False)))
+    {
+        // Must redo these formulas
+        maxInfoWidth  = Min(width - 170, 800);
+        maxInfoHeight = (infoBottom - infoTop) - 20;
 
-		if (infoWidth > maxInfoWidth)
-		{
-			infoHeight = info.QueryPreferredHeight(maxInfoWidth);
-			infoWidth  = maxInfoWidth;
-		}
+        info.QueryPreferredSize(infoWidth, infoHeight);
 
-		infoX = (width / 2) - (infoWidth / 2);
-		infoY = infoTop + (((infoBottom - infoTop) / 2) - (infoHeight / 2)) + 10;
+        if (infoWidth > maxInfoWidth)
+        {
+            infoHeight = info.QueryPreferredHeight(maxInfoWidth);
+            infoWidth  = maxInfoWidth;
+        }
 
-		info.ConfigureChild(infoX, infoY, infoWidth, infoHeight);
-	}
+        infoX = (width / 2) - (infoWidth / 2);
+        infoY = infoTop + (((infoBottom - infoTop) / 2) - (infoHeight / 2)) + 10;
+
+        info.ConfigureChild(infoX, infoY, infoWidth, infoHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -372,9 +372,9 @@ function ConfigurationChanged()
 
 function bool ChildRequestedReconfiguration(window child)
 {
-	ConfigurationChanged();
+    ConfigurationChanged();
 
-	return TRUE;
+    return TRUE;
 }
 
 // ----------------------------------------------------------------------
@@ -383,33 +383,33 @@ function bool ChildRequestedReconfiguration(window child)
 
 function ChildRequestedVisibilityChange(window child, bool bNewVisibility)
 {
-	child.SetChildVisibility(bNewVisibility);
+    child.SetChildVisibility(bNewVisibility);
 
-	ConfigurationChanged();
+    ConfigurationChanged();
 }
 
 // ----------------------------------------------------------------------
 // CreateInfoLinkWindow()
 //
-// Creates the InfoLink window used to display messages.  If a 
+// Creates the InfoLink window used to display messages.  If a
 // InfoLink window already exists, then return None.  If the Log window
 // is visible, it hides it.
 // ----------------------------------------------------------------------
 
 function HUDInfoLinkDisplay CreateInfoLinkWindow()
 {
-	if ( infolink != None )
-		return None;
+    if ( infolink != None )
+        return None;
 
-	infolink = HUDInfoLinkDisplay(NewChild(Class'HUDInfoLinkDisplay'));
+    infolink = HUDInfoLinkDisplay(NewChild(Class'HUDInfoLinkDisplay'));
 
-	// Hide Log window
-	if ( msgLog != None )
-		msgLog.Hide();
+    // Hide Log window
+    if ( msgLog != None )
+        msgLog.Hide();
 
-	infolink.AskParentForReconfigure();
+    infolink.AskParentForReconfigure();
 
-	return infolink;
+    return infolink;
 }
 
 // ----------------------------------------------------------------------
@@ -418,14 +418,14 @@ function HUDInfoLinkDisplay CreateInfoLinkWindow()
 
 function DestroyInfoLinkWindow()
 {
-	if ( infoLink != None )
-	{
-		infoLink.Destroy();
+    if ( infoLink != None )
+    {
+        infoLink.Destroy();
 
-		// If the msgLog window was visible, show it again
-		if (( msgLog != None ) && ( msgLog.MessagesWaiting() ))
-			msgLog.Show();
-	}
+        // If the msgLog window was visible, show it again
+        if (( msgLog != None ) && ( msgLog.MessagesWaiting() ))
+            msgLog.Show();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -434,15 +434,15 @@ function DestroyInfoLinkWindow()
 
 function HUDConWindowFirst CreateConWindowFirst()
 {
-	local DeusExRootWindow root;
+    local DeusExRootWindow root;
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	conWindow = HUDConWindowFirst(NewChild(Class'HUDConWindowFirst', False));
-	conWindow.AskParentForReconfigure();
+    conWindow = HUDConWindowFirst(NewChild(Class'HUDConWindowFirst', False));
+    conWindow.AskParentForReconfigure();
 
-	return conWindow;
+    return conWindow;
 }
 
 // ----------------------------------------------------------------------
@@ -454,31 +454,31 @@ function HUDConWindowFirst CreateConWindowFirst()
 
 event VisibilityChanged(bool bNewVisibility)
 {
-	Super.VisibilityChanged( bNewVisibility );
+    Super.VisibilityChanged( bNewVisibility );
 
-	if (( msgLog != None ) && ( bNewVisibility ))
-	{
-		if (( infoLink == None ) && ( msgLog.MessagesWaiting() ))
-			msgLog.Show();
-	}
+    if (( msgLog != None ) && ( bNewVisibility ))
+    {
+        if (( infoLink == None ) && ( msgLog.MessagesWaiting() ))
+            msgLog.Show();
+    }
 }
 
 // ----------------------------------------------------------------------
 // CreateTimerWindow()
 //
-// Creates the Timer window used to display countdowns.  If a 
+// Creates the Timer window used to display countdowns.  If a
 // Timer window already exists, then return None.
 // ----------------------------------------------------------------------
 
 function TimerDisplay CreateTimerWindow()
 {
-	if ( timer != None )
-		return None;
+    if ( timer != None )
+        return None;
 
-	timer = TimerDisplay(NewChild(Class'TimerDisplay'));
-	timer.AskParentForReconfigure();
+    timer = TimerDisplay(NewChild(Class'TimerDisplay'));
+    timer.AskParentForReconfigure();
 
-	return timer;
+    return timer;
 }
 
 // ----------------------------------------------------------------------
@@ -487,34 +487,34 @@ function TimerDisplay CreateTimerWindow()
 
 function HUDInformationDisplay ShowInfoWindow()
 {
-	if (info != None)
-		info.Show();
+    if (info != None)
+        info.Show();
 
-	return info;
+    return info;
 }
 
 // ----------------------------------------------------------------------
 // UpdateSettings()
 //
-// Show/Hide these items as dictated by settings in DeusExPlayer (until 
+// Show/Hide these items as dictated by settings in DeusExPlayer (until
 // DeusExHUD can be serialized)
 // ----------------------------------------------------------------------
 
 function UpdateSettings( DeusExPlayer player )
 {
-	belt.SetVisibility(player.bObjectBeltVisible);
-	hit.SetVisibility(player.bHitDisplayVisible);
-	ammo.SetVisibility(player.bAmmoDisplayVisible);
-	activeItems.SetVisibility(player.bAugDisplayVisible);
-	damageDisplay.SetVisibility(player.bHitDisplayVisible);
-	compass.SetVisibility(player.bCompassVisible);
+    belt.SetVisibility(player.bObjectBeltVisible);
+    hit.SetVisibility(player.bHitDisplayVisible);
+    ammo.SetVisibility(player.bAmmoDisplayVisible);
+    activeItems.SetVisibility(player.bAugDisplayVisible);
+    damageDisplay.SetVisibility(player.bHitDisplayVisible);
+    compass.SetVisibility(player.bCompassVisible);
 
-	// Vanilla Matters: We handle crosshair stuff in Tick.
+    // Vanilla Matters: We handle crosshair stuff in Tick.
 }
 
 // Vanilla Matters: Handle crosshair visibility.
 function Tick( float deltaTime ) {
-	cross.SetCrosshair( !augDisplay.VM_recticleDrawn && frobDisplay.IsVisible() && !VM_rootWnd.scopeView.bActive && VM_player.bCrosshairVisible );
+    cross.SetCrosshair( !augDisplay.VM_recticleDrawn && frobDisplay.IsVisible() && !VM_rootWnd.scopeView.bActive && VM_player.bCrosshairVisible );
 }
 
 // ----------------------------------------------------------------------

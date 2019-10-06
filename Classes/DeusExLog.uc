@@ -2,10 +2,10 @@
 // DeusExLog
 //=============================================================================
 class DeusExLog expands Object
-	native;
+    native;
 
-var String text;		// Log msg stored here.
-var DeusExLog next;		// Next note
+var String text;        // Log msg stored here.
+var DeusExLog next;     // Next note
 
 // ----------------------------------------------------------------------
 // SetLogText()
@@ -13,7 +13,7 @@ var DeusExLog next;		// Next note
 
 function SetLogText( String newLogText )
 {
-	text = newLogText;
+    text = newLogText;
 }
 
 defaultproperties

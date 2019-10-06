@@ -5,22 +5,22 @@ class FleshFragment expands DeusExFragment;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Super.BeginState();
+    function BeginState()
+    {
+        Super.BeginState();
 
-		Velocity = VRand() * 300;
-		DrawScale = FRand() + 1.5;
-	}
+        Velocity = VRand() * 300;
+        DrawScale = FRand() + 1.5;
+    }
 }
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
-	
-	if (!IsInState('Dying'))
-		if (FRand() < 0.5)
-			Spawn(class'BloodDrop',,, Location);
+    Super.Tick(deltaTime);
+
+    if (!IsInState('Dying'))
+        if (FRand() < 0.5)
+            Spawn(class'BloodDrop',,, Location);
 }
 
 defaultproperties

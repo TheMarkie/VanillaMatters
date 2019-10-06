@@ -25,7 +25,7 @@ Begin:
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
    SetTargetingAugStatus(CurrentLevel,False);
 }
@@ -36,21 +36,21 @@ function Deactivate()
 
 simulated function SetTargetingAugStatus(int Level, bool IsActive)
 {
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.bTargetActive = IsActive;
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.targetLevel = Level;
+    DeusExRootWindow(Player.rootWindow).hud.augDisplay.bTargetActive = IsActive;
+    DeusExRootWindow(Player.rootWindow).hud.augDisplay.targetLevel = Level;
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
       AugmentationLocation = LOC_Subdermal;
-	}
+    }
 }
 
 defaultproperties

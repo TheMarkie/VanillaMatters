@@ -8,7 +8,7 @@ var DeusExPlayer player;
 
 var Window winIcon;
 
-var int	titleHeight;
+var int titleHeight;
 var int minTitleWidth;
 var int titleLeftMargin;
 var int titleRightMargin;
@@ -44,14 +44,14 @@ var int leftBottomHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateIconWindow();
-	
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    CreateIconWindow();
 
-	StyleChanged();
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
+
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -67,53 +67,53 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the title Background textures
-	gc.SetStyle(DSTY_Masked);
-	gc.SetTileColor(colTitle);
+{
+    // Draw the title Background textures
+    gc.SetStyle(DSTY_Masked);
+    gc.SetTileColor(colTitle);
 
-	// Left
-	gc.DrawTexture(0, 0, leftWidth, titleHeight, 0, 0, titleTexture_Left);
+    // Left
+    gc.DrawTexture(0, 0, leftWidth, titleHeight, 0, 0, titleTexture_Left);
 
-	// Left bottom
-	gc.DrawTexture(0, titleHeight - 1, leftBottomWidth, leftBottomHeight, 0, 0, titleTexture_LeftBottom);
+    // Left bottom
+    gc.DrawTexture(0, titleHeight - 1, leftBottomWidth, leftBottomHeight, 0, 0, titleTexture_LeftBottom);
 
-	// Center
-	gc.DrawPattern(
-		leftWidth, 0, 
-		width - leftWidth - rightWidth, titleHeight,
-		0, 0,
-		titleTexture_Center);
+    // Center
+    gc.DrawPattern(
+        leftWidth, 0,
+        width - leftWidth - rightWidth, titleHeight,
+        0, 0,
+        titleTexture_Center);
 
-	// Right
-	gc.DrawTexture(width - rightWidth, 0, rightWidth, titleHeight, 0, 0, titleTexture_Right);
+    // Right
+    gc.DrawTexture(width - rightWidth, 0, rightWidth, titleHeight, 0, 0, titleTexture_Right);
 
-	// Now draw the Bubble textures
-	gc.SetStyle(DSTY_Masked);
-	gc.SetTileColor(colBubble);
+    // Now draw the Bubble textures
+    gc.SetStyle(DSTY_Masked);
+    gc.SetTileColor(colBubble);
 
-	// Left
-	gc.DrawTexture(0, 0, leftWidth, titleHeight, 0, 0, titleBubble_Left);
+    // Left
+    gc.DrawTexture(0, 0, leftWidth, titleHeight, 0, 0, titleBubble_Left);
 
-	// Center
-	gc.DrawPattern(
-		leftWidth, 0, 
-		width - leftWidth - rightWidth, titleHeight,
-		0, 0,
-		titleBubble_Center);
+    // Center
+    gc.DrawPattern(
+        leftWidth, 0,
+        width - leftWidth - rightWidth, titleHeight,
+        0, 0,
+        titleBubble_Center);
 
-	// Right
-	gc.DrawTexture(width - rightWidth, 0, rightWidth, titleHeight, 0, 0, titleBubble_Right);
+    // Right
+    gc.DrawTexture(width - rightWidth, 0, rightWidth, titleHeight, 0, 0, titleBubble_Right);
 
-	// Draw the text!
-	gc.SetFont(fontTitle);
-	gc.SetTextColor(colTitleText);
-	gc.SetHorizontalAlignment(HALIGN_Left);
-	gc.SetVerticalAlignment(VALIGN_Center);
+    // Draw the text!
+    gc.SetFont(fontTitle);
+    gc.SetTextColor(colTitleText);
+    gc.SetHorizontalAlignment(HALIGN_Left);
+    gc.SetVerticalAlignment(VALIGN_Center);
 
-	gc.DrawText(titleLeftMargin, 0, width - titleLeftMargin, titleHeight, titleText);
+    gc.DrawText(titleLeftMargin, 0, width - titleLeftMargin, titleHeight, titleText);
 
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -123,18 +123,18 @@ event DrawWindow(GC gc)
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local GC gc;
-	local float textWidth, textHeight;
+    local GC gc;
+    local float textWidth, textHeight;
 
-	gc = GetGC();
+    gc = GetGC();
 
-	gc.SetFont(fontTitle);
-	gc.GetTextExtent(maxTextWidth, textWidth, textHeight, titleText);
+    gc.SetFont(fontTitle);
+    gc.GetTextExtent(maxTextWidth, textWidth, textHeight, titleText);
 
-	preferredWidth  = Max(minTitleWidth, titleLeftMargin + textWidth + titleRightMargin);
-	preferredHeight = titleHeight + leftBottomHeight;
+    preferredWidth  = Max(minTitleWidth, titleLeftMargin + textWidth + titleRightMargin);
+    preferredHeight = titleHeight + leftBottomHeight;
 
-	ReleaseGC(gc);
+    ReleaseGC(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -143,10 +143,10 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function CreateIconWindow()
 {
-	winIcon = NewChild(Class'Window');
-	winIcon.SetPos(12, 3);
-	winIcon.SetSize(16, 16);
-	winIcon.SetBackground(textureAppIcon);
+    winIcon = NewChild(Class'Window');
+    winIcon.SetPos(12, 3);
+    winIcon.SetSize(16, 16);
+    winIcon.SetBackground(textureAppIcon);
 }
 
 // ----------------------------------------------------------------------
@@ -155,9 +155,9 @@ function CreateIconWindow()
 
 function SetTitle(string newTitle)
 {
-	titleText = newTitle;
+    titleText = newTitle;
 
-	AskParentForReconfigure();
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------
@@ -166,8 +166,8 @@ function SetTitle(string newTitle)
 
 function GetOffsetWidths(out int titleOffsetX, out int titleOffsetY)
 {
-	titleOffsetX = leftBottomWidth;
-	titleOffsetY = titleHeight;
+    titleOffsetX = leftBottomWidth;
+    titleOffsetY = titleHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -176,14 +176,14 @@ function GetOffsetWidths(out int titleOffsetX, out int titleOffsetY)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colTitle     = theme.GetColorFromName('MenuColor_ButtonFace');
-	colTitleText = theme.GetColorFromName('MenuColor_TitleText');
-	colBubble    = theme.GetColorFromName('MenuColor_TitleBackground');
+    // Title colors
+    colTitle     = theme.GetColorFromName('MenuColor_ButtonFace');
+    colTitleText = theme.GetColorFromName('MenuColor_TitleText');
+    colBubble    = theme.GetColorFromName('MenuColor_TitleBackground');
 }
 
 // ----------------------------------------------------------------------

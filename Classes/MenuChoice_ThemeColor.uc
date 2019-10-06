@@ -13,16 +13,16 @@ var String     defaultTheme;
 
 function PopulateThemes(int themeType)
 {
-	local ColorTheme theme;
-	local int themeIndex;
-	
-	theme = player.ThemeManager.GetFirstTheme(themeType);
-	
-	while(theme != None)
-	{
-		enumText[themeIndex++] = theme.GetThemeName();
-		theme = player.ThemeManager.GetNextTheme();
-	}
+    local ColorTheme theme;
+    local int themeIndex;
+
+    theme = player.ThemeManager.GetFirstTheme(themeType);
+
+    while(theme != None)
+    {
+        enumText[themeIndex++] = theme.GetThemeName();
+        theme = player.ThemeManager.GetNextTheme();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -31,16 +31,16 @@ function PopulateThemes(int themeType)
 
 function SetValueFromString(String stringValue)
 {
-	local int enumIndex;
+    local int enumIndex;
 
-	for(enumIndex=0; enumIndex<arrayCount(enumText); enumIndex++)
-	{
-		if (enumText[enumIndex] == stringValue)
-		{
-			SetValue(enumIndex);
-			break;
-		}
-	}
+    for(enumIndex=0; enumIndex<arrayCount(enumText); enumIndex++)
+    {
+        if (enumText[enumIndex] == stringValue)
+        {
+            SetValue(enumIndex);
+            break;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

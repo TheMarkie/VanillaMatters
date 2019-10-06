@@ -55,15 +55,15 @@ var localized String ButtonPressedLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(346, 153);
+    SetSize(346, 153);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	CreateControls();
-	StyleChanged();
+    CreateControls();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -72,54 +72,54 @@ event InitWindow()
 
 function CreateControls()
 {
-	winButtonNormal = NewChild(Class'Window');
-	winButtonNormal.SetBackgroundStyle(DSTY_Translucent);
-	winButtonNormal.SetBackground(Texture'RGB_HUDButton_Normal');
-	winButtonNormal.SetSize(205, 16);
-	winButtonNormal.SetPos(23, 131);
+    winButtonNormal = NewChild(Class'Window');
+    winButtonNormal.SetBackgroundStyle(DSTY_Translucent);
+    winButtonNormal.SetBackground(Texture'RGB_HUDButton_Normal');
+    winButtonNormal.SetSize(205, 16);
+    winButtonNormal.SetPos(23, 131);
 
-	winButtonPressed = NewChild(Class'Window');
-	winButtonPressed.SetBackgroundStyle(DSTY_Translucent);
-	winButtonPressed.SetBackground(Texture'RGB_HUDButton_Pressed');
-	winButtonPressed.SetSize(75, 16);
-	winButtonPressed.SetPos(228, 131);
+    winButtonPressed = NewChild(Class'Window');
+    winButtonPressed.SetBackgroundStyle(DSTY_Translucent);
+    winButtonPressed.SetBackground(Texture'RGB_HUDButton_Pressed');
+    winButtonPressed.SetSize(75, 16);
+    winButtonPressed.SetPos(228, 131);
 
-	winListHighlight = NewChild(Class'Window');
-	winListHighlight.SetBackgroundStyle(DSTY_Normal);
-	winListHighlight.SetBackground(Texture'Solid');
-	winListHighlight.SetSize(290, 11);
-	winListHighlight.SetPos(28, 87);
+    winListHighlight = NewChild(Class'Window');
+    winListHighlight.SetBackgroundStyle(DSTY_Normal);
+    winListHighlight.SetBackground(Texture'Solid');
+    winListHighlight.SetSize(290, 11);
+    winListHighlight.SetPos(28, 87);
 
-	winListFocus = NewChild(Class'Window');
-	winListFocus.SetBackgroundStyle(DSTY_Normal);
-	winListFocus.SetBackground(Texture'Solid');
-	winListFocus.SetSize(290, 11);
-	winListFocus.SetPos(28, 99);
+    winListFocus = NewChild(Class'Window');
+    winListFocus.SetBackgroundStyle(DSTY_Normal);
+    winListFocus.SetBackground(Texture'Solid');
+    winListFocus.SetSize(290, 11);
+    winListFocus.SetPos(28, 99);
 
-	// Title
-	winTextTitle = PersonaTitleTextWindow(NewChild(Class'PersonaTitleTextWindow'));
-	winTextTitle.SetPos(23, 7);
-	winTextTitle.SetText(TitleLabel);
+    // Title
+    winTextTitle = PersonaTitleTextWindow(NewChild(Class'PersonaTitleTextWindow'));
+    winTextTitle.SetPos(23, 7);
+    winTextTitle.SetText(TitleLabel);
 
-	// Header
-	winTextHeader = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winTextHeader.SetPos(32, 26);
-	winTextHeader.SetText(HeaderLabel);
+    // Header
+    winTextHeader = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winTextHeader.SetPos(32, 26);
+    winTextHeader.SetText(HeaderLabel);
 
-	// Normal Text
-	winTextNormal = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winTextNormal.SetPos(38, 40);
-	winTextNormal.SetText(TextNormalLabel);
+    // Normal Text
+    winTextNormal = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winTextNormal.SetPos(38, 40);
+    winTextNormal.SetText(TextNormalLabel);
 
-	winTextGoal           = CreateTextWindow( 38,  52, GoalCompletedLabel, Font'FontMenuSmall');
-	winTextListNormal     = CreateTextWindow( 32,  75, ListLabel, Font'FontMenuSmall');
-	winTextListHighlight  = CreateTextWindow( 32,  88, ListHighlightLabel, Font'FontMenuSmall');
-	winTextListFocus      = CreateTextWindow( 32, 100, ListFocusLabel, Font'FontMenuSmall');
-	winTextEditSelected   = CreateTextWindow( 32, 113, EditSelectedLabel, Font'FontMenuSmall');
-	winTextButtonDisabled = CreateTextWindow( 29, 134, ButtonDisabledLabel, Font'FontMenuHeaders');
-	winTextButtonNormal   = CreateTextWindow(104, 134, ButtonNormalLabel, Font'FontMenuHeaders');
-	winTextButtonFocus    = CreateTextWindow(169, 134, ButtonFocusLabel, Font'FontMenuHeaders');
-	winTextButtonPressed  = CreateTextWindow(235, 134, ButtonPressedLabel, Font'FontMenuHeaders');
+    winTextGoal           = CreateTextWindow( 38,  52, GoalCompletedLabel, Font'FontMenuSmall');
+    winTextListNormal     = CreateTextWindow( 32,  75, ListLabel, Font'FontMenuSmall');
+    winTextListHighlight  = CreateTextWindow( 32,  88, ListHighlightLabel, Font'FontMenuSmall');
+    winTextListFocus      = CreateTextWindow( 32, 100, ListFocusLabel, Font'FontMenuSmall');
+    winTextEditSelected   = CreateTextWindow( 32, 113, EditSelectedLabel, Font'FontMenuSmall');
+    winTextButtonDisabled = CreateTextWindow( 29, 134, ButtonDisabledLabel, Font'FontMenuHeaders');
+    winTextButtonNormal   = CreateTextWindow(104, 134, ButtonNormalLabel, Font'FontMenuHeaders');
+    winTextButtonFocus    = CreateTextWindow(169, 134, ButtonFocusLabel, Font'FontMenuHeaders');
+    winTextButtonPressed  = CreateTextWindow(235, 134, ButtonPressedLabel, Font'FontMenuHeaders');
 }
 
 // ----------------------------------------------------------------------
@@ -127,26 +127,26 @@ function CreateControls()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the borders then the background
-	if (bBorderTranslucent)
-		gc.SetStyle(DSTY_Translucent);
-	else
-		gc.SetStyle(DSTY_Masked);
+{
+    // Draw the borders then the background
+    if (bBorderTranslucent)
+        gc.SetStyle(DSTY_Translucent);
+    else
+        gc.SetStyle(DSTY_Masked);
 
-	gc.SetTileColor(colBorders);
-	gc.DrawTexture(  0, 0, 256, 153, 0, 0, Texture'RGB_HUDSampleBorder_1');		
-	gc.DrawTexture(256, 0,  90, 153, 0, 0, Texture'RGB_HUDSampleBorder_2');		
+    gc.SetTileColor(colBorders);
+    gc.DrawTexture(  0, 0, 256, 153, 0, 0, Texture'RGB_HUDSampleBorder_1');
+    gc.DrawTexture(256, 0,  90, 153, 0, 0, Texture'RGB_HUDSampleBorder_2');
 
-	// Background
-	if (bBackgroundTranslucent)
-		gc.SetStyle(DSTY_Translucent);
-	else
-		gc.SetStyle(DSTY_Masked);
+    // Background
+    if (bBackgroundTranslucent)
+        gc.SetStyle(DSTY_Translucent);
+    else
+        gc.SetStyle(DSTY_Masked);
 
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture( 13, 2, 256, 146, 0, 0, Texture'RGB_HUDSampleBackground_1');		
-	gc.DrawTexture(269, 2,  62, 146, 0, 0, Texture'RGB_HUDSampleBackground_2');		
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture( 13, 2, 256, 146, 0, 0, Texture'RGB_HUDSampleBackground_1');
+    gc.DrawTexture(269, 2,  62, 146, 0, 0, Texture'RGB_HUDSampleBackground_2');
 }
 
 // ----------------------------------------------------------------------
@@ -155,10 +155,10 @@ event DrawWindow(GC gc)
 
 event PostDrawWindow(GC gc)
 {
-	// List focus border
-	gc.SetTileColor(colListFocus);
-	gc.SetStyle(DSTY_Normal);
-	gc.DrawBorders(28, 99, 290, 12, 0, 0, 0, 0, texListFocusBorders);
+    // List focus border
+    gc.SetTileColor(colListFocus);
+    gc.SetStyle(DSTY_Normal);
+    gc.DrawBorders(28, 99, 290, 12, 0, 0, 0, 0, texListFocusBorders);
 }
 
 // ----------------------------------------------------------------------
@@ -167,16 +167,16 @@ event PostDrawWindow(GC gc)
 
 function TextWindow CreateTextWindow(int posX, int posY, String label, Font font)
 {
-	local TextWindow winText;
+    local TextWindow winText;
 
-	winText = TextWindow(NewChild(Class'TextWindow'));
-	winText.SetPos(posX, posY);
-	winText.SetText(label);
-	winText.SetFont(font);
-	winText.SetTextMargins(0, 0);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText = TextWindow(NewChild(Class'TextWindow'));
+    winText.SetPos(posX, posY);
+    winText.SetText(label);
+    winText.SetFont(font);
+    winText.SetTextMargins(0, 0);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
-	return winText;
+    return winText;
 }
 
 // ----------------------------------------------------------------------
@@ -185,44 +185,44 @@ function TextWindow CreateTextWindow(int posX, int posY, String label, Font font
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colText;
-	local Color colCursor;
+    local ColorTheme theme;
+    local Color colText;
+    local Color colCursor;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colBorders    = theme.GetColorFromName('HUDColor_Borders');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colBorders    = theme.GetColorFromName('HUDColor_Borders');
 
-	winButtonNormal.SetTileColor(theme.GetColorFromName('HUDColor_ButtonFace'));
-	winButtonPressed.SetTileColor(theme.GetColorFromName('HUDColor_ButtonFace'));
+    winButtonNormal.SetTileColor(theme.GetColorFromName('HUDColor_ButtonFace'));
+    winButtonPressed.SetTileColor(theme.GetColorFromName('HUDColor_ButtonFace'));
 
-	winListHighlight.SetTileColor(theme.GetColorFromName('HUDColor_ListHighlight'));
-	winListFocus.SetTileColor(theme.GetColorFromName('HUDColor_ListHighlight'));
-	colListFocus = theme.GetColorFromName('HUDColor_ListFocus');
+    winListHighlight.SetTileColor(theme.GetColorFromName('HUDColor_ListHighlight'));
+    winListFocus.SetTileColor(theme.GetColorFromName('HUDColor_ListHighlight'));
+    colListFocus = theme.GetColorFromName('HUDColor_ListFocus');
 
-	winTextTitle.SetTextColor(theme.GetColorFromName('HUDColor_TitleText'));
-	winTextHeader.SetTextColor(theme.GetColorFromName('HUDColor_HeaderText'));
-	winTextNormal.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
-	
-	colText = theme.GetColorFromName('HUDColor_NormalText');
-	winTextGoal.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
+    winTextTitle.SetTextColor(theme.GetColorFromName('HUDColor_TitleText'));
+    winTextHeader.SetTextColor(theme.GetColorFromName('HUDColor_HeaderText'));
+    winTextNormal.SetTextColor(theme.GetColorFromName('HUDColor_NormalText'));
 
-	winTextListNormal.SetTextColor(theme.GetColorFromName('HUDColor_ListText'));
-	winTextListHighlight.SetTextColor(theme.GetColorFromName('HUDColor_ListTextHighlight'));
-	winTextListFocus.SetTextColor(theme.GetColorFromName('HUDColor_ListTextHighlight'));
-	winTextEditSelected.SetTextColor(theme.GetColorFromName('HUDColor_ListText'));
-	winTextButtonDisabled.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextDisabled'));
-	winTextButtonNormal.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextNormal'));
-	winTextButtonFocus.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextFocus'));
-	winTextButtonPressed.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextNormal'));
+    colText = theme.GetColorFromName('HUDColor_NormalText');
+    winTextGoal.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
 
-	// Cursor!
-	colCursor = theme.GetColorFromName('HUDColor_Cursor');
-	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
+    winTextListNormal.SetTextColor(theme.GetColorFromName('HUDColor_ListText'));
+    winTextListHighlight.SetTextColor(theme.GetColorFromName('HUDColor_ListTextHighlight'));
+    winTextListFocus.SetTextColor(theme.GetColorFromName('HUDColor_ListTextHighlight'));
+    winTextEditSelected.SetTextColor(theme.GetColorFromName('HUDColor_ListText'));
+    winTextButtonDisabled.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextDisabled'));
+    winTextButtonNormal.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextNormal'));
+    winTextButtonFocus.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextFocus'));
+    winTextButtonPressed.SetTextColor(theme.GetColorFromName('HUDColor_ButtonTextNormal'));
 
-	bBorderTranslucent     = player.GetHUDBorderTranslucency();
-	bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
+    // Cursor!
+    colCursor = theme.GetColorFromName('HUDColor_Cursor');
+    SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
+
+    bBorderTranslucent     = player.GetHUDBorderTranslucency();
+    bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
 }
 
 // ----------------------------------------------------------------------

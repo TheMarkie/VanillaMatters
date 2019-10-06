@@ -22,7 +22,7 @@ var MenuChoice_MultiHelp HelpChoice;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    winHelp.Hide();
 }
@@ -33,8 +33,8 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
-      
+    Super.CreateControls();
+
    CreateClassChoice();
 
    CreateTeamChoice();
@@ -54,7 +54,7 @@ function CreateControls()
 
 function CreatePlayerNameHeader()
 {
-	CreateMenuLabel( 7, 31, HeaderPlayerNameLabel, winClient );
+    CreateMenuLabel( 7, 31, HeaderPlayerNameLabel, winClient );
 }
 
 // ----------------------------------------------------------------------
@@ -62,12 +62,12 @@ function CreatePlayerNameHeader()
 // ----------------------------------------------------------------------
 
 function CreatePlayerNameEditor()
-{ 
-  	PlayerNameEditor = CreateMenuEditWindow(177, 27, 153, 18, winClient);
+{
+    PlayerNameEditor = CreateMenuEditWindow(177, 27, 153, 18, winClient);
 
-	PlayerNameEditor.SetText(GetMultiplayerName());
-	PlayerNameEditor.MoveInsertionPoint(MOVEINSERT_End);
-	PlayerNameEditor.SetFilter(filterString);
+    PlayerNameEditor.SetText(GetMultiplayerName());
+    PlayerNameEditor.MoveInsertionPoint(MOVEINSERT_End);
+    PlayerNameEditor.SetFilter(filterString);
 }
 
 // ----------------------------------------------------------------------
@@ -76,8 +76,8 @@ function CreatePlayerNameEditor()
 
 function CreateConnectionChoice()
 {
-	ConnectionChoice = MenuChoice_Connection(winClient.NewChild(Class'MenuChoice_Connection'));
-	ConnectionChoice.SetPos(6, 54);
+    ConnectionChoice = MenuChoice_Connection(winClient.NewChild(Class'MenuChoice_Connection'));
+    ConnectionChoice.SetPos(6, 54);
 }
 
 // ----------------------------------------------------------------------
@@ -86,8 +86,8 @@ function CreateConnectionChoice()
 
 function CreateHelpChoice()
 {
-	HelpChoice = MenuChoice_MultiHelp(winClient.NewChild(Class'MenuChoice_MultiHelp'));
-	HelpChoice.SetPos(6, 81);
+    HelpChoice = MenuChoice_MultiHelp(winClient.NewChild(Class'MenuChoice_MultiHelp'));
+    HelpChoice.SetPos(6, 81);
 }
 
 // ----------------------------------------------------------------------
@@ -96,8 +96,8 @@ function CreateHelpChoice()
 
 function CreateTeamChoice()
 {
-	TeamChoice = MenuChoice_Team(winClient.NewChild(Class'MenuChoice_Team'));
-	TeamChoice.SetPos(176, 120);
+    TeamChoice = MenuChoice_Team(winClient.NewChild(Class'MenuChoice_Team'));
+    TeamChoice.SetPos(176, 120);
    TeamChoice.SetSize(153,213);
 }
 
@@ -107,8 +107,8 @@ function CreateTeamChoice()
 
 function CreateClassChoice()
 {
-	ClassChoice = MenuChoice_Class(winClient.NewChild(Class'MenuChoice_Class'));
-	ClassChoice.SetPos(6, 120);
+    ClassChoice = MenuChoice_Class(winClient.NewChild(Class'MenuChoice_Class'));
+    ClassChoice.SetPos(6, 120);
    ClassChoice.SetSize(153,213);
 }
 
@@ -118,8 +118,8 @@ function CreateClassChoice()
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	if (enterWindow.IsA('MenuUIChoiceButton'))
-	{
+    if (enterWindow.IsA('MenuUIChoiceButton'))
+    {
       if ((winHelp != None) && (MenuUIChoiceButton(enterWindow).helpText != ""))
       {
          winHelp.Show();
@@ -135,8 +135,8 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	if ((winHelp != None) && (!bHelpAlwaysOn))
-		winHelp.Hide();
+    if ((winHelp != None) && (!bHelpAlwaysOn))
+        winHelp.Hide();
 }
 
 // ----------------------------------------------------------------------

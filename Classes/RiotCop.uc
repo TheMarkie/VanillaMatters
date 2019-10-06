@@ -5,16 +5,16 @@ class RiotCop extends HumanMilitary;
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
-		GotoNextState();
-	else if (damageType == 'Stunned')
-		GotoState('Stunned');
-	else if (CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
+        GotoNextState();
+    else if (damageType == 'Stunned')
+        GotoState('Stunned');
+    else if (CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 defaultproperties

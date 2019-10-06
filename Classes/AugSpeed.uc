@@ -9,47 +9,47 @@ var float mpEnergyDrain;
 state Active
 {
 Begin:
-	Player.GroundSpeed *= LevelValues[CurrentLevel];
-	//Player.JumpZ *= LevelValues[CurrentLevel];
+    Player.GroundSpeed *= LevelValues[CurrentLevel];
+    //Player.JumpZ *= LevelValues[CurrentLevel];
 
-	// Vanilla Matters: Jump height will use a different value from speed bonus.
-	Player.JumpZ = Player.JumpZ * ( LevelValues[CurrentLevel] + 0.1 );
+    // Vanilla Matters: Jump height will use a different value from speed bonus.
+    Player.JumpZ = Player.JumpZ * ( LevelValues[CurrentLevel] + 0.1 );
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		if ( Human(Player) != None )
-			Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Human(Player) != None )
+            Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
+    }
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
-	if (( Level.NetMode != NM_Standalone ) && Player.IsA('Human') )
-		Player.GroundSpeed = Human(Player).Default.mpGroundSpeed;
-	else
-		Player.GroundSpeed = Player.Default.GroundSpeed;
+    if (( Level.NetMode != NM_Standalone ) && Player.IsA('Human') )
+        Player.GroundSpeed = Human(Player).Default.mpGroundSpeed;
+    else
+        Player.GroundSpeed = Player.Default.GroundSpeed;
 
-	Player.JumpZ = Player.Default.JumpZ;
-	if ( Level.NetMode != NM_Standalone )
-	{
-		if ( Human(Player) != None )
-			Human(Player).UpdateAnimRate( -1.0 );
-	}
+    Player.JumpZ = Player.Default.JumpZ;
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Human(Player) != None )
+            Human(Player).UpdateAnimRate( -1.0 );
+    }
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
       AugmentationLocation = LOC_Torso;
-	}
+    }
 }
 
 defaultproperties

@@ -13,8 +13,8 @@ class MenuChoice_FullScreen extends MenuUIChoiceAction;
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	ToggleFullScreen();
-	return True;
+    ToggleFullScreen();
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -23,8 +23,8 @@ function bool ButtonActivated( Window buttonPressed )
 
 function ToggleFullScreen()
 {
-	player.ConsoleCommand("TOGGLEFULLSCREEN");
-//	GetScreenResolutions();
+    player.ConsoleCommand("TOGGLEFULLSCREEN");
+//  GetScreenResolutions();
 }
 
 // ----------------------------------------------------------------------

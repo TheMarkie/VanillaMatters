@@ -3,7 +3,7 @@
 //=============================================================================
 
 class PersonaOverlaysWindow extends PersonaBaseWindow
-	abstract;
+    abstract;
 
 var int defaultSizeX;
 var int defaultSizeY;
@@ -18,9 +18,9 @@ var Texture overlayTextures[2];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(defaultSizeX, defaultSizeY);
+    SetSize(defaultSizeX, defaultSizeY);
 }
 
 // ----------------------------------------------------------------------
@@ -28,12 +28,12 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawBackground(GC gc)
-{	
-	// Draw window background
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(0,   0, defaultSizeX, 256, 0, 0, overlayTextures[0]);
-	gc.DrawTexture(0, 256, defaultSizeX, (defaultSizeY - 256), 0, 0, overlayTextures[1]);
+{
+    // Draw window background
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(0,   0, defaultSizeX, 256, 0, 0, overlayTextures[0]);
+    gc.DrawTexture(0, 256, defaultSizeX, (defaultSizeY - 256), 0, 0, overlayTextures[1]);
 }
 
 // ----------------------------------------------------------------------

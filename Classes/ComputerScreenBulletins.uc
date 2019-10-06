@@ -19,13 +19,13 @@ var Localized String BulletinsHeaderText;
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
+    btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
 
-	CreateHeaderWindow();
-	CreateBulletinsListWindow();
-	CreateBulletinViewWindow();
+    CreateHeaderWindow();
+    CreateBulletinsListWindow();
+    CreateBulletinViewWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -34,11 +34,11 @@ function CreateControls()
 
 function CreateHeaderWindow()
 {
-	winHeader = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(11, 6);
-	winHeader.SetSize(300, 12);
-	winHeader.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	winHeader.SetText(BulletinsHeaderText);
+    winHeader = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
+    winHeader.SetPos(11, 6);
+    winHeader.SetSize(300, 12);
+    winHeader.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winHeader.SetText(BulletinsHeaderText);
 }
 
 // ----------------------------------------------------------------------
@@ -47,19 +47,19 @@ function CreateHeaderWindow()
 
 function CreateBulletinsListWindow()
 {
-	local MenuUIScrollAreaWindow winScroll;
+    local MenuUIScrollAreaWindow winScroll;
 
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(373, 113);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(11, 22);
+    winScroll.SetSize(373, 113);
 
-	lstBulletins = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	lstBulletins.EnableMultiSelect(False);
-	lstBulletins.EnableAutoExpandColumns(False);
-	lstBulletins.EnableHotKeys(False);
+    lstBulletins = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    lstBulletins.EnableMultiSelect(False);
+    lstBulletins.EnableAutoExpandColumns(False);
+    lstBulletins.EnableHotKeys(False);
 
-	lstBulletins.SetNumColumns(1);
-	lstBulletins.SetColumnWidth(0, 373);
+    lstBulletins.SetNumColumns(1);
+    lstBulletins.SetColumnWidth(0, 373);
 }
 
 // ----------------------------------------------------------------------
@@ -68,16 +68,16 @@ function CreateBulletinsListWindow()
 
 function CreateBulletinViewWindow()
 {
-	local MenuUIScrollAreaWindow winScroll;
+    local MenuUIScrollAreaWindow winScroll;
 
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 143);
-	winScroll.SetSize(373, 232);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(11, 143);
+    winScroll.SetSize(373, 232);
 
-	winBulletin = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
-	winBulletin.SetTextMargins(4, 1);
-	winBulletin.SetWordWrap(True);
-	winBulletin.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winBulletin = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
+    winBulletin.SetTextMargins(4, 1);
+    winBulletin.SetWordWrap(True);
+    winBulletin.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -86,13 +86,13 @@ function CreateBulletinViewWindow()
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	if (winTerm.AreSpecialOptionsAvailable())
-	{
-		btnSpecial = winButtonBar.AddButton(ButtonLabelSpecial, HALIGN_Left);
-		CreateLeftEdgeWindow();
-	}
+    if (winTerm.AreSpecialOptionsAvailable())
+    {
+        btnSpecial = winButtonBar.AddButton(ButtonLabelSpecial, HALIGN_Left);
+        CreateLeftEdgeWindow();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -101,31 +101,31 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local int bulletinIndex;
-	local int rowId;
+    local int bulletinIndex;
+    local int rowId;
 
-	Super.SetCompOwner(newCompOwner);
+    Super.SetCompOwner(newCompOwner);
 
-	// Now populate the bulletins
-	if (ComputerPublic(compOwner).bulletinTag != '')
-	{
-		// Churn through the bulletin text
-		ProcessDeusExText(ComputerPublic(compOwner).bulletinTag);
+    // Now populate the bulletins
+    if (ComputerPublic(compOwner).bulletinTag != '')
+    {
+        // Churn through the bulletin text
+        ProcessDeusExText(ComputerPublic(compOwner).bulletinTag);
 
-		// Now populate our list
-		for(bulletinIndex=0; bulletinIndex<=fileIndex; bulletinIndex++)
-			lstBulletins.AddRow(fileInfo[bulletinIndex].fileDescription);
+        // Now populate our list
+        for(bulletinIndex=0; bulletinIndex<=fileIndex; bulletinIndex++)
+            lstBulletins.AddRow(fileInfo[bulletinIndex].fileDescription);
 
-		// Select the first row
-		rowId = lstBulletins.IndexToRowId(0);
-		lstBulletins.SetRow(rowId, True);
-	}
-	else
-	{
-		// No bulletins, so just print a "No Bulletins Today!" message
-		winBulletin.SetText(NoBulletinsTodayText);
-		winBulletin.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	}
+        // Select the first row
+        rowId = lstBulletins.IndexToRowId(0);
+        lstBulletins.SetRow(rowId, True);
+    }
+    else
+    {
+        // No bulletins, so just print a "No Bulletins Today!" message
+        winBulletin.SetText(NoBulletinsTodayText);
+        winBulletin.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -134,44 +134,44 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnLogout:
-			CloseScreen("EXIT");
-			break;
+    switch( buttonPressed )
+    {
+        case btnLogout:
+            CloseScreen("EXIT");
+            break;
 
-		case btnSpecial:
-			CloseScreen("SPECIAL");
-			break;
+        case btnSpecial:
+            CloseScreen("SPECIAL");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // Show the appropriate bulletin
 // ----------------------------------------------------------------------
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	local int bulletinIndex;
+    local int bulletinIndex;
 
-	bulletinIndex = lstBulletins.RowIdToIndex(focusRowId);
-	winBulletin.SetText("");
-	ProcessDeusExText(fileInfo[bulletinIndex].fileName, winBulletin);
+    bulletinIndex = lstBulletins.RowIdToIndex(focusRowId);
+    winBulletin.SetText("");
+    ProcessDeusExText(fileInfo[bulletinIndex].fileName, winBulletin);
 }
 
 // ----------------------------------------------------------------------

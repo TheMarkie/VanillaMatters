@@ -6,251 +6,251 @@ class Karkian extends Animal;
 // fake a charge attack using bump
 function Bump(actor Other)
 {
-	local DeusExWeapon dxWeapon;
-	local DeusExPlayer dxPlayer;
-	local float        damage;
+    local DeusExWeapon dxWeapon;
+    local DeusExPlayer dxPlayer;
+    local float        damage;
 
-	Super.Bump(Other);
+    Super.Bump(Other);
 
-	if (IsInState('Attacking') && (Other != None) && (Other == Enemy))
-	{
-		// damage both of the player's legs if the karkian "charges"
-		// just use Shot damage since we don't have a special damage type for charged
-		// impart a lot of momentum, also
-		if (VSize(Velocity) > 100)
-		{
-			dxWeapon = DeusExWeapon(Weapon);
-			if ((dxWeapon != None) && dxWeapon.IsA('WeaponKarkianBump') && (FireTimer <= 0))
-			{
-				FireTimer = DeusExWeapon(Weapon).AIFireDelay;
-				damage = VSize(Velocity) / 5;
-				Other.TakeDamage(damage, Self, Other.Location+vect(1,1,-1), 100*Velocity, 'Shot');
-				Other.TakeDamage(damage, Self, Other.Location+vect(-1,-1,-1), 100*Velocity, 'Shot');
-				dxPlayer = DeusExPlayer(Other);
-				if (dxPlayer != None)
-					dxPlayer.ShakeView(0.15 + 0.002*damage*2, damage*30*2, 0.3*damage*2);
-			}
-		}
-	}
+    if (IsInState('Attacking') && (Other != None) && (Other == Enemy))
+    {
+        // damage both of the player's legs if the karkian "charges"
+        // just use Shot damage since we don't have a special damage type for charged
+        // impart a lot of momentum, also
+        if (VSize(Velocity) > 100)
+        {
+            dxWeapon = DeusExWeapon(Weapon);
+            if ((dxWeapon != None) && dxWeapon.IsA('WeaponKarkianBump') && (FireTimer <= 0))
+            {
+                FireTimer = DeusExWeapon(Weapon).AIFireDelay;
+                damage = VSize(Velocity) / 5;
+                Other.TakeDamage(damage, Self, Other.Location+vect(1,1,-1), 100*Velocity, 'Shot');
+                Other.TakeDamage(damage, Self, Other.Location+vect(-1,-1,-1), 100*Velocity, 'Shot');
+                dxPlayer = DeusExPlayer(Other);
+                if (dxPlayer != None)
+                    dxPlayer.ShakeView(0.15 + 0.002*damage*2, damage*30*2, 0.3*damage*2);
+            }
+        }
+    }
 }
 
 
 function ComputeFallDirection(float totalTime, int numFrames,
                               out vector moveDir, out float stopTime)
 {
-	// Determine direction, and how long to slide
-	if ((AnimSequence == 'DeathFront') || (AnimSequence == 'DeathBack'))
-	{
-		moveDir = Vector(DesiredRotation-rot(0,16384,0)) * Default.CollisionRadius*1.2;
-		stopTime = totalTime*0.7;
-	}
+    // Determine direction, and how long to slide
+    if ((AnimSequence == 'DeathFront') || (AnimSequence == 'DeathBack'))
+    {
+        moveDir = Vector(DesiredRotation-rot(0,16384,0)) * Default.CollisionRadius*1.2;
+        stopTime = totalTime*0.7;
+    }
 }
 
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
                                Vector offset, Name damageType)
 {
-	if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas'))
-		return false;
-	else
-		return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+    if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas'))
+        return false;
+    else
+        return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
 }
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
-		GotoNextState();
-	else if (damageType == 'Stunned')
-		GotoNextState();
-	else if (CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    else if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
+        GotoNextState();
+    else if (damageType == 'Stunned')
+        GotoNextState();
+    else if (CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 {
-	Super.ReactToInjury(instigatedBy, damageType, hitPos);
-	aggressiveTimer = 10;
+    Super.ReactToInjury(instigatedBy, damageType, hitPos);
+    aggressiveTimer = 10;
 }
 
 
 function vector GetSwimPivot()
 {
-	// THIS IS A HIDEOUS, UGLY, MASSIVELY EVIL HACK!!!!
-	return (vect(0,0,1)*CollisionHeight*1.5);
+    // THIS IS A HIDEOUS, UGLY, MASSIVELY EVIL HACK!!!!
+    return (vect(0,0,1)*CollisionHeight*1.5);
 }
 
 function TweenToAttack(float tweentime)
 {
-	if (Region.Zone.bWaterZone)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Attack', tweentime);
+    if (Region.Zone.bWaterZone)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Attack', tweentime);
 }
 
 function PlayAttack()
 {
-	PlayAnimPivot('Attack');
+    PlayAnimPivot('Attack');
 }
 
 function PlayPanicRunning()
 {
-	PlayRunning();
+    PlayRunning();
 }
 
 function PlayTurning()
 {
-	if (Region.Zone.bWaterZone)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', 0.1);
+    if (Region.Zone.bWaterZone)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', 0.1);
 }
 
 function TweenToWalking(float tweentime)
 {
-	if (Region.Zone.bWaterZone)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Walk', tweentime);
+    if (Region.Zone.bWaterZone)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Walk', tweentime);
 }
 
 function PlayWalking()
 {
-	if (Region.Zone.bWaterZone)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', , 0.15);
+    if (Region.Zone.bWaterZone)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', , 0.15);
 }
 
 function TweenToRunning(float tweentime)
 {
-	if (Region.Zone.bWaterZone)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		LoopAnimPivot('Run',, tweentime);
+    if (Region.Zone.bWaterZone)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        LoopAnimPivot('Run',, tweentime);
 }
 
 function PlayRunning()
 {
-	if (Region.Zone.bWaterZone)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Run');
+    if (Region.Zone.bWaterZone)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Run');
 }
 function TweenToWaiting(float tweentime)
 {
-	if (Region.Zone.bWaterZone)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('BreatheLight', tweentime);
+    if (Region.Zone.bWaterZone)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('BreatheLight', tweentime);
 }
 function PlayWaiting()
 {
-	if (Region.Zone.bWaterZone)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('BreatheLight', , 0.3);
+    if (Region.Zone.bWaterZone)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('BreatheLight', , 0.3);
 }
 
 function bool PlayRoar()
 {
-	if (Region.Zone.bWaterZone)
-		return false;
-	else
-	{
-		PlayAnimPivot('Roar');
-		return true;
-	}
+    if (Region.Zone.bWaterZone)
+        return false;
+    else
+    {
+        PlayAnimPivot('Roar');
+        return true;
+    }
 
 }
 
 function PlayPauseWhenEating()
 {
-	PlayRoar();
+    PlayRoar();
 }
 
 function bool PlayBeginAttack()
 {
-	if (FRand() < 0.4)
-		return PlayRoar();
-	else
-		return false;
+    if (FRand() < 0.4)
+        return PlayRoar();
+    else
+        return false;
 }
 
 function PlayRoarSound()
 {
-	PlaySound(Sound'KarkianIdle2', SLOT_Pain, 1.0,,, RandomPitch());
+    PlaySound(Sound'KarkianIdle2', SLOT_Pain, 1.0,,, RandomPitch());
 }
 
 function vector GetChompPosition()
 {
-	return (Location+Vector(Rotation)*CollisionRadius - vect(0,0,1)*CollisionHeight*0.5);
+    return (Location+Vector(Rotation)*CollisionRadius - vect(0,0,1)*CollisionHeight*0.5);
 }
 
 
 
 function PlayTakingHit(EHitLocation hitPos)
 {
-	local vector pivot;
-	local name   animName;
+    local vector pivot;
+    local name   animName;
 
-	animName = '';
-	if (!Region.Zone.bWaterZone)
-	{
-		switch (hitPos)
-		{
-			case HITLOC_HeadFront:
-			case HITLOC_TorsoFront:
-			case HITLOC_LeftArmFront:
-			case HITLOC_RightArmFront:
-			case HITLOC_LeftLegFront:
-			case HITLOC_RightLegFront:
-				animName = 'HitFront';
-				break;
+    animName = '';
+    if (!Region.Zone.bWaterZone)
+    {
+        switch (hitPos)
+        {
+            case HITLOC_HeadFront:
+            case HITLOC_TorsoFront:
+            case HITLOC_LeftArmFront:
+            case HITLOC_RightArmFront:
+            case HITLOC_LeftLegFront:
+            case HITLOC_RightLegFront:
+                animName = 'HitFront';
+                break;
 
-			case HITLOC_HeadBack:
-			case HITLOC_TorsoBack:
-			case HITLOC_LeftArmBack:
-			case HITLOC_RightArmBack:
-			case HITLOC_LeftLegBack:
-			case HITLOC_RightLegBack:
-				animName = 'HitBack';
-				break;
-		}
-		pivot = vect(0,0,0);
-	}
+            case HITLOC_HeadBack:
+            case HITLOC_TorsoBack:
+            case HITLOC_LeftArmBack:
+            case HITLOC_RightArmBack:
+            case HITLOC_LeftLegBack:
+            case HITLOC_RightLegBack:
+                animName = 'HitBack';
+                break;
+        }
+        pivot = vect(0,0,0);
+    }
 
-	if (animName != '')
-		PlayAnimPivot(animName, , 0.1, pivot);
+    if (animName != '')
+        PlayAnimPivot(animName, , 0.1, pivot);
 }
 
 // sound functions
 function PlayEatingSound()
 {
-	PlaySound(sound'KarkianEat', SLOT_None,,, 384);
+    PlaySound(sound'KarkianEat', SLOT_None,,, 384);
 }
 
 function PlayIdleSound()
 {
-	PlaySound(sound'KarkianIdle', SLOT_None);
+    PlaySound(sound'KarkianIdle', SLOT_None);
 }
 
 function PlayScanningSound()
 {
-	if (FRand() < 0.3)
-		PlaySound(sound'KarkianIdle', SLOT_None);
+    if (FRand() < 0.3)
+        PlaySound(sound'KarkianIdle', SLOT_None);
 }
 
 function PlayTargetAcquiredSound()
 {
-	PlaySound(sound'KarkianAlert', SLOT_None);
+    PlaySound(sound'KarkianAlert', SLOT_None);
 }
 
 function PlayCriticalDamageSound()
 {
-	PlaySound(sound'KarkianFlee', SLOT_None);
+    PlaySound(sound'KarkianFlee', SLOT_None);
 }
 
 defaultproperties

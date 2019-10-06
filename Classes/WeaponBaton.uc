@@ -5,7 +5,7 @@ class WeaponBaton extends DeusExWeapon;
 
 function name WeaponDamageType()
 {
-	return 'KnockedOut';
+    return 'KnockedOut';
 }
 
 defaultproperties

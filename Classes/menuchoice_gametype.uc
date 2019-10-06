@@ -3,7 +3,7 @@
 //=============================================================================
 
 class MenuChoice_GameType extends MenuUIChoiceEnum
-	config;
+    config;
 
 var MenuScreenHostGame hostparent;
 
@@ -19,9 +19,9 @@ var localized String     gameNames[24]; //Human readable gametype names.
 
 event InitWindow()
 {
-	PopulateGameTypes();
+    PopulateGameTypes();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialGameType();
 
@@ -34,7 +34,7 @@ event InitWindow()
 
 function PopulateGameTypes()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    for (typeIndex = 0; typeIndex < NumGameTypes; typeIndex++)
    {
@@ -92,7 +92,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ GetModuleName(defaultValue));
    LoadSetting();
 }
@@ -117,14 +117,14 @@ function SetValue(int newValue)
    local GameInfo CurrentType;
    local bool bCanCustomize;
 
-   
+
    Super.SetValue(newValue);
 
    bCanCustomize = True;
-   if ( (hostParent != None) && (GameTypes[NewValue] != "") )   
+   if ( (hostParent != None) && (GameTypes[NewValue] != "") )
    {
-	   TypeClass = class<GameInfo>( Player.DynamicLoadObject( GetModuleName(newValue), class'Class' ) );
-      if (TypeClass != None)      
+       TypeClass = class<GameInfo>( Player.DynamicLoadObject( GetModuleName(newValue), class'Class' ) );
+      if (TypeClass != None)
          CurrentType = Player.Spawn(TypeClass);
       if (DeusExMPGame(CurrentType) != None)
          bCanCustomize = DeusExMPGame(CurrentType).bCustomizable;

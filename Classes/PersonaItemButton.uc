@@ -2,11 +2,11 @@
 // PersonaItemButton
 //=============================================================================
 class PersonaItemButton extends ButtonWindow
-	abstract;
+    abstract;
 
 var DeusExPlayer player;
 
-var Texture	 icon;						// Icon to draw
+var Texture  icon;                      // Icon to draw
 var int      iconPosWidth;
 var int      iconPosHeight;
 
@@ -40,16 +40,16 @@ var Color colFillSelected;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(buttonWidth, buttonHeight);
+    SetSize(buttonWidth, buttonHeight);
 
-	CreateControls();
+    CreateControls();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -57,30 +57,30 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	if (icon != None)
-	{
-		// Draw the icon
-		if (bIconTranslucent)
-			gc.SetStyle(DSTY_Translucent);		
-		else
-			gc.SetStyle(DSTY_Masked);	
+{
+    if (icon != None)
+    {
+        // Draw the icon
+        if (bIconTranslucent)
+            gc.SetStyle(DSTY_Translucent);
+        else
+            gc.SetStyle(DSTY_Masked);
 
-		gc.SetTileColor(colIcon);
-		gc.DrawTexture(((borderWidth) / 2)  - (iconPosWidth / 2),
-					   ((borderHeight) / 2) - (iconPosHeight / 2),
-					   iconPosWidth, iconPosHeight, 
-					   0, 0,
-					   icon);
-	}
+        gc.SetTileColor(colIcon);
+        gc.DrawTexture(((borderWidth) / 2)  - (iconPosWidth / 2),
+                       ((borderHeight) / 2) - (iconPosHeight / 2),
+                       iconPosWidth, iconPosHeight,
+                       0, 0,
+                       icon);
+    }
 
-	// Draw selection border
-	if (bSelected)
-	{
-		gc.SetTileColor(colSelectionBorder);
-		gc.SetStyle(DSTY_Masked);
-		gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
-	}
+    // Draw selection border
+    if (bSelected)
+    {
+        gc.SetTileColor(colSelectionBorder);
+        gc.SetStyle(DSTY_Masked);
+        gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -89,7 +89,7 @@ event DrawWindow(GC gc)
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -106,7 +106,7 @@ function CreateControls()
 
 function SetIcon(Texture newIcon)
 {
-	icon = newIcon;
+    icon = newIcon;
 }
 
 // ----------------------------------------------------------------------
@@ -115,8 +115,8 @@ function SetIcon(Texture newIcon)
 
 function SetIconSize(int newWidth, int newHeight)
 {
-	iconPosWidth  = newWidth;
-	iconPosHeight = newHeight;
+    iconPosWidth  = newWidth;
+    iconPosHeight = newHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -125,8 +125,8 @@ function SetIconSize(int newWidth, int newHeight)
 
 function SetBorderSize(int newWidth, int newHeight)
 {
-	borderWidth  = newWidth;
-	borderHeight = newHeight;
+    borderWidth  = newWidth;
+    borderHeight = newHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -135,10 +135,10 @@ function SetBorderSize(int newWidth, int newHeight)
 
 function SelectButton(Bool bNewSelected)
 {
-	// TODO: Replace with HUD sounds
-	PlaySound(Sound'Menu_Press', 0.25); 
+    // TODO: Replace with HUD sounds
+    PlaySound(Sound'Menu_Press', 0.25);
 
-	bSelected = bNewSelected;
+    bSelected = bNewSelected;
 }
 
 // ----------------------------------------------------------------------
@@ -147,22 +147,22 @@ function SelectButton(Bool bNewSelected)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colBorder     = theme.GetColorFromName('HUDColor_Borders');
-	colText       = theme.GetColorFromName('HUDColor_NormalText');
-	colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colBorder     = theme.GetColorFromName('HUDColor_Borders');
+    colText       = theme.GetColorFromName('HUDColor_NormalText');
+    colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
 
-	colFillSelected.r = Int(Float(colBackground.r) * 0.50);
-	colFillSelected.g = Int(Float(colBackground.g) * 0.50);
-	colFillSelected.b = Int(Float(colBackground.b) * 0.50);
+    colFillSelected.r = Int(Float(colBackground.r) * 0.50);
+    colFillSelected.g = Int(Float(colBackground.g) * 0.50);
+    colFillSelected.b = Int(Float(colBackground.b) * 0.50);
 
-	bBorderTranslucent     = player.GetHUDBorderTranslucency();
-	bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
-	bDrawBorder            = player.GetHUDBordersVisible();
+    bBorderTranslucent     = player.GetHUDBorderTranslucency();
+    bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
+    bDrawBorder            = player.GetHUDBordersVisible();
 }
 
 // ----------------------------------------------------------------------

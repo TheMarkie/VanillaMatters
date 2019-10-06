@@ -9,33 +9,33 @@ var travel float VM_breathTimer;
 
 // Vanilla Matters: We handle it in Tick so we can properly sync the breath provided with the breathing loop sound.
 function Tick( float deltaTime ) {
-	if ( VM_player == none || !IsActive() ) {
-		return;
-	}
+    if ( VM_player == none || !IsActive() ) {
+        return;
+    }
 
-	VM_breathTimer = VM_breathTimer + deltaTime;
-	// VM: All the values are arbitrary timestamps of the "breathing" segment on the specific sound loop.
-	if ( VM_breathTimer >= 0.15 && VM_breathTimer <= 1.5 ) {
-		VM_player.swimTimer = FClamp( VM_player.swimTimer + ( deltaTime * 3.5 ), 0, VM_player.swimDuration );
-	}
+    VM_breathTimer = VM_breathTimer + deltaTime;
+    // VM: All the values are arbitrary timestamps of the "breathing" segment on the specific sound loop.
+    if ( VM_breathTimer >= 0.15 && VM_breathTimer <= 1.5 ) {
+        VM_player.swimTimer = FClamp( VM_player.swimTimer + ( deltaTime * 3.5 ), 0, VM_player.swimDuration );
+    }
 
-	if ( VM_breathTimer >= 2.785 ) {
-		VM_breathTimer = VM_breathTimer - 2.785;
-	}
+    if ( VM_breathTimer >= 2.785 ) {
+        VM_breathTimer = VM_breathTimer - 2.785;
+    }
 }
 
 function ChargedPickupBegin( DeusExPlayer player ) {
-	VM_player = player;
-	VM_breathTimer = 0;
+    VM_player = player;
+    VM_breathTimer = 0;
 
-	super.ChargedPickupBegin( player );
+    super.ChargedPickupBegin( player );
 }
 
 function ChargedPickupEnd( DeusExPlayer player ) {
-	VM_player = none;
-	VM_breathTimer = 0;
+    VM_player = none;
+    VM_breathTimer = 0;
 
-	super.ChargedPickupEnd( player );
+    super.ChargedPickupEnd( player );
 }
 
 defaultproperties

@@ -23,7 +23,7 @@ function ResetNonCustomizableOptions()
    Super.ResetNonCustomizableOptions();
 
    if (!bCustomizable)
-   {      
+   {
       SkillsTotal = 0;
       SkillsAvail = 0;
       SkillsPerKill = 0;

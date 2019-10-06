@@ -5,18 +5,18 @@ class BlackHelicopter extends Vehicles;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Super.BeginState();
-		LoopAnim('Fly');
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+        LoopAnim('Fly');
+    }
 }
 
 singular function SupportActor(Actor standingActor)
 {
-	// kill whatever lands on the blades
-	if (standingActor != None)
-		standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), 'Exploded');
+    // kill whatever lands on the blades
+    if (standingActor != None)
+        standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), 'Exploded');
 }
 
 defaultproperties

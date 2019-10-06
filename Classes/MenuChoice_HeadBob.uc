@@ -10,10 +10,10 @@ class MenuChoice_HeadBob extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	if (player.bob == 0)
-		SetValue(1);
-	else
-		SetValue(0);
+    if (player.bob == 0)
+        SetValue(1);
+    else
+        SetValue(0);
 }
 
 // ----------------------------------------------------------------------
@@ -22,11 +22,11 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	if (GetValue() == 0)
-//		player.bob = player.default.bob;
-		player.bob = 0.016;			// for some reason, setting default doesn't work
-	else
-		player.bob = 0.0;
+    if (GetValue() == 0)
+//      player.bob = player.default.bob;
+        player.bob = 0.016;         // for some reason, setting default doesn't work
+    else
+        player.bob = 0.0;
 }
 
 // ----------------------------------------------------------------------
@@ -34,10 +34,10 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	if (player.bob == 0)
-		SetValue(1);
-	else
-		SetValue(0);
+    if (player.bob == 0)
+        SetValue(1);
+    else
+        SetValue(0);
 }
 
 // ----------------------------------------------------------------------

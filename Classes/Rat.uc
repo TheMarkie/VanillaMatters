@@ -15,46 +15,46 @@ var float time;
 
 function bool ShouldBeStartled(Pawn startler)
 {
-	local float speed;
-	local float time;
-	local float dist;
-	local float dist2;
-	local bool  bPh33r;
+    local float speed;
+    local float time;
+    local float dist;
+    local float dist2;
+    local bool  bPh33r;
 
-	bPh33r = false;
-	if (startler != None)
-	{
-		speed = VSize(startler.Velocity);
-		if (speed >= 20)
-		{
-			dist = VSize(Location - startler.Location);
-			time = dist/speed;
-			if (time <= 3.0)
-			{
-				dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
-				if (dist2 < speed*1.5)
-					bPh33r = true;
-			}
-		}
-	}
+    bPh33r = false;
+    if (startler != None)
+    {
+        speed = VSize(startler.Velocity);
+        if (speed >= 20)
+        {
+            dist = VSize(Location - startler.Location);
+            time = dist/speed;
+            if (time <= 3.0)
+            {
+                dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
+                if (dist2 < speed*1.5)
+                    bPh33r = true;
+            }
+        }
+    }
 
-	return bPh33r;
+    return bPh33r;
 }
 
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	time += deltaTime;
+    time += deltaTime;
 
-	// check for random noises
-	if (time > 1.0)
-	{
-		time = 0;
-		if (FRand() < 0.05)
-			PlaySound(sound'RatSqueak2', SLOT_None);
-	}
+    // check for random noises
+    if (time > 1.0)
+    {
+        time = 0;
+        if (FRand() < 0.05)
+            PlaySound(sound'RatSqueak2', SLOT_None);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -64,129 +64,129 @@ function Tick(float deltaTime)
 // Ripped right out of ScriptedPawn and modified -- need to make this generic?
 state Wandering
 {
-	ignores EnemyNotVisible;
+    ignores EnemyNotVisible;
 
-	function SetFall()
-	{
-		StartFalling('Wandering', 'ContinueWander');
-	}
+    function SetFall()
+    {
+        StartFalling('Wandering', 'ContinueWander');
+    }
 
-	function Bump(actor bumper)
-	{
-		if (bAcceptBump)
-		{
-			// If we get bumped by another actor while we wait, start wandering again
-			bAcceptBump = False;
-			Disable('AnimEnd');
-			GotoState('Wandering', 'Wander');
-		}
+    function Bump(actor bumper)
+    {
+        if (bAcceptBump)
+        {
+            // If we get bumped by another actor while we wait, start wandering again
+            bAcceptBump = False;
+            Disable('AnimEnd');
+            GotoState('Wandering', 'Wander');
+        }
 
-		// Handle conversations, if need be
-		Global.Bump(bumper);
-	}
+        // Handle conversations, if need be
+        Global.Bump(bumper);
+    }
 
-	function HitWall(vector HitNormal, actor Wall)
-	{
-		if (Physics == PHYS_Falling)
-			return;
-		Global.HitWall(HitNormal, Wall);
-		CheckOpenDoor(HitNormal, Wall);
-	}
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        if (Physics == PHYS_Falling)
+            return;
+        Global.HitWall(HitNormal, Wall);
+        CheckOpenDoor(HitNormal, Wall);
+    }
 
-	function BeginState()
-	{
-		Super.BeginState();
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+    }
 
-	function EndState()
-	{
-		Super.EndState();
-	}
+    function EndState()
+    {
+        Super.EndState();
+    }
 
-	function PickDestination()
-	{
-		local float   magnitude;
-		local int     iterations;
-		local bool    bSuccess;
-		local Rotator rot;
+    function PickDestination()
+    {
+        local float   magnitude;
+        local int     iterations;
+        local bool    bSuccess;
+        local Rotator rot;
 
-		MoveTarget = None;
-		destPoint  = None;
-		iterations = 4;  // try up to 4 different directions
-		while (iterations > 0)
-		{
-			// How far will we go?
-			magnitude = (170*FRand()+80) * (FRand()*0.2+0.9); // 80-250, +/-10%
+        MoveTarget = None;
+        destPoint  = None;
+        iterations = 4;  // try up to 4 different directions
+        while (iterations > 0)
+        {
+            // How far will we go?
+            magnitude = (170*FRand()+80) * (FRand()*0.2+0.9); // 80-250, +/-10%
 
-			// Choose our destination, based on whether we have a home base
-			if (!bUseHome)
-				bSuccess = AIPickRandomDestination(40, magnitude, 0, 0, 0, 0, 1,
-					                               FRand()*0.4+0.35, destLoc);
-			else
-			{
-				if (magnitude > HomeExtent)
-					magnitude = HomeExtent*(FRand()*0.2+0.9);
-				rot = Rotator(HomeLoc-Location);
-				bSuccess = AIPickRandomDestination(50, magnitude, rot.Yaw, 0.25, rot.Pitch, 0.25, 1,
-					                               FRand()*0.4+0.35, destLoc);
-			}
+            // Choose our destination, based on whether we have a home base
+            if (!bUseHome)
+                bSuccess = AIPickRandomDestination(40, magnitude, 0, 0, 0, 0, 1,
+                                                   FRand()*0.4+0.35, destLoc);
+            else
+            {
+                if (magnitude > HomeExtent)
+                    magnitude = HomeExtent*(FRand()*0.2+0.9);
+                rot = Rotator(HomeLoc-Location);
+                bSuccess = AIPickRandomDestination(50, magnitude, rot.Yaw, 0.25, rot.Pitch, 0.25, 1,
+                                                   FRand()*0.4+0.35, destLoc);
+            }
 
-			// Success?  Break out of the iteration loop
-			if (bSuccess)
-				if (IsNearHome(destLoc))
-					break;
+            // Success?  Break out of the iteration loop
+            if (bSuccess)
+                if (IsNearHome(destLoc))
+                    break;
 
-			// We failed -- try again
-			iterations--;
-		}
+            // We failed -- try again
+            iterations--;
+        }
 
-		// If we got a destination, go there
-		if (iterations <= 0)
-			destLoc = Location;
-	}
+        // If we got a destination, go there
+        if (iterations <= 0)
+            destLoc = Location;
+    }
 
 Begin:
-	destPoint = None;
+    destPoint = None;
 
 GoHome:
-	bAcceptBump = false;
-	TweenToWalking(0.15);
-	WaitForLanding();
-	FinishAnim();
-	PlayWalking();
+    bAcceptBump = false;
+    TweenToWalking(0.15);
+    WaitForLanding();
+    FinishAnim();
+    PlayWalking();
 
 Wander:
-	PickDestination();
+    PickDestination();
 
 Moving:
-	// Move from pathnode to pathnode until we get where we're going
-	PlayWalking();
-	MoveTo(destLoc, GetWalkingSpeed());
+    // Move from pathnode to pathnode until we get where we're going
+    PlayWalking();
+    MoveTo(destLoc, GetWalkingSpeed());
 
 Pausing:
-	if (FRand() < 0.35)
-		Goto('Wander');
+    if (FRand() < 0.35)
+        Goto('Wander');
 
-	Acceleration = vect(0, 0, 0);
-	PlayTurning();
+    Acceleration = vect(0, 0, 0);
+    PlayTurning();
 
-	// Turn in the direction dictated by the WanderPoint, if there is one
-	Enable('AnimEnd');
-	TweenToWaiting(0.2);
-	bAcceptBump = True;
-	PlayScanningSound();
-	sleepTime = FRand()*1+0.75;
-	Sleep(sleepTime);
-	Disable('AnimEnd');
-	bAcceptBump = False;
-	FinishAnim();
-	Goto('Wander');
+    // Turn in the direction dictated by the WanderPoint, if there is one
+    Enable('AnimEnd');
+    TweenToWaiting(0.2);
+    bAcceptBump = True;
+    PlayScanningSound();
+    sleepTime = FRand()*1+0.75;
+    Sleep(sleepTime);
+    Disable('AnimEnd');
+    bAcceptBump = False;
+    FinishAnim();
+    Goto('Wander');
 
 ContinueWander:
 ContinueFromDoor:
-	FinishAnim();
-	PlayWalking();
-	Goto('Wander');
+    FinishAnim();
+    PlayWalking();
+    Goto('Wander');
 }
 
 defaultproperties

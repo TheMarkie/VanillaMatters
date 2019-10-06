@@ -15,12 +15,12 @@ var int     textureIndex;
 
 function DestroyWindow()
 {
-	local int unloadIndex;
+    local int unloadIndex;
 
-	for(unloadIndex=0; unloadIndex<arrayCount(texShadows); unloadIndex++)
-		player.UnloadTexture(texShadows[unloadIndex]);
+    for(unloadIndex=0; unloadIndex<arrayCount(texShadows); unloadIndex++)
+        player.UnloadTexture(texShadows[unloadIndex]);
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -28,10 +28,10 @@ function DestroyWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	gc.SetStyle(DSTY_Modulated);
-	gc.DrawTexture(0,   0, 256, shadowHeight, 0, 0, texShadows[0 + (textureIndex * 2)]);
-	gc.DrawTexture(256, 0, shadowWidth - 256, shadowHeight, 0, 0, texShadows[1 + (textureIndex * 2)]);
+{
+    gc.SetStyle(DSTY_Modulated);
+    gc.DrawTexture(0,   0, 256, shadowHeight, 0, 0, texShadows[0 + (textureIndex * 2)]);
+    gc.DrawTexture(256, 0, shadowWidth - 256, shadowHeight, 0, 0, texShadows[1 + (textureIndex * 2)]);
 }
 
 // ----------------------------------------------------------------------
@@ -40,8 +40,8 @@ event DrawWindow(GC gc)
 
 function SetButtonCount(int newButtonCount)
 {
-	if ((newButtonCount >= 1) && (newButtonCount <= 2))
-		textureIndex = newButtonCount - 1;
+    if ((newButtonCount >= 1) && (newButtonCount <= 2))
+        textureIndex = newButtonCount - 1;
 }
 
 // ----------------------------------------------------------------------

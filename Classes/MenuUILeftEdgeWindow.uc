@@ -24,14 +24,14 @@ var Color colBackground;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetWidth(edgeWidth);
+    SetWidth(edgeWidth);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -39,24 +39,24 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the textures
-	gc.SetStyle(DSTY_Masked);
+{
+    // Draw the textures
+    gc.SetStyle(DSTY_Masked);
 
-	gc.SetTileColor(colBackground);
+    gc.SetTileColor(colBackground);
 
-	// Top
-	gc.DrawTexture(0, 0, edgeWidth, topHeight, 0, 0, texture_Top);
+    // Top
+    gc.DrawTexture(0, 0, edgeWidth, topHeight, 0, 0, texture_Top);
 
-	// Center
-	gc.DrawPattern(
-		0, topHeight, 
-		edgeWidth, height - topHeight - bottomHeight, 
-		0, 0,
-		texture_Center);
+    // Center
+    gc.DrawPattern(
+        0, topHeight,
+        edgeWidth, height - topHeight - bottomHeight,
+        0, 0,
+        texture_Center);
 
-	// Bottom
-	gc.DrawTexture(0, height - bottomHeight, edgeWidth, bottomHeight, 0, 0, texture_Bottom);
+    // Bottom
+    gc.DrawTexture(0, height - bottomHeight, edgeWidth, bottomHeight, 0, 0, texture_Bottom);
 }
 
 // ----------------------------------------------------------------------
@@ -65,12 +65,12 @@ event DrawWindow(GC gc)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colBackground = theme.GetColorFromName('MenuColor_ButtonFace');
+    // Title colors
+    colBackground = theme.GetColorFromName('MenuColor_ButtonFace');
 }
 
 // ----------------------------------------------------------------------

@@ -8,73 +8,73 @@ var float cloudRadius;
 var float damageInterval;
 var vector CloudLocation; //to make sure location is updated w/o making it dumb proxy
 
-replication 
+replication
 {
-	reliable if ( Role == ROLE_Authority )
-		CloudLocation;
+    reliable if ( Role == ROLE_Authority )
+        CloudLocation;
 }
 
 auto simulated state Flying
 {
-	function HitWall(vector HitNormal, actor Wall)
-	{
-		// do nothing
-		Velocity = vect(0,0,0);
-	}
-	function ProcessTouch (Actor Other, Vector HitLocation)
-	{
-		// do nothing
-	}
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        // do nothing
+        Velocity = vect(0,0,0);
+    }
+    function ProcessTouch (Actor Other, Vector HitLocation)
+    {
+        // do nothing
+    }
 }
 
 event ZoneChange(ZoneInfo NewZone)
 {
-	Super.ZoneChange(NewZone);
+    Super.ZoneChange(NewZone);
 
-	// clouds can't live underwater, so kill us quickly if we enter the water
-	if ((NewZone.bWaterZone) && (LifeSpan > 2.0))
-		LifeSpan = 2.0;
+    // clouds can't live underwater, so kill us quickly if we enter the water
+    if ((NewZone.bWaterZone) && (LifeSpan > 2.0))
+        LifeSpan = 2.0;
 }
 
 function Timer()
 {
-	local Actor A;
-	local Vector offset, dist;
-	local Pawn apawn;
+    local Actor A;
+    local Vector offset, dist;
+    local Pawn apawn;
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		// Use PawnList for multiplayer
-		apawn = Level.PawnList;
-		while ( apawn != None )
-		{
-			dist = apawn.Location - Location;
-			if ( VSize(dist) < cloudRadius )
-			{
-				offset = apawn.Location;
-				apawn.TakeDamage( Damage, Instigator, offset, vect(0,0,0), damageType );														  
-			}
-			apawn = apawn.nextPawn;
-		}
-	}
-	else
-	{
-		// check to see if anything has entered our effect radius
-		// don't damage our owner
-		foreach VisibleActors(class'Actor', A, cloudRadius)
-			if (A != Owner)
-			{
-				// be sure to damage the torso
-				offset = A.Location;
-				A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
-			}
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        // Use PawnList for multiplayer
+        apawn = Level.PawnList;
+        while ( apawn != None )
+        {
+            dist = apawn.Location - Location;
+            if ( VSize(dist) < cloudRadius )
+            {
+                offset = apawn.Location;
+                apawn.TakeDamage( Damage, Instigator, offset, vect(0,0,0), damageType );
+            }
+            apawn = apawn.nextPawn;
+        }
+    }
+    else
+    {
+        // check to see if anything has entered our effect radius
+        // don't damage our owner
+        foreach VisibleActors(class'Actor', A, cloudRadius)
+            if (A != Owner)
+            {
+                // be sure to damage the torso
+                offset = A.Location;
+                A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
+            }
+    }
 }
 
 simulated function Tick(float deltaTime)
 {
-	local float value;
-	local float sizeMult;
+    local float value;
+    local float sizeMult;
    local float NewDrawScale;
 
    if (Role == ROLE_Authority)
@@ -82,21 +82,21 @@ simulated function Tick(float deltaTime)
    else
       SetLocation(CloudLocation);
 
-	// don't Super.Tick() becuase we don't want gravity to affect the stream
-	time += deltaTime;
+    // don't Super.Tick() becuase we don't want gravity to affect the stream
+    time += deltaTime;
 
-	value = 1.0+time;
-	if (MinDrawScale > 0)
-		sizeMult = MaxDrawScale/MinDrawScale;
-	else
-		sizeMult = 1;
+    value = 1.0+time;
+    if (MinDrawScale > 0)
+        sizeMult = MaxDrawScale/MinDrawScale;
+    else
+        sizeMult = 1;
 
    // DEUS_EX AMSD Update drawscale less often in mp, to reduce bandwidth hit.
    // Effect won't look quite as good for listen server client... but will otherwise
    // help tremendously (one gas grenade was 3k a sec in traffic).
    NewDrawScale = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
 
-	if (Level.Netmode == NM_Standalone)
+    if (Level.Netmode == NM_Standalone)
    {
       DrawScale = NewDrawScale;
    }
@@ -115,23 +115,23 @@ simulated function Tick(float deltaTime)
    }
 
 //      DrawScale = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
-   if (Role == ROLE_Authority)	
+   if (Role == ROLE_Authority)
       ScaleGlow = FClamp(LifeSpan*0.5, 0.0, 1.0);
 
-	// make it swim around a bit at random
-	if (bFloating)
-	{
-		Acceleration = VRand() * 15;
-		Acceleration.Z = 0;
-	}
+    // make it swim around a bit at random
+    if (bFloating)
+    {
+        Acceleration = VRand() * 15;
+        Acceleration.Z = 0;
+    }
 }
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	// set the cloud damage timer
-	SetTimer(damageInterval, True);
+    // set the cloud damage timer
+    SetTimer(damageInterval, True);
 }
 
 defaultproperties

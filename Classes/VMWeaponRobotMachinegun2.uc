@@ -5,9 +5,9 @@ class VMWeaponRobotMachinegun2 extends WeaponRobotMachinegun;
 
 // Vanilla Matters: Override Fire to swap gun locations.
 function Fire( float value ) {
-	FireOffset.Y = - FireOffset.Y;
+    FireOffset.Y = - FireOffset.Y;
 
-	super.Fire( value );
+    super.Fire( value );
 }
 
 defaultproperties

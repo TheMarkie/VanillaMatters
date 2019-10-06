@@ -14,8 +14,8 @@ var DXMapList MapList;
 
 event InitWindow()
 {
-	Super.InitWindow();
-     
+    Super.InitWindow();
+
    PopulateCycleTypes();
 
    SetInitialCycleType();
@@ -29,7 +29,7 @@ event InitWindow()
 
 function PopulateCycleTypes()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    MapList = player.Spawn(class'DXMapList');
 
@@ -54,7 +54,7 @@ function SetInitialCycleType()
 {
    local int CurrentType;
 
-   CurrentType = int(player.ConsoleCommand("get" @ configsetting)); 
+   CurrentType = int(player.ConsoleCommand("get" @ configsetting));
 
    SetValue(CurrentType);
 }
@@ -75,8 +75,8 @@ function SaveSetting()
 function LoadSetting()
 {
    local int CurrentType;
-   
-   CurrentType = int(player.ConsoleCommand("get" @ configsetting)); 
+
+   CurrentType = int(player.ConsoleCommand("get" @ configsetting));
 
    SetValue(CurrentType);
 }
@@ -86,7 +86,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ defaultvalue);
    LoadSetting();
 }

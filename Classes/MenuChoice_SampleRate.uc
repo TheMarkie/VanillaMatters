@@ -15,15 +15,15 @@ var Localized String RestartMessage;
 
 function LoadSetting()
 {
-	local int sampleRate;
+    local int sampleRate;
 
-	sampleRate = int(player.ConsoleCommand("get " $ configSetting));
-	if ( sampleRate == 11025 ) 
-		SetValue(0);
-	else if ( sampleRate == 22050 ) 
-		SetValue(1);
-	else
-		SetValue(2);
+    sampleRate = int(player.ConsoleCommand("get " $ configSetting));
+    if ( sampleRate == 11025 )
+        SetValue(0);
+    else if ( sampleRate == 22050 )
+        SetValue(1);
+    else
+        SetValue(2);
 }
 
 // ----------------------------------------------------------------------
@@ -32,7 +32,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.ConsoleCommand("set " $ configSetting $ " " $ enumText[GetValue()] );
+    player.ConsoleCommand("set " $ configSetting $ " " $ enumText[GetValue()] );
 }
 
 // ----------------------------------------------------------------------
@@ -41,13 +41,13 @@ function SaveSetting()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
+    Super.CycleNextValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -56,13 +56,13 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
+    Super.CyclePreviousValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -71,10 +71,10 @@ function CyclePreviousValue()
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	DeusExRootWindow(GetRootWindow()).PopWindow();
+    // Destroy the msgbox!
+    DeusExRootWindow(GetRootWindow()).PopWindow();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

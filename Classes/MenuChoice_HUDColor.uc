@@ -10,11 +10,11 @@ class MenuChoice_HUDColor extends MenuChoice_ThemeColor;
 
 function LoadSetting()
 {
-	// Populate the enums!
-	PopulateThemes(1);
+    // Populate the enums!
+    PopulateThemes(1);
 
-	currentTheme = player.ThemeManager.GetCurrentHUDColorTheme();
-	SetValueFromString(currentTheme.GetThemeName());
+    currentTheme = player.ThemeManager.GetCurrentHUDColorTheme();
+    SetValueFromString(currentTheme.GetThemeName());
 }
 
 // ----------------------------------------------------------------------
@@ -23,7 +23,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.HUDThemeName = enumText[GetValue()];
+    player.HUDThemeName = enumText[GetValue()];
 }
 
 // ----------------------------------------------------------------------
@@ -32,8 +32,8 @@ function SaveSetting()
 
 function CancelSetting()
 {
-	player.ThemeManager.SetCurrentMenuColorTheme(currentTheme);
-	ChangeStyle();
+    player.ThemeManager.SetCurrentMenuColorTheme(currentTheme);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -42,15 +42,15 @@ function CancelSetting()
 
 function ResetToDefault()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	player.HUDThemeName = defaultTheme;
-	theme = player.ThemeManager.SetHUDThemeByName(defaultTheme);
-	theme.ResetThemeToDefault();
+    player.HUDThemeName = defaultTheme;
+    theme = player.ThemeManager.SetHUDThemeByName(defaultTheme);
+    theme.ResetThemeToDefault();
 
-	SetValueFromString(player.HUDThemeName);
+    SetValueFromString(player.HUDThemeName);
 
-	ChangeStyle();
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -59,9 +59,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
-	ChangeStyle();
+    Super.CycleNextValue();
+    player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -70,9 +70,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

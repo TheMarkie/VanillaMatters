@@ -6,13 +6,13 @@ class MenuScreenThemesLoad expands MenuUIScreenWindow;
 
 Enum EColorThemeTypes
 {
-	CTT_Menu,
-	CTT_HUD
+    CTT_Menu,
+    CTT_HUD
 };
 
-var MenuUIListWindow			 lstThemes;
-var MenuUIScrollAreaWindow		 winScroll;
-var MenuScreenRGB				 winRGB;
+var MenuUIListWindow             lstThemes;
+var MenuUIScrollAreaWindow       winScroll;
+var MenuScreenRGB                winRGB;
 
 // Would make this an EColorThemeType, but UnrealScript sucks
 
@@ -28,11 +28,11 @@ var localized string LoadHelpText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateThemesList();
-	ShowHelp(LoadHelpText);
-	EnableButtons();
+    CreateThemesList();
+    ShowHelp(LoadHelpText);
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ event InitWindow()
 
 function SetRGBWindow(MenuScreenRGB newRGBWindow)
 {
-	winRGB = newRGBWindow;
+    winRGB = newRGBWindow;
 }
 
 // ----------------------------------------------------------------------
@@ -50,18 +50,18 @@ function SetRGBWindow(MenuScreenRGB newRGBWindow)
 
 function SetThemeType(int newThemeType)
 {
-	themeType = newThemeType;
-	PopulateThemesList();
+    themeType = newThemeType;
+    PopulateThemesList();
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 // ----------------------------------------------------------------------
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	EnableButtons();
-	return False;
+    EnableButtons();
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -70,7 +70,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	SaveSettings();
+    SaveSettings();
 }
 
 // ----------------------------------------------------------------------
@@ -81,10 +81,10 @@ event bool ListRowActivated(window list, int rowId)
 
 function ProcessAction(String actionKey)
 {
-	if (actionKey == "LOAD")
-	{
-		SaveSettings();
-	}
+    if (actionKey == "LOAD")
+    {
+        SaveSettings();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -93,18 +93,18 @@ function ProcessAction(String actionKey)
 
 function SaveSettings()
 {
-	local ColorTheme theme;
-	local String themeName;
+    local ColorTheme theme;
+    local String themeName;
 
-	if (lstThemes.GetNumSelectedRows() == 1)
-	{
-		themeName = lstThemes.GetField(lstThemes.GetSelectedRow(), 0);
+    if (lstThemes.GetNumSelectedRows() == 1)
+    {
+        themeName = lstThemes.GetField(lstThemes.GetSelectedRow(), 0);
 
-		if (winRGB != None)
-			winRGB.SetThemeByName(themeName);
-	}
+        if (winRGB != None)
+            winRGB.SetThemeByName(themeName);
+    }
 
-	root.PopWindow();
+    root.PopWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -113,13 +113,13 @@ function SaveSettings()
 
 function CreateThemesList()
 {
-	winScroll = CreateScrollAreaWindow(winClient);
+    winScroll = CreateScrollAreaWindow(winClient);
 
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(285, 210);
+    winScroll.SetPos(11, 22);
+    winScroll.SetSize(285, 210);
 
-	lstThemes = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	lstThemes.EnableMultiSelect(False);
+    lstThemes = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    lstThemes.EnableMultiSelect(False);
 }
 
 // ----------------------------------------------------------------------
@@ -128,18 +128,18 @@ function CreateThemesList()
 
 function PopulateThemesList()
 {
-	local ColorTheme theme;
-	
-	// First erase the old list
-	lstThemes.DeleteAllRows();
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetFirstTheme(themeType);
-	
-	while(theme != None)
-	{
-		lstThemes.AddRow(theme.GetThemeName());
-		theme = player.ThemeManager.GetNextTheme();
-	}
+    // First erase the old list
+    lstThemes.DeleteAllRows();
+
+    theme = player.ThemeManager.GetFirstTheme(themeType);
+
+    while(theme != None)
+    {
+        lstThemes.AddRow(theme.GetThemeName());
+        theme = player.ThemeManager.GetNextTheme();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -151,7 +151,7 @@ function PopulateThemesList()
 
 function EnableButtons()
 {
-	EnableActionButton(AB_Other, (lstThemes.GetNumSelectedRows() > 0), "LOAD");
+    EnableActionButton(AB_Other, (lstThemes.GetNumSelectedRows() > 0), "LOAD");
 }
 
 // ----------------------------------------------------------------------

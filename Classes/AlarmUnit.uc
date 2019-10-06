@@ -15,201 +15,201 @@ var Vector alarmLocation;
 var() name Alliance;
 var Pawn associatedPawn;
 var bool bDisabled;
-var bool bConfused;				// used when hit by EMP
-var float confusionTimer;		// how long until unit resumes normal operation
-var float confusionDuration;	// how long does EMP hit last?
+var bool bConfused;             // used when hit by EMP
+var float confusionTimer;       // how long until unit resumes normal operation
+var float confusionDuration;    // how long does EMP hit last?
 
 function UpdateAIEvents()
 {
-	if (bActive)
-	{
-		// Make noise and light
-		AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
-	}
-	else
-	{
-		// Stop making noise and light
-		AIEndEvent('Alarm', EAITYPE_Audio);
-	}
+    if (bActive)
+    {
+        // Make noise and light
+        AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+    }
+    else
+    {
+        // Stop making noise and light
+        AIEndEvent('Alarm', EAITYPE_Audio);
+    }
 }
 
 function UpdateGroup(Actor Other, Pawn Instigator, bool bActivated)
 {
-	local AlarmUnit unit;
+    local AlarmUnit unit;
 
-	// Only do this if we have a group tag set
-	if (Tag != '')
-	{
-		// Trigger (or untrigger) every alarm with the same tag
-		foreach AllActors(Class'AlarmUnit', unit, Tag)
-		{
-			if (bActivated)
-				unit.Trigger(Other, Instigator);
-			else
-				unit.UnTrigger(Other, Instigator);
-		}
-	}
+    // Only do this if we have a group tag set
+    if (Tag != '')
+    {
+        // Trigger (or untrigger) every alarm with the same tag
+        foreach AllActors(Class'AlarmUnit', unit, Tag)
+        {
+            if (bActivated)
+                unit.Trigger(Other, Instigator);
+            else
+                unit.UnTrigger(Other, Instigator);
+        }
+    }
 }
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	Super.HackAction(Hacker, bHacked);
+    Super.HackAction(Hacker, bHacked);
 
-	if (bHacked)
-	{
-		if (bActive)
-		{
-			UnTrigger(Hacker, Pawn(Hacker));
-			bDisabled = True;
-			LightType = LT_None;
-			MultiSkins[1] = Texture'BlackMaskTex';
-		}
-/*		else		// don't actually ever set off the alarm
-		{
-			Trigger(Hacker, Pawn(Hacker));
-			bDisabled = False;
-			LightType = LT_None;
-			MultiSkins[1] = Texture'PinkMaskTex';
-		}*/
-	}
+    if (bHacked)
+    {
+        if (bActive)
+        {
+            UnTrigger(Hacker, Pawn(Hacker));
+            bDisabled = True;
+            LightType = LT_None;
+            MultiSkins[1] = Texture'BlackMaskTex';
+        }
+/*      else        // don't actually ever set off the alarm
+        {
+            Trigger(Hacker, Pawn(Hacker));
+            bDisabled = False;
+            LightType = LT_None;
+            MultiSkins[1] = Texture'PinkMaskTex';
+        }*/
+    }
 }
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bDisabled)
-		return;
+    if (bDisabled)
+        return;
 
-	// if we've been EMP'ed, act confused
-	if (bConfused)
-	{
-		confusionTimer += deltaTime;
+    // if we've been EMP'ed, act confused
+    if (bConfused)
+    {
+        confusionTimer += deltaTime;
 
-		// randomly flash the light
-		if (FRand() > 0.95)
-			MultiSkins[1] = Texture'AlarmUnitTex2';
-		else
-			MultiSkins[1] = Texture'PinkMaskTex';
+        // randomly flash the light
+        if (FRand() > 0.95)
+            MultiSkins[1] = Texture'AlarmUnitTex2';
+        else
+            MultiSkins[1] = Texture'PinkMaskTex';
 
-		if (confusionTimer > confusionDuration)
-		{
-			bConfused = False;
-			confusionTimer = 0;
-			MultiSkins[1] = Texture'AlarmUnitTex2';
-		}
+        if (confusionTimer > confusionDuration)
+        {
+            bConfused = False;
+            confusionTimer = 0;
+            MultiSkins[1] = Texture'AlarmUnitTex2';
+        }
 
-		return;
-	}
+        return;
+    }
 
-	if (bActive)
-	{
-		curTime += deltaTime;
-		if (curTime >= alarmTimeout)
-		{
-			UnTrigger(Self, None);
-			return;
-		}
+    if (bActive)
+    {
+        curTime += deltaTime;
+        if (curTime >= alarmTimeout)
+        {
+            UnTrigger(Self, None);
+            return;
+        }
 
-		// flash the light and texture
-		if ((Level.TimeSeconds % 0.5) > 0.25)
-		{
-			LightType = LT_Steady;
-			MultiSkins[1] = Texture'AlarmUnitTex2';
-		}
-		else
-		{
-			LightType = LT_None;
-			MultiSkins[1] = Texture'PinkMaskTex';
-		}
-	}
+        // flash the light and texture
+        if ((Level.TimeSeconds % 0.5) > 0.25)
+        {
+            LightType = LT_Steady;
+            MultiSkins[1] = Texture'AlarmUnitTex2';
+        }
+        else
+        {
+            LightType = LT_None;
+            MultiSkins[1] = Texture'PinkMaskTex';
+        }
+    }
 }
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	local Actor A;
+    local Actor A;
 
-	if (bConfused || bDisabled)
-		return;
+    if (bConfused || bDisabled)
+        return;
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 
-	if (!bActive)
-	{
-		if (Instigator != None)
-			Instigator.ClientMessage(msgActivated);
-		bActive = True;
-		AmbientSound = Sound'Klaxon2';
-		SoundRadius = 64;
-		SoundVolume = 128;
-		curTime = 0;
-		LightType = LT_Steady;
-		MultiSkins[1] = Texture'AlarmUnitTex2';
-		alarmInstigator = Instigator;
+    if (!bActive)
+    {
+        if (Instigator != None)
+            Instigator.ClientMessage(msgActivated);
+        bActive = True;
+        AmbientSound = Sound'Klaxon2';
+        SoundRadius = 64;
+        SoundVolume = 128;
+        curTime = 0;
+        LightType = LT_Steady;
+        MultiSkins[1] = Texture'AlarmUnitTex2';
+        alarmInstigator = Instigator;
 /* taken out for now...
-		if (Instigator != None)
-			alarmLocation = Instigator.Location-vect(0,0,1)*(Instigator.CollisionHeight-1);
-		else
+        if (Instigator != None)
+            alarmLocation = Instigator.Location-vect(0,0,1)*(Instigator.CollisionHeight-1);
+        else
 */
-			alarmLocation = Location;
-		UpdateAIEvents();
-		UpdateGroup(Other, Instigator, true);
+            alarmLocation = Location;
+        UpdateAIEvents();
+        UpdateGroup(Other, Instigator, true);
 
-		// trigger the event
-		if (Event != '')
-			foreach AllActors(class'Actor', A, Event)
-				A.Trigger(Self, Instigator);
+        // trigger the event
+        if (Event != '')
+            foreach AllActors(class'Actor', A, Event)
+                A.Trigger(Self, Instigator);
 
-		// make sure we can't go into stasis while we're alarming
-		bStasis = False;
-	}
+        // make sure we can't go into stasis while we're alarming
+        bStasis = False;
+    }
 }
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-	if (bConfused || bDisabled)
-		return;
+    if (bConfused || bDisabled)
+        return;
 
-	Super.UnTrigger(Other, Instigator);
+    Super.UnTrigger(Other, Instigator);
 
-	if (bActive)
-	{
-		if (Instigator != None)
-			Instigator.ClientMessage(msgDeactivated);
-		bActive = False;
-		AmbientSound = Default.AmbientSound;
-		SoundRadius = 16;
-		SoundVolume = 192;
-		curTime = 0;
-		LightType = LT_None;
-		MultiSkins[1] = Texture'PinkMaskTex';
-		UpdateAIEvents();
-		UpdateGroup(Other, Instigator, false);
+    if (bActive)
+    {
+        if (Instigator != None)
+            Instigator.ClientMessage(msgDeactivated);
+        bActive = False;
+        AmbientSound = Default.AmbientSound;
+        SoundRadius = 16;
+        SoundVolume = 192;
+        curTime = 0;
+        LightType = LT_None;
+        MultiSkins[1] = Texture'PinkMaskTex';
+        UpdateAIEvents();
+        UpdateGroup(Other, Instigator, false);
 
-		// reset our stasis info
-		bStasis = Default.bStasis;
-	}
+        // reset our stasis info
+        bStasis = Default.bStasis;
+    }
 }
 
 auto state Active
 {
-	function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
-	{
-		if (DamageType == 'EMP')
-		{
-			confusionTimer = 0;
-			if (!bConfused)
-			{
-				curTime = alarmTimeout;
-				bConfused = True;
-				PlaySound(sound'EMPZap', SLOT_None,,, 1280);
-				UnTrigger(Self, None);
-			}
-			return;
-		}
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        if (DamageType == 'EMP')
+        {
+            confusionTimer = 0;
+            if (!bConfused)
+            {
+                curTime = alarmTimeout;
+                bConfused = True;
+                PlaySound(sound'EMPZap', SLOT_None,,, 1280);
+                UnTrigger(Self, None);
+            }
+            return;
+        }
 
-		Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
-	}
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+    }
 }
 
 defaultproperties

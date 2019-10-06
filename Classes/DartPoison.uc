@@ -7,10 +7,10 @@ class DartPoison extends Dart;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-		Damage = mpDamage;
+    if ( Level.NetMode != NM_Standalone )
+        Damage = mpDamage;
 }
 
 defaultproperties

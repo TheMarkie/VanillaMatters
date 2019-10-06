@@ -5,32 +5,32 @@ class BloodSpurt extends Effects;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Velocity = vect(0,0,0);
-		DrawScale -= FRand() * 0.5;
-		PlayAnim('Spurt');
+    function BeginState()
+    {
+        Velocity = vect(0,0,0);
+        DrawScale -= FRand() * 0.5;
+        PlayAnim('Spurt');
 
-		// Gore check
-		if (Level.Game.bLowGore || Level.Game.bVeryLowGore)
-		{
-			Destroy();
-			return;
-		}
-	}
+        // Gore check
+        if (Level.Game.bLowGore || Level.Game.bVeryLowGore)
+        {
+            Destroy();
+            return;
+        }
+    }
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		ScaleGlow = 2.0;
-		DrawScale *= 1.5;
-		LifeSpan *= 2.0;
-		bUnlit=True;
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        ScaleGlow = 2.0;
+        DrawScale *= 1.5;
+        LifeSpan *= 2.0;
+        bUnlit=True;
+    }
 }
 
 defaultproperties

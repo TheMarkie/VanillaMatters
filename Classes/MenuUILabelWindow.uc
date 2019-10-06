@@ -19,17 +19,17 @@ var int fontAcceleratorLineHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontLabel);
-	SetTextMargins(0, 0);
-	SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
+    SetFont(fontLabel);
+    SetTextMargins(0, 0);
+    SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -38,14 +38,14 @@ event InitWindow()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colLabel = theme.GetColorFromName('MenuColor_ListText');
+    // Title colors
+    colLabel = theme.GetColorFromName('MenuColor_ListText');
 
-	SetTextColor(colLabel);
+    SetTextColor(colLabel);
 }
 
 // ----------------------------------------------------------------------

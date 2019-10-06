@@ -4,11 +4,11 @@
 class WeaponPepperGun extends DeusExWeapon;
 
 // Vanilla Matters
-#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire1.wav"		NAME="PepperGunFire1"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire2.wav"		NAME="PepperGunFire2"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire3.wav"		NAME="PepperGunFire3"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire4.wav"		NAME="PepperGunFire4"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire5.wav"		NAME="PepperGunFire5"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire1.wav"        NAME="PepperGunFire1"       GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire2.wav"        NAME="PepperGunFire2"       GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire3.wav"        NAME="PepperGunFire3"       GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire4.wav"        NAME="PepperGunFire4"       GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\PepperGun\fire5.wav"        NAME="PepperGunFire5"       GROUP="VMSounds"
 
 // Vanilla Matters
 var int VM_currentSoundIndex;
@@ -17,41 +17,41 @@ var Sound VM_fireSounds[5];
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+    }
 }
 
 // Vanilla Matters: Iterate through all the firing sounds.
 simulated function PlayFiringSound() {
-	FireSound = VM_fireSounds[VM_currentSoundIndex];
+    FireSound = VM_fireSounds[VM_currentSoundIndex];
 
-	VM_currentSoundIndex = VM_currentSoundIndex + 1;
-	if ( VM_currentSoundIndex >= 5 ) {
-		VM_currentSoundIndex = 3;
-	}
+    VM_currentSoundIndex = VM_currentSoundIndex + 1;
+    if ( VM_currentSoundIndex >= 5 ) {
+        VM_currentSoundIndex = 3;
+    }
 
-	super.PlayFiringSound();
+    super.PlayFiringSound();
 }
 
 // Vanilla Matters: Reset the sound index when not firing.
 simulated function Tick( float deltaTime ) {
-	local Pawn p;
+    local Pawn p;
 
-	p = Pawn( Owner );
-	if ( p != none && p.bFire == 0 && !bFiring && VM_currentSoundIndex != 0 ) {
-		VM_currentSoundIndex = 0;
-	}
+    p = Pawn( Owner );
+    if ( p != none && p.bFire == 0 && !bFiring && VM_currentSoundIndex != 0 ) {
+        VM_currentSoundIndex = 0;
+    }
 
-	super.Tick( deltaTime );
+    super.Tick( deltaTime );
 }
 
 defaultproperties

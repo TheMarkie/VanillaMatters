@@ -20,7 +20,7 @@ var ButtonWindow             btnPortrait;
 var Texture texPortraits[5];
 var int     portraitIndex;
 var Skill   selectedSkill;
-var int		selectedRowId;
+var int     selectedRowId;
 var int     saveSkillPointsAvail;
 var int     saveSkillPointsTotal;
 var float   combatDifficulty;
@@ -28,10 +28,10 @@ var float   combatDifficulty;
 var String filterString;
 
 // An array of local skills that we can use to manipulate without
-// actually changing the skills in the game.  This is important so the 
+// actually changing the skills in the game.  This is important so the
 // player can back out of this screen and return to the game in progress.
 
-var Skill			localSkills[32];
+var Skill           localSkills[32];
 
 var localized string ButtonUpgradeLabel;
 var localized string ButtonDowngradeLabel;
@@ -53,21 +53,21 @@ var localized string NameBlankPrompt;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SaveSkillPoints();	
-	ResetToDefaults();
+    SaveSkillPoints();
+    ResetToDefaults();
 
-	// Need to do this because of the edit control used for 
-	// saving games.
-	SetMouseFocusMode(MFOCUS_Click);
+    // Need to do this because of the edit control used for
+    // saving games.
+    SetMouseFocusMode(MFOCUS_Click);
 
-	Show();
-	SetFocusWindow(editName);
-	editName.SetSelectedArea(0, Len(editName.GetText()));
-	combatDifficulty = player.Default.CombatDifficulty;
+    Show();
+    SetFocusWindow(editName);
+    editName.SetSelectedArea(0, Len(editName.GetText()));
+    combatDifficulty = player.Default.CombatDifficulty;
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -76,7 +76,7 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	DestroyLocalSkills();
+    DestroyLocalSkills();
 }
 
 // ----------------------------------------------------------------------
@@ -85,18 +85,18 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreatePortraitButton();
-	CreateLeftArrowButton();
-	CreateRightArrowButton();
-	CreateSkillButtons();
-	CreateTextHeaders();
-	CreateCodeNameEditWindow();
-	CreateNameEditWindow();
-	CreateSkillsListWindow();
-	CreateSkillInfoWindow();
-	CreateSkillPointsButton();
+    CreatePortraitButton();
+    CreateLeftArrowButton();
+    CreateRightArrowButton();
+    CreateSkillButtons();
+    CreateTextHeaders();
+    CreateCodeNameEditWindow();
+    CreateNameEditWindow();
+    CreateSkillsListWindow();
+    CreateSkillInfoWindow();
+    CreateSkillPointsButton();
 }
 
 // ----------------------------------------------------------------------
@@ -105,12 +105,12 @@ function CreateControls()
 
 function CreatePortraitButton()
 {
-	btnPortrait = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
+    btnPortrait = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnPortrait.SetSize(114, 161);
-	btnPortrait.SetPos(18, 152);
+    btnPortrait.SetSize(114, 161);
+    btnPortrait.SetPos(18, 152);
 
-	btnPortrait.SetBackgroundStyle(DSTY_Masked);
+    btnPortrait.SetBackgroundStyle(DSTY_Masked);
 }
 
 // ----------------------------------------------------------------------
@@ -119,14 +119,14 @@ function CreatePortraitButton()
 
 function CreateLeftArrowButton()
 {
-	btnLeftArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
+    btnLeftArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnLeftArrow.SetPos(102, 316);
-	btnLeftArrow.SetSize(14, 15);
+    btnLeftArrow.SetPos(102, 316);
+    btnLeftArrow.SetSize(14, 15);
 
-	btnLeftArrow.SetButtonTextures(
-		Texture'MenuLeftArrow_Normal', 
-		Texture'MenuLeftArrow_Pressed');
+    btnLeftArrow.SetButtonTextures(
+        Texture'MenuLeftArrow_Normal',
+        Texture'MenuLeftArrow_Pressed');
 }
 
 // ----------------------------------------------------------------------
@@ -135,14 +135,14 @@ function CreateLeftArrowButton()
 
 function CreateRightArrowButton()
 {
-	btnRightArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
+    btnRightArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnRightArrow.SetPos(117, 316);
-	btnRightArrow.SetSize(14, 15);
+    btnRightArrow.SetPos(117, 316);
+    btnRightArrow.SetSize(14, 15);
 
-	btnRightArrow.SetButtonTextures(
-		Texture'MenuRightArrow_Normal', 
-		Texture'MenuRightArrow_Pressed');
+    btnRightArrow.SetButtonTextures(
+        Texture'MenuRightArrow_Normal',
+        Texture'MenuRightArrow_Pressed');
 }
 
 // ----------------------------------------------------------------------
@@ -151,15 +151,15 @@ function CreateRightArrowButton()
 
 function CreateSkillButtons()
 {
-	btnUpgrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
-	btnUpgrade.SetButtonText(ButtonUpgradeLabel);
-	btnUpgrade.SetPos(164, 341);
-	btnUpgrade.SetWidth(74);
+    btnUpgrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
+    btnUpgrade.SetButtonText(ButtonUpgradeLabel);
+    btnUpgrade.SetPos(164, 341);
+    btnUpgrade.SetWidth(74);
 
-	btnDowngrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
-	btnDowngrade.SetButtonText(ButtonDowngradeLabel);
-	btnDowngrade.SetPos(241, 341);
-	btnDowngrade.SetWidth(90);
+    btnDowngrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
+    btnDowngrade.SetButtonText(ButtonDowngradeLabel);
+    btnDowngrade.SetPos(241, 341);
+    btnDowngrade.SetWidth(90);
 }
 
 // ----------------------------------------------------------------------
@@ -168,20 +168,20 @@ function CreateSkillButtons()
 
 function CreateTextHeaders()
 {
-	local MenuUILabelWindow winLabel;
+    local MenuUILabelWindow winLabel;
 
-	CreateMenuLabel( 21,  17, HeaderCodeNameLabel,     winClient);
-	CreateMenuLabel( 21,  73, HeaderNameLabel,         winClient);
-	CreateMenuLabel( 21, 133, HeaderAppearanceLabel,   winClient);
-	CreateMenuLabel(172,  17, HeaderSkillsLabel,       winClient);
-	
-	winLabel = CreateMenuLabel(430,  18, HeaderSkillLevelLabel,   winClient);
-	winLabel.SetFont(Font'FontMenuSmall');
+    CreateMenuLabel( 21,  17, HeaderCodeNameLabel,     winClient);
+    CreateMenuLabel( 21,  73, HeaderNameLabel,         winClient);
+    CreateMenuLabel( 21, 133, HeaderAppearanceLabel,   winClient);
+    CreateMenuLabel(172,  17, HeaderSkillsLabel,       winClient);
 
-	winLabel = CreateMenuLabel(505,  18, HeaderPointsNeededLabel, winClient);
-	winLabel.SetFont(Font'FontMenuSmall');
-	
-	CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient); 
+    winLabel = CreateMenuLabel(430,  18, HeaderSkillLevelLabel,   winClient);
+    winLabel.SetFont(Font'FontMenuSmall');
+
+    winLabel = CreateMenuLabel(505,  18, HeaderPointsNeededLabel, winClient);
+    winLabel.SetFont(Font'FontMenuSmall');
+
+    CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -190,10 +190,10 @@ function CreateTextHeaders()
 
 function CreateCodeNameEditWindow()
 {
-	editCodeName = CreateMenuEditWindow(18, 36, 113, 32, winClient);
+    editCodeName = CreateMenuEditWindow(18, 36, 113, 32, winClient);
 
-	editCodeName.SetText(player.FamiliarName);
-	editCodeName.SetSensitivity(False);
+    editCodeName.SetText(player.FamiliarName);
+    editCodeName.SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -202,11 +202,11 @@ function CreateCodeNameEditWindow()
 
 function CreateNameEditWindow()
 {
-	editName = CreateMenuEditWindow(18, 92, 113, 32, winClient);
+    editName = CreateMenuEditWindow(18, 92, 113, 32, winClient);
 
-	editName.SetText(player.TruePlayerName);
-	editName.MoveInsertionPoint(MOVEINSERT_End);
-	editName.SetFilter(filterString);
+    editName.SetText(player.TruePlayerName);
+    editName.MoveInsertionPoint(MOVEINSERT_End);
+    editName.SetFilter(filterString);
 }
 
 // ----------------------------------------------------------------------
@@ -215,22 +215,22 @@ function CreateNameEditWindow()
 
 function CreateSkillsListWindow()
 {
-	lstSkills = MenuUIListWindow(winClient.NewChild(Class'MenuUIListWindow'));
+    lstSkills = MenuUIListWindow(winClient.NewChild(Class'MenuUIListWindow'));
 
-	lstSkills.SetSize(397, 150);
-	lstSkills.SetPos(172,41);
-	lstSkills.EnableMultiSelect(False);
-	lstSkills.EnableAutoExpandColumns(False);
-	lstSkills.SetNumColumns(3);
+    lstSkills.SetSize(397, 150);
+    lstSkills.SetPos(172,41);
+    lstSkills.EnableMultiSelect(False);
+    lstSkills.EnableAutoExpandColumns(False);
+    lstSkills.SetNumColumns(3);
 
-	lstSkills.SetColumnWidth(0, 262);
-	lstSkills.SetColumnWidth(1,  66);
-	lstSkills.SetColumnWidth(2,  60);
-	lstSkills.SetColumnAlignment(2, HALIGN_Right);
+    lstSkills.SetColumnWidth(0, 262);
+    lstSkills.SetColumnWidth(1,  66);
+    lstSkills.SetColumnWidth(2,  60);
+    lstSkills.SetColumnAlignment(2, HALIGN_Right);
 
-	lstSkills.SetColumnFont(0, Font'FontMenuHeaders');
-	lstSkills.SetSortColumn(0, False);
-	lstSkills.EnableAutoSort(True);
+    lstSkills.SetColumnFont(0, Font'FontMenuHeaders');
+    lstSkills.SetSortColumn(0, False);
+    lstSkills.EnableAutoSort(True);
 }
 
 // ----------------------------------------------------------------------
@@ -239,8 +239,8 @@ function CreateSkillsListWindow()
 
 function CreateSkillInfoWindow()
 {
-	winSkillInfo = MenuUISkillInfoWindow(winClient.NewChild(Class'MenuUISkillInfoWindow'));
-	winSkillInfo.SetPos(165, 208);
+    winSkillInfo = MenuUISkillInfoWindow(winClient.NewChild(Class'MenuUISkillInfoWindow'));
+    winSkillInfo.SetPos(165, 208);
 }
 
 // ----------------------------------------------------------------------
@@ -249,11 +249,11 @@ function CreateSkillInfoWindow()
 
 function CreateSkillPointsButton()
 {
-	winSkillPoints = MenuUIStaticInfoWindow(winClient.NewChild(Class'MenuUIStaticInfoWindow'));
+    winSkillPoints = MenuUIStaticInfoWindow(winClient.NewChild(Class'MenuUIStaticInfoWindow'));
 
-	winSkillPoints.SetPos(487, 341);
-	winSkillPoints.SetWidth(83);
-	winSkillPoints.SetSensitivity(False);
+    winSkillPoints.SetPos(487, 341);
+    winSkillPoints.SetWidth(83);
+    winSkillPoints.SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -262,22 +262,22 @@ function CreateSkillPointsButton()
 
 function PopulateSkillsList()
 {
-	local int skillIndex;
-	local int rowIndex;
+    local int skillIndex;
+    local int rowIndex;
 
-	lstSkills.DeleteAllRows();
-	skillIndex = 0;
+    lstSkills.DeleteAllRows();
+    skillIndex = 0;
 
-	// Iterate through the skills, adding them to our list
-	while(localSkills[skillIndex] != None)
-	{
-		rowIndex = lstSkills.AddRow(BuildSkillString(localSkills[skillIndex]));
-		lstSkills.SetRowClientObject(rowIndex, localSkills[skillIndex]);
+    // Iterate through the skills, adding them to our list
+    while(localSkills[skillIndex] != None)
+    {
+        rowIndex = lstSkills.AddRow(BuildSkillString(localSkills[skillIndex]));
+        lstSkills.SetRowClientObject(rowIndex, localSkills[skillIndex]);
 
-		skillIndex++;
-	}
-	lstSkills.Sort();
-	lstSkills.SetRow(lstSkills.IndexToRowId(0), False);
+        skillIndex++;
+    }
+    lstSkills.Sort();
+    lstSkills.SetRow(lstSkills.IndexToRowId(0), False);
 }
 
 // ----------------------------------------------------------------------
@@ -286,19 +286,19 @@ function PopulateSkillsList()
 
 function String BuildSkillString( Skill aSkill )
 {
-	local String skillString;
-	local String levelCost;
-	
-	if ( aSkill.GetCurrentLevel() == 3 ) 
-		levelCost = "--";
-	else
-		levelCost = String(aSkill.GetCost());
+    local String skillString;
+    local String levelCost;
 
-	skillString = aSkill.skillName $ ";" $ 
-				  aSkill.GetCurrentLevelString() $ ";" $ 
-				  levelCost;
+    if ( aSkill.GetCurrentLevel() == 3 )
+        levelCost = "--";
+    else
+        levelCost = String(aSkill.GetCost());
 
-	return skillString;
+    skillString = aSkill.skillName $ ";" $
+                  aSkill.GetCurrentLevelString() $ ";" $
+                  levelCost;
+
+    return skillString;
 }
 
 // ----------------------------------------------------------------------
@@ -307,7 +307,7 @@ function String BuildSkillString( Skill aSkill )
 
 function UpdateSkillPoints()
 {
-	winSkillPoints.SetButtonText(String(player.SkillPointsAvail));
+    winSkillPoints.SetButtonText(String(player.SkillPointsAvail));
 }
 
 // ----------------------------------------------------------------------
@@ -316,41 +316,41 @@ function UpdateSkillPoints()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnUpgrade:
-			UpgradeSkill();
-			break;
+    switch( buttonPressed )
+    {
+        case btnUpgrade:
+            UpgradeSkill();
+            break;
 
-		case btnDowngrade:
-			DowngradeSkill();
-			break;
+        case btnDowngrade:
+            DowngradeSkill();
+            break;
 
-		case btnLeftArrow:
-			PreviousPortrait();
-			break;
+        case btnLeftArrow:
+            PreviousPortrait();
+            break;
 
-		case btnRightArrow:
-			NextPortrait();
-			break;
+        case btnRightArrow:
+            NextPortrait();
+            break;
 
-		case btnPortrait:
-			NextPortrait();
-			break;
+        case btnPortrait:
+            NextPortrait();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -359,8 +359,8 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool ListRowActivated(window list, int rowId)
 {
-	UpgradeSkill();
-	return True;
+    UpgradeSkill();
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -369,27 +369,27 @@ event bool ListRowActivated(window list, int rowId)
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	local Skill aSkill;
+    local Skill aSkill;
 
-	selectedSkill = Skill(ListWindow(list).GetRowClientObject(focusRowId));
-	selectedRowId = focusRowId;
+    selectedSkill = Skill(ListWindow(list).GetRowClientObject(focusRowId));
+    selectedRowId = focusRowId;
 
-	winSkillInfo.SetSkill(selectedSkill);
+    winSkillInfo.SetSkill(selectedSkill);
 
-	EnableButtons();
+    EnableButtons();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
-// TextChanged() 
+// TextChanged()
 // ----------------------------------------------------------------------
 
 event bool TextChanged(window edit, bool bModified)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return false;
+    return false;
 }
 
 /*
@@ -404,15 +404,15 @@ event bool TextChanged(window edit, bool bModified)
 
 event bool EditActivated(window edit, bool bModified)
 {
-	if (IsActionButtonEnabled(AB_Other, "START"))
-	{
-		ProcessAction("START");
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+    if (IsActionButtonEnabled(AB_Other, "START"))
+    {
+        ProcessAction("START");
+        return True;
+    }
+    else
+    {
+        return False;
+    }
 }
 */
 
@@ -422,30 +422,30 @@ event bool EditActivated(window edit, bool bModified)
 
 function EnableButtons()
 {
-	// Abort if a skill item isn't selected
-	if ( selectedSkill == None )
-	{
-		btnUpgrade.SetSensitivity( False );
-		btnDowngrade.SetSensitivity( False );
-	}
-	else
-	{
-		// Upgrade Skill only available if the skill is not at 
-		// the maximum -and- the user has enough skill points
-		// available to upgrade the skill
+    // Abort if a skill item isn't selected
+    if ( selectedSkill == None )
+    {
+        btnUpgrade.SetSensitivity( False );
+        btnDowngrade.SetSensitivity( False );
+    }
+    else
+    {
+        // Upgrade Skill only available if the skill is not at
+        // the maximum -and- the user has enough skill points
+        // available to upgrade the skill
 
-		btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
-		btnDowngrade.EnableWindow(selectedSkill.GetCurrentLevel() > 0);
-	}
+        btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
+        btnDowngrade.EnableWindow(selectedSkill.GetCurrentLevel() > 0);
+    }
 
-	// Only enable the OK button if the player has entered a name
-	if (editName != None)
-	{
-		if (editName.GetText() == "")
-			EnableActionButton(AB_Other, False, "START");
-		else
-			EnableActionButton(AB_Other, True, "START");
-	}
+    // Only enable the OK button if the player has entered a name
+    if (editName != None)
+    {
+        if (editName.GetText() == "")
+            EnableActionButton(AB_Other, False, "START");
+        else
+            EnableActionButton(AB_Other, True, "START");
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -454,12 +454,12 @@ function EnableButtons()
 
 function PreviousPortrait()
 {
-	portraitIndex--;
+    portraitIndex--;
 
-	if (portraitIndex < 0)
-		portraitIndex = arrayCount(texPortraits) - 1;
+    if (portraitIndex < 0)
+        portraitIndex = arrayCount(texPortraits) - 1;
 
-	btnPortrait.SetBackground(texPortraits[portraitIndex]);
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
 // ----------------------------------------------------------------------
@@ -468,12 +468,12 @@ function PreviousPortrait()
 
 function NextPortrait()
 {
-	portraitIndex++;
+    portraitIndex++;
 
-	if (portraitIndex == arrayCount(texPortraits))
-		portraitIndex = 0;
+    if (portraitIndex == arrayCount(texPortraits))
+        portraitIndex = 0;
 
-	btnPortrait.SetBackground(texPortraits[portraitIndex]);
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
 // ----------------------------------------------------------------------
@@ -482,15 +482,15 @@ function NextPortrait()
 
 function UpgradeSkill()
 {
-	// First make sure we have a skill selected
-	if ( selectedSkill == None )
-		return;
+    // First make sure we have a skill selected
+    if ( selectedSkill == None )
+        return;
 
-	selectedSkill.IncLevel(player);
-	lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
+    selectedSkill.IncLevel(player);
+    lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
 
-	UpdateSkillPoints();
-	EnableButtons();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -499,15 +499,15 @@ function UpgradeSkill()
 
 function DowngradeSkill()
 {
-	// First make sure we have a skill selected
-	if ( selectedSkill == None )
-		return;
+    // First make sure we have a skill selected
+    if ( selectedSkill == None )
+        return;
 
-	selectedSkill.DecLevel(True, Player);
-	lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
+    selectedSkill.DecLevel(True, Player);
+    lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
 
-	UpdateSkillPoints();
-	EnableButtons();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -518,18 +518,18 @@ function DowngradeSkill()
 
 function ResetToDefaults()
 {
-	editName.SetText(player.TruePlayerName);
+    editName.SetText(player.TruePlayerName);
 
-	player.SkillPointsAvail = player.Default.SkillPointsAvail;
-	player.SkillPointsTotal = player.Default.SkillPointsTotal;
+    player.SkillPointsAvail = player.Default.SkillPointsAvail;
+    player.SkillPointsTotal = player.Default.SkillPointsTotal;
 
-	portraitIndex = 0;
-	btnPortrait.SetBackground(texPortraits[portraitIndex]);
+    portraitIndex = 0;
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
-	CopySkills();
-	PopulateSkillsList();	
-	UpdateSkillPoints();
-	EnableButtons();
+    CopySkills();
+    PopulateSkillsList();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -541,24 +541,24 @@ function ResetToDefaults()
 
 function CopySkills()
 {
-	local Skill aSkill;
-	local int skillIndex;
+    local Skill aSkill;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	aSkill = player.SkillSystem.FirstSkill;
-	while(aSkill != None)
-	{
-		localSkills[skillIndex] = player.Spawn(aSkill.Class);
+    aSkill = player.SkillSystem.FirstSkill;
+    while(aSkill != None)
+    {
+        localSkills[skillIndex] = player.Spawn(aSkill.Class);
 
-		// Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
-		if ( localSkills[skillIndex].class == class'SkillWeaponPistol' ) {
-			localSkills[skillIndex].IncLevel( player );
-		}
+        // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
+        if ( localSkills[skillIndex].class == class'SkillWeaponPistol' ) {
+            localSkills[skillIndex].IncLevel( player );
+        }
 
-		skillIndex++;
-		aSkill = aSkill.next;
-	}
+        skillIndex++;
+        aSkill = aSkill.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -569,32 +569,32 @@ function CopySkills()
 
 function ApplySkills()
 {
-	local Skill aSkill;
-	local int skillIndex;
+    local Skill aSkill;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	while(localSkills[skillIndex] != None)
-	{
-		aSkill = player.SkillSystem.FirstSkill;
-		while(aSkill != None)
-		{
-			if (aSkill.SkillName == localSkills[skillIndex].SkillName)
-			{
-				// Copy the skill
-				aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
+    while(localSkills[skillIndex] != None)
+    {
+        aSkill = player.SkillSystem.FirstSkill;
+        while(aSkill != None)
+        {
+            if (aSkill.SkillName == localSkills[skillIndex].SkillName)
+            {
+                // Copy the skill
+                aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
 
-				// Vanilla Matters: Apply the level to the subSkill.
-				if ( aSkill.VM_subSkill != None ) {
-					aSkill.VM_subSkill.CurrentLevel = aSkill.CurrentLevel;
-				}
+                // Vanilla Matters: Apply the level to the subSkill.
+                if ( aSkill.VM_subSkill != None ) {
+                    aSkill.VM_subSkill.CurrentLevel = aSkill.CurrentLevel;
+                }
 
-				break;
-			}
-			aSkill = aSkill.next;
-		}
-		skillIndex++;
-	}
+                break;
+            }
+            aSkill = aSkill.next;
+        }
+        skillIndex++;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -603,16 +603,16 @@ function ApplySkills()
 
 function DestroyLocalSkills()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	while(localSkills[skillIndex] != None)
-	{
-		localSkills[skillIndex].Destroy();
-		localSkills[skillIndex] = None;
-		skillIndex++;
-	}
+    while(localSkills[skillIndex] != None)
+    {
+        localSkills[skillIndex].Destroy();
+        localSkills[skillIndex] = None;
+        skillIndex++;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -621,33 +621,33 @@ function DestroyLocalSkills()
 
 function ProcessAction(String actionKey)
 {
-	local DeusExPlayer		localPlayer;
-	local String			localStartMap;
-	local String            playerName;
+    local DeusExPlayer      localPlayer;
+    local String            localStartMap;
+    local String            playerName;
 
-	localPlayer   = player;
-//	localStartMap = strStartMap;
+    localPlayer   = player;
+//  localStartMap = strStartMap;
 
-	if (actionKey == "START")
-	{
-		// Make sure the name isn't blank
-		playerName = TrimSpaceS(editName.GetText());
+    if (actionKey == "START")
+    {
+        // Make sure the name isn't blank
+        playerName = TrimSpaceS(editName.GetText());
 
-		if (playerName == "")
-		{
-			root.MessageBox(NameBlankTitle, NameBlankPrompt, 1, False, Self);
-		}
-		else
-		{
-			SaveSettings();
+        if (playerName == "")
+        {
+            root.MessageBox(NameBlankTitle, NameBlankPrompt, 1, False, Self);
+        }
+        else
+        {
+            SaveSettings();
 
-			// DEUS_EX_DEMO
-			//
-			// Don't show the intro for the demo since that map is not available
-			localPlayer.ShowIntro(True);
-//			localPlayer.StartNewGame(localPlayer.strStartMap);
-		}
-	}
+            // DEUS_EX_DEMO
+            //
+            // Don't show the intro for the demo since that map is not available
+            localPlayer.ShowIntro(True);
+//          localPlayer.StartNewGame(localPlayer.strStartMap);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -656,10 +656,10 @@ function ProcessAction(String actionKey)
 
 function SaveSettings()
 {
-	ApplySkills();
-	player.TruePlayerName   = editName.GetText();
-	player.PlayerSkin       = portraitIndex;
-	player.CombatDifficulty = combatDifficulty;
+    ApplySkills();
+    player.TruePlayerName   = editName.GetText();
+    player.PlayerSkin       = portraitIndex;
+    player.CombatDifficulty = combatDifficulty;
 }
 
 // ----------------------------------------------------------------------
@@ -668,8 +668,8 @@ function SaveSettings()
 
 function CancelScreen()
 {
-	RestoreSkillPoints();	
-	Super.CancelScreen();
+    RestoreSkillPoints();
+    Super.CancelScreen();
 }
 
 // ----------------------------------------------------------------------
@@ -678,8 +678,8 @@ function CancelScreen()
 
 function SaveSkillPoints()
 {
-	saveSkillPointsAvail = player.SkillPointsAvail;
-	saveSkillPointsTotal = player.SkillPointsAvail;
+    saveSkillPointsAvail = player.SkillPointsAvail;
+    saveSkillPointsTotal = player.SkillPointsAvail;
 }
 
 // ----------------------------------------------------------------------
@@ -688,8 +688,8 @@ function SaveSkillPoints()
 
 function RestoreSkillPoints()
 {
-	player.SkillPointsAvail = saveSkillPointsAvail;
-	player.SkillPointsAvail = saveSkillPointsTotal;
+    player.SkillPointsAvail = saveSkillPointsAvail;
+    player.SkillPointsAvail = saveSkillPointsTotal;
 }
 
 // ----------------------------------------------------------------------
@@ -698,29 +698,29 @@ function RestoreSkillPoints()
 
 function String TrimSpaces(String trimString)
 {
-	local int trimIndex;
-	local int trimLength;
+    local int trimIndex;
+    local int trimLength;
 
-	if ( trimString == "" ) 
-		return trimString;
+    if ( trimString == "" )
+        return trimString;
 
-	trimIndex = Len(trimString) - 1;
-	while ((trimIndex >= 0) && (Mid(trimString, trimIndex, 1) == " ") )
-		trimIndex--;
+    trimIndex = Len(trimString) - 1;
+    while ((trimIndex >= 0) && (Mid(trimString, trimIndex, 1) == " ") )
+        trimIndex--;
 
-	if ( trimIndex < 0 )
-		return "";
+    if ( trimIndex < 0 )
+        return "";
 
-	trimString = Mid(trimString, 0, trimIndex + 1);
+    trimString = Mid(trimString, 0, trimIndex + 1);
 
-	trimIndex = 0;
-	while((trimIndex < Len(trimString) - 1) && (Mid(trimString, trimIndex, 1) == " "))
-		trimIndex++;
+    trimIndex = 0;
+    while((trimIndex < Len(trimString) - 1) && (Mid(trimString, trimIndex, 1) == " "))
+        trimIndex++;
 
-	trimLength = len(trimString) - trimIndex;
-	trimString = Right(trimString, trimLength);
+    trimLength = len(trimString) - trimIndex;
+    trimString = Right(trimString, trimLength);
 
-	return trimString;
+    return trimString;
 }
 
 // ----------------------------------------------------------------------
@@ -729,15 +729,15 @@ function String TrimSpaces(String trimString)
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	root.PopWindow();
+    // Destroy the msgbox!
+    root.PopWindow();
 
-	editName.SetText(player.TruePlayerName);
-	editName.MoveInsertionPoint(MOVEINSERT_End);
-	editName.SetSelectedArea(0, Len(editName.GetText()));
-	SetFocusWindow(editName);
+    editName.SetText(player.TruePlayerName);
+    editName.MoveInsertionPoint(MOVEINSERT_End);
+    editName.SetSelectedArea(0, Len(editName.GetText()));
+    SetFocusWindow(editName);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -746,20 +746,20 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colButtonFace;
+    local ColorTheme theme;
+    local Color colButtonFace;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
+    // Title colors
+    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
 
-	btnLeftArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                             colButtonFace, colButtonFace, colButtonFace);
-	btnRightArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                              colButtonFace, colButtonFace, colButtonFace);
+    btnLeftArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                                 colButtonFace, colButtonFace, colButtonFace);
+    btnRightArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                                  colButtonFace, colButtonFace, colButtonFace);
 }
 
 // ----------------------------------------------------------------------
@@ -768,7 +768,7 @@ event StyleChanged()
 
 function SetDifficulty(float newDifficulty)
 {
-	combatDifficulty = newDifficulty;
+    combatDifficulty = newDifficulty;
 }
 
 // ----------------------------------------------------------------------

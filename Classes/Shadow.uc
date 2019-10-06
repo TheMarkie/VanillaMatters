@@ -14,68 +14,68 @@ var bool   bHasDecal;
 
 function Tick(float deltaTime)
 {
-	local vector EndTrace, HitLocation, HitNormal;
-	local Actor hit;
-	local float dist;
-	local ScriptedPawn pawnOwner;
-	local bool recentlyDrewShadow, recentlyDrewOwner;
-	local bool doDraw;
-	
-	Super.Tick(deltaTime);
+    local vector EndTrace, HitLocation, HitNormal;
+    local Actor hit;
+    local float dist;
+    local ScriptedPawn pawnOwner;
+    local bool recentlyDrewShadow, recentlyDrewOwner;
+    local bool doDraw;
 
-	if (Owner == None)
-	{
-		Destroy();
-		return;
-	}
+    Super.Tick(deltaTime);
 
-	// don't update if our owner is in stasis or isn't moving
-	if (Owner.InStasis() || (VSize(Owner.Location - lastLocation) < 0.1))
-		if (bHasDecal)   // we are doing nothing, we have a decal, we are fine
-			return;
+    if (Owner == None)
+    {
+        Destroy();
+        return;
+    }
 
-	// in our dream world, these two would be "last frame" not "recently"
-	recentlyDrewShadow = (lastRendered()<1.0);
+    // don't update if our owner is in stasis or isn't moving
+    if (Owner.InStasis() || (VSize(Owner.Location - lastLocation) < 0.1))
+        if (bHasDecal)   // we are doing nothing, we have a decal, we are fine
+            return;
+
+    // in our dream world, these two would be "last frame" not "recently"
+    recentlyDrewShadow = (lastRendered()<1.0);
     recentlyDrewOwner  = (Owner.lastRendered()<1.0);
-	doDraw             = recentlyDrewShadow || recentlyDrewOwner;
+    doDraw             = recentlyDrewShadow || recentlyDrewOwner;
 
-	if (bHasDecal)
-	{
-		DetachDecal();
-		bHasDecal=False;
-	}
+    if (bHasDecal)
+    {
+        DetachDecal();
+        bHasDecal=False;
+    }
 
-	// temp until this works better
-	if (Owner.IsA('DeusExPlayer'))
-		doDraw = True;
+    // temp until this works better
+    if (Owner.IsA('DeusExPlayer'))
+        doDraw = True;
 
-	if (!doDraw)
-		return;
+    if (!doDraw)
+        return;
 
-	// save our location to check next frame - only if we move the shadow, however
-	lastLocation = Owner.Location;
+    // save our location to check next frame - only if we move the shadow, however
+    lastLocation = Owner.Location;
 
-	// trace down about 30 feet
-	EndTrace = Owner.Location - vect(0,0,480);
-	hit = Trace(HitLocation, HitNormal, EndTrace, Owner.Location, True);
+    // trace down about 30 feet
+    EndTrace = Owner.Location - vect(0,0,480);
+    hit = Trace(HitLocation, HitNormal, EndTrace, Owner.Location, True);
 
-	if (hit != None)
-	{
-		dist = VSize(HitLocation - Owner.Location);
-		DrawScale = (Owner.CollisionRadius / 15.0) - ((dist - Owner.CollisionHeight) / 130.0);
-	
-		pawnOwner = ScriptedPawn(Owner);
-		if (pawnOwner != None)
-			DrawScale *= pawnOwner.ShadowScale;
+    if (hit != None)
+    {
+        dist = VSize(HitLocation - Owner.Location);
+        DrawScale = (Owner.CollisionRadius / 15.0) - ((dist - Owner.CollisionHeight) / 130.0);
 
-		if (DrawScale < 0)
-			DrawScale = 0;
-		SetLocation(HitLocation);
-		SetRotation(Rotator(HitNormal));
-	
-		AttachDecal(32,vect(0.1,0.1,0));
-		bHasDecal=True;
-	}
+        pawnOwner = ScriptedPawn(Owner);
+        if (pawnOwner != None)
+            DrawScale *= pawnOwner.ShadowScale;
+
+        if (DrawScale < 0)
+            DrawScale = 0;
+        SetLocation(HitLocation);
+        SetRotation(Rotator(HitNormal));
+
+        AttachDecal(32,vect(0.1,0.1,0));
+        bHasDecal=True;
+    }
 }
 
 defaultproperties

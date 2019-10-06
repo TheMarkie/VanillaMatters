@@ -6,11 +6,11 @@ class MenuUIChoiceAction extends MenuUIChoice;
 
 enum EMenuActions
 {
-	MA_Menu, 
-	MA_MenuScreen,
-	MA_Previous, 
-	MA_Quit, 
-	MA_Custom
+    MA_Menu,
+    MA_MenuScreen,
+    MA_Previous,
+    MA_Quit,
+    MA_Custom
 };
 
 // Defaults
@@ -25,17 +25,17 @@ var class        invoke;
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (key == IK_Enter)
-	{
-		btnAction.PressButton(key);
-		return True;
-	}
-	else
-	{
-		return Super.VirtualKeyPressed(key, bRepeat);
-	}
+    if (key == IK_Enter)
+    {
+        btnAction.PressButton(key);
+        return True;
+    }
+    else
+    {
+        return Super.VirtualKeyPressed(key, bRepeat);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -47,8 +47,8 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	ProcessMenuAction(action, invoke);
-	return True;
+    ProcessMenuAction(action, invoke);
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -57,24 +57,24 @@ function bool ButtonActivated( Window buttonPressed )
 
 function ProcessMenuAction(EMenuActions action, Class menuActionClass)
 {
-	local DeusExRootWindow root;
+    local DeusExRootWindow root;
 
-	root = DeusExRootWindow(GetRootWindow());
+    root = DeusExRootWindow(GetRootWindow());
 
-	switch(action)
-	{
-		case MA_Menu:
-			root.InvokeMenu(Class<DeusExBaseWindow>(menuActionClass));
-			break;
+    switch(action)
+    {
+        case MA_Menu:
+            root.InvokeMenu(Class<DeusExBaseWindow>(menuActionClass));
+            break;
 
-		case MA_MenuScreen:
-			root.InvokeMenuScreen(Class<DeusExBaseWindow>(menuActionClass));
-			break;
+        case MA_MenuScreen:
+            root.InvokeMenuScreen(Class<DeusExBaseWindow>(menuActionClass));
+            break;
 
-		case MA_Previous:
-			root.PopWindow();
-			break;
-	}
+        case MA_Previous:
+            root.PopWindow();
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------

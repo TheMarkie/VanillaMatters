@@ -18,96 +18,96 @@ var() bool bReverseKeyframes;
 var bool bIsMoving;
 var int LastSeq;
 var int CurrentSeq;
-var int i;		// why can't I put this in the state?
+var int i;      // why can't I put this in the state?
 
 function int SeqKeys(int seq, int which)
 {
-	switch (seq)
-	{
-		case 0: return SeqKey1[which];
-		case 1: return SeqKey2[which];
-		case 2: return SeqKey3[which];
-		case 3: return SeqKey4[which];
-	}
+    switch (seq)
+    {
+        case 0: return SeqKey1[which];
+        case 1: return SeqKey2[which];
+        case 2: return SeqKey3[which];
+        case 3: return SeqKey4[which];
+    }
 
-	return -1;
+    return -1;
 }
 
 function float SeqTimes(int seq, int which)
 {
-	switch (seq)
-	{
-		case 0: return SeqTime1[which];
-		case 1: return SeqTime2[which];
-		case 2: return SeqTime3[which];
-		case 3: return SeqTime4[which];
-	}
+    switch (seq)
+    {
+        case 0: return SeqTime1[which];
+        case 1: return SeqTime2[which];
+        case 2: return SeqTime3[which];
+        case 3: return SeqTime4[which];
+    }
 
-	return -1;
+    return -1;
 }
 
 function BeginPlay()
 {
-	Super.BeginPlay();
-	bIsMoving = False;
-	LastSeq = -1;
-	CurrentSeq = -1;
+    Super.BeginPlay();
+    bIsMoving = False;
+    LastSeq = -1;
+    CurrentSeq = -1;
 }
 
 function SetSeq(int seqnum)
 {
-	if (bIsMoving)
-		return;
+    if (bIsMoving)
+        return;
 
-	if (CurrentSeq != seqnum)
-	{
-		LastSeq = CurrentSeq;
-		CurrentSeq = seqnum;
-		GotoState('MultiMover', 'Close');
-	}
+    if (CurrentSeq != seqnum)
+    {
+        LastSeq = CurrentSeq;
+        CurrentSeq = seqnum;
+        GotoState('MultiMover', 'Close');
+    }
 }
 
 auto state() MultiMover
 {
-	// stub out InterpolateEnd so it doesn't use the intermediate keyframes
-	function InterpolateEnd(actor Other)
-	{
-	}
+    // stub out InterpolateEnd so it doesn't use the intermediate keyframes
+    function InterpolateEnd(actor Other)
+    {
+    }
 
 // reverse the previous sequence (if any) before playing the new one
 Close:
-	bIsMoving = True;
-	if ((LastSeq > 0) && (bReverseKeyframes))
-	{
-		PlaySound(ClosingSound);
-		AmbientSound = MoveAmbientSound;
-		for (i=3; i>=0; i--)
-			if (SeqKeys(LastSeq, i) >= 0)
-				if (SeqKeys(LastSeq, i) != KeyNum)
-				{
-					InterpolateTo(SeqKeys(LastSeq, i), SeqTimes(LastSeq, i));
-					FinishInterpolation();
-				}
+    bIsMoving = True;
+    if ((LastSeq > 0) && (bReverseKeyframes))
+    {
+        PlaySound(ClosingSound);
+        AmbientSound = MoveAmbientSound;
+        for (i=3; i>=0; i--)
+            if (SeqKeys(LastSeq, i) >= 0)
+                if (SeqKeys(LastSeq, i) != KeyNum)
+                {
+                    InterpolateTo(SeqKeys(LastSeq, i), SeqTimes(LastSeq, i));
+                    FinishInterpolation();
+                }
 
-		AmbientSound = None;
-		FinishedClosing();
-	}
+        AmbientSound = None;
+        FinishedClosing();
+    }
 
 Open:
-	PlaySound(OpeningSound);
-	AmbientSound = MoveAmbientSound;
-	for (i=0; i<4; i++)
-		if (SeqKeys(CurrentSeq, i) >= 0)
-			if (SeqKeys(CurrentSeq, i) != KeyNum)
-			{
-				InterpolateTo(SeqKeys(CurrentSeq, i), SeqTimes(CurrentSeq, i));
-				FinishInterpolation();
-			}
+    PlaySound(OpeningSound);
+    AmbientSound = MoveAmbientSound;
+    for (i=0; i<4; i++)
+        if (SeqKeys(CurrentSeq, i) >= 0)
+            if (SeqKeys(CurrentSeq, i) != KeyNum)
+            {
+                InterpolateTo(SeqKeys(CurrentSeq, i), SeqTimes(CurrentSeq, i));
+                FinishInterpolation();
+            }
 
-	AmbientSound = None;
-	FinishedOpening();
-	bIsMoving = False;
-	Stop;
+    AmbientSound = None;
+    FinishedOpening();
+    bIsMoving = False;
+    Stop;
 }
 
 defaultproperties

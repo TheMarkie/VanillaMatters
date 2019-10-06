@@ -13,10 +13,10 @@ var int LastKeyNum;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Create *ALL* the icons, but hide them.
-	CreateIcons();
+    // Create *ALL* the icons, but hide them.
+    CreateIcons();
 }
 
 // ----------------------------------------------------------------------
@@ -25,15 +25,15 @@ event InitWindow()
 
 function CreateIcons()
 {
-	local int keyIndex;
-	local HUDActiveAug iconWindow;
+    local int keyIndex;
+    local HUDActiveAug iconWindow;
 
-	for(keyIndex=FirstKeyNum; keyIndex<=LastKeyNum; keyIndex++)
-	{
-		iconWindow = HUDActiveAug(winIcons.NewChild(Class'HUDActiveAug'));
-		iconWindow.SetKeyNum(keyIndex);
-		iconWindow.Hide();
-	}
+    for(keyIndex=FirstKeyNum; keyIndex<=LastKeyNum; keyIndex++)
+    {
+        iconWindow = HUDActiveAug(winIcons.NewChild(Class'HUDActiveAug'));
+        iconWindow.SetKeyNum(keyIndex);
+        iconWindow.Hide();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -42,48 +42,48 @@ function CreateIcons()
 
 function ClearAugmentationDisplay()
 {
-	local Window currentWindow;
-	local Window foundWindow;
+    local Window currentWindow;
+    local Window foundWindow;
 
-	// Loop through all our children and check to see if 
-	// we have a match.
+    // Loop through all our children and check to see if
+    // we have a match.
 
-	currentWindow = winIcons.GetTopChild();
-	while(currentWindow != None)
-	{
-		currentWindow.Hide();
+    currentWindow = winIcons.GetTopChild();
+    while(currentWindow != None)
+    {
+        currentWindow.Hide();
       currentWindow.SetClientObject(None);
-		currentWindow = currentWindow.GetLowerSibling();
-	}
+        currentWindow = currentWindow.GetLowerSibling();
+    }
 
-	iconCount = 0;
+    iconCount = 0;
 }
 
 // ----------------------------------------------------------------------
 // AddIcon()
 //
-// Find the appropriate 
+// Find the appropriate
 // ----------------------------------------------------------------------
 
 function AddIcon(Texture newIcon, Object saveObject)
 {
-	local HUDActiveAug augItem;
+    local HUDActiveAug augItem;
 
-	augItem = FindAugWindowByKey(Augmentation(saveObject));
+    augItem = FindAugWindowByKey(Augmentation(saveObject));
 
-	if (augItem != None)
-	{
-		augItem.SetIcon(newIcon);
-		augItem.SetClientObject(saveObject);
-		augItem.SetObject(saveObject);
-		augItem.Show();
+    if (augItem != None)
+    {
+        augItem.SetIcon(newIcon);
+        augItem.SetClientObject(saveObject);
+        augItem.SetObject(saveObject);
+        augItem.Show();
 
-		// Hide if there are no icons visible
-		if (++iconCount == 1)
-			Show();
+        // Hide if there are no icons visible
+        if (++iconCount == 1)
+            Show();
 
-		AskParentForReconfigure();
-	}
+        AskParentForReconfigure();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -92,21 +92,21 @@ function AddIcon(Texture newIcon, Object saveObject)
 
 function RemoveObject(Object removeObject)
 {
-	local HUDActiveAug augItemWindow;
+    local HUDActiveAug augItemWindow;
 
-	augItemWindow = FindAugWindowByKey(Augmentation(removeObject));
+    augItemWindow = FindAugWindowByKey(Augmentation(removeObject));
 
-	if (augItemWindow != None)
-	{
-		augItemWindow.Hide();
+    if (augItemWindow != None)
+    {
+        augItemWindow.Hide();
       augItemWindow.SetClientObject(None);
 
-		// Hide if there are no icons visible
-		if (--iconCount == 0)
-			Hide();
+        // Hide if there are no icons visible
+        if (--iconCount == 0)
+            Hide();
 
-		AskParentForReconfigure();
-	}
+        AskParentForReconfigure();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -115,26 +115,26 @@ function RemoveObject(Object removeObject)
 
 function HUDActiveAug FindAugWindowByKey(Augmentation anAug)
 {
-	local Window currentWindow;
-	local Window foundWindow;
+    local Window currentWindow;
+    local Window foundWindow;
 
-	// Loop through all our children and check to see if 
-	// we have a match.
+    // Loop through all our children and check to see if
+    // we have a match.
 
-	currentWindow = winIcons.GetTopChild(False);
+    currentWindow = winIcons.GetTopChild(False);
 
-	while(currentWindow != None)
-	{
-		if (HUDActiveAug(currentWindow).HotKeyNum == anAug.HotKeyNum)
-		{
-			foundWindow = currentWindow;
-			break;
-		}
+    while(currentWindow != None)
+    {
+        if (HUDActiveAug(currentWindow).HotKeyNum == anAug.HotKeyNum)
+        {
+            foundWindow = currentWindow;
+            break;
+        }
 
-		currentWindow = currentWindow.GetLowerSibling(False);
-	}
+        currentWindow = currentWindow.GetLowerSibling(False);
+    }
 
-	return HUDActiveAug(foundWindow);
+    return HUDActiveAug(foundWindow);
 }
 
 // ----------------------------------------------------------------------
@@ -143,20 +143,20 @@ function HUDActiveAug FindAugWindowByKey(Augmentation anAug)
 
 function UpdateAugIconStatus(Augmentation aug)
 {
-	local HUDActiveAug iconWindow;
+    local HUDActiveAug iconWindow;
 
-	// First make sure this object isn't already in the window
-	iconWindow = HUDActiveAug(winIcons.GetTopChild());
-	while(iconWindow != None)
-	{
-		// Abort if this object already exists!!
-		if (iconWindow.GetClientObject() == aug)
-		{
-			iconWindow.UpdateAugIconStatus();
-			break;			
-		}
-		iconWindow = HUDActiveAug(iconWindow.GetLowerSibling());
-	}
+    // First make sure this object isn't already in the window
+    iconWindow = HUDActiveAug(winIcons.GetTopChild());
+    while(iconWindow != None)
+    {
+        // Abort if this object already exists!!
+        if (iconWindow.GetClientObject() == aug)
+        {
+            iconWindow.UpdateAugIconStatus();
+            break;
+        }
+        iconWindow = HUDActiveAug(iconWindow.GetLowerSibling());
+    }
 }
 
 // ----------------------------------------------------------------------

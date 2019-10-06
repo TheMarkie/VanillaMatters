@@ -6,8 +6,8 @@ class ComputerScreenSpecialOptions expands ComputerUIWindow;
 
 struct S_OptionButtons
 {
-	var int specialIndex;
-	var MenuUIChoiceButton btnSpecial;
+    var int specialIndex;
+    var MenuUIChoiceButton btnSpecial;
 };
 
 var S_OptionButtons optionButtons[4];
@@ -28,7 +28,7 @@ var localized String SecurityButtonLabel;
 var localized String EmailButtonLabel;
 
 // Vanilla Matters
-var bool VM_bHackedAlready;		// Keep track if this option has been "hacked" aka used while hacking at least once.
+var bool VM_bHackedAlready;     // Keep track if this option has been "hacked" aka used while hacking at least once.
 
 // ----------------------------------------------------------------------
 // CreateControls()
@@ -36,11 +36,11 @@ var bool VM_bHackedAlready;		// Keep track if this option has been "hacked" aka 
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
+    btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
 
-	CreateSpecialInfoWindow();
+    CreateSpecialInfoWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -49,10 +49,10 @@ function CreateControls()
 
 function CreateClientWindow()
 {
-	Super.CreateClientWindow();
+    Super.CreateClientWindow();
 
-	if (winClient != None)
-		ComputerUIScaleClientWindow(winClient).SetTextureHeights(TopTextureHeight, MiddleTextureHeight, BottomTextureHeight);
+    if (winClient != None)
+        ComputerUIScaleClientWindow(winClient).SetTextureHeights(TopTextureHeight, MiddleTextureHeight, BottomTextureHeight);
 }
 
 // ----------------------------------------------------------------------
@@ -61,12 +61,12 @@ function CreateClientWindow()
 
 function CreateSpecialInfoWindow()
 {
-	winSpecialInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
+    winSpecialInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winSpecialInfo.SetPos(10, 97);
-	winSpecialInfo.SetSize(315, 25);
-	winSpecialInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winSpecialInfo.SetTextMargins(0, 0);
+    winSpecialInfo.SetPos(10, 97);
+    winSpecialInfo.SetSize(315, 25);
+    winSpecialInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winSpecialInfo.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -75,15 +75,15 @@ function CreateSpecialInfoWindow()
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	if (winTerm.IsA('NetworkTerminalPersonal'))
-		btnReturn = winButtonBar.AddButton(EmailButtonLabel, HALIGN_Left);
-	else if (winTerm.IsA('NetworkTerminalSecurity'))
-		btnReturn = winButtonBar.AddButton(SecurityButtonLabel, HALIGN_Left);
+    if (winTerm.IsA('NetworkTerminalPersonal'))
+        btnReturn = winButtonBar.AddButton(EmailButtonLabel, HALIGN_Left);
+    else if (winTerm.IsA('NetworkTerminalSecurity'))
+        btnReturn = winButtonBar.AddButton(SecurityButtonLabel, HALIGN_Left);
 
-	if (btnReturn != None)
-		CreateLeftEdgeWindow();
+    if (btnReturn != None)
+        CreateLeftEdgeWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -94,9 +94,9 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	Super.SetCompOwner(newCompOwner);
+    Super.SetCompOwner(newCompOwner);
 
-	CreateOptionButtons();
+    CreateOptionButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -105,53 +105,53 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function CreateOptionButtons()
 {
-	local int specialIndex;
-	local int numOptions;
-	local MenuUIChoiceButton winButton;
+    local int specialIndex;
+    local int numOptions;
+    local MenuUIChoiceButton winButton;
 
-	// Vanilla Matters
-	local Computers comp;
-	local string str;
+    // Vanilla Matters
+    local Computers comp;
+    local string str;
 
-	// Figure out how many special options we have
+    // Figure out how many special options we have
 
-	// Vanilla Matters: Rewrite because messy.
-	comp = Computers( compOwner );
-	numOptions = 0;
-	for ( specialIndex=0; specialIndex < ArrayCount( comp.specialOptions ); specialIndex++ ) {
-		if ( comp.specialOptions[specialIndex].userName == "" || Caps( comp.specialOptions[specialIndex].userName ) == winTerm.GetUserName() ) {
-			if ( comp.specialOptions[specialIndex].Text != "" ) {
-				winButton = MenuUIChoiceButton( winClient.NewChild( class'MenuUIChoiceButton' ) );
-				winButton.SetPos( buttonLeftMargin, firstButtonPosY + ( numOptions * MiddleTextureHeight ) );
-				winButton.SetSensitivity( !comp.specialOptions[specialIndex].bAlreadyTriggered );
-				winButton.SetWidth( 273 );
+    // Vanilla Matters: Rewrite because messy.
+    comp = Computers( compOwner );
+    numOptions = 0;
+    for ( specialIndex=0; specialIndex < ArrayCount( comp.specialOptions ); specialIndex++ ) {
+        if ( comp.specialOptions[specialIndex].userName == "" || Caps( comp.specialOptions[specialIndex].userName ) == winTerm.GetUserName() ) {
+            if ( comp.specialOptions[specialIndex].Text != "" ) {
+                winButton = MenuUIChoiceButton( winClient.NewChild( class'MenuUIChoiceButton' ) );
+                winButton.SetPos( buttonLeftMargin, firstButtonPosY + ( numOptions * MiddleTextureHeight ) );
+                winButton.SetSensitivity( !comp.specialOptions[specialIndex].bAlreadyTriggered );
+                winButton.SetWidth( 273 );
 
-				// VM: Add the time cost after the button label.
-				str = comp.specialOptions[specialIndex].Text;
-				if ( winTerm.bHacked ) {
-					if ( VM_timeCost == int( VM_timeCost ) ) {
-						str = str @ "(" $ int( VM_timeCost ) $ ")";
-					}
-					else {
-						str = str @ "(" $ class'DeusExWeapon'.static.FormatFloatString( VM_timeCost, 0.1 ) $ ")";
-					}
-				}
-				winButton.SetButtonText( str );
+                // VM: Add the time cost after the button label.
+                str = comp.specialOptions[specialIndex].Text;
+                if ( winTerm.bHacked ) {
+                    if ( VM_timeCost == int( VM_timeCost ) ) {
+                        str = str @ "(" $ int( VM_timeCost ) $ ")";
+                    }
+                    else {
+                        str = str @ "(" $ class'DeusExWeapon'.static.FormatFloatString( VM_timeCost, 0.1 ) $ ")";
+                    }
+                }
+                winButton.SetButtonText( str );
 
-				optionButtons[numOptions].specialIndex = specialIndex;
-				optionButtons[numOptions].btnSpecial = winButton;
+                optionButtons[numOptions].specialIndex = specialIndex;
+                optionButtons[numOptions].btnSpecial = winButton;
 
-				numOptions = numOptions + 1;				
-			}
-		}
-	}
+                numOptions = numOptions + 1;
+            }
+        }
+    }
 
-	ComputerUIScaleClientWindow(winClient).SetNumMiddleTextures(numOptions);
+    ComputerUIScaleClientWindow(winClient).SetNumMiddleTextures(numOptions);
 
-	// Update the location of the Special Info window and the Status window
-	winSpecialInfo.SetPos(10, specialOffsetY + TopTextureHeight + (MiddleTextureHeight * numOptions));
-	statusPosY = statusPosYOffset + TopTextureHeight + (MiddleTextureHeight * numOptions);
-	AskParentForReconfigure();
+    // Update the location of the Special Info window and the Status window
+    winSpecialInfo.SetPos(10, specialOffsetY + TopTextureHeight + (MiddleTextureHeight * numOptions));
+    statusPosY = statusPosYOffset + TopTextureHeight + (MiddleTextureHeight * numOptions);
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------
@@ -168,38 +168,38 @@ function UpdateOptionsButtons()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	// First check to see if one of our Special Options 
-	// buttons was pressed
-	if (buttonPressed.IsA('MenuUIChoiceButton'))
-	{
-		ActivateSpecialOption(MenuUIChoiceButton(buttonPressed));
-		bHandled = True;	
-	}
-	else
-	{
-		bHandled = True;
-		switch( buttonPressed )
-		{
-			case btnLogout:
-				CloseScreen("LOGOUT");
-				break;
+    // First check to see if one of our Special Options
+    // buttons was pressed
+    if (buttonPressed.IsA('MenuUIChoiceButton'))
+    {
+        ActivateSpecialOption(MenuUIChoiceButton(buttonPressed));
+        bHandled = True;
+    }
+    else
+    {
+        bHandled = True;
+        switch( buttonPressed )
+        {
+            case btnLogout:
+                CloseScreen("LOGOUT");
+                break;
 
-			case btnReturn:
-				CloseScreen("RETURN");
-				break;
+            case btnReturn:
+                CloseScreen("RETURN");
+                break;
 
-			default:
-				bHandled = False;
-				break;
-		}
-	}
+            default:
+                bHandled = False;
+                break;
+        }
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -208,70 +208,70 @@ function bool ButtonActivated( Window buttonPressed )
 
 function ActivateSpecialOption(MenuUIChoiceButton buttonPressed)
 {
-	local int buttonIndex;
-	local int specialIndex;
-	local Actor A;
+    local int buttonIndex;
+    local int specialIndex;
+    local Actor A;
 
-	specialIndex = -1;
+    specialIndex = -1;
 
-	// Loop through the buttons and find a Match!
-	for(buttonIndex=0; buttonIndex<arrayCount(optionButtons); buttonIndex++)
-	{
-		if (optionButtons[buttonIndex].btnSpecial == buttonPressed)
-		{
-			specialIndex = optionButtons[buttonIndex].specialIndex;
+    // Loop through the buttons and find a Match!
+    for(buttonIndex=0; buttonIndex<arrayCount(optionButtons); buttonIndex++)
+    {
+        if (optionButtons[buttonIndex].btnSpecial == buttonPressed)
+        {
+            specialIndex = optionButtons[buttonIndex].specialIndex;
 
-			// Disable this button so the user can't activate this 
-			// choice again
-			optionButtons[buttonIndex].btnSpecial.SetSensitivity(False);
+            // Disable this button so the user can't activate this
+            // choice again
+            optionButtons[buttonIndex].btnSpecial.SetSensitivity(False);
 
-			break;
-		}
-	}
+            break;
+        }
+    }
 
-	// If we found the matching button, activate the option!
-	if (specialIndex != -1)
-	{
-		// Make sure this option wasn't already triggered
-		if (!Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered)
-		{
-			if (Computers(compOwner).specialOptions[specialIndex].TriggerEvent != '')
-				foreach player.AllActors(class'Actor', A, Computers(compOwner).specialOptions[specialIndex].TriggerEvent)
-					A.Trigger(None, player);
-		
-			if (Computers(compOwner).specialOptions[specialIndex].UnTriggerEvent != '')
-				foreach player.AllActors(class'Actor', A, Computers(compOwner).specialOptions[specialIndex].UnTriggerEvent)
-					A.UnTrigger(None, player);
-		
-			if (Computers(compOwner).specialOptions[specialIndex].bTriggerOnceOnly)
-				Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered = True;
+    // If we found the matching button, activate the option!
+    if (specialIndex != -1)
+    {
+        // Make sure this option wasn't already triggered
+        if (!Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered)
+        {
+            if (Computers(compOwner).specialOptions[specialIndex].TriggerEvent != '')
+                foreach player.AllActors(class'Actor', A, Computers(compOwner).specialOptions[specialIndex].TriggerEvent)
+                    A.Trigger(None, player);
 
-			// Display a message			
-			winSpecialInfo.SetText(Computers(compOwner).specialOptions[specialIndex].TriggerText);
+            if (Computers(compOwner).specialOptions[specialIndex].UnTriggerEvent != '')
+                foreach player.AllActors(class'Actor', A, Computers(compOwner).specialOptions[specialIndex].UnTriggerEvent)
+                    A.UnTrigger(None, player);
 
-			// Vanilla Matters: Special options should cost something, not sure if that's appropriate.
-			HandleTimeCost();
-		}
-	}
+            if (Computers(compOwner).specialOptions[specialIndex].bTriggerOnceOnly)
+                Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered = True;
+
+            // Display a message
+            winSpecialInfo.SetText(Computers(compOwner).specialOptions[specialIndex].TriggerText);
+
+            // Vanilla Matters: Special options should cost something, not sure if that's appropriate.
+            HandleTimeCost();
+        }
+    }
 }
 
 function HandleTimeCost() {
-	local int i;
-	local Computers comp;
+    local int i;
+    local Computers comp;
 
-	if ( winTerm.bHacked ) {
-		if ( !VM_bHackedAlready ) {
-			winTerm.winHack.AddTimeCost( VM_timeCost );
-			VM_bHackedAlready = true;
+    if ( winTerm.bHacked ) {
+        if ( !VM_bHackedAlready ) {
+            winTerm.winHack.AddTimeCost( VM_timeCost );
+            VM_bHackedAlready = true;
 
-			comp = Computers( compOwner );
-			for ( i = 0; i < ArrayCount( optionButtons ); i++ ) {
-				if ( optionButtons[i].btnSpecial != none ) {
-					optionButtons[i].btnSpecial.SetButtonText( comp.specialOptions[optionButtons[i].specialIndex].Text );
-				}
-			}
-		}
-	}
+            comp = Computers( compOwner );
+            for ( i = 0; i < ArrayCount( optionButtons ); i++ ) {
+                if ( optionButtons[i].btnSpecial != none ) {
+                    optionButtons[i].btnSpecial.SetButtonText( comp.specialOptions[optionButtons[i].specialIndex].Text );
+                }
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

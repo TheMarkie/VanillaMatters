@@ -19,9 +19,9 @@ var Texture texBorders[9];
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBackgrounds);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBackgrounds);
 }
 
 // ----------------------------------------------------------------------
@@ -30,12 +30,12 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -5,44 +5,44 @@ class WeaponMiniCrossbow extends DeusExWeapon;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-		ReloadCount = mpReloadCount;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+        ReloadCount = mpReloadCount;
       PickupAmmoCount = mpReloadCount;
-	}
+    }
 }
 
 // pinkmask out the arrow when we're out of ammo or the clip is empty
 state NormalFire
 {
-	function BeginState()
-	{
-		if (ClipCount >= ReloadCount)
-			MultiSkins[3] = Texture'PinkMaskTex';
+    function BeginState()
+    {
+        if (ClipCount >= ReloadCount)
+            MultiSkins[3] = Texture'PinkMaskTex';
 
-		if ((AmmoType != None) && (AmmoType.AmmoAmount <= 0))
-			MultiSkins[3] = Texture'PinkMaskTex';
-	
-		Super.BeginState();
-	}
+        if ((AmmoType != None) && (AmmoType.AmmoAmount <= 0))
+            MultiSkins[3] = Texture'PinkMaskTex';
+
+        Super.BeginState();
+    }
 }
 
 // unpinkmask the arrow when we reload
 function Tick(float deltaTime)
 {
-	if (MultiSkins[3] != None)
-		if ((AmmoType != None) && (AmmoType.AmmoAmount > 0) && (ClipCount < ReloadCount))
-			MultiSkins[3] = None;
+    if (MultiSkins[3] != None)
+        if ((AmmoType != None) && (AmmoType.AmmoAmount > 0) && (ClipCount < ReloadCount))
+            MultiSkins[3] = None;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 }
 
 defaultproperties

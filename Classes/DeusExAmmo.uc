@@ -2,7 +2,7 @@
 // DeusExAmmo.
 //=============================================================================
 class DeusExAmmo extends Ammo
-	abstract;
+    abstract;
 
 var localized String msgInfoRounds;
 
@@ -22,10 +22,10 @@ var localized string VM_msgFromWeapon;
 // ----------------------------------------------------------------------
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
    if (Level.NetMode != NM_Standalone)
-   {   
-      if (MPMaxAmmo == 0)      
+   {
+      if (MPMaxAmmo == 0)
          MPMaxAmmo = AmmoAmount * 3;
       MaxAmmo = MPMaxAmmo;
    }
@@ -37,19 +37,19 @@ function PostBeginPlay()
 
 simulated function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
+    local PersonaInfoWindow winInfo;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	winInfo.SetTitle(itemName);
-	winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
+    winInfo.SetTitle(itemName);
+    winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
 
-	// number of rounds left
-	winInfo.AppendText(Sprintf(msgInfoRounds, AmmoAmount));
+    // number of rounds left
+    winInfo.AppendText(Sprintf(msgInfoRounds, AmmoAmount));
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -58,14 +58,14 @@ simulated function bool UpdateInfo(Object winObject)
 
 function PlayLandingSound()
 {
-	if (LandSound != None)
-	{
-		if (Velocity.Z <= -200)
-		{
-			PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
-			AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
-		}
-	}
+    if (LandSound != None)
+    {
+        if (Velocity.Z <= -200)
+        {
+            PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
+            AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

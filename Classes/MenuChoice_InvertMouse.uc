@@ -10,7 +10,7 @@ class MenuChoice_InvertMouse extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bInvertMouse));
+    SetValue(int(!player.bInvertMouse));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bInvertMouse = !bool(GetValue());
+    player.bInvertMouse = !bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bInvertMouse));
+    SetValue(int(!player.bInvertMouse));
 }
 
 // ----------------------------------------------------------------------

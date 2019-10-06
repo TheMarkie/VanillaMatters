@@ -27,15 +27,15 @@ var localized String ExitButtonLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	SetSize(640, 64);
+    SetSize(640, 64);
 
-	CreateButtonWindows();
-	CreateButtons();
+    CreateButtonWindows();
+    CreateButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -44,11 +44,11 @@ event InitWindow()
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(backgroundOffsetX,       backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[0]);
-	gc.DrawTexture(backgroundOffsetX + 256, backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[1]);
-	gc.DrawTexture(backgroundOffsetX + 512, backgroundOffsetY,  97, 21, 0, 0, texBackgrounds[2]);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(backgroundOffsetX,       backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[0]);
+    gc.DrawTexture(backgroundOffsetX + 256, backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[1]);
+    gc.DrawTexture(backgroundOffsetX + 512, backgroundOffsetY,  97, 21, 0, 0, texBackgrounds[2]);
 }
 
 // ----------------------------------------------------------------------
@@ -57,14 +57,14 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawTexture(  0, 0, 256, height, 0, 0, texBorders[0]);
-		gc.DrawTexture(256, 0, 256, height, 0, 0, texBorders[1]);
-		gc.DrawTexture(512, 0, 175, height, 0, 0, texBorders[2]);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawTexture(  0, 0, 256, height, 0, 0, texBorders[0]);
+        gc.DrawTexture(256, 0, 256, height, 0, 0, texBorders[1]);
+        gc.DrawTexture(512, 0, 175, height, 0, 0, texBorders[2]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -73,19 +73,19 @@ function DrawBorder(GC gc)
 
 function CreateButtonWindows()
 {
-	// Create the Inventory Items window
-	winNavButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    // Create the Inventory Items window
+    winNavButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 
-	winNavButtons.SetPos(23, 8);
-	winNavButtons.SetSize(534, 16);
-	winNavButtons.Lower();
+    winNavButtons.SetPos(23, 8);
+    winNavButtons.SetSize(534, 16);
+    winNavButtons.Lower();
 
-	// Create the Inventory Items window
-	winNavExit = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    // Create the Inventory Items window
+    winNavExit = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 
-	winNavExit.SetPos(573, 8);
-	winNavExit.SetSize(48, 16);
-	winNavExit.Lower();
+    winNavExit.SetPos(573, 8);
+    winNavExit.SetSize(48, 16);
+    winNavExit.Lower();
 }
 
 // ----------------------------------------------------------------------
@@ -94,7 +94,7 @@ function CreateButtonWindows()
 
 function CreateButtons()
 {
-	btnExit = CreateNavButton(winNavExit, ExitButtonLabel);
+    btnExit = CreateNavButton(winNavExit, ExitButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -103,12 +103,12 @@ function CreateButtons()
 
 function PersonaNavButtonWindow CreateNavButton(Window winParent, string buttonLabel)
 {
-	local PersonaNavButtonWindow newButton;
+    local PersonaNavButtonWindow newButton;
 
-	newButton = PersonaNavButtonWindow(winParent.NewChild(Class'PersonaNavButtonWindow'));
-	newButton.SetButtonText(buttonLabel);
+    newButton = PersonaNavButtonWindow(winParent.NewChild(Class'PersonaNavButtonWindow'));
+    newButton.SetButtonText(buttonLabel);
 
-	return newButton;
+    return newButton;
 }
 
 // ----------------------------------------------------------------------
@@ -117,26 +117,26 @@ function PersonaNavButtonWindow CreateNavButton(Window winParent, string buttonL
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch(buttonPressed)
-	{
-		case btnExit:
-			PersonaScreenBaseWindow(GetParent()).SaveSettings();
-			root.PopWindow();	
-			break;
+    switch(buttonPressed)
+    {
+        case btnExit:
+            PersonaScreenBaseWindow(GetParent()).SaveSettings();
+            root.PopWindow();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return bHandled;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return bHandled;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------

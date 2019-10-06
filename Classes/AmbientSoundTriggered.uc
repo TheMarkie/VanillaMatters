@@ -10,41 +10,41 @@ var bool bAlreadyHit;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	if (bTriggerOnceOnly && bAlreadyHit)
-		return;
+    if (bTriggerOnceOnly && bAlreadyHit)
+        return;
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 
-	bActive = !bActive;
-	if (bActive)
-		AmbientSound = savedSound;
-	else
-		AmbientSound = None;
+    bActive = !bActive;
+    if (bActive)
+        AmbientSound = savedSound;
+    else
+        AmbientSound = None;
 
-	bAlreadyHit = True;
+    bAlreadyHit = True;
 }
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-	if (bTriggerOnceOnly && bAlreadyHit)
-		return;
+    if (bTriggerOnceOnly && bAlreadyHit)
+        return;
 
-	Super.UnTrigger(Other, Instigator);
+    Super.UnTrigger(Other, Instigator);
 
-	bActive = False;
-	AmbientSound = None;
+    bActive = False;
+    AmbientSound = None;
 
-	bAlreadyHit = True;
+    bAlreadyHit = True;
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	savedSound = AmbientSound;
+    savedSound = AmbientSound;
 
-	if (!bActive)
-		AmbientSound = None;
+    if (!bActive)
+        AmbientSound = None;
 }
 
 defaultproperties

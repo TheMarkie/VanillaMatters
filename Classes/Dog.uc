@@ -2,48 +2,48 @@
 // Dog.
 //=============================================================================
 class Dog extends Animal
-	abstract;
+    abstract;
 
 var float time;
 
 function PlayDogBark()
 {
-	// overridden in subclasses
+    // overridden in subclasses
 }
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	time += deltaTime;
+    time += deltaTime;
 
-	// check for random noises
-	if (time > 1.0)
-	{
-		time = 0;
-		if (FRand() < 0.05)
-			PlayDogBark();
-	}
+    // check for random noises
+    if (time > 1.0)
+    {
+        time = 0;
+        if (FRand() < 0.05)
+            PlayDogBark();
+    }
 }
 
 function PlayTakingHit(EHitLocation hitPos)
 {
-	// nil
+    // nil
 }
 
 function PlayAttack()
 {
-	PlayAnimPivot('Attack');
+    PlayAnimPivot('Attack');
 }
 
 function TweenToAttack(float tweentime)
 {
-	TweenAnimPivot('Attack', tweentime);
+    TweenAnimPivot('Attack', tweentime);
 }
 
 function PlayBarking()
 {
-	PlayAnimPivot('Bark');
+    PlayAnimPivot('Bark');
 }
 
 defaultproperties

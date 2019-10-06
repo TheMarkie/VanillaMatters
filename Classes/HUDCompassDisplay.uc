@@ -3,15 +3,15 @@
 //=============================================================================
 class HUDCompassDisplay expands HUDBaseWindow;
 
-var Color			colTickMarks;
-var DeusExPlayer	player;
-var Int				mapNorth;
-var Float			UnitsPerPixel;
-var Window			winCompass1;
-var Window			winCompass2;
-var Int				clipWidth;
+var Color           colTickMarks;
+var DeusExPlayer    player;
+var Int             mapNorth;
+var Float           UnitsPerPixel;
+var Window          winCompass1;
+var Window          winCompass2;
+var Int             clipWidth;
 var Int             clipWidthHalf;
-var Int				tickWidth;
+var Int             tickWidth;
 
 // Used in Tick()
 var int             drawPos;
@@ -29,18 +29,18 @@ var Texture texTickBox;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	Hide();
+    Hide();
 
-	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
+    player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(73, 40);
+    SetSize(73, 40);
 
-	clipWidthHalf = clipWidth / 2;
+    clipWidthHalf = clipWidth / 2;
 
-	GetMapTrueNorth();
-	CreateCompassWindow();
+    GetMapTrueNorth();
+    CreateCompassWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -52,28 +52,28 @@ event InitWindow()
 
 event Tick(float deltaSeconds)
 {
-	// Only continue if we moved
-	if (lastPlayerYaw != player.Rotation.Yaw)
-	{
-		lastPlayerYaw = player.Rotation.Yaw;
+    // Only continue if we moved
+    if (lastPlayerYaw != player.Rotation.Yaw)
+    {
+        lastPlayerYaw = player.Rotation.Yaw;
 
-		// Based on the player's rotation and the map's True North, calculate
-		// where to draw the tick marks and letters
-		drawPos = clipWidthHalf - (((lastPlayerYaw - mapNorth) & 65535) / UnitsPerPixel);
+        // Based on the player's rotation and the map's True North, calculate
+        // where to draw the tick marks and letters
+        drawPos = clipWidthHalf - (((lastPlayerYaw - mapNorth) & 65535) / UnitsPerPixel);
 
-		// We have two tickmark windows to compensate what happens with
-		// the wrap condition.
+        // We have two tickmark windows to compensate what happens with
+        // the wrap condition.
 
-		if ((drawPos > 0) && (drawPos < clipWidth))
-			wrapPos = drawPos - tickWidth;
-		else if (drawPos - tickWidth < (clipWidthHalf))
-			wrapPos = drawPos + tickWidth;
-		else
-			wrapPos = 100;
+        if ((drawPos > 0) && (drawPos < clipWidth))
+            wrapPos = drawPos - tickWidth;
+        else if (drawPos - tickWidth < (clipWidthHalf))
+            wrapPos = drawPos + tickWidth;
+        else
+            wrapPos = 100;
 
-		winCompass1.SetPos(drawPos, 0);
-		winCompass2.SetPos(wrapPos, 0);
-	}
+        winCompass1.SetPos(drawPos, 0);
+        winCompass2.SetPos(wrapPos, 0);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -82,9 +82,9 @@ event Tick(float deltaSeconds)
 
 event VisibilityChanged(bool bNewVisibility)
 {
-	// If we becames visible make sure we enable the tick event so 
-	// the compass position is enabled.
-	bTickEnabled = bNewVisibility;
+    // If we becames visible make sure we enable the tick event so
+    // the compass position is enabled.
+    bTickEnabled = bNewVisibility;
 }
 
 // ----------------------------------------------------------------------
@@ -93,7 +93,7 @@ event VisibilityChanged(bool bNewVisibility)
 
 function PostDrawWindow(GC gc)
 {
-	PostDrawBackground(gc);
+    PostDrawBackground(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -102,9 +102,9 @@ function PostDrawWindow(GC gc)
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(11, 6, 60, 19, 0, 0, texBackground);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(11, 6, 60, 19, 0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -113,10 +113,10 @@ function DrawBackground(GC gc)
 
 function PostDrawBackground(GC gc)
 {
-	// Draw the tick box
-	gc.SetTileColor(colBackground);
-	gc.SetStyle(DSTY_Masked);
-	gc.DrawTexture(11, 6, 60, 19, 0, 0, texTickBox);
+    // Draw the tick box
+    gc.SetTileColor(colBackground);
+    gc.SetStyle(DSTY_Masked);
+    gc.DrawTexture(11, 6, 60, 19, 0, 0, texTickBox);
 }
 
 // ----------------------------------------------------------------------
@@ -125,12 +125,12 @@ function PostDrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 73, 40, 0, 0, texBorder);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawTexture(0, 0, 73, 40, 0, 0, texBorder);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -139,19 +139,19 @@ function DrawBorder(GC gc)
 
 function CreateCompassWindow()
 {
-	local Window winCompassClip;
+    local Window winCompassClip;
 
-	winCompassClip = NewChild(Class'Window');
-	winCompassClip.SetSize(clipWidth, 22);
-	winCompassClip.SetPos(13, 7);
+    winCompassClip = NewChild(Class'Window');
+    winCompassClip.SetSize(clipWidth, 22);
+    winCompassClip.SetPos(13, 7);
 
-	// Create the two windows that have the tick marks.  We need two 
-	// of these because of the "wrap" point.
-	winCompass1 = CreateTickWindow(winCompassClip);
-	winCompass2 = CreateTickWindow(winCompassClip);
+    // Create the two windows that have the tick marks.  We need two
+    // of these because of the "wrap" point.
+    winCompass1 = CreateTickWindow(winCompassClip);
+    winCompass2 = CreateTickWindow(winCompassClip);
 
-	// Calculate how many rotation units per pixel
-	UnitsPerPixel = 65536 / tickWidth;
+    // Calculate how many rotation units per pixel
+    UnitsPerPixel = 65536 / tickWidth;
 }
 
 // ----------------------------------------------------------------------
@@ -160,16 +160,16 @@ function CreateCompassWindow()
 
 function Window CreateTickWindow(Window winParent)
 {
-	local Window winCompass;
+    local Window winCompass;
 
-	winCompass = winParent.NewChild(Class'Window');
-	winCompass.SetPos(0, 0);
-	winCompass.SetSize(tickWidth, 15);
-	winCompass.SetBackground(Texture'HUDCompassTicks');
-	winCompass.SetBackgroundStyle(DSTY_Masked);
-	winCompass.SetTileColor(colTickMarks);
+    winCompass = winParent.NewChild(Class'Window');
+    winCompass.SetPos(0, 0);
+    winCompass.SetSize(tickWidth, 15);
+    winCompass.SetBackground(Texture'HUDCompassTicks');
+    winCompass.SetBackgroundStyle(DSTY_Masked);
+    winCompass.SetTileColor(colTickMarks);
 
-	return winCompass;
+    return winCompass;
 }
 
 // ----------------------------------------------------------------------
@@ -178,9 +178,9 @@ function Window CreateTickWindow(Window winParent)
 
 function SetVisibility( bool bNewVisibility )
 {
-	Show( bNewVisibility );
+    Show( bNewVisibility );
 
-	bTickEnabled = bNewVisibility;
+    bTickEnabled = bNewVisibility;
 }
 
 // ----------------------------------------------------------------------
@@ -192,15 +192,15 @@ function SetVisibility( bool bNewVisibility )
 
 function GetMapTrueNorth()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	if (player != None) 
-	{
-		info = player.GetLevelInfo();
+    if (player != None)
+    {
+        info = player.GetLevelInfo();
 
-		if (info != None)
-			mapNorth = info.TrueNorth;
-	}
+        if (info != None)
+            mapNorth = info.TrueNorth;
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -2,13 +2,13 @@
 // DeusExGameInfo.
 //=============================================================================
 class DeusExGameInfo expands GameInfo
-	config;
+    config;
 
 // Vanilla Matters: Our version string and how to get it.
 const VM_version = "1.2";
 
 static function string GetVMVersion() {
-	return VM_version;
+    return VM_version;
 }
 
 // ----------------------------------------------------------------------
@@ -17,16 +17,16 @@ static function string GetVMVersion() {
 
 event playerpawn Login
 (
-	string Portal,
-	string Options,
-	out string Error,
-	class<playerpawn> SpawnClass
+    string Portal,
+    string Options,
+    out string Error,
+    class<playerpawn> SpawnClass
 )
 {
-	local DeusExPlayer player;
-	local NavigationPoint StartSpot;
-	local byte InTeam;
-	local DumpLocation dump;
+    local DeusExPlayer player;
+    local NavigationPoint StartSpot;
+    local byte InTeam;
+    local DumpLocation dump;
 
    //DEUS_EX AMSD In non multiplayer games, force JCDenton.
    if (!ApproveClass(SpawnClass))
@@ -34,55 +34,55 @@ event playerpawn Login
       SpawnClass=class'JCDentonMale';
    }
 
-	player = DeusExPlayer(Super.Login(Portal, Options, Error, SpawnClass));
+    player = DeusExPlayer(Super.Login(Portal, Options, Error, SpawnClass));
 
-	// If we're traveling across a map on the same mission, 
-	// nuke the player's crap and 
+    // If we're traveling across a map on the same mission,
+    // nuke the player's crap and
 
-	if ((player != None) && (!HasOption(Options, "Loadgame")))
-	{
-		player.ResetPlayerToDefaults();
+    if ((player != None) && (!HasOption(Options, "Loadgame")))
+    {
+        player.ResetPlayerToDefaults();
 
-		dump = player.CreateDumpLocationObject();
+        dump = player.CreateDumpLocationObject();
 
-		if ((dump != None) && (dump.HasLocationBeenSaved()))
-		{
-			dump.LoadLocation();
+        if ((dump != None) && (dump.HasLocationBeenSaved()))
+        {
+            dump.LoadLocation();
 
-			player.Pause();
-			player.SetLocation(dump.currentDumpLocation.Location);
-			player.SetRotation(dump.currentDumpLocation.ViewRotation);
-			player.ViewRotation = dump.currentDumpLocation.ViewRotation;
-			player.ClientSetRotation(dump.currentDumpLocation.ViewRotation);
+            player.Pause();
+            player.SetLocation(dump.currentDumpLocation.Location);
+            player.SetRotation(dump.currentDumpLocation.ViewRotation);
+            player.ViewRotation = dump.currentDumpLocation.ViewRotation;
+            player.ClientSetRotation(dump.currentDumpLocation.ViewRotation);
 
-			CriticalDelete(dump);
-		}
-		else
-		{
-			InTeam    = GetIntOption( Options, "Team", 0 ); // Multiplayer now, defaults to Team_Unatco=0
-         if (Level.NetMode == NM_Standalone)			
+            CriticalDelete(dump);
+        }
+        else
+        {
+            InTeam    = GetIntOption( Options, "Team", 0 ); // Multiplayer now, defaults to Team_Unatco=0
+         if (Level.NetMode == NM_Standalone)
             StartSpot = FindPlayerStart( None, InTeam, Portal );
          else
             StartSpot = FindPlayerStart( Player, InTeam, Portal );
 
-			player.SetLocation(StartSpot.Location);
-			player.SetRotation(StartSpot.Rotation);
-			player.ViewRotation = StartSpot.Rotation;
-			player.ClientSetRotation(player.Rotation);
-		}
-	}
-	return player;
+            player.SetLocation(StartSpot.Location);
+            player.SetRotation(StartSpot.Rotation);
+            player.ViewRotation = StartSpot.Rotation;
+            player.ClientSetRotation(player.Rotation);
+        }
+    }
+    return player;
 }
 
 // ----------------------------------------------------------------------
 // ApproveClass()
-// Is this class allowed for this gametype?  Override if you want to be 
+// Is this class allowed for this gametype?  Override if you want to be
 // other than JCDentonMale.  If it returns false, will force JCDenton spawn.
 // ----------------------------------------------------------------------
 
 function bool ApproveClass( class<playerpawn> SpawnClass)
 {
-	return false;
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ function bool ApproveClass( class<playerpawn> SpawnClass)
 
 function DiscardInventory( Pawn Other )
 {
-	// do nothing
+    // do nothing
 }
 
 // ----------------------------------------------------------------------
@@ -100,7 +100,7 @@ function DiscardInventory( Pawn Other )
 
 function ScoreKill(pawn Killer, pawn Other)
 {
-	// do nothing	
+    // do nothing
 }
 
 // ----------------------------------------------------------------------
@@ -108,8 +108,8 @@ function ScoreKill(pawn Killer, pawn Other)
 // ----------------------------------------------------------------------
 function ClientPlayerPossessed(PlayerPawn CheckPlayer)
 {
-	CheckPlayerWindow(CheckPlayer);
-	CheckPlayerConsole(CheckPlayer);
+    CheckPlayerWindow(CheckPlayer);
+    CheckPlayerConsole(CheckPlayer);
 }
 
 // ----------------------------------------------------------------------
@@ -117,7 +117,7 @@ function ClientPlayerPossessed(PlayerPawn CheckPlayer)
 // ----------------------------------------------------------------------
 function CheckPlayerWindow(PlayerPawn CheckPlayer)
 {
-	// do nothing.
+    // do nothing.
 }
 
 // ----------------------------------------------------------------------
@@ -125,7 +125,7 @@ function CheckPlayerWindow(PlayerPawn CheckPlayer)
 // ----------------------------------------------------------------------
 function CheckPlayerConsole(PlayerPawn CheckPlayer)
 {
-	// do nothing.
+    // do nothing.
 }
 
 // ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ function CheckPlayerConsole(PlayerPawn CheckPlayer)
 // ----------------------------------------------------------------------
 function FailRootWindowCheck(PlayerPawn FailPlayer)
 {
-	// do nothing
+    // do nothing
 }
 
 // ----------------------------------------------------------------------
@@ -141,7 +141,7 @@ function FailRootWindowCheck(PlayerPawn FailPlayer)
 // ----------------------------------------------------------------------
 function FailConsoleCheck(PlayerPawn FailPlayer)
 {
-	// do nothing
+    // do nothing
 }
 
 // ----------------------------------------------------------------------

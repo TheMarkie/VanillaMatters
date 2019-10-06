@@ -14,10 +14,10 @@ var Texture modelTexture;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(179, 295);
-	SetSensitivity(False);
+    SetSize(179, 295);
+    SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -26,7 +26,7 @@ event InitWindow()
 
 function SetModelTexture( Texture newTexture )
 {
-	modelTexture = newTexture;
+    modelTexture = newTexture;
 }
 
 // ----------------------------------------------------------------------
@@ -34,9 +34,9 @@ function SetModelTexture( Texture newTexture )
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	gc.SetStyle(DSTY_Masked);
-	gc.DrawIcon(-38, 17, modelTexture);
+{
+    gc.SetStyle(DSTY_Masked);
+    gc.DrawIcon(-38, 17, modelTexture);
 }
 
 defaultproperties

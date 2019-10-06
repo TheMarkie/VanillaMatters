@@ -4,9 +4,9 @@
 
 class ComputerSecurityCameraWindow extends Window;
 
-var DeusExRootWindow root;							// Keep a pointer to the root window handy
-var DeusExPlayer player;							// Keep a pointer to the player for easy reference
-var Computers    compOwner;							// what computer owns this window?
+var DeusExRootWindow root;                          // Keep a pointer to the root window handy
+var DeusExPlayer player;                            // Keep a pointer to the player for easy reference
+var Computers    compOwner;                         // what computer owns this window?
 
 var ComputerSecurityCameraViewButton btnCamera;
 var MenuUIHeaderWindow winTitle;
@@ -15,10 +15,10 @@ var MenuUIHeaderWindow winDoorStatus;
 var MenuUIHeaderWindow winTurretStatus;
 var int                viewIndex;
 
-var ViewportWindow	winCamera;
-var SecurityCamera	camera;
-var AutoTurret		turret;
-var DeusExMover		door;
+var ViewportWindow  winCamera;
+var SecurityCamera  camera;
+var AutoTurret      turret;
+var DeusExMover     door;
 
 var localized string CameraLabel;
 var localized string CameraStatusLabel;
@@ -46,16 +46,16 @@ var localized String UnlockedLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	// Get a pointer to the player
-	player = DeusExPlayer(root.parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(root.parentPawn);
 
-	SetSize(202, 213);
-	CreateControls();	
+    SetSize(202, 213);
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -66,10 +66,10 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	if (camera != None)
-		camera.bStasis = camera.Default.bStasis;
+    if (camera != None)
+        camera.bStasis = camera.Default.bStasis;
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -78,10 +78,10 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	CreateTitle();
-	CreateStatusLabels();	
-	CreateCameraButton();
-	CreateViewportWindow();
+    CreateTitle();
+    CreateStatusLabels();
+    CreateCameraButton();
+    CreateViewportWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -90,7 +90,7 @@ function CreateControls()
 
 function CreateTitle()
 {
-	winTitle = CreateLabel(2, "");
+    winTitle = CreateLabel(2, "");
 }
 
 // ----------------------------------------------------------------------
@@ -99,9 +99,9 @@ function CreateTitle()
 
 function CreateStatusLabels()
 {
-	winCameraStatus = CreateLabel(171, CameraStatusLabel);
-	winDoorStatus   = CreateLabel(186, DoorStatusLabel);
-	winTurretStatus = CreateLabel(201, TurretStatusLabel);
+    winCameraStatus = CreateLabel(171, CameraStatusLabel);
+    winDoorStatus   = CreateLabel(186, DoorStatusLabel);
+    winTurretStatus = CreateLabel(201, TurretStatusLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -110,13 +110,13 @@ function CreateStatusLabels()
 
 function MenuUIHeaderWindow CreateLabel(int posY, string labelText)
 {
-	local MenuUIHeaderWindow newLabel;
+    local MenuUIHeaderWindow newLabel;
 
-	newLabel = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	newLabel.SetPos(6, posY);
-	newLabel.SetText(labelText);
+    newLabel = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    newLabel.SetPos(6, posY);
+    newLabel.SetText(labelText);
 
-	return newLabel;
+    return newLabel;
 }
 
 // ----------------------------------------------------------------------
@@ -125,8 +125,8 @@ function MenuUIHeaderWindow CreateLabel(int posY, string labelText)
 
 function CreateCameraButton()
 {
-	btnCamera = ComputerSecurityCameraViewButton(NewChild(Class'ComputerSecurityCameraViewButton'));
-	btnCamera.SetPos(0, 16);
+    btnCamera = ComputerSecurityCameraViewButton(NewChild(Class'ComputerSecurityCameraViewButton'));
+    btnCamera.SetPos(0, 16);
 }
 
 // ----------------------------------------------------------------------
@@ -135,9 +135,9 @@ function CreateCameraButton()
 
 function CreateViewportWindow()
 {
-	winCamera = ViewportWindow(NewChild(class'ViewportWindow', False));
-	winCamera.SetSize(200, 150);
-	winCamera.SetPos(1, 17);
+    winCamera = ViewportWindow(NewChild(class'ViewportWindow', False));
+    winCamera.SetSize(200, 150);
+    winCamera.SetPos(1, 17);
 }
 
 // ----------------------------------------------------------------------
@@ -146,7 +146,7 @@ function CreateViewportWindow()
 
 function SetTitle(String newTitle)
 {
-	winTitle.SetText(newTitle);	
+    winTitle.SetText(newTitle);
 }
 
 // ----------------------------------------------------------------------
@@ -155,7 +155,7 @@ function SetTitle(String newTitle)
 
 function SetViewIndex(int newViewIndex)
 {
-	viewIndex = newViewIndex;
+    viewIndex = newViewIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -164,9 +164,9 @@ function SetViewIndex(int newViewIndex)
 
 function HideCameraLabels()
 {
-	winCameraStatus.Hide();
-	winDoorStatus.Hide();
-	winTurretStatus.Hide();
+    winCameraStatus.Hide();
+    winDoorStatus.Hide();
+    winTurretStatus.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -175,25 +175,25 @@ function HideCameraLabels()
 
 function UpdateCameraStatus()
 {
-	if (camera == None)
-	{
-		winCamera.EnableViewport(False);
-		winCamera.Lower();
-		btnCamera.SetStatic();
-		SetTitle(NoSignalLabel);
-		winCameraStatus.Hide();
-		HideCameraLabels();
-	}
-	else
-	{
-		winCamera.SetViewportActor(camera);
-		winCamera.EnableViewport(True);
-		winCamera.SetDefaultTexture(None);
-		winCamera.Lower();
-		SetTitle(CameraLabel @ "|&" $ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
-		winCameraStatus.Show();
-		SetCameraStatus(camera.bActive);
-	}
+    if (camera == None)
+    {
+        winCamera.EnableViewport(False);
+        winCamera.Lower();
+        btnCamera.SetStatic();
+        SetTitle(NoSignalLabel);
+        winCameraStatus.Hide();
+        HideCameraLabels();
+    }
+    else
+    {
+        winCamera.SetViewportActor(camera);
+        winCamera.EnableViewport(True);
+        winCamera.SetDefaultTexture(None);
+        winCamera.Lower();
+        SetTitle(CameraLabel @ "|&" $ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
+        winCameraStatus.Show();
+        SetCameraStatus(camera.bActive);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -202,7 +202,7 @@ function UpdateCameraStatus()
 
 function ShowTurretLabel(bool bNewShow)
 {
-	winTurretStatus.Show(bNewShow);
+    winTurretStatus.Show(bNewShow);
 }
 
 // ----------------------------------------------------------------------
@@ -211,32 +211,32 @@ function ShowTurretLabel(bool bNewShow)
 
 function UpdateTurretStatus()
 {
-	local string str;
+    local string str;
 
-	if (turret == None)
-	{
-		ShowTurretLabel(False);
-	}
-	else if (player.level.netmode == NM_Standalone)
-	{
-		ShowTurretLabel(True);
+    if (turret == None)
+    {
+        ShowTurretLabel(False);
+    }
+    else if (player.level.netmode == NM_Standalone)
+    {
+        ShowTurretLabel(True);
 
-		str = TurretStatusLabel;
+        str = TurretStatusLabel;
 
-		if (turret.bDisabled)
-			str = str @ DisabledLabel;
+        if (turret.bDisabled)
+            str = str @ DisabledLabel;
 
-		else if (turret.bTrackPlayersOnly)
-			str = str @ AttackingAlliesLabel;
+        else if (turret.bTrackPlayersOnly)
+            str = str @ AttackingAlliesLabel;
 
-		else if (turret.bTrackPawnsOnly)
-			str = str @ AttackingEnemiesLabel;
+        else if (turret.bTrackPawnsOnly)
+            str = str @ AttackingEnemiesLabel;
 
-		else
-			str = str @ AttackingEverythingLabel;
+        else
+            str = str @ AttackingEverythingLabel;
 
-		winTurretStatus.SetText(str);
-	}
+        winTurretStatus.SetText(str);
+    }
    else
    {
       ShowTurretLabel(True);
@@ -247,7 +247,7 @@ function UpdateTurretStatus()
       // if our player is safe, attacking enemies
       // if it is our team, attacking enemies.
       // otherwise, attacking allies.
-   
+
       if (turret.bDisabled)
          str = str @ DisabledLabel;
 
@@ -256,7 +256,7 @@ function UpdateTurretStatus()
 
       else if ( (TeamDMGame(player.DXGame) != None) && (player.PlayerReplicationInfo.team == turret.team) )
          str = str @ AttackingEnemiesLabel;
-      
+
       else
          str = str @ AttackingAlliesLabel;
 
@@ -281,7 +281,7 @@ function SetCameraStatus(bool bOn)
    {
       if (!bOn)
          winCameraStatus.SetText(CameraStatusLabel @ OffLabel);
-      
+
       else if (DeusExPlayer(camera.safetarget) == player)
          winCameraStatus.SetText(CameraStatusLabel @ FriendlyLabel);
 
@@ -299,7 +299,7 @@ function SetCameraStatus(bool bOn)
 
 function ShowDoorLabel(bool bNewShow)
 {
-	winDoorStatus.Show(bNewShow);
+    winDoorStatus.Show(bNewShow);
 }
 
 // ----------------------------------------------------------------------
@@ -308,33 +308,33 @@ function ShowDoorLabel(bool bNewShow)
 
 function UpdateDoorStatus()
 {
-	local string str;
-	local int i;
+    local string str;
+    local int i;
 
-	if ((door == None) || (door.bDestroyed))
-	{
-		ShowDoorLabel(False);		
-	}
-	else
-	{
-		ShowDoorLabel(True);		
+    if ((door == None) || (door.bDestroyed))
+    {
+        ShowDoorLabel(False);
+    }
+    else
+    {
+        ShowDoorLabel(True);
 
-		str = DoorStatusLabel;
+        str = DoorStatusLabel;
 
-		if (door.KeyNum != 0)
-			str = str @ OpenLabel;
-		else
-			str = str @ ClosedLabel;
+        if (door.KeyNum != 0)
+            str = str @ OpenLabel;
+        else
+            str = str @ ClosedLabel;
 
-		str = str $ ",";
+        str = str $ ",";
 
-		if (door.bLocked)
-			str = str @ LockedLabel;
-		else
-			str = str @ UnlockedLabel;
+        if (door.bLocked)
+            str = str @ LockedLabel;
+        else
+            str = str @ UnlockedLabel;
 
-		winDoorStatus.SetText(str);
-	}
+        winDoorStatus.SetText(str);
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -11,13 +11,13 @@ class WeaponModReload extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-	{
-		weapon.ReloadTime    += (weapon.Default.ReloadTime * WeaponModifier);
-		if (weapon.ReloadTime < 0.0)
-			weapon.ReloadTime = 0.0;
-		weapon.ModReloadTime += WeaponModifier;
-	}
+    if (weapon != None)
+    {
+        weapon.ReloadTime    += (weapon.Default.ReloadTime * WeaponModifier);
+        if (weapon.ReloadTime < 0.0)
+            weapon.ReloadTime = 0.0;
+        weapon.ModReloadTime += WeaponModifier;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -26,10 +26,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveModReloadTime && !weapon.HasMaxReloadMod());
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveModReloadTime && !weapon.HasMaxReloadMod());
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

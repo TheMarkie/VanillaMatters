@@ -24,24 +24,24 @@ var int fontAcceleratorLineHeight;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	EnableTextAsAccelerator(false);
+    EnableTextAsAccelerator(false);
 
-	SetSize(70, 17);
-	SetFont(fontText);
-	SetBackgroundStyle(DSTY_Masked);
-	SetButtonTextures(
-		Texture'MenuTabButton_Normal', Texture'MenuTabButton_Pressed',
-		Texture'MenuTabButton_Normal', Texture'MenuTabButton_Pressed',
-		Texture'MenuTabButton_Normal', Texture'MenuTabButton_Normal');
+    SetSize(70, 17);
+    SetFont(fontText);
+    SetBackgroundStyle(DSTY_Masked);
+    SetButtonTextures(
+        Texture'MenuTabButton_Normal', Texture'MenuTabButton_Pressed',
+        Texture'MenuTabButton_Normal', Texture'MenuTabButton_Pressed',
+        Texture'MenuTabButton_Normal', Texture'MenuTabButton_Normal');
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
+    SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -49,20 +49,20 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the text
+{
+    // Draw the text
 
-	// If the button is insensitive, then draw it differently
-	if (IsSensitive())
-		gc.SetTextColor(colText);
-	else
-		gc.SetTextColor(colTextDisabled);
+    // If the button is insensitive, then draw it differently
+    if (IsSensitive())
+        gc.SetTextColor(colText);
+    else
+        gc.SetTextColor(colTextDisabled);
 
-	// If the button is pressed, draw the text down and to the right
-	if ( bButtonPressed )
-		gc.DrawText(1, 1, width, height, buttonText);
-	else
-		gc.DrawText(0, 0, width, height, buttonText);
+    // If the button is pressed, draw the text down and to the right
+    if ( bButtonPressed )
+        gc.DrawText(1, 1, width, height, buttonText);
+    else
+        gc.DrawText(0, 0, width, height, buttonText);
 }
 
 // ----------------------------------------------------------------------
@@ -71,9 +71,9 @@ event DrawWindow(GC gc)
 
 function SetButtonText(String newButtonText)
 {
-	buttonText = newButtonText;
+    buttonText = newButtonText;
 
-	SetAcceleratorText(newButtonText);
+    SetAcceleratorText(newButtonText);
 }
 
 // ----------------------------------------------------------------------
@@ -82,17 +82,17 @@ function SetButtonText(String newButtonText)
 
 event StyleChanged()
 {
-	local Color colButtonFace;
-	local ColorTheme theme;
+    local Color colButtonFace;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	colButtonFace   = theme.GetColorFromName('MenuColor_ButtonFace');
-	colText         = theme.GetColorFromName('MenuColor_ButtonTextNormal');
-	colTextDisabled = theme.GetColorFromName('MenuColor_ButtonTextFocus');
+    colButtonFace   = theme.GetColorFromName('MenuColor_ButtonFace');
+    colText         = theme.GetColorFromName('MenuColor_ButtonTextNormal');
+    colTextDisabled = theme.GetColorFromName('MenuColor_ButtonTextFocus');
 
-	SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                colButtonFace, colButtonFace, colButtonFace);
+    SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                    colButtonFace, colButtonFace, colButtonFace);
 }
 
 // ----------------------------------------------------------------------

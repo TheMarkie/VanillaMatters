@@ -2,14 +2,14 @@
 // SkillManager
 //=============================================================================
 class SkillManager extends Actor
-	intrinsic;
+    intrinsic;
 
 // which player am I attached to?
 var DeusExPlayer Player;
 
 var Class<Skill> skillClasses[15];
 
-var travel Skill FirstSkill;		// Pointer to first Skill
+var travel Skill FirstSkill;        // Pointer to first Skill
 
 var localized string NoToolMessage;
 var localized string NoSkillMessage;
@@ -24,12 +24,12 @@ replication
 {
 
     //variables server to client
-	reliable if ((Role == ROLE_Authority) && (bNetOwner))
-	    skillClasses, FirstSkill, Player;
+    reliable if ((Role == ROLE_Authority) && (bNetOwner))
+        skillClasses, FirstSkill, Player;
 
-	//functions client to server
-	reliable if (Role < ROLE_Authority)
-	    AddAllSkills;
+    //functions client to server
+    reliable if (Role < ROLE_Authority)
+        AddAllSkills;
 
 }
 
@@ -39,44 +39,44 @@ replication
 
 function CreateSkills(DeusExPlayer newPlayer)
 {
-	local int skillIndex;
-	local Skill aSkill;
-	local Skill lastSkill;
+    local int skillIndex;
+    local Skill aSkill;
+    local Skill lastSkill;
 
-	FirstSkill = None;
-	LastSkill  = None;
+    FirstSkill = None;
+    LastSkill  = None;
 
-	player = newPlayer;
+    player = newPlayer;
 
-	for(skillIndex=0; skillIndex<arrayCount(skillClasses); skillIndex++)
-	{
-		if (skillClasses[skillIndex] != None)
-		{
-			aSkill = Spawn(skillClasses[skillIndex], Self);
-			aSkill.Player = player;
+    for(skillIndex=0; skillIndex<arrayCount(skillClasses); skillIndex++)
+    {
+        if (skillClasses[skillIndex] != None)
+        {
+            aSkill = Spawn(skillClasses[skillIndex], Self);
+            aSkill.Player = player;
 
-			// Manage our linked list
-			if (aSkill != None)
-			{
-				if (FirstSkill == None)
-				{
-					FirstSkill = aSkill;
-				}
-				else
-				{
-					LastSkill.next = aSkill;
-				}
+            // Manage our linked list
+            if (aSkill != None)
+            {
+                if (FirstSkill == None)
+                {
+                    FirstSkill = aSkill;
+                }
+                else
+                {
+                    LastSkill.next = aSkill;
+                }
 
-				LastSkill  = aSkill;
+                LastSkill  = aSkill;
 
-				// Vanilla Matters: Create subSkill.
-				if ( aSkill.VM_subSkillClass != None ) {
-					aSkill.VM_subSkill = Spawn( aSkill.Default.VM_subSkillClass, self );
-					aSkill.VM_subSkill.Player = player;
-				}
-			}
-		}
-	}
+                // Vanilla Matters: Create subSkill.
+                if ( aSkill.VM_subSkillClass != None ) {
+                    aSkill.VM_subSkill = Spawn( aSkill.Default.VM_subSkillClass, self );
+                    aSkill.VM_subSkill.Player = player;
+                }
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -85,27 +85,27 @@ function CreateSkills(DeusExPlayer newPlayer)
 
 simulated function bool IsSkilled(class SkillClass, int TestLevel)
 {
-	local Skill aSkill;
+    local Skill aSkill;
 
-	aSkill = GetSkillFromClass(SkillClass);
+    aSkill = GetSkillFromClass(SkillClass);
 
-	if (aSkill != None)
-	{
-		if (aSkill.Use())
-		{
-			if (aSkill.CurrentLevel >= TestLevel)
-			{
-				Player.ClientMessage(SuccessMessage);
-				return True;
-			}
-			else
-				Player.ClientMessage(Sprintf(NoSkillMessage, aSkill.SkillName, GetItemName(String(aSkill.itemNeeded))));
-		}
-		else
-			Player.ClientMessage(Sprintf(NoToolMessage, GetItemName(String(aSkill.itemNeeded))));
-	}
+    if (aSkill != None)
+    {
+        if (aSkill.Use())
+        {
+            if (aSkill.CurrentLevel >= TestLevel)
+            {
+                Player.ClientMessage(SuccessMessage);
+                return True;
+            }
+            else
+                Player.ClientMessage(Sprintf(NoSkillMessage, aSkill.SkillName, GetItemName(String(aSkill.itemNeeded))));
+        }
+        else
+            Player.ClientMessage(Sprintf(NoToolMessage, GetItemName(String(aSkill.itemNeeded))));
+    }
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -118,27 +118,27 @@ simulated function bool IsSkilled(class SkillClass, int TestLevel)
 
 simulated function Skill GetSkillFromClass(class SkillClass)
 {
-	local Skill aSkill;
+    local Skill aSkill;
 
-	aSkill = FirstSkill;
-	while(aSkill != None)
-	{
-		// if (aSkill.Class == SkillClass)
-		// 	break;
+    aSkill = FirstSkill;
+    while(aSkill != None)
+    {
+        // if (aSkill.Class == SkillClass)
+        //  break;
 
-		// Vanilla Matters: Make it also check for subSkill.
-		if ( aSkill.Class == SkillClass ) {
-			break;
-		}
-		else if ( aSkill.VM_subSkill != None && aSkill.VM_subSkill.Class == SkillClass ) {
-			aSkill = aSkill.VM_subSkill;
-			break;
-		}
+        // Vanilla Matters: Make it also check for subSkill.
+        if ( aSkill.Class == SkillClass ) {
+            break;
+        }
+        else if ( aSkill.VM_subSkill != None && aSkill.VM_subSkill.Class == SkillClass ) {
+            aSkill = aSkill.VM_subSkill;
+            break;
+        }
 
-		aSkill = aSkill.next;
-	}
+        aSkill = aSkill.next;
+    }
 
-	return aSkill;
+    return aSkill;
 }
 
 // ----------------------------------------------------------------------
@@ -149,17 +149,17 @@ simulated function Skill GetSkillFromClass(class SkillClass)
 
 simulated function float GetSkillLevelValue(class SkillClass)
 {
-	local Skill aSkill;
-	local float retval;
+    local Skill aSkill;
+    local float retval;
 
-	retval = 0;
+    retval = 0;
 
-	aSkill = GetSkillFromClass(SkillClass);
+    aSkill = GetSkillFromClass(SkillClass);
 
-	if (aSkill != None)
-		retval = aSkill.LevelValues[aSkill.CurrentLevel];
+    if (aSkill != None)
+        retval = aSkill.LevelValues[aSkill.CurrentLevel];
 
-	return retval;
+    return retval;
 }
 
 // ----------------------------------------------------------------------
@@ -170,17 +170,17 @@ simulated function float GetSkillLevelValue(class SkillClass)
 
 simulated function float GetSkillLevel(class SkillClass)
 {
-	local Skill aSkill;
-	local float retval;
+    local Skill aSkill;
+    local float retval;
 
-	retval = 0;
+    retval = 0;
 
-	aSkill = GetSkillFromClass(SkillClass);
+    aSkill = GetSkillFromClass(SkillClass);
 
-	if (aSkill != None)
-		retval = aSkill.CurrentLevel;
+    if (aSkill != None)
+        retval = aSkill.CurrentLevel;
 
-	return retval;
+    return retval;
 }
 
 // ----------------------------------------------------------------------
@@ -189,29 +189,29 @@ simulated function float GetSkillLevel(class SkillClass)
 
 function AddSkill(Skill aNewSkill)
 {
-	if (aNewSkill.IncLevel())
-		Player.ClientMessage(Sprintf(YourSkillLevelAt, aNewSkill.SkillName, aNewSkill.CurrentLevel));
+    if (aNewSkill.IncLevel())
+        Player.ClientMessage(Sprintf(YourSkillLevelAt, aNewSkill.SkillName, aNewSkill.CurrentLevel));
 }
 
 // ----------------------------------------------------------------------
 // SetPlayer()
 //
-// Kind of a hack, until we figure out why the player doesn't get set 
+// Kind of a hack, until we figure out why the player doesn't get set
 // correctly initially.
 // ----------------------------------------------------------------------
 
 function SetPlayer(DeusExPlayer newPlayer)
 {
-	local Skill aSkill;
+    local Skill aSkill;
 
-	Player = newPlayer;
+    Player = newPlayer;
 
-	aSkill = FirstSkill;
-	while(aSkill != None)
-	{
-		aSkill.player = newPlayer;
-		aSkill = aSkill.next;
-	}
+    aSkill = FirstSkill;
+    while(aSkill != None)
+    {
+        aSkill.player = newPlayer;
+        aSkill = aSkill.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -220,17 +220,17 @@ function SetPlayer(DeusExPlayer newPlayer)
 
 function AddAllSkills()
 {
-	local Skill aSkill;
-	local int levelIndex;
+    local Skill aSkill;
+    local int levelIndex;
 
-	aSkill = FirstSkill;
-	while(aSkill != None)
-	{
-		for (levelIndex=0; levelIndex<3; levelIndex++)
-			AddSkill(aSkill);
+    aSkill = FirstSkill;
+    while(aSkill != None)
+    {
+        for (levelIndex=0; levelIndex<3; levelIndex++)
+            AddSkill(aSkill);
 
-		aSkill = aSkill.next;
-	}
+        aSkill = aSkill.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -239,20 +239,20 @@ function AddAllSkills()
 
 function ResetSkills()
 {
-	local Skill aSkill;
+    local Skill aSkill;
 
-	aSkill = FirstSkill;
-	while(aSkill != None)
-	{
-		aSkill.CurrentLevel = aSkill.Default.CurrentLevel;
+    aSkill = FirstSkill;
+    while(aSkill != None)
+    {
+        aSkill.CurrentLevel = aSkill.Default.CurrentLevel;
 
-		// Vanilla Matters: Also reset the subSkill.
-		if ( aSkill.VM_subSkill != None ) {
-			aSkill.VM_subSkill.CurrentLevel = aSkill.Default.CurrentLevel;
-		}
+        // Vanilla Matters: Also reset the subSkill.
+        if ( aSkill.VM_subSkill != None ) {
+            aSkill.VM_subSkill.CurrentLevel = aSkill.Default.CurrentLevel;
+        }
 
-		aSkill = aSkill.next;
-	}
+        aSkill = aSkill.next;
+    }
 }
 
 // ----------------------------------------------------------------------

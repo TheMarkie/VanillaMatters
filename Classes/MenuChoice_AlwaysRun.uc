@@ -10,7 +10,7 @@ class MenuChoice_AlwaysRun extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bAlwaysRun));
+    SetValue(int(!player.bAlwaysRun));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bAlwaysRun = !bool(GetValue());
+    player.bAlwaysRun = !bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bAlwaysRun));
+    SetValue(int(!player.bAlwaysRun));
 }
 
 // ----------------------------------------------------------------------

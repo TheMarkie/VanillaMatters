@@ -10,12 +10,12 @@ class ComputerSecurityChoice_MPCamera extends ComputerCameraUIChoice;
 
 function SetCameraView(ComputerSecurityCameraWindow newCamera)
 {
-	Super.SetCameraView(newCamera);
+    Super.SetCameraView(newCamera);
 
-	if (winCamera != None)
-	{
-		if (winCamera.camera != None)
-		{      
+    if (winCamera != None)
+    {
+        if (winCamera.camera != None)
+        {
          if (!winCamera.camera.bActive)
             SetValue(0);
          else if (DeusExPlayer(winCamera.camera.safetarget) == winCamera.player)
@@ -23,28 +23,28 @@ function SetCameraView(ComputerSecurityCameraWindow newCamera)
          else if ( (winCamera.player.DXGame.IsA('TeamDMGame')) && (winCamera.player.PlayerReplicationInfo.team == winCamera.camera.team) )
             SetValue(1);
          else
-            SetValue(2);       
+            SetValue(2);
          EnableWindow();
-		}
-		else
-		{
-			// Disable!
-			DisableWindow();
-			btnInfo.SetButtonText("");
-		}
+        }
+        else
+        {
+            // Disable!
+            DisableWindow();
+            btnInfo.SetButtonText("");
+        }
 
-		if (securityWindow != None)
-			securityWindow.EnableCameraButtons(winCamera.camera != None);
-	}
-	else
-	{
-		// Disable!
-		DisableWindow();
-		btnInfo.SetButtonText("");
+        if (securityWindow != None)
+            securityWindow.EnableCameraButtons(winCamera.camera != None);
+    }
+    else
+    {
+        // Disable!
+        DisableWindow();
+        btnInfo.SetButtonText("");
 
-		if (securityWindow != None)
-			securityWindow.EnableCameraButtons(False);
-	}
+        if (securityWindow != None)
+            securityWindow.EnableCameraButtons(False);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -76,18 +76,18 @@ function SetMPEnumState()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bWasActive;
+    local bool bWasActive;
 
-	bWasActive = (GetValue() != 0);
+    bWasActive = (GetValue() != 0);
 
-	Super.ButtonActivated(buttonPressed);
-	SetCameraState(bWasActive);
-	//securityWindow.ToggleCameraState();
+    Super.ButtonActivated(buttonPressed);
+    SetCameraState(bWasActive);
+    //securityWindow.ToggleCameraState();
 
-	// Vanilla Matters: Make each camera toggle cost an amount of time.
-	HandleTimeCost();
+    // Vanilla Matters: Make each camera toggle cost an amount of time.
+    HandleTimeCost();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -96,17 +96,17 @@ function bool ButtonActivated( Window buttonPressed )
 
 function bool ButtonActivatedRight( Window buttonPressed )
 {
-	local bool bWasActive;
+    local bool bWasActive;
 
-	bWasActive = (GetValue() != 0);
+    bWasActive = (GetValue() != 0);
 
-	Super.ButtonActivated(buttonPressed);
-	SetCameraState(bWasActive);
+    Super.ButtonActivated(buttonPressed);
+    SetCameraState(bWasActive);
 
-	// Vanilla Matters: Make each camera toggle cost an amount of time.
-	HandleTimeCost();
+    // Vanilla Matters: Make each camera toggle cost an amount of time.
+    HandleTimeCost();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

@@ -9,16 +9,16 @@ class Crosshair extends Window;
 
 event InitWindow()
 {
-	local Color col;
+    local Color col;
 
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetBackgroundStyle(DSTY_Masked);
-	SetBackground(Texture'CrossSquare');
-	col.R = 255;
-	col.G = 255;
-	col.B = 255;
-	SetCrosshairColor(col);
+    SetBackgroundStyle(DSTY_Masked);
+    SetBackground(Texture'CrossSquare');
+    col.R = 255;
+    col.G = 255;
+    col.B = 255;
+    SetCrosshairColor(col);
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ event InitWindow()
 
 function SetCrosshair( bool bShow )
 {
-	Show(bShow);
+    Show(bShow);
 }
 
 // ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ function SetCrosshair( bool bShow )
 
 function SetCrosshairColor(color newColor)
 {
-	SetTileColor(newColor);
+    SetTileColor(newColor);
 }
 
 defaultproperties

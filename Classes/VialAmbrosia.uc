@@ -7,23 +7,23 @@ var localized String msgNoEffect;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.ClientMessage(msgNoEffect);
+        Super.BeginState();
 
-		UseOnce();
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+            player.ClientMessage(msgNoEffect);
+
+        UseOnce();
+    }
 Begin:
 }
 

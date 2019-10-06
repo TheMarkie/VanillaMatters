@@ -5,23 +5,23 @@ class CoffeeTable extends Furniture;
 
 enum ESkinColor
 {
-	SC_WhiteMarble,
-	SC_BlackMarble,
-	SC_GrayMarble
+    SC_WhiteMarble,
+    SC_BlackMarble,
+    SC_GrayMarble
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_WhiteMarble:	Skin = Texture'CoffeeTableTex1'; break;
-		case SC_BlackMarble:	Skin = Texture'CoffeeTableTex2'; break;
-		case SC_GrayMarble:		Skin = Texture'CoffeeTableTex3'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_WhiteMarble:    Skin = Texture'CoffeeTableTex1'; break;
+        case SC_BlackMarble:    Skin = Texture'CoffeeTableTex2'; break;
+        case SC_GrayMarble:     Skin = Texture'CoffeeTableTex3'; break;
+    }
 }
 
 defaultproperties

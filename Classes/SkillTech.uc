@@ -15,19 +15,19 @@ var localized String MultitoolString;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		cost[0] = mpCost1;
-		cost[1] = mpCost2;
-		cost[2] = mpCost3;
-		LevelValues[0] = mpLevel0;
-		LevelValues[1] = mpLevel1;
-		LevelValues[2] = mpLevel2;
-		LevelValues[3] = mpLevel3;
-		skillName=MultitoolString;
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        cost[0] = mpCost1;
+        cost[1] = mpCost2;
+        cost[2] = mpCost3;
+        LevelValues[0] = mpLevel0;
+        LevelValues[1] = mpLevel1;
+        LevelValues[2] = mpLevel2;
+        LevelValues[3] = mpLevel3;
+        skillName=MultitoolString;
+    }
 }
 
 defaultproperties

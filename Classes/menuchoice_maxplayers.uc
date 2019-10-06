@@ -12,7 +12,7 @@ class MenuChoice_MaxPlayers extends MenuUIChoiceSlider;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetActionButtonWidth(179);
 

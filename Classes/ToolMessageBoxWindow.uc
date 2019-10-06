@@ -9,17 +9,17 @@ class ToolMessageBoxWindow expands ToolWindow;
 
 enum EMessageBoxModes
 {
-	MB_YesNo,
-	MB_OK,
+    MB_YesNo,
+    MB_OK,
 };
 
 enum EMessageBoxResults
 {
-	MR_Yes,
-	MR_No,
-	MR_OK
+    MR_Yes,
+    MR_No,
+    MR_OK
 };
-	
+
 // ----------------------------------------------------------------------
 // Local Variables
 // ----------------------------------------------------------------------
@@ -50,12 +50,12 @@ var Window winNotify;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(200, 150);
+    SetSize(200, 150);
 
-	winText = CreateToolLabel(10, 40, "");
-	winText.SetSize(175, 60);
+    winText = CreateToolLabel(10, 40, "");
+    winText.SetSize(175, 60);
 }
 
 // ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ event InitWindow()
 
 function SetMessageText( String msgText )
 {
-	winText.SetText(msgText);
+    winText.SetText(msgText);
 }
 
 // ----------------------------------------------------------------------
@@ -77,24 +77,24 @@ function SetMessageText( String msgText )
 
 function SetMode( int newMode )
 {
-	// Store away
-	mbMode = newMode;
-	
-	// Now create buttons appropriately
+    // Store away
+    mbMode = newMode;
 
-	switch( mbMode )
-	{
-		case 0:			// MB_YesNo:
-			btnYes = CreateToolButton( 20,  110, "Yes" );
-			btnNo  = CreateToolButton( 106, 110, "No" );
-			SetFocusWindow(btnYes);
-			break;
+    // Now create buttons appropriately
 
-		case 1:			// MB_OK:
-			btnOK = CreateToolButton( 63, 110, "OK" );
-			SetFocusWindow(btnOK);
-			break;
-	}
+    switch( mbMode )
+    {
+        case 0:         // MB_YesNo:
+            btnYes = CreateToolButton( 20,  110, "Yes" );
+            btnNo  = CreateToolButton( 106, 110, "No" );
+            SetFocusWindow(btnYes);
+            break;
+
+        case 1:         // MB_OK:
+            btnOK = CreateToolButton( 63, 110, "OK" );
+            SetFocusWindow(btnOK);
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -103,7 +103,7 @@ function SetMode( int newMode )
 
 function SetNotifyWindow( Window newWinNotify )
 {
-	winNotify = newWinNotify;
+    winNotify = newWinNotify;
 }
 
 // ----------------------------------------------------------------------
@@ -112,32 +112,32 @@ function SetNotifyWindow( Window newWinNotify )
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	Super.ButtonActivated(buttonPressed);
+    Super.ButtonActivated(buttonPressed);
 
-	switch( buttonPressed )
-	{
-		case btnYes:
-			PostResult(0);  // MR_Yes;
-			break;
+    switch( buttonPressed )
+    {
+        case btnYes:
+            PostResult(0);  // MR_Yes;
+            break;
 
-		case btnNo:
-			PostResult(1);
-			break;
+        case btnNo:
+            PostResult(1);
+            break;
 
-		case btnOK:
-			PostResult(0);
-			break;
+        case btnOK:
+            PostResult(0);
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -149,7 +149,7 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -158,47 +158,47 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	switch( key ) 
-	{	
-		case IK_Escape:
-			switch( mbMode )
-			{
-				case 0:		// MB_YesNo:
-					PostResult(1);
-					break;
-				case 1:		// MB_OK:
-					PostResult(0);
-					break;
-			}
-			bHandled = True;
-			break;
+    switch( key )
+    {
+        case IK_Escape:
+            switch( mbMode )
+            {
+                case 0:     // MB_YesNo:
+                    PostResult(1);
+                    break;
+                case 1:     // MB_OK:
+                    PostResult(0);
+                    break;
+            }
+            bHandled = True;
+            break;
 
-		case IK_Enter:	
-		case IK_Space:
-			PostResult(0);
-			bHandled = True;
-			break;
+        case IK_Enter:
+        case IK_Space:
+            PostResult(0);
+            bHandled = True;
+            break;
 
-		case IK_Y:
-			if ( mbMode == 0  /*MB_YesNo*/ )
-			{
-				PostResult(0);
-				bHandled = True;
-			}
-			break;
+        case IK_Y:
+            if ( mbMode == 0  /*MB_YesNo*/ )
+            {
+                PostResult(0);
+                bHandled = True;
+            }
+            break;
 
-		case IK_N:
-			if ( mbMode == 0  /*MB_YesNo*/ )
-			{
-				PostResult(1);
-				bHandled = True;
-			}
-			break;
-	}
+        case IK_N:
+            if ( mbMode == 0  /*MB_YesNo*/ )
+            {
+                PostResult(1);
+                bHandled = True;
+            }
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 
@@ -211,8 +211,8 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function PostResult( int buttonNumber )
 {
-	if ( winNotify != None )
-		winNotify.BoxOptionSelected(Self, buttonNumber);
+    if ( winNotify != None )
+        winNotify.BoxOptionSelected(Self, buttonNumber);
 }
 
 // ----------------------------------------------------------------------

@@ -7,9 +7,9 @@ class MenuUIListWindow extends ListWindow;
 var DeusExPlayer player;
 
 var Color   colText;
-var Color	colTextHighlight;
-var Color	colHighlight;
-var Color	colFocus;
+var Color   colTextHighlight;
+var Color   colHighlight;
+var Color   colFocus;
 var Texture texHighlight;
 var Texture texFocus;
 var Font    fontText;
@@ -22,49 +22,49 @@ var Font    fontText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
+    SetFont(fontText);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 
-	SetListSounds(Sound'Menu_Press', Sound'Menu_Focus');
-	SetSoundVolume(0.25);
+    SetListSounds(Sound'Menu_Press', Sound'Menu_Focus');
+    SetSoundVolume(0.25);
 
-	SetNumColumns(0);
-	SetNumColumns(1);
+    SetNumColumns(0);
+    SetNumColumns(1);
 }
 
 // ----------------------------------------------------------------------
-// VirtualKeyPressed() 
+// VirtualKeyPressed()
 //
-// Eat the space so we don't get the god damned listbox toggling 
-// itself on/off when an EditWindow is overlaid on top of a 
+// Eat the space so we don't get the god damned listbox toggling
+// itself on/off when an EditWindow is overlaid on top of a
 // listbox (like in the MenuUISaveWindow).
 // ----------------------------------------------------------------------
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool retval;
+    local bool retval;
 
-	retval = False;
+    retval = False;
 
-	// Handle keys
-	switch (key)
-	{
-		case IK_Space:  // toggle selection
-			retval = true;
-			break;
-	}
+    // Handle keys
+    switch (key)
+    {
+        case IK_Space:  // toggle selection
+            retval = true;
+            break;
+    }
 
-	if (!retval)
-		retval = Super.VirtualKeyPressed(key, bRepeat);
+    if (!retval)
+        retval = Super.VirtualKeyPressed(key, bRepeat);
 
-	// Return TRUE if we handled this
-	return (retval);
+    // Return TRUE if we handled this
+    return (retval);
 }
 
 // ----------------------------------------------------------------------
@@ -73,27 +73,27 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Int colIndex;
+    local ColorTheme theme;
+    local Int colIndex;
 
-	// Background color
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    // Background color
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	colText          = theme.GetColorFromName('MenuColor_ListText');
-	colTextHighlight = theme.GetColorFromName('MenuColor_ListTextHighlight');
-	colHighlight     = theme.GetColorFromName('MenuColor_ListHighlight');
-	colFocus         = theme.GetColorFromName('MenuColor_ListFocus');
+    colText          = theme.GetColorFromName('MenuColor_ListText');
+    colTextHighlight = theme.GetColorFromName('MenuColor_ListTextHighlight');
+    colHighlight     = theme.GetColorFromName('MenuColor_ListHighlight');
+    colFocus         = theme.GetColorFromName('MenuColor_ListFocus');
 
-	SetTextColor(colText);
-	SetHighlightTextColor(colTextHighlight);
-	SetHighlightTexture(texHighlight);
-	SetHighlightColor(colHighlight);
-	SetFocusTexture(texFocus);
-	SetFocusColor(colFocus);
+    SetTextColor(colText);
+    SetHighlightTextColor(colTextHighlight);
+    SetHighlightTexture(texHighlight);
+    SetHighlightColor(colHighlight);
+    SetFocusTexture(texFocus);
+    SetFocusColor(colFocus);
 
-	// Loop through columns, setting text color
-	for (colIndex=0; colIndex<GetNumColumns(); colIndex++)
-		SetColumnColor(colIndex, colText);
+    // Loop through columns, setting text color
+    for (colIndex=0; colIndex<GetNumColumns(); colIndex++)
+        SetColumnColor(colIndex, colText);
 }
 
 // ----------------------------------------------------------------------

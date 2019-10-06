@@ -3,30 +3,30 @@
 //=============================================================================
 class LAM extends ThrownProjectile;
 
-var float	mpBlastRadius;
-var float	mpProxRadius;
-//var float	mpLAMDamage;
-var float	mpFuselength;
+var float   mpBlastRadius;
+var float   mpProxRadius;
+//var float mpLAMDamage;
+var float   mpFuselength;
 
 simulated function Tick(float deltaTime)
 {
-	local float blinkRate;
+    local float blinkRate;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bDisabled)
-	{
-		Skin = Texture'BlackMaskTex';
-		return;
-	}
+    if (bDisabled)
+    {
+        Skin = Texture'BlackMaskTex';
+        return;
+    }
 
-	// flash faster as the time expires
-	if (fuseLength - time <= 0.75)
-		blinkRate = 0.1;
-	else if (fuseLength - time <= fuseLength * 0.5)
-		blinkRate = 0.3;
-	else
-		blinkRate = 0.5;
+    // flash faster as the time expires
+    if (fuseLength - time <= 0.75)
+        blinkRate = 0.1;
+    else if (fuseLength - time <= fuseLength * 0.5)
+        blinkRate = 0.3;
+    else
+        blinkRate = 0.5;
 
    if ((Level.NetMode == NM_Standalone) || (Role < ROLE_Authority) || (Level.NetMode == NM_ListenServer))
    {
@@ -39,18 +39,18 @@ simulated function Tick(float deltaTime)
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		blastRadius=mpBlastRadius;
-		proxRadius=mpProxRadius;
-		//Damage=mpLAMDamage;
-		// Vanilla Matters: Make mpDamage have a consistent name.
-		Damage = mpDamage;
-		fuseLength=mpFuselength;
-		bIgnoresNanoDefense=True;
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        blastRadius=mpBlastRadius;
+        proxRadius=mpProxRadius;
+        //Damage=mpLAMDamage;
+        // Vanilla Matters: Make mpDamage have a consistent name.
+        Damage = mpDamage;
+        fuseLength=mpFuselength;
+        bIgnoresNanoDefense=True;
+    }
 }
 
 defaultproperties

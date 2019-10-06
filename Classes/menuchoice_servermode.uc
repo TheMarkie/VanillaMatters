@@ -18,9 +18,9 @@ const MODE_LISTEN = 1;
 
 event InitWindow()
 {
-	PopulateServerModes();
+    PopulateServerModes();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialServerMode();
 
@@ -33,7 +33,7 @@ event InitWindow()
 
 function PopulateServerModes()
 {
-	local int modeIndex;
+    local int modeIndex;
 
    for (modeIndex = 0; modeIndex < arrayCount(ModeNames); modeIndex++)
    {
@@ -81,7 +81,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ defaultValue);
    LoadSetting();
 }

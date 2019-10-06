@@ -22,14 +22,14 @@ var Bool  bInitializing;
 
 event InitWindow()
 {
-	bInitializing=True;
+    bInitializing=True;
 
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateSlider();
-	SetEnumerators();
+    CreateSlider();
+    SetEnumerators();
 
-	bInitializing=False;
+    bInitializing=False;
 }
 
 // ----------------------------------------------------------------------
@@ -39,13 +39,13 @@ event InitWindow()
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local float sliderWidth, sliderHeight;
+    local float sliderWidth, sliderHeight;
 
-	if (btnSlider!= None)
-		btnSlider.QueryPreferredSize(sliderWidth, sliderHeight);
+    if (btnSlider!= None)
+        btnSlider.QueryPreferredSize(sliderWidth, sliderHeight);
 
-	preferredWidth  = sliderWidth;
-	preferredHeight = sliderHeight;
+    preferredWidth  = sliderWidth;
+    preferredHeight = sliderHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -54,11 +54,11 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function CreateSlider()
 {
-	btnSlider = MenuUISliderButtonWindow(NewChild(Class'MenuUISliderButtonWindow'));
+    btnSlider = MenuUISliderButtonWindow(NewChild(Class'MenuUISliderButtonWindow'));
 
-	btnSlider.SetSelectability(False);
-	btnSlider.SetPos(choiceControlPosX, 0);
-	btnSlider.SetTicks(numTicks, startValue, endValue);
+    btnSlider.SetSelectability(False);
+    btnSlider.SetPos(choiceControlPosX, 0);
+    btnSlider.SetTicks(numTicks, startValue, endValue);
 }
 
 // ----------------------------------------------------------------------
@@ -75,8 +75,8 @@ function SetEnumerators()
 
 function SetEnumeration(int tickPos, coerce string newStr)
 {
-	if (btnSlider != None)
-		btnSlider.winSlider.SetEnumeration(tickPos, newStr);
+    if (btnSlider != None)
+        btnSlider.winSlider.SetEnumeration(tickPos, newStr);
 }
 
 // ----------------------------------------------------------------------
@@ -85,8 +85,8 @@ function SetEnumeration(int tickPos, coerce string newStr)
 
 function SetValue(float newValue)
 {
-	if (btnSlider  != None)
-		btnSlider.winSlider.SetValue(newValue);
+    if (btnSlider  != None)
+        btnSlider.winSlider.SetValue(newValue);
 }
 
 // ----------------------------------------------------------------------
@@ -95,10 +95,10 @@ function SetValue(float newValue)
 
 function float GetValue()
 {
-	if (btnSlider != None)
-		return btnSlider.winSlider.GetValue();
-	else
-		return 0;
+    if (btnSlider != None)
+        return btnSlider.winSlider.GetValue();
+    else
+        return 0;
 }
 
 // ----------------------------------------------------------------------
@@ -107,20 +107,20 @@ function float GetValue()
 
 function CycleNextValue()
 {
-	local int newValue;
+    local int newValue;
 
-	if (btnSlider != None)
-	{
-		// Get the current slider value and attempt to increment.
-		// If at the max go back to the beginning
+    if (btnSlider != None)
+    {
+        // Get the current slider value and attempt to increment.
+        // If at the max go back to the beginning
 
-		newValue = btnSlider.winSlider.GetTickPosition() + 1;
+        newValue = btnSlider.winSlider.GetTickPosition() + 1;
 
-		if (newValue == btnSlider.winSlider.GetNumTicks())
-			newValue = 0;
+        if (newValue == btnSlider.winSlider.GetNumTicks())
+            newValue = 0;
 
-		btnSlider.winSlider.SetTickPosition(newValue);
-	}
+        btnSlider.winSlider.SetTickPosition(newValue);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -129,20 +129,20 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	local int newValue;
+    local int newValue;
 
-	if (btnSlider != None)
-	{
-		// Get the current slider value and attempt to increment.
-		// If at the max go back to the beginning
+    if (btnSlider != None)
+    {
+        // Get the current slider value and attempt to increment.
+        // If at the max go back to the beginning
 
-		newValue = btnSlider.winSlider.GetTickPosition() - 1;
+        newValue = btnSlider.winSlider.GetTickPosition() - 1;
 
-		if (newValue < 0)
-			newValue = btnSlider.winSlider.GetNumTicks() - 1;
+        if (newValue < 0)
+            newValue = btnSlider.winSlider.GetNumTicks() - 1;
 
-		btnSlider.winSlider.SetTickPosition(newValue);
-	}
+        btnSlider.winSlider.SetTickPosition(newValue);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -151,10 +151,10 @@ function CyclePreviousValue()
 
 function LoadSetting()
 {
-	if (configSetting != "")
-		SetValue(float(player.ConsoleCommand("get " $ configSetting)));
-	else
-		ResetToDefault();
+    if (configSetting != "")
+        SetValue(float(player.ConsoleCommand("get " $ configSetting)));
+    else
+        ResetToDefault();
 }
 
 // ----------------------------------------------------------------------
@@ -163,8 +163,8 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	if (configSetting != "")
-		player.ConsoleCommand("set " $ configSetting $ " " $ GetValue());
+    if (configSetting != "")
+        player.ConsoleCommand("set " $ configSetting $ " " $ GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -172,11 +172,11 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	if (configSetting != "")
-	{
-		player.ConsoleCommand("set " $ configSetting $ " " $ defaultValue);
-		LoadSetting();
-	}
+    if (configSetting != "")
+    {
+        player.ConsoleCommand("set " $ configSetting $ " " $ defaultValue);
+        LoadSetting();
+    }
 }
 
 // ----------------------------------------------------------------------

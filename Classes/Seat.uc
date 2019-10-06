@@ -2,7 +2,7 @@
 // Seat.
 //=============================================================================
 class Seat extends Furniture
-	abstract;
+    abstract;
 
 //
 // Seat class to allow NPCs to sit down
@@ -15,44 +15,44 @@ var vector InitialPosition;
 
 function BeginPlay()
 {
-	local int i;
+    local int i;
 
-	// count how many sitpoints are valid
-	for(i=0; i<ArrayCount(sitPoint); i++)
-	{
-		if (sitPoint[i] != vect(-1000,-1000,-1000))
-			numSitPoints++;
-		else
-			break;
-	}
+    // count how many sitpoints are valid
+    for(i=0; i<ArrayCount(sitPoint); i++)
+    {
+        if (sitPoint[i] != vect(-1000,-1000,-1000))
+            numSitPoints++;
+        else
+            break;
+    }
 
-	InitialPosition = Location;
+    InitialPosition = Location;
 }
 
 function Bump(actor Other)
 {
-	local ScriptedPawn sitter;
-	local bool         bInUse;
-	local int          i;
+    local ScriptedPawn sitter;
+    local bool         bInUse;
+    local int          i;
 
-	bInUse = false;
-	for (i=0; i<ArrayCount(sittingActor); i++)
-	{
-		if (sittingActor[i] != None)
-		{
-			if ((sittingActor[i] == Other) ||
-			    ((ScriptedPawn(sittingActor[i]) != None) &&
-			     ScriptedPawn(sittingActor[i]).bSitting))
-			{
-				bInUse = true;
-				break;
-			}
-		}
-	}
+    bInUse = false;
+    for (i=0; i<ArrayCount(sittingActor); i++)
+    {
+        if (sittingActor[i] != None)
+        {
+            if ((sittingActor[i] == Other) ||
+                ((ScriptedPawn(sittingActor[i]) != None) &&
+                 ScriptedPawn(sittingActor[i]).bSitting))
+            {
+                bInUse = true;
+                break;
+            }
+        }
+    }
 
-	// If we're in use, ignore bump (no pushing)
-	if (!bInUse)
-		Super.Bump(Other);
+    // If we're in use, ignore bump (no pushing)
+    if (!bInUse)
+        Super.Bump(Other);
 }
 
 defaultproperties

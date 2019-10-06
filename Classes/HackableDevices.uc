@@ -2,31 +2,31 @@
 // HackableDevices.
 //=============================================================================
 class HackableDevices extends ElectronicDevices
-	abstract;
+    abstract;
 
-var() bool				bHackable;				// can this device be hacked?
-var() float 			hackStrength;			// "toughness" of the hack on this device - 0.0 is easy, 1.0 is hard
+var() bool              bHackable;              // can this device be hacked?
+var() float             hackStrength;           // "toughness" of the hack on this device - 0.0 is easy, 1.0 is hard
 var() float          initialhackStrength; // for multiplayer hack resets, this is the initial value
-var() name				UnTriggerEvent[4];		// event to UnTrigger when hacked
+var() name              UnTriggerEvent[4];      // event to UnTrigger when hacked
 
-var bool				   bHacking;				// a multitool is currently being used
-var float				hackValue;				// how much this multitool is currently hacking
-var float				hackTime;				// how much time it takes to use a single multitool
-var int					numHacks;				// how many times to reduce hack strength
+var bool                   bHacking;                // a multitool is currently being used
+var float               hackValue;              // how much this multitool is currently hacking
+var float               hackTime;               // how much time it takes to use a single multitool
+var int                 numHacks;               // how many times to reduce hack strength
 var float            TicksSinceLastHack;   // num 0.1 second ticks done since last hackstrength update(includes partials)
 var float            TicksPerHack;         // num 0.1 second ticks needed for a hackstrength update(includes partials)
-var float			 LastTickTime;		   // time last tick occurred.
+var float            LastTickTime;         // time last tick occurred.
 
-var DeusExPlayer		hackPlayer;				// the player that is hacking
-var Multitool			curTool;				// the multitool that is being used
+var DeusExPlayer        hackPlayer;             // the player that is hacking
+var Multitool           curTool;                // the multitool that is being used
 
 var float            TimeSinceReset;   // time since the hackstate was last reset.
 var float            TimeToReset;      // how long between resets
 
-var localized string	msgMultitoolSuccess;	// message when the device is hacked
-var localized string	msgNotHacked;			// message when the device is not hacked
-var localized string	msgHacking;				// message when the device is being hacked
-var localized string	msgAlreadyHacked;		// message when the device is already hacked
+var localized string    msgMultitoolSuccess;    // message when the device is hacked
+var localized string    msgNotHacked;           // message when the device is not hacked
+var localized string    msgHacking;             // message when the device is being hacked
+var localized string    msgAlreadyHacked;       // message when the device is already hacked
 
 // ---------------------------------------------------------------------------------------
 // Networking Replication
@@ -40,13 +40,13 @@ replication
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// keep this within limits
-	hackStrength = FClamp(hackStrength, 0.0, 1.0);
+    // keep this within limits
+    hackStrength = FClamp(hackStrength, 0.0, 1.0);
 
-	if (!bHackable)
-		hackStrength = 1.0;
+    if (!bHackable)
+        hackStrength = 1.0;
 
    initialhackStrength = hackStrength;
    TimeSinceReset = 0.0;
@@ -57,15 +57,15 @@ function PostBeginPlay()
 //
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local Actor A;
-	local int i;
+    local Actor A;
+    local int i;
 
-	if (bHacked)
-	{
-		for (i=0; i<ArrayCount(UnTriggerEvent); i++)
-			if (UnTriggerEvent[i] != '')
-				foreach AllActors(class'Actor', A, UnTriggerEvent[i])
-					A.UnTrigger(Hacker, Pawn(Hacker));   
+    if (bHacked)
+    {
+        for (i=0; i<ArrayCount(UnTriggerEvent); i++)
+            if (UnTriggerEvent[i] != '')
+                foreach AllActors(class'Actor', A, UnTriggerEvent[i])
+                    A.UnTrigger(Hacker, Pawn(Hacker));
    }
 }
 
@@ -74,13 +74,13 @@ function HackAction(Actor Hacker, bool bHacked)
 //
 function Timer()
 {
-	if (bHacking)
-	{
-		curTool.PlayUseAnim();
+    if (bHacking)
+    {
+        curTool.PlayUseAnim();
 
       // Vanilla Matters: Fix the infinite multitool bug.
       TicksSinceLastHack = TicksSinceLastHack + ( LastTickTime * 10 );
-	  LastTickTime = 0;
+      LastTickTime = 0;
 
       // VM: No idea why the game doesn't check for how many multitool left.
       while ( TicksSinceLastHack > TicksPerHack && numHacks > 0 )
@@ -90,35 +90,35 @@ function Timer()
          TicksSinceLastHack = TicksSinceLastHack - TicksPerHack;
          hackStrength = FClamp(hackStrength, 0.0, 1.0);
 
-		// Vanilla Matters: Add in FP rate for bypassing.
-		if ( hackPlayer.FPSystem != none ) {
-			hackPlayer.FPSystem.AddForwardPressure( hackPlayer.FPSystem.VM_fpUtility + hackPlayer.FPSystem.fpUtilityLBS );
-		}
+        // Vanilla Matters: Add in FP rate for bypassing.
+        if ( hackPlayer.FPSystem != none ) {
+            hackPlayer.FPSystem.AddForwardPressure( hackPlayer.FPSystem.VM_fpUtility + hackPlayer.FPSystem.fpUtilityLBS );
+        }
       }
 
-		// did we hack it?
-		if (hackStrength ~= 0.0)
-		{
-			hackStrength = 0.0;
-			hackPlayer.ClientMessage(msgMultitoolSuccess);
+        // did we hack it?
+        if (hackStrength ~= 0.0)
+        {
+            hackStrength = 0.0;
+            hackPlayer.ClientMessage(msgMultitoolSuccess);
          // Start reset counter from the time you finish hacking it.
          TimeSinceReset = 0;
-			StopHacking();
-			HackAction(hackPlayer, True);
-		}
+            StopHacking();
+            HackAction(hackPlayer, True);
+        }
 
-		// are we done with this tool?
-		else if (numHacks <= 0)
-			StopHacking();
+        // are we done with this tool?
+        else if (numHacks <= 0)
+            StopHacking();
 
-		// check to see if we've moved too far away from the device to continue
-		else if (hackPlayer.frobTarget != Self)
-			StopHacking();
+        // check to see if we've moved too far away from the device to continue
+        else if (hackPlayer.frobTarget != Self)
+            StopHacking();
 
-		// check to see if we've put the multitool away
-		else if (hackPlayer.inHand != curTool)
-			StopHacking();
-	}
+        // check to see if we've put the multitool away
+        else if (hackPlayer.inHand != curTool)
+            StopHacking();
+    }
 }
 
 //
@@ -148,17 +148,17 @@ function Tick(float deltaTime)
 //
 function StopHacking()
 {
-	// alert NPCs that I'm not messing with stuff anymore
-	AIEndEvent('MegaFutz', EAITYPE_Visual);
-	bHacking = False;
-	if (curTool != None)
-	{
-		curTool.StopUseAnim();
-		curTool.bBeingUsed = False;
-		curTool.UseOnce();
-	}
-	curTool = None;
-	SetTimer(0.1, False);
+    // alert NPCs that I'm not messing with stuff anymore
+    AIEndEvent('MegaFutz', EAITYPE_Visual);
+    bHacking = False;
+    if (curTool != None)
+    {
+        curTool.StopUseAnim();
+        curTool.bBeingUsed = False;
+        curTool.UseOnce();
+    }
+    curTool = None;
+    SetTimer(0.1, False);
 }
 
 //
@@ -166,96 +166,96 @@ function StopHacking()
 //
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local Pawn P;
-	local DeusExPlayer Player;
-	local bool bHackIt, bDone;
-	local string msg;
-	local Vector X, Y, Z;
-	local float dotp;
+    local Pawn P;
+    local DeusExPlayer Player;
+    local bool bHackIt, bDone;
+    local string msg;
+    local Vector X, Y, Z;
+    local float dotp;
 
-	P = Pawn(Frobber);
-	Player = DeusExPlayer(P);
-	bHackIt = False;
-	bDone = False;
-	msg = msgNotHacked;
+    P = Pawn(Frobber);
+    Player = DeusExPlayer(P);
+    bHackIt = False;
+    bDone = False;
+    msg = msgNotHacked;
 
-	// make sure someone is trying to hack the device
-	if (P == None)
-		return;
+    // make sure someone is trying to hack the device
+    if (P == None)
+        return;
 
-	// Let any non-player pawn hack the device for now
-	if (Player == None)
-	{
-		bHackIt = True;
-		msg = "";
-		bDone = True;
-	}
+    // Let any non-player pawn hack the device for now
+    if (Player == None)
+    {
+        bHackIt = True;
+        msg = "";
+        bDone = True;
+    }
 
-	// If we are already trying to hack it, print a message
-	if (bHacking)
-	{
-		msg = msgHacking;
-		bDone = True;
-	}
+    // If we are already trying to hack it, print a message
+    if (bHacking)
+    {
+        msg = msgHacking;
+        bDone = True;
+    }
 
-	if (!bDone)
-	{
-		// Get what's in the player's hand
-		if (frobWith != None)
-		{
-			// check for the use of multitools
-			if (bHackable && frobWith.IsA('Multitool') && (Player.SkillSystem != None))
-			{
-				if (hackStrength > 0.0)
-				{
-					// alert NPCs that I'm messing with stuff
-					AIStartEvent('MegaFutz', EAITYPE_Visual);
+    if (!bDone)
+    {
+        // Get what's in the player's hand
+        if (frobWith != None)
+        {
+            // check for the use of multitools
+            if (bHackable && frobWith.IsA('Multitool') && (Player.SkillSystem != None))
+            {
+                if (hackStrength > 0.0)
+                {
+                    // alert NPCs that I'm messing with stuff
+                    AIStartEvent('MegaFutz', EAITYPE_Visual);
 
-					hackValue = Player.SkillSystem.GetSkillLevelValue(class'SkillTech');
-					hackPlayer = Player;
-					curTool = Multitool(frobWith);
-					curTool.bBeingUsed = True;
-					curTool.PlayUseAnim();
-					bHacking = True;
-					//Number of percentage points to remove
-					numHacks = hackValue * 100;
-					if (Level.Netmode != NM_Standalone)
-						hackTime = default.hackTime / (hackValue * hackValue);
-					TicksPerHack = (hackTime * 10.0) / numHacks;
+                    hackValue = Player.SkillSystem.GetSkillLevelValue(class'SkillTech');
+                    hackPlayer = Player;
+                    curTool = Multitool(frobWith);
+                    curTool.bBeingUsed = True;
+                    curTool.PlayUseAnim();
+                    bHacking = True;
+                    //Number of percentage points to remove
+                    numHacks = hackValue * 100;
+                    if (Level.Netmode != NM_Standalone)
+                        hackTime = default.hackTime / (hackValue * hackValue);
+                    TicksPerHack = (hackTime * 10.0) / numHacks;
 
-			   // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
-			   LastTickTime = 0;
+               // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
+               LastTickTime = 0;
 
                TicksSinceLastHack = 0;
                SetTimer(0.1, True);
-					msg = msgHacking;
-				}
-				else
-				{
-					bHackIt = True;
-					msg = msgAlreadyHacked;
-				}
-			}
-		}
-		else if (hackStrength == 0.0)
-		{
-			// if it's open
-			bHackIt = True;
-			msg = "";
-		}
-	}
+                    msg = msgHacking;
+                }
+                else
+                {
+                    bHackIt = True;
+                    msg = msgAlreadyHacked;
+                }
+            }
+        }
+        else if (hackStrength == 0.0)
+        {
+            // if it's open
+            bHackIt = True;
+            msg = "";
+        }
+    }
 
-	// give the player a message
-	if ((Player != None) && (msg != ""))
-		Player.ClientMessage(msg);
+    // give the player a message
+    if ((Player != None) && (msg != ""))
+        Player.ClientMessage(msg);
 
-	// if our hands are empty, call HackAction()
-	if ((Player != None) && (frobWith == None))
-		HackAction(Frobber, (hackStrength == 0.0));
+    // if our hands are empty, call HackAction()
+    if ((Player != None) && (frobWith == None))
+        HackAction(Frobber, (hackStrength == 0.0));
 
-	// trigger the device!
-	if (bHackIt)
-		Super.Frob(Frobber, frobWith);
+    // trigger the device!
+    if (bHackIt)
+        Super.Frob(Frobber, frobWith);
 }
 
 defaultproperties

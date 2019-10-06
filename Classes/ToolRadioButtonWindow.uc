@@ -12,10 +12,10 @@ class ToolRadioButtonWindow expands ToolCheckboxWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetCheckboxTextures(Texture'ToolRadioButton_Off', Texture'ToolRadioButton_On', 12, 12);
-	SetCheckboxStyle(DSTY_Masked);
+    SetCheckboxTextures(Texture'ToolRadioButton_Off', Texture'ToolRadioButton_On', 12, 12);
+    SetCheckboxStyle(DSTY_Masked);
 }
 
 // ----------------------------------------------------------------------

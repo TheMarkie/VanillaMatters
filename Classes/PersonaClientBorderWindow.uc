@@ -9,21 +9,21 @@ class PersonaClientBorderWindow extends PersonaClientBaseWindow;
 // ----------------------------------------------------------------------
 
 event DrawBorder(GC gc)
-{	
-	if (bDrawBorder)
-	{
-		// Draw window background
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
+{
+    if (bDrawBorder)
+    {
+        // Draw window background
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
 
-		for(textureIndex=0; textureIndex<textureCount; textureIndex++)
-		{
-			gc.DrawIcon(
-				texturePosX[textureIndex], 
-				texturePosY[textureIndex], 
-				clientTextures[textureIndex]);		
-		}
-	}
+        for(textureIndex=0; textureIndex<textureCount; textureIndex++)
+        {
+            gc.DrawIcon(
+                texturePosX[textureIndex],
+                texturePosY[textureIndex],
+                clientTextures[textureIndex]);
+        }
+    }
 }
 
 defaultproperties

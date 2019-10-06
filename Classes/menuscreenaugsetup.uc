@@ -11,7 +11,7 @@ var string FilterString;
 
 var localized string HeaderAugChosenLabel;
 
-var MenuUIScrollAreaWindow		 ChosenScroll;
+var MenuUIScrollAreaWindow       ChosenScroll;
 
 var MenuUIListWindow  ChosenAugList;
 
@@ -33,7 +33,7 @@ var Name AugPrefs[9];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    ReadChosenAugs();
 
@@ -54,8 +54,8 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
-      
+    Super.CreateControls();
+
    CreateAugChosenHeader();
    CreateAugButtons();
    CreatePriorityButtons();
@@ -116,7 +116,7 @@ function CreateAugButtons()
             btnAugChoice[iButtonIndex].SetPos(92, 4 + 23 * CurAug.mpConflictSlot);
          }
          btnAugChoice[iButtonIndex].SetWidth(163);
-         btnAugChoice[iButtonIndex].SetHelpText(curAug.MPInfo);         
+         btnAugChoice[iButtonIndex].SetHelpText(curAug.MPInfo);
          btnAugChoice[iButtonIndex].fontButtonText = font'FontMenuSmall';
 
          ChoiceNames[iButtonIndex] = String(CurAug.Class.Name);
@@ -130,8 +130,8 @@ function CreateAugButtons()
 
 function CreatePriorityButtons()
 {
-	btnAugUp    = CreateSpecialButton(357, 107, Texture'SecurityButtonPanUp_Normal',    Texture'SecurityButtonPanUp_Pressed');
-	btnAugDown  = CreateSpecialButton(357, 127, Texture'SecurityButtonPanDown_Normal',  Texture'SecurityButtonPanDown_Pressed');
+    btnAugUp    = CreateSpecialButton(357, 107, Texture'SecurityButtonPanUp_Normal',    Texture'SecurityButtonPanUp_Pressed');
+    btnAugDown  = CreateSpecialButton(357, 127, Texture'SecurityButtonPanDown_Normal',  Texture'SecurityButtonPanDown_Pressed');
 }
 
 // ----------------------------------------------------------------------
@@ -140,13 +140,13 @@ function CreatePriorityButtons()
 
 function MenuUISpecialButtonWindow CreateSpecialButton(int posX, int posY, Texture texNormal, Texture texPressed)
 {
-	local MenuUISpecialButtonWindow winButton;
+    local MenuUISpecialButtonWindow winButton;
 
-	winButton = MenuUISpecialButtonWindow(winClient.NewChild(Class'MenuUISpecialButtonWindow'));
-	winButton.SetPos(posX, posY);
-	winButton.SetButtonTextures(texNormal, texPressed, texNormal, texPressed, texNormal, texPressed);
+    winButton = MenuUISpecialButtonWindow(winClient.NewChild(Class'MenuUISpecialButtonWindow'));
+    winButton.SetPos(posX, posY);
+    winButton.SetButtonTextures(texNormal, texPressed, texNormal, texPressed, texNormal, texPressed);
 
-	return winButton;
+    return winButton;
 }
 
 // ----------------------------------------------------------------------
@@ -181,18 +181,18 @@ function CreateChosenList()
 {
    ChosenScroll = CreateScrollAreaWindow(winClient);
 
-	ChosenScroll.SetPos(390, 29);
-	ChosenScroll.SetSize(134, 152);
+    ChosenScroll.SetPos(390, 29);
+    ChosenScroll.SetSize(134, 152);
 
-	ChosenAugList = MenuUIListWindow(ChosenScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	ChosenAugList.EnableMultiSelect(False);
-	ChosenAugList.EnableAutoExpandColumns(False);
-	ChosenAugList.EnableHotKeys(False);
+    ChosenAugList = MenuUIListWindow(ChosenScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    ChosenAugList.EnableMultiSelect(False);
+    ChosenAugList.EnableAutoExpandColumns(False);
+    ChosenAugList.EnableHotKeys(False);
 
-	ChosenAugList.SetNumColumns(1);
+    ChosenAugList.SetNumColumns(1);
 
-	ChosenAugList.SetColumnWidth(0, 140);
-	ChosenAugList.SetColumnType(0, COLTYPE_String);
+    ChosenAugList.SetColumnWidth(0, 140);
+    ChosenAugList.SetColumnType(0, COLTYPE_String);
 
 }
 
@@ -202,13 +202,13 @@ function CreateChosenList()
 
 function PopulateChosenList()
 {
-	local int AugIndex;
+    local int AugIndex;
 
-	// First erase the old list
-	ChosenAugList.DeleteAllRows();
+    // First erase the old list
+    ChosenAugList.DeleteAllRows();
 
    for(AugIndex=0; AugIndex<arrayCount(ChosenAugs); AugIndex++ )
-      if (ChosenAugs[AugIndex] != "")		
+      if (ChosenAugs[AugIndex] != "")
          ChosenAugList.AddRow(AugFamiliarName(ChosenAugs[AugIndex]));
 }
 
@@ -223,11 +223,11 @@ function EnableButtons()
    local bool bLeftChoice;
 
    //Turn off other buttons if no single other skill is selected.
-	if ( (ChosenRowId == 0) || (!ChosenAugList.IsRowSelected(ChosenRowID)) || (ChosenAugList.IsMultiSelectEnabled()) || (ChosenAugs[ChosenAugList.RowIDToIndex(ChosenRowID)]=="") )
-	{
+    if ( (ChosenRowId == 0) || (!ChosenAugList.IsRowSelected(ChosenRowID)) || (ChosenAugList.IsMultiSelectEnabled()) || (ChosenAugs[ChosenAugList.RowIDToIndex(ChosenRowID)]=="") )
+    {
       btnAugUp.SetSensitivity(False);
       btnAugDown.SetSensitivity(False);
-	}
+    }
    else
    {
       btnAugUp.SetSensitivity(True);
@@ -249,14 +249,14 @@ function EnableButtons()
          if ( (btnAugChoice[iButtonIndex] != None) && (ChoiceNames[iButtonIndex] == ChosenAugs[iChosenIndex]) )
          {
             SetPressedState(iButtonIndex,True);
-            if (bLeftChoice)            
+            if (bLeftChoice)
             {
-               if (btnAugChoice[iButtonIndex+1] != None)               
+               if (btnAugChoice[iButtonIndex+1] != None)
                   SetPressedState(iButtonIndex+1,False);
             }
             else
             {
-               if (btnAugChoice[iButtonIndex-1] != None)               
+               if (btnAugChoice[iButtonIndex-1] != None)
                   SetPressedState(iButtonIndex-1,False);
             }
          }
@@ -270,25 +270,25 @@ function EnableButtons()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
    local int iButtonIndex;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnAugUp:
-		   ShiftAugmentation(-1);
-			break;
+    switch( buttonPressed )
+    {
+        case btnAugUp:
+           ShiftAugmentation(-1);
+            break;
 
-		case btnAugDown:
-			ShiftAugmentation(1);
-			break;
+        case btnAugDown:
+            ShiftAugmentation(1);
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
    for (iButtonIndex = 0; iButtonIndex<ArrayCount(btnAugChoice); iButtonIndex++)
    {
@@ -299,14 +299,14 @@ function bool ButtonActivated( Window buttonPressed )
       }
    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the screenshot
 // and info box appropriately
@@ -318,7 +318,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
    {
       ChosenSelectionChanged(numSelections, focusRowId);
    }
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -326,7 +326,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 // ----------------------------------------------------------------------
 
 function ChosenSelectionChanged(int numSelections, int focusRowId)
-{   
+{
    chosenRowID = focusRowID;
 
    if (focusRowID == 0)
@@ -348,8 +348,8 @@ function ChosenSelectionChanged(int numSelections, int focusRowId)
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	if (enterWindow.IsA('MenuUIChoiceButton'))
-	{
+    if (enterWindow.IsA('MenuUIChoiceButton'))
+    {
       if ((winHelp != None) && (MenuUIChoiceButton(enterWindow).helpText != ""))
       {
          winHelp.Show();
@@ -363,8 +363,8 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	if ((winHelp != None) && (!bHelpAlwaysOn))
-		winHelp.Hide();
+    if ((winHelp != None) && (!bHelpAlwaysOn))
+        winHelp.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -390,7 +390,7 @@ function SetPressedState(int iButtonIndex, bool bPressed)
 
    btnAugChoice[iButtonIndex].Left_Textures[0].tex=btnAugChoice[iButtonIndex].default.Left_Textures[iNewMainTexture].tex;
    btnAugChoice[iButtonIndex].Left_Textures[1].tex=btnAugChoice[iButtonIndex].default.Left_Textures[iNewSecondTexture].tex;
-   
+
    btnAugChoice[iButtonIndex].Right_Textures[0].tex=btnAugChoice[iButtonIndex].default.Right_Textures[iNewMainTexture].tex;
    btnAugChoice[iButtonIndex].Right_Textures[1].tex=btnAugChoice[iButtonIndex].default.Right_Textures[iNewSecondTexture].tex;
 
@@ -431,7 +431,7 @@ function HandleAugPress(int iButtonIndex)
    if ((btnAugChoice[iOppositeIndex] != None) && (iChosenIndex == -1))
    {
       iUnChosenIndex = FindAugInChosenList(ChoiceNames[iOppositeIndex]);
-      
+
       if (iUnChosenIndex != -1)
       {
          ChosenAugs[iUnChosenIndex] = "";
@@ -442,7 +442,7 @@ function HandleAugPress(int iButtonIndex)
    {
       if (iUnChosenIndex != -1)
          ChosenAugs[iUnChosenIndex] = ChoiceNames[iButtonIndex];
-      else      
+      else
          ChosenAugs[ArrayCount(ChosenAugs) - 1] = ChoiceNames[iButtonIndex];
    }
    else
@@ -450,7 +450,7 @@ function HandleAugPress(int iButtonIndex)
       ChosenAugs[iChosenIndex] = "";
    }
 
-   CompressChosenList();   
+   CompressChosenList();
    PopulateChosenList();
    EnableButtons();
 }
@@ -466,14 +466,14 @@ function ShiftAugmentation(int dir)
    local string SwapTemp;
 
    // Get the aug index for swapping
-	AugIndex = ChosenAugList.RowIdToIndex(chosenRowID);
+    AugIndex = ChosenAugList.RowIdToIndex(chosenRowID);
 
    AltAugIndex = AugIndex + dir;
    if (AltAugIndex < 0)
       AltAugIndex = 0;
    if (AltAugIndex >= ArrayCount(ChosenAugs))
       AltAugIndex = (ArrayCount(ChosenAugs) - 1);
-   
+
    SwapTemp = ChosenAugs[AugIndex];
    ChosenAugs[AugIndex] = ChosenAugs[AltAugIndex];
    ChosenAugs[AltAugIndex] = SwapTemp;
@@ -503,7 +503,7 @@ function SaveSettings()
    for (AugIndex = 0; ((AugIndex < ArrayCount(ChosenAugs)) && (AugIndex < ArrayCount(player.AugPrefs))); AugIndex++)
    {
       CurAug = GetAugFromStringName(ChosenAugs[AugIndex]);
-      if (CurAug != None)      
+      if (CurAug != None)
          player.AugPrefs[AugIndex] = CurAug.Class.Name;
    }
 
@@ -536,13 +536,13 @@ function ResetToDefaults()
 
 function string AugFamiliarName(string AugStringName)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
    if (AugStringName == "")
       return "";
-   else   
+   else
    {
-		anAug = GetAugFromStringName(AugStringName);
+        anAug = GetAugFromStringName(AugStringName);
       if (anAug == None)
          return "";
       else
@@ -580,7 +580,7 @@ function int FindAugInChosenList(string AugName)
    local int FoundAug;
 
    FoundAug = -1;
-   
+
    if (AugName == "")
       return FoundAug;
 
@@ -610,14 +610,14 @@ function SelectChosenAug(int RealIndex)
       AugIndex = (ArrayCount(ChosenAugs) - 1);
 
    if ( ChosenAugList.GetNumRows() > 0 )
-	{
-		if ( AugIndex >= ChosenAugList.GetNumRows() )
-			AugIndex = ChosenAugList.GetNumRows() - 1;
-		
-		AugRowID = ChosenAugList.IndexToRowId(AugIndex);
+    {
+        if ( AugIndex >= ChosenAugList.GetNumRows() )
+            AugIndex = ChosenAugList.GetNumRows() - 1;
 
-		ChosenAugList.SetRow(AugRowID,True);
-	}      
+        AugRowID = ChosenAugList.IndexToRowId(AugIndex);
+
+        ChosenAugList.SetRow(AugRowID,True);
+    }
    EnableButtons();
 }
 
@@ -642,7 +642,7 @@ function CompressChosenList()
                SwapTemp = ChosenAugs[TargetAugIndex];
                ChosenAugs[TargetAugIndex] = ChosenAugs[SourceAugIndex];
                ChosenAugs[SourceAugIndex] = SwapTemp;
-            }            
+            }
          }
       }
    }

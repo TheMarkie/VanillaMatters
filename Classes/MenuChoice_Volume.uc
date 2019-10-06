@@ -13,18 +13,18 @@ var localized String VolumeMaxText;
 
 function SetEnumerators()
 {
-	// The first sliders use the same enumerations
-	SetEnumeration(0, VolumeOffText);
-	SetEnumeration(1, "1");
-	SetEnumeration(2, "2");
-	SetEnumeration(3, "3");
-	SetEnumeration(4, "4");
-	SetEnumeration(5, "5");
-	SetEnumeration(6, "6");
-	SetEnumeration(7, "7");
-	SetEnumeration(8, "8");
-	SetEnumeration(9, "9");
-	SetEnumeration(10, VolumeMaxText);
+    // The first sliders use the same enumerations
+    SetEnumeration(0, VolumeOffText);
+    SetEnumeration(1, "1");
+    SetEnumeration(2, "2");
+    SetEnumeration(3, "3");
+    SetEnumeration(4, "4");
+    SetEnumeration(5, "5");
+    SetEnumeration(6, "6");
+    SetEnumeration(7, "7");
+    SetEnumeration(8, "8");
+    SetEnumeration(9, "9");
+    SetEnumeration(10, VolumeMaxText);
 }
 
 // ----------------------------------------------------------------------

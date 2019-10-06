@@ -17,17 +17,17 @@ var Float        logTimer;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetWidth(238);
-	SetTextMargins(2, 1);
-	SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    SetFont(fontText);
+    SetWidth(238);
+    SetTextMargins(2, 1);
+    SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -36,13 +36,13 @@ event InitWindow()
 
 function Tick(float deltaTime)
 {
-	logTimer += deltaTime;
-	
-	if (logTimer > logDuration)
-	{
-		SetText("");
-		bTickEnabled = False;
-	}
+    logTimer += deltaTime;
+
+    if (logTimer > logDuration)
+    {
+        SetText("");
+        bTickEnabled = False;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -51,15 +51,15 @@ function Tick(float deltaTime)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colText;
+    local ColorTheme theme;
+    local Color colText;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	colText = theme.GetColorFromName('HUDColor_ListText');
+    // Title colors
+    colText = theme.GetColorFromName('HUDColor_ListText');
 
-	SetTextColor(colText);
+    SetTextColor(colText);
 }
 
 // ----------------------------------------------------------------------
@@ -68,9 +68,9 @@ event StyleChanged()
 
 function AddText(String newText)
 {
-	SetText(newText);
-	logTimer = 0.0;
-	bTickEnabled = True;
+    SetText(newText);
+    logTimer = 0.0;
+    bTickEnabled = True;
 }
 
 // ----------------------------------------------------------------------
@@ -79,8 +79,8 @@ function AddText(String newText)
 
 function ClearText()
 {
-	SetText("");
-	bTickEnabled = False;
+    SetText("");
+    bTickEnabled = False;
 }
 
 // ----------------------------------------------------------------------

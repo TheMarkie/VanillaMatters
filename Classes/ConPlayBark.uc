@@ -11,7 +11,7 @@ var Conversation con;
 
 function SetConversation(Conversation newCon)
 {
-	con = newCon;
+    con = newCon;
 }
 
 // ----------------------------------------------------------------------
@@ -20,47 +20,47 @@ function SetConversation(Conversation newCon)
 
 function ConSpeech GetBarkSpeech()
 {
-	local ConEvent event;
-	local ConSpeech outSpeech;
+    local ConEvent event;
+    local ConSpeech outSpeech;
 
-	// Abort if we don't have a valid conversation
-	if (con == None)
-		return None;
+    // Abort if we don't have a valid conversation
+    if (con == None)
+        return None;
 
-	// Default return value
-	outSpeech = None;
+    // Default return value
+    outSpeech = None;
 
-	// Loop through the events until we hit some speech
-	event = con.eventList;
+    // Loop through the events until we hit some speech
+    event = con.eventList;
 
-	while(event != None)
-	{
-		switch(event.eventType)
-		{
-			case ET_Speech:
-				outSpeech = ConEventSpeech(event).conSpeech;
-				event = None;
-				break;
-			
-			case ET_Jump:
-				event = ProcessEventJump(ConEventJump(event));
-				break;
+    while(event != None)
+    {
+        switch(event.eventType)
+        {
+            case ET_Speech:
+                outSpeech = ConEventSpeech(event).conSpeech;
+                event = None;
+                break;
 
-			case ET_Random:
-				event = ProcessEventRandomLabel(ConEventRandomLabel(event));
-				break;
+            case ET_Jump:
+                event = ProcessEventJump(ConEventJump(event));
+                break;
 
-			case ET_End:
-				event = None;
-				break;
+            case ET_Random:
+                event = ProcessEventRandomLabel(ConEventRandomLabel(event));
+                break;
 
-			default:
-				event = event.nextEvent;
-				break;
-		}
-	}
+            case ET_End:
+                event = None;
+                break;
 
-	return outSpeech;
+            default:
+                event = event.nextEvent;
+                break;
+        }
+    }
+
+    return outSpeech;
 }
 
 // ----------------------------------------------------------------------
@@ -69,26 +69,26 @@ function ConSpeech GetBarkSpeech()
 
 function ConEvent ProcessEventJump(ConEventJump event)
 {
-	local ConEvent nextEvent;
+    local ConEvent nextEvent;
 
-	// Check to see if the jump label is empty.  If so, then we just want
-	// to fall through to the next event.  This can happen when jump
-	// events get inserted during the import process.  ConEdit will not
-	// allow the user to create events like this. 
+    // Check to see if the jump label is empty.  If so, then we just want
+    // to fall through to the next event.  This can happen when jump
+    // events get inserted during the import process.  ConEdit will not
+    // allow the user to create events like this.
 
-	if (event.jumpLabel == "")
-	{
-		nextEvent = event.nextEvent;
-	}
-	else
-	{
-		if ((event.jumpCon != None) && (event.jumpCon != con))
-			nextEvent = None;			// not yet supported
-		else
-			nextEvent = con.GetEventFromLabel(event.jumpLabel);
-	}
+    if (event.jumpLabel == "")
+    {
+        nextEvent = event.nextEvent;
+    }
+    else
+    {
+        if ((event.jumpCon != None) && (event.jumpCon != con))
+            nextEvent = None;           // not yet supported
+        else
+            nextEvent = con.GetEventFromLabel(event.jumpLabel);
+    }
 
-	return nextEvent;
+    return nextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -97,12 +97,12 @@ function ConEvent ProcessEventJump(ConEventJump event)
 
 function ConEvent ProcessEventRandomLabel(ConEventRandomLabel event)
 {
-	local String nextLabel;
+    local String nextLabel;
 
-	// Pick a random label
-	nextLabel = event.GetRandomLabel();
+    // Pick a random label
+    nextLabel = event.GetRandomLabel();
 
-	return con.GetEventFromLabel(nextLabel);
+    return con.GetEventFromLabel(nextLabel);
 }
 
 defaultproperties

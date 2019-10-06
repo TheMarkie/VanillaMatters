@@ -21,22 +21,22 @@ var Float scaleColorModifier;
 
 event DrawWindow(GC gc)
 {
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 
-	// First draw the background
-	if (bDrawBackground)
-	{
-		gc.SetTileColor(colBackground);
-		gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
-	}
+    // First draw the background
+    if (bDrawBackground)
+    {
+        gc.SetTileColor(colBackground);
+        gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
+    }
 
-	// Now draw the foreground
-	gc.SetTileColor(colForeground);
+    // Now draw the foreground
+    gc.SetTileColor(colForeground);
 
-	if (bVertical)
-		gc.DrawPattern(0, height - barSize, width, barSize, 0, 0, Texture'Solid');
-	else
-		gc.DrawPattern(0, 0, barSize, height, 0, 0, Texture'Solid');
+    if (bVertical)
+        gc.DrawPattern(0, height - barSize, width, barSize, 0, 0, Texture'Solid');
+    else
+        gc.DrawPattern(0, 0, barSize, height, 0, 0, Texture'Solid');
 }
 
 // ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ event DrawWindow(GC gc)
 
 function ConfigurationChanged()
 {
-	UpdateBars();
+    UpdateBars();
 }
 
 // ----------------------------------------------------------------------
@@ -54,11 +54,11 @@ function ConfigurationChanged()
 
 function SetValues(float newLow, float newHigh)
 {
-	lowValue  = newLow;
-	highValue = newHigh;
+    lowValue  = newLow;
+    highValue = newHigh;
 
-	// Update bars
-	UpdateBars();
+    // Update bars
+    UpdateBars();
 }
 
 // ----------------------------------------------------------------------
@@ -67,13 +67,13 @@ function SetValues(float newLow, float newHigh)
 
 function SetCurrentValue(Float newValue)
 {
-	// First clamp the value
-	newValue = Max(lowValue, newValue);
-	newValue = Min(highValue, newValue);
+    // First clamp the value
+    newValue = Max(lowValue, newValue);
+    newValue = Min(highValue, newValue);
 
-	currentValue = newValue;
+    currentValue = newValue;
 
-	UpdateBars();
+    UpdateBars();
 }
 
 // ----------------------------------------------------------------------
@@ -82,29 +82,29 @@ function SetCurrentValue(Float newValue)
 
 function UpdateBars()
 {
-	local Float valuePercent;
+    local Float valuePercent;
 
-	// Now calculate how large the bar is
-	valuePercent = currentValue / Abs(highValue - lowValue);
+    // Now calculate how large the bar is
+    valuePercent = currentValue / Abs(highValue - lowValue);
 
-	if (bVertical)
-		barSize = valuePercent * height;
-	else
-		barSize = valuePercent * width;
+    if (bVertical)
+        barSize = valuePercent * height;
+    else
+        barSize = valuePercent * width;
 
-	// Calculate the bar color
-	if (bUseScaledColor)
-	{
-		colForeground = GetColorScaled(valuePercent);
+    // Calculate the bar color
+    if (bUseScaledColor)
+    {
+        colForeground = GetColorScaled(valuePercent);
 
-		colForeground.r = Int(Float(colForeground.r) * scaleColorModifier);
-		colForeground.g = Int(Float(colForeground.g) * scaleColorModifier);
-		colForeground.b = Int(Float(colForeground.b) * scaleColorModifier);
-	}
-	else
-	{
-		colForeground = Default.colForeground;
-	}
+        colForeground.r = Int(Float(colForeground.r) * scaleColorModifier);
+        colForeground.g = Int(Float(colForeground.g) * scaleColorModifier);
+        colForeground.b = Int(Float(colForeground.b) * scaleColorModifier);
+    }
+    else
+    {
+        colForeground = Default.colForeground;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -113,8 +113,8 @@ function UpdateBars()
 
 function SetColors(Color newBack, Color newFore)
 {
-	colBackground = newBack;
-	colForeground = newFore;
+    colBackground = newBack;
+    colForeground = newFore;
 }
 
 // ----------------------------------------------------------------------
@@ -123,7 +123,7 @@ function SetColors(Color newBack, Color newFore)
 
 function SetBackColor(Color newBack)
 {
-	colBackground = newBack;
+    colBackground = newBack;
 }
 
 // ----------------------------------------------------------------------
@@ -132,7 +132,7 @@ function SetBackColor(Color newBack)
 
 function SetScaleColorModifier(Float newModifier)
 {
-	scaleColorModifier = newModifier;
+    scaleColorModifier = newModifier;
 }
 
 // ----------------------------------------------------------------------
@@ -141,7 +141,7 @@ function SetScaleColorModifier(Float newModifier)
 
 function SetVertical(Bool bNewVertical)
 {
-	bVertical = bNewVertical;
+    bVertical = bNewVertical;
 }
 
 // ----------------------------------------------------------------------
@@ -150,7 +150,7 @@ function SetVertical(Bool bNewVertical)
 
 function SetDrawBackground(Bool bNewDraw)
 {
-	bDrawBackground = bNewDraw;
+    bDrawBackground = bNewDraw;
 }
 
 // ----------------------------------------------------------------------
@@ -159,7 +159,7 @@ function SetDrawBackground(Bool bNewDraw)
 
 function UseScaledColor(Bool bNewScaled)
 {
-	bUseScaledColor = bNewScaled;
+    bUseScaledColor = bNewScaled;
 }
 
 // ----------------------------------------------------------------------
@@ -168,7 +168,7 @@ function UseScaledColor(Bool bNewScaled)
 
 function Color GetBarColor()
 {
-	return colForeground;
+    return colForeground;
 }
 
 // ----------------------------------------------------------------------

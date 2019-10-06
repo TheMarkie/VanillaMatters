@@ -5,34 +5,34 @@ class SecurityBot2 extends Robot;
 
 enum ESkinColor
 {
-	SC_UNATCO,
-	SC_Chinese
+    SC_UNATCO,
+    SC_Chinese
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_UNATCO:		MultiSkins[1] = Texture'SecurityBot2Tex1'; break;
-		case SC_Chinese:	MultiSkins[1] = Texture'SecurityBot2Tex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_UNATCO:     MultiSkins[1] = Texture'SecurityBot2Tex1'; break;
+        case SC_Chinese:    MultiSkins[1] = Texture'SecurityBot2Tex2'; break;
+    }
 }
 
 function PlayDisabled()
 {
-	local int rnd;
+    local int rnd;
 
-	rnd = Rand(3);
-	if (rnd == 0)
-		TweenAnimPivot('Disabled1', 0.2);
-	else if (rnd == 1)
-		TweenAnimPivot('Disabled2', 0.2);
-	else
-		TweenAnimPivot('Still', 0.2);
+    rnd = Rand(3);
+    if (rnd == 0)
+        TweenAnimPivot('Disabled1', 0.2);
+    else if (rnd == 1)
+        TweenAnimPivot('Disabled2', 0.2);
+    else
+        TweenAnimPivot('Still', 0.2);
 }
 
 defaultproperties

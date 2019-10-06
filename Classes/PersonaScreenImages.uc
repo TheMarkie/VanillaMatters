@@ -26,14 +26,14 @@ var localized String ShowNotesLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	PopulateImagesList();
-	SetFocusWindow(lstImages);
+    PopulateImagesList();
+    SetFocusWindow(lstImages);
 
-	PersonaNavBarWindow(winNavBar).btnImages.SetSensitivity(False);
+    PersonaNavBarWindow(winNavBar).btnImages.SetSensitivity(False);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -42,15 +42,15 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateTitleWindow(9, 5, ImagesTitleText);
-	CreateImageWindow();
-	CreateImagesList();
-	CreateImageTitle();
-	CreateButtons();
-	CreateShowNotesCheckbox();
-	CreateNewLegendLabel();
+    CreateTitleWindow(9, 5, ImagesTitleText);
+    CreateImageWindow();
+    CreateImagesList();
+    CreateImageTitle();
+    CreateButtons();
+    CreateShowNotesCheckbox();
+    CreateNewLegendLabel();
 }
 
 // ----------------------------------------------------------------------
@@ -59,8 +59,8 @@ function CreateControls()
 
 function CreateImageWindow()
 {
-	winImage = PersonaImageWindow(winClient.NewChild(Class'PersonaImageWindow'));
-	winImage.SetPos(15, 20);
+    winImage = PersonaImageWindow(winClient.NewChild(Class'PersonaImageWindow'));
+    winImage.SetPos(15, 20);
 }
 
 // ----------------------------------------------------------------------
@@ -69,10 +69,10 @@ function CreateImageWindow()
 
 function CreateImageTitle()
 {
-	winImageTitle = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winImageTitle.SetPos(214, 6);
-	winImageTitle.SetWidth(200);
-	winImageTitle.SetTextAlignments(HALIGN_Right, VALIGN_Center);
+    winImageTitle = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
+    winImageTitle.SetPos(214, 6);
+    winImageTitle.SetWidth(200);
+    winImageTitle.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -81,21 +81,21 @@ function CreateImageTitle()
 
 function CreateImagesList()
 {
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(417, 21);
-	winScroll.SetSize(184, 398);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(417, 21);
+    winScroll.SetSize(184, 398);
 
-	lstImages = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
-	lstImages.EnableMultiSelect(False);
-	lstImages.EnableAutoExpandColumns(True);
-	lstImages.SetNumColumns(3);
-	lstImages.HideColumn(2, True);
-	lstImages.SetSortColumn(0, True);
-	lstImages.EnableAutoSort(False);
-	lstImages.SetColumnWidth(0, 150);
-	lstImages.SetColumnWidth(1, 34);
-	lstImages.SetColumnType(2, COLTYPE_Float);
-	lstImages.SetColumnFont(1, Font'FontHUDWingDings');
+    lstImages = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
+    lstImages.EnableMultiSelect(False);
+    lstImages.EnableAutoExpandColumns(True);
+    lstImages.SetNumColumns(3);
+    lstImages.HideColumn(2, True);
+    lstImages.SetSortColumn(0, True);
+    lstImages.EnableAutoSort(False);
+    lstImages.SetColumnWidth(0, 150);
+    lstImages.SetColumnWidth(1, 34);
+    lstImages.SetColumnType(2, COLTYPE_Float);
+    lstImages.SetColumnFont(1, Font'FontHUDWingDings');
 }
 
 // ----------------------------------------------------------------------
@@ -104,18 +104,18 @@ function CreateImagesList()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 422);
-	winActionButtons.SetWidth(259);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(10, 422);
+    winActionButtons.SetWidth(259);
+    winActionButtons.FillAllSpace(False);
 
-	btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnAddNote.SetButtonText(AddNoteButtonLabel);
+    btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnAddNote.SetButtonText(AddNoteButtonLabel);
 
-	btnDeleteNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnDeleteNote.SetButtonText(DeleteNoteButtonLabel);
+    btnDeleteNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnDeleteNote.SetButtonText(DeleteNoteButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -124,11 +124,11 @@ function CreateButtons()
 
 function CreateShowNotesCheckbox()
 {
-	chkShowNotes = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
+    chkShowNotes = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
 
-	chkShowNotes.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 203, 424);
-	chkShowNotes.SetText(ShowNotesLabel);
-	chkShowNotes.SetToggle(True);
+    chkShowNotes.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 203, 424);
+    chkShowNotes.SetText(ShowNotesLabel);
+    chkShowNotes.SetToggle(True);
 }
 
 // ----------------------------------------------------------------------
@@ -136,11 +136,11 @@ function CreateShowNotesCheckbox()
 // ----------------------------------------------------------------------
 
 function CreateNewLegendLabel()
-{	
-	local PersonaImageNewLegendLabel newLabel;
+{
+    local PersonaImageNewLegendLabel newLabel;
 
-	newLabel = PersonaImageNewLegendLabel(winClient.NewChild(Class'PersonaImageNewLegendLabel'));
-	newLabel.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 424);
+    newLabel = PersonaImageNewLegendLabel(winClient.NewChild(Class'PersonaImageNewLegendLabel'));
+    newLabel.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 424);
 }
 
 // ----------------------------------------------------------------------
@@ -149,54 +149,54 @@ function CreateNewLegendLabel()
 
 function PopulateImagesList()
 {
-	local DataVaultImage image;
-	local int rowId;
+    local DataVaultImage image;
+    local int rowId;
 
-	// First clear the list
-	lstImages.DeleteAllRows();
+    // First clear the list
+    lstImages.DeleteAllRows();
 
-	// Loop through all the notes the player currently has in 
-	// his possession
+    // Loop through all the notes the player currently has in
+    // his possession
 
-	image = Player.FirstImage;
-	while(image != None)
-	{
-		rowId = lstImages.AddRow(image.imageDescription);
+    image = Player.FirstImage;
+    while(image != None)
+    {
+        rowId = lstImages.AddRow(image.imageDescription);
 
-		// Check to see if we need to display *New* in the second column
-		if (image.bPlayerViewedImage == False)
-			lstImages.SetField(rowId, 1, "C");
+        // Check to see if we need to display *New* in the second column
+        if (image.bPlayerViewedImage == False)
+            lstImages.SetField(rowId, 1, "C");
 
-		// Save the image away
-		lstImages.SetRowClientObject(rowId, image);
+        // Save the image away
+        lstImages.SetRowClientObject(rowId, image);
 
-		image = image.NextImage;
-	}
+        image = image.NextImage;
+    }
 }
 
 // ----------------------------------------------------------------------
 // ClearViewedImageFlags()
 //
-// Loops through all the images and clears the "bPlayerViewedImage" 
+// Loops through all the images and clears the "bPlayerViewedImage"
 // flag for any the player happened to look at.
 // ----------------------------------------------------------------------
 
 function ClearViewedImageFlags()
 {
-	local DataVaultImage image;
-	local int listIndex;
-	local int rowId;
+    local DataVaultImage image;
+    local int listIndex;
+    local int rowId;
 
-	for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
-	{
-		rowId = lstImages.IndexToRowId(listIndex);
+    for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
+    {
+        rowId = lstImages.IndexToRowId(listIndex);
 
-		if (lstImages.GetFieldValue(rowId, 2) > 0)
-		{
-			image = DataVaultImage(lstImages.GetRowClientObject(rowId));
-			image.bPlayerViewedImage = True;
-		}
-	}
+        if (lstImages.GetFieldValue(rowId, 2) > 0)
+        {
+            image = DataVaultImage(lstImages.GetRowClientObject(rowId));
+            image.bPlayerViewedImage = True;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -205,28 +205,28 @@ function ClearViewedImageFlags()
 
 function SetImage(DataVaultImage newImage)
 {
-	winImage.SetImage(newImage);
+    winImage.SetImage(newImage);
 
-	if ( newImage == None )
-		winImageTitle.SetText("");
-	else
-		winImageTitle.SetText(newImage.imageDescription);
+    if ( newImage == None )
+        winImageTitle.SetText("");
+    else
+        winImageTitle.SetText(newImage.imageDescription);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 // ----------------------------------------------------------------------
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	SetImage(DataVaultImage(lstImages.GetRowClientObject(focusRowId)));
+    SetImage(DataVaultImage(lstImages.GetRowClientObject(focusRowId)));
 
-	// Set a flag to later clear the "*New*" in the second column
-	lstImages.SetFieldValue(focusRowId, 2, 1);
+    // Set a flag to later clear the "*New*" in the second column
+    lstImages.SetFieldValue(focusRowId, 2, 1);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -235,7 +235,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -244,7 +244,7 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -253,29 +253,29 @@ event FocusLeftDescendant(Window leaveWindow)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch(buttonPressed)
-	{
-		case btnAddNote:
-			AddNote();
-			break;
+    switch(buttonPressed)
+    {
+        case btnAddNote:
+            AddNote();
+            break;
 
-		case btnDeleteNote:
-			DeleteNote();
-			break;
+        case btnDeleteNote:
+            DeleteNote();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -286,8 +286,8 @@ function bool ButtonActivated( Window buttonPressed )
 
 event Bool ToggleChanged(window button, bool bToggleValue)
 {
-	if (button == chkShowNotes)
-		ShowNotes(bToggleValue);
+    if (button == chkShowNotes)
+        ShowNotes(bToggleValue);
 }
 
 // ----------------------------------------------------------------------
@@ -298,11 +298,11 @@ event Bool ToggleChanged(window button, bool bToggleValue)
 
 function AddNote()
 {
-	// Set a variable so the next place the user clicks inside the 
-	// imgae window a new note is added. 
-	winImage.SetAddNoteMode(True);
+    // Set a variable so the next place the user clicks inside the
+    // imgae window a new note is added.
+    winImage.SetAddNoteMode(True);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -311,8 +311,8 @@ function AddNote()
 
 function DeleteNote()
 {
-	winImage.DeleteNote();
-	EnableButtons();
+    winImage.DeleteNote();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -321,8 +321,8 @@ function DeleteNote()
 
 function ShowNotes(bool bNewShowNotes)
 {
-	if (winImage != None)
-		winImage.ShowNotes(bNewShowNotes);
+    if (winImage != None)
+        winImage.ShowNotes(bNewShowNotes);
 }
 
 // ----------------------------------------------------------------------
@@ -333,13 +333,13 @@ function ShowNotes(bool bNewShowNotes)
 
 function EnableButtons()
 {
-	local DataVaultImage image;
+    local DataVaultImage image;
 
-	image = winImage.GetImage();
+    image = winImage.GetImage();
 
-	btnAddNote.SetSensitivity(image != None);
-	btnDeleteNote.SetSensitivity(winImage.IsNoteSelected());
-	chkShowNotes.SetSensitivity(image != None);
+    btnAddNote.SetSensitivity(image != None);
+    btnDeleteNote.SetSensitivity(winImage.IsNoteSelected());
+    chkShowNotes.SetSensitivity(image != None);
 }
 
 // ----------------------------------------------------------------------
@@ -348,8 +348,8 @@ function EnableButtons()
 
 function SaveSettings()
 {
-	DestroyImages();
-	ClearViewedImageFlags();
+    DestroyImages();
+    ClearViewedImageFlags();
 }
 
 // ----------------------------------------------------------------------
@@ -360,22 +360,22 @@ function SaveSettings()
 
 function DestroyImages()
 {
-	local DataVaultImage image;
-	local int listIndex;
-	local int rowId;
+    local DataVaultImage image;
+    local int listIndex;
+    local int rowId;
 
-	for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
-	{
-		rowId = lstImages.IndexToRowId(listIndex);
+    for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
+    {
+        rowId = lstImages.IndexToRowId(listIndex);
 
-		if (lstImages.GetFieldValue(rowId, 2) > 0)
-		{
-			image = DataVaultImage(lstImages.GetRowClientObject(rowId));
+        if (lstImages.GetFieldValue(rowId, 2) > 0)
+        {
+            image = DataVaultImage(lstImages.GetRowClientObject(rowId));
 
-			if (image != None)
-				image.UnloadTextures(player);
-		}
-	}
+            if (image != None)
+                image.UnloadTextures(player);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

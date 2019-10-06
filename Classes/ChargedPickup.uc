@@ -2,7 +2,7 @@
 // ChargedPickup.
 //=============================================================================
 class ChargedPickup extends DeusExPickup
-	abstract;
+    abstract;
 
 var() class<Skill> skillNeeded;
 var() bool bOneUseOnly;
@@ -14,11 +14,11 @@ var travel bool bIsActive;
 var localized String ChargeRemainingLabel;
 
 // Vanilla Matters
-var() bool	VM_bQuiet;				// Make the LoopSound not played.
-var() bool	VM_bDraining;			// Does it slowly drain?
-var() float	VM_DamageResistance;	// How much base resistance it provides, doesn't do anything without proper checks.
+var() bool  VM_bQuiet;              // Make the LoopSound not played.
+var() bool  VM_bDraining;           // Does it slowly drain?
+var() float VM_DamageResistance;    // How much base resistance it provides, doesn't do anything without proper checks.
 
-var travel int VM_actualCharge;		// To keep track of the actual charge after level scaling.
+var travel int VM_actualCharge;     // To keep track of the actual charge after level scaling.
 
 var localized String VM_msgIsActive;
 var localized String VM_msgInfoToggle;
@@ -32,59 +32,59 @@ var localized String VM_msgInfoNo;
 
 simulated function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
-	local DeusExPlayer player;
-	local String outText;
+    local PersonaInfoWindow winInfo;
+    local DeusExPlayer player;
+    local String outText;
 
-	// Vanilla Matters
-	local float damageResistance;
-	local float skillLevelValue;
+    // Vanilla Matters
+    local float damageResistance;
+    local float skillLevelValue;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	player = DeusExPlayer(Owner);
+    player = DeusExPlayer(Owner);
 
-	if (player != None)
-	{
-		winInfo.SetTitle(itemName);
-		winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
+    if (player != None)
+    {
+        winInfo.SetTitle(itemName);
+        winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
 
-		outText = ChargeRemainingLabel @ Int(GetCurrentCharge()) $ "%";
-		winInfo.AppendText(outText);
+        outText = ChargeRemainingLabel @ Int(GetCurrentCharge()) $ "%";
+        winInfo.AppendText(outText);
 
-		// Vanilla Matters: Add in damage resistance value if there's any.
-		if ( VM_DamageResistance != 0.0 ) {
-			winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - VM_DamageResistance ) * 100, 0.1 ) $ "% " );
+        // Vanilla Matters: Add in damage resistance value if there's any.
+        if ( VM_DamageResistance != 0.0 ) {
+            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - VM_DamageResistance ) * 100, 0.1 ) $ "% " );
 
-			skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillEnviro' );
+            skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillEnviro' );
 
-			damageResistance = ( 1 - ( VM_DamageResistance * skillLevelValue ) ) * 100.0;
+            damageResistance = ( 1 - ( VM_DamageResistance * skillLevelValue ) ) * 100.0;
 
-			if ( damageResistance != VM_DamageResistance ) {
-				winInfo.AppendText( class'DeusExWeapon'.static.BuildPercentString( 1 - skillLevelValue ) @ "=" @ class'DeusExWeapon'.static.FormatFloatString( damageResistance, 0.1 ) $ "%" );
-			}
-		}
+            if ( damageResistance != VM_DamageResistance ) {
+                winInfo.AppendText( class'DeusExWeapon'.static.BuildPercentString( 1 - skillLevelValue ) @ "=" @ class'DeusExWeapon'.static.FormatFloatString( damageResistance, 0.1 ) $ "%" );
+            }
+        }
 
-		// Vanilla Matters: Add in whether the charged pickup is toggleable.
-		if ( bOneUseOnly ) {
-			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoNo );
-		}
-		else {
-			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoYes );
-		}
+        // Vanilla Matters: Add in whether the charged pickup is toggleable.
+        if ( bOneUseOnly ) {
+            winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoNo );
+        }
+        else {
+            winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgInfoToggle @ VM_msgInfoYes );
+        }
 
-		// Vanilla Matters: Add in whether the charged pickup is currently active.
-		if ( bIsActive ) {
-			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoYes );
-		}
-		else {
-			winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoNo );
-		}
-	}
+        // Vanilla Matters: Add in whether the charged pickup is currently active.
+        if ( bIsActive ) {
+            winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoYes );
+        }
+        else {
+            winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ VM_msgIsActive @ VM_msgInfoNo );
+        }
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -93,13 +93,13 @@ simulated function bool UpdateInfo(Object winObject)
 
 simulated function Float GetCurrentCharge()
 {
-	// Vanilla Matters: Use actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
-	if ( VM_actualCharge > 0 ) {
-		return ( float( Charge ) / float( VM_actualCharge ) ) * 100.0;
-	}
-	else {
-		return ( float( Charge ) / float( Default.Charge ) ) * 100.0;
-	}
+    // Vanilla Matters: Use actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
+    if ( VM_actualCharge > 0 ) {
+        return ( float( Charge ) / float( VM_actualCharge ) ) * 100.0;
+    }
+    else {
+        return ( float( Charge ) / float( Default.Charge ) ) * 100.0;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -108,13 +108,13 @@ simulated function Float GetCurrentCharge()
 
 function ChargedPickupBegin(DeusExPlayer Player)
 {
-	Player.AddChargedDisplay(Self);
-	PlaySound(ActivateSound, SLOT_None);
+    Player.AddChargedDisplay(Self);
+    PlaySound(ActivateSound, SLOT_None);
 
-	// Vanilla Matters: Don't interrupt ambient if quiet.
-	if ( LoopSound != None && !VM_bQuiet ) {
-		AmbientSound = LoopSound;
-	}
+    // Vanilla Matters: Don't interrupt ambient if quiet.
+    if ( LoopSound != None && !VM_bQuiet ) {
+        AmbientSound = LoopSound;
+    }
 
    //DEUS_EX AMSD In multiplayer, remove it from the belt if the belt
    //is the only inventory.
@@ -127,12 +127,12 @@ function ChargedPickupBegin(DeusExPlayer Player)
       BeltPos=default.BeltPos;
    }
 
-	// Vanilla Matters: Make the charged pickup in player's view invisible.
-	Style = STY_Translucent;
-	ScaleGlow = 0.0;
-	bUnlit = True;
+    // Vanilla Matters: Make the charged pickup in player's view invisible.
+    Style = STY_Translucent;
+    ScaleGlow = 0.0;
+    bUnlit = True;
 
-	bIsActive = True;
+    bIsActive = True;
 }
 
 // Vanilla Matters: Allow the charged pick up to have an "extra functionality" triggered by the reload key.
@@ -146,25 +146,25 @@ function ExtraFunction( DeusExPlayer player ) {
 
 function ChargedPickupEnd(DeusExPlayer Player)
 {
-	Player.RemoveChargedDisplay(Self);
-	PlaySound(DeactivateSound, SLOT_None);
+    Player.RemoveChargedDisplay(Self);
+    PlaySound(DeactivateSound, SLOT_None);
 
-	// Vanilla Matters: No need to interrupt ambient since it's never changed.
-	if ( LoopSound != None && !VM_bQuiet ) {
-		AmbientSound = None;
-	}
+    // Vanilla Matters: No need to interrupt ambient since it's never changed.
+    if ( LoopSound != None && !VM_bQuiet ) {
+        AmbientSound = None;
+    }
 
-	// remove it from our inventory if this is a one
-	// use item
-	if (bOneUseOnly)
-		Player.DeleteInventory(Self);
+    // remove it from our inventory if this is a one
+    // use item
+    if (bOneUseOnly)
+        Player.DeleteInventory(Self);
 
-	// Vanilla Matters: Makes it visible again.
-	Style = STY_Normal;
-	ScaleGlow = Default.ScaleGlow;
-	bUnlit = False;
+    // Vanilla Matters: Makes it visible again.
+    Style = STY_Normal;
+    ScaleGlow = Default.ScaleGlow;
+    bUnlit = False;
 
-	bIsActive = False;
+    bIsActive = False;
 }
 
 // ----------------------------------------------------------------------
@@ -173,7 +173,7 @@ function ChargedPickupEnd(DeusExPlayer Player)
 
 simulated function bool IsActive()
 {
-	return bIsActive;
+    return bIsActive;
 }
 
 // ----------------------------------------------------------------------
@@ -190,38 +190,38 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 
 simulated function int CalcChargeDrain(DeusExPlayer Player)
 {
-	local float skillValue;
-	local float drain;
+    local float skillValue;
+    local float drain;
 
-	// Vanilla Matters: Return nothing so that no charge is deducted from the pool.
-	if ( !VM_bDraining ) {
-		return 0;
-	}
+    // Vanilla Matters: Return nothing so that no charge is deducted from the pool.
+    if ( !VM_bDraining ) {
+        return 0;
+    }
 
-	drain = 4.0;
-	skillValue = 1.0;
+    drain = 4.0;
+    skillValue = 1.0;
 
-	if (skillNeeded != None)
-		skillValue = Player.SkillSystem.GetSkillLevelValue(skillNeeded);
-	drain *= skillValue;
+    if (skillNeeded != None)
+        skillValue = Player.SkillSystem.GetSkillLevelValue(skillNeeded);
+    drain *= skillValue;
 
-	return Int(drain);
+    return Int(drain);
 }
 
 // Vanilla Matters: Drain charge and returns amount actually drained.
 function float DrainCharge( float drainAmount ) {
-	// VM: There's more charge than the drainAmount, so the actual drained amount is the same.
-	if ( Charge >= drainAmount ) {
-		Charge = Charge - drainAmount;
-	}
-	// VM: There's less charge than the drainAmount, so the actual drained amount is lower.
-	else {
-		drainAmount = drainAmount - Charge;
+    // VM: There's more charge than the drainAmount, so the actual drained amount is the same.
+    if ( Charge >= drainAmount ) {
+        Charge = Charge - drainAmount;
+    }
+    // VM: There's less charge than the drainAmount, so the actual drained amount is lower.
+    else {
+        drainAmount = drainAmount - Charge;
 
-		Charge = 0;
-	}
+        Charge = 0;
+    }
 
-	return drainAmount;
+    return drainAmount;
 }
 
 // ----------------------------------------------------------------------
@@ -233,26 +233,26 @@ function float DrainCharge( float drainAmount ) {
 
 function UsedUp()
 {
-	local DeusExPlayer Player;
+    local DeusExPlayer Player;
 
-	if ( Pawn(Owner) != None )
-	{
-		bActivatable = false;
-		Pawn(Owner).ClientMessage(ExpireMessage);	
-	}
-	Owner.PlaySound(DeactivateSound);
-	Player = DeusExPlayer(Owner);
+    if ( Pawn(Owner) != None )
+    {
+        bActivatable = false;
+        Pawn(Owner).ClientMessage(ExpireMessage);
+    }
+    Owner.PlaySound(DeactivateSound);
+    Player = DeusExPlayer(Owner);
 
-	if (Player != None)
-	{
-		if (Player.inHand == Self)
-			ChargedPickupEnd(Player);
-	}
+    if (Player != None)
+    {
+        if (Player.inHand == Self)
+            ChargedPickupEnd(Player);
+    }
 
-	//Destroy();
+    //Destroy();
 
-	// Vanilla Matters: Do UseOnce() to be consistent with the rest.
-	UseOnce();
+    // Vanilla Matters: Do UseOnce() to be consistent with the rest.
+    UseOnce();
 }
 
 // ----------------------------------------------------------------------
@@ -269,112 +269,112 @@ state DeActivated
 
 state Activated
 {
-	function Timer()
-	{
-		local DeusExPlayer Player;
+    function Timer()
+    {
+        local DeusExPlayer Player;
 
-		Player = DeusExPlayer(Owner);
-		if (Player != None)
-		{
-			ChargedPickupUpdate(Player);
-			//Charge -= CalcChargeDrain(Player);
+        Player = DeusExPlayer(Owner);
+        if (Player != None)
+        {
+            ChargedPickupUpdate(Player);
+            //Charge -= CalcChargeDrain(Player);
 
-			// Vanilla Matters: Charge draining is reworked to represent duration better. Now 10 charge is worth 1 second.
-			if ( VM_bDraining ) {
-				Charge = Charge - 1;
-			}
+            // Vanilla Matters: Charge draining is reworked to represent duration better. Now 10 charge is worth 1 second.
+            if ( VM_bDraining ) {
+                Charge = Charge - 1;
+            }
 
-			if (Charge <= 0)
-				UsedUp();
-		}
+            if (Charge <= 0)
+                UsedUp();
+        }
 
-		// Vanilla Matters: Make sure the chargedpickup is turned off when no one can be using it.
-		if ( Owner == None ) {
-			super.Activate();
-		}
-	}
+        // Vanilla Matters: Make sure the chargedpickup is turned off when no one can be using it.
+        if ( Owner == None ) {
+            super.Activate();
+        }
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer Player;
+    function BeginState()
+    {
+        local DeusExPlayer Player;
 
-		// Vanilla Matters
-		local int newCharge;
+        // Vanilla Matters
+        local int newCharge;
 
-		Super.BeginState();
+        Super.BeginState();
 
-		Player = DeusExPlayer(Owner);
-		if (Player != None)
-		{
-			// remove it from our inventory, but save our owner info
-			if (bOneUseOnly)
-			{
-//				Player.DeleteInventory(Self);
-				
-				// Remove from player's hand
-				//Player.PutInHand(None);
+        Player = DeusExPlayer(Owner);
+        if (Player != None)
+        {
+            // remove it from our inventory, but save our owner info
+            if (bOneUseOnly)
+            {
+//              Player.DeleteInventory(Self);
 
-				// Vanilla Matters: Remove the one-use item from the belt to make it less clunky when it can't be selected again.
-				if ( DeusExRootWindow(Player.rootWindow) != None ) {
-					DeusExRootWindow( Player.rootWindow ).DeleteInventory( self );
-				}
+                // Remove from player's hand
+                //Player.PutInHand(None);
 
-				bInObjectBelt=False;
-				BeltPos=default.BeltPos;
+                // Vanilla Matters: Remove the one-use item from the belt to make it less clunky when it can't be selected again.
+                if ( DeusExRootWindow(Player.rootWindow) != None ) {
+                    DeusExRootWindow( Player.rootWindow ).DeleteInventory( self );
+                }
 
-				SetOwner( Player );
-			}
+                bInObjectBelt=False;
+                BeltPos=default.BeltPos;
 
-			// Vanilla Matters: Since we don't do dynamic drain amount like vanilla, we're gonna have to up Charge amount properly upon leveling up.
-			if ( VM_bDraining ) {
-				newCharge = Default.Charge * ( 2.0 - Player.SkillSystem.GetSkillLevelValue( skillNeeded ) );
-			}
-			// VM: If the pick up is not draining over time, we use a different formula.
-			else {
-				newCharge = Default.Charge / Player.SkillSystem.GetSkillLevelValue( skillNeeded );
-			}
+                SetOwner( Player );
+            }
 
-			// VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
-			if ( newCharge > VM_actualCharge ) {
-				// VM: If actualCharge is 0, it means this is the first time the player's activated the pickup, so we do some init.
-				if ( VM_actualCharge <= 0 ) {
-					VM_actualCharge = newCharge;
-					Charge = newCharge;
-				}
-				// VM: Scale up Charge proportionally.
-				else {
-					Charge = Charge * ( float( newCharge ) / float ( VM_actualCharge ) );
-					VM_actualCharge = newCharge;
-				}
-			}
+            // Vanilla Matters: Since we don't do dynamic drain amount like vanilla, we're gonna have to up Charge amount properly upon leveling up.
+            if ( VM_bDraining ) {
+                newCharge = Default.Charge * ( 2.0 - Player.SkillSystem.GetSkillLevelValue( skillNeeded ) );
+            }
+            // VM: If the pick up is not draining over time, we use a different formula.
+            else {
+                newCharge = Default.Charge / Player.SkillSystem.GetSkillLevelValue( skillNeeded );
+            }
 
-			ChargedPickupBegin(Player);
-			SetTimer(0.1, True);
-		}
-	}
+            // VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
+            if ( newCharge > VM_actualCharge ) {
+                // VM: If actualCharge is 0, it means this is the first time the player's activated the pickup, so we do some init.
+                if ( VM_actualCharge <= 0 ) {
+                    VM_actualCharge = newCharge;
+                    Charge = newCharge;
+                }
+                // VM: Scale up Charge proportionally.
+                else {
+                    Charge = Charge * ( float( newCharge ) / float ( VM_actualCharge ) );
+                    VM_actualCharge = newCharge;
+                }
+            }
 
-	function EndState()
-	{
-		local DeusExPlayer Player;
+            ChargedPickupBegin(Player);
+            SetTimer(0.1, True);
+        }
+    }
 
-		Super.EndState();
+    function EndState()
+    {
+        local DeusExPlayer Player;
 
-		Player = DeusExPlayer(Owner);
-		if (Player != None)
-		{
-			ChargedPickupEnd(Player);
-			SetTimer(0.1, False);
-		}
-	}
+        Super.EndState();
 
-	function Activate()
-	{
-		// if this is a single-use item, don't allow the player to turn it off
-		if (bOneUseOnly)
-			return;
+        Player = DeusExPlayer(Owner);
+        if (Player != None)
+        {
+            ChargedPickupEnd(Player);
+            SetTimer(0.1, False);
+        }
+    }
 
-		Super.Activate();
-	}
+    function Activate()
+    {
+        // if this is a single-use item, don't allow the player to turn it off
+        if (bOneUseOnly)
+            return;
+
+        Super.Activate();
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -6,47 +6,47 @@ class WaltonSimons extends HumanMilitary;
 //
 // Damage type table for Walton Simons:
 //
-// Shot			- 100%
-// Sabot		- 100%
-// Exploded		- 100%
-// TearGas		- 10%
-// PoisonGas	- 10%
-// Poison		- 10%
-// PoisonEffect	- 10%
-// HalonGas		- 10%
-// Radiation	- 10%
-// Shocked		- 10%
-// Stunned		- 0%
+// Shot         - 100%
+// Sabot        - 100%
+// Exploded     - 100%
+// TearGas      - 10%
+// PoisonGas    - 10%
+// Poison       - 10%
+// PoisonEffect - 10%
+// HalonGas     - 10%
+// Radiation    - 10%
+// Shocked      - 10%
+// Stunned      - 0%
 // KnockedOut   - 0%
-// Flamed		- 0%
-// Burned		- 0%
-// NanoVirus	- 0%
-// EMP			- 0%
+// Flamed       - 0%
+// Burned       - 0%
+// NanoVirus    - 0%
+// EMP          - 0%
 //
 
 function float ShieldDamage(name damageType)
 {
-	// handle special damage types
-	// Vanilla Matters: Make him vulnerable to Flamed and Burned if he's EMP'd.
-	if ( ( ( damageType == 'Flamed' || damageType == 'Burned' ) && CloakEMPTimer <= 0 ) || damageType == 'Stunned' || damageType == 'KnockedOut' ) {
-		return 0.0;
-	}
-	else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
-			(damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
-	        (damageType == 'PoisonEffect'))
-		return 0.1;
-	else
-		return Super.ShieldDamage(damageType);
+    // handle special damage types
+    // Vanilla Matters: Make him vulnerable to Flamed and Burned if he's EMP'd.
+    if ( ( ( damageType == 'Flamed' || damageType == 'Burned' ) && CloakEMPTimer <= 0 ) || damageType == 'Stunned' || damageType == 'KnockedOut' ) {
+        return 0.0;
+    }
+    else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
+            (damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
+            (damageType == 'PoisonEffect'))
+        return 0.1;
+    else
+        return Super.ShieldDamage(damageType);
 }
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	if (CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    if (CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 defaultproperties

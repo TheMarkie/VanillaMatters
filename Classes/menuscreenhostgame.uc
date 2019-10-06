@@ -34,10 +34,10 @@ event InitWindow()
 
 function ProcessAction(String actionKey)
 {
-	if (actionKey == "BEGINHOST")
+    if (actionKey == "BEGINHOST")
    {
       BeginHost();
-	}
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ function BeginHost()
 {
    local string mapname;
    local string gametype;
-   local int configservermode;   
+   local int configservermode;
 
    //Save all settings so that they can be read.
    SaveSettings();
@@ -57,7 +57,7 @@ function BeginHost()
    configservermode = int(player.ConsoleCommand("get MenuScreenHostGame ServerMode"));
    gametype = player.ConsoleCommand("get MenuScreenHostGame CurrentGameType");
 
-   if (configservermode == MODE_DEDICATED)   
+   if (configservermode == MODE_DEDICATED)
       player.ConsoleCommand("Relaunch " $mapname$ "?game=" $gametype$ "?-server?log=server.log");
    else
       player.StartListenGame(mapname $ "?game=" $ gametype);
@@ -110,21 +110,21 @@ function SetChoiceInfo()
 {
    local Window btnChoice;
 
-	btnChoice = winClient.GetTopChild();
-	while(btnChoice != None)
-	{
-		if (btnChoice.IsA('MenuChoice_VictoryType'))
+    btnChoice = winClient.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuChoice_VictoryType'))
       {
          VictoryTypeChoice = MenuChoice_VictoryType(btnChoice);
          VictoryTypeChoice.hostParent = Self;
       }
 
-		if (btnChoice.IsA('MenuChoice_VictoryValue'))
+        if (btnChoice.IsA('MenuChoice_VictoryValue'))
       {
          VictoryValueChoice = MenuChoice_VictoryValue(btnChoice);
          VictoryValueChoice.hostParent = Self;
       }
-      
+
       if (btnChoice.IsA('MenuChoice_GameType'))
       {
          GameTypeChoice = MenuChoice_GameType(btnChoice);
@@ -133,7 +133,7 @@ function SetChoiceInfo()
       }
 
       btnChoice = btnChoice.GetLowerSibling();
-	}
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -184,11 +184,11 @@ function LockButtonSetting(MenuUIChoice SetButton)
    ChoiceConfigSetting = SetButton.ConfigSetting;
    PropertyName = "";
 
-	if ( (GameTypeName != "") && (ChoiceConfigSetting != "") )
-	{
-		if ( Caps(Left(ChoiceConfigSetting,Len("DeusExMPGame "))) == Caps("DeusExMPGame ") )
+    if ( (GameTypeName != "") && (ChoiceConfigSetting != "") )
+    {
+        if ( Caps(Left(ChoiceConfigSetting,Len("DeusExMPGame "))) == Caps("DeusExMPGame ") )
          PropertyName = Right(ChoiceConfigSetting,Len(ChoiceConfigSetting) - Len("DeusExMPGame "));
-	}
+    }
 
    if (PropertyName == "")
       return;
@@ -196,7 +196,7 @@ function LockButtonSetting(MenuUIChoice SetButton)
    TypeClass = class<GameInfo>( Player.DynamicLoadObject( GameTypeName, class'Class' ) );
    if (TypeClass != None)
       CurrentType = Player.Spawn(TypeClass);
-   
+
    if (CurrentType == None)
       return;
 

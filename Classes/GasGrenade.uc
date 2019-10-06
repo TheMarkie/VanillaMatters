@@ -3,25 +3,25 @@
 //=============================================================================
 class GasGrenade extends ThrownProjectile;
 
-var float	mpBlastRadius;
-var float	mpProxRadius;
-//var float	mpGasDamage;
-var float	mpFuselength;
+var float   mpBlastRadius;
+var float   mpProxRadius;
+//var float mpGasDamage;
+var float   mpFuselength;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		blastRadius=mpBlastRadius;
-		proxRadius=mpProxRadius;
-		//Damage=mpGasDamage;
-		// Vanilla Matters: Make mpDamage have a consistent name.
-		Damage = mpDamage;
-		fuseLength=mpFuseLength;
-		bIgnoresNanoDefense=True;
-	}
+    if ( Level.NetMode != NM_Standalone )
+    {
+        blastRadius=mpBlastRadius;
+        proxRadius=mpProxRadius;
+        //Damage=mpGasDamage;
+        // Vanilla Matters: Make mpDamage have a consistent name.
+        Damage = mpDamage;
+        fuseLength=mpFuseLength;
+        bIgnoresNanoDefense=True;
+    }
 }
 
 defaultproperties

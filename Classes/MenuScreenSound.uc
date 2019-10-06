@@ -10,8 +10,8 @@ class MenuScreenSound expands MenuUIScreenWindow;
 
 function SaveSettings()
 {
-	Super.SaveSettings();
-	player.SaveConfig();
+    Super.SaveSettings();
+    player.SaveConfig();
 }
 
 // ----------------------------------------------------------------------

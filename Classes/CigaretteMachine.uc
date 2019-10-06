@@ -12,47 +12,47 @@ var localized String msgEmpty;
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	local DeusExPlayer player;
-	local Vector loc;
-	local Pickup product;
+    local DeusExPlayer player;
+    local Vector loc;
+    local Pickup product;
 
-	Super.Frob(Frobber, frobWith);
-	
-	player = DeusExPlayer(Frobber);
+    Super.Frob(Frobber, frobWith);
 
-	if (player != None)
-	{
-		if (numUses <= 0)
-		{
-			player.ClientMessage(msgEmpty);
-			return;
-		}
+    player = DeusExPlayer(Frobber);
 
-		if (player.Credits >= 8)
-		{
-			PlaySound(sound'VendingCoin', SLOT_None);
-			loc = Vector(Rotation) * CollisionRadius * 0.8;
-			loc.Z -= CollisionHeight * 0.6; 
-			loc += Location;
+    if (player != None)
+    {
+        if (numUses <= 0)
+        {
+            player.ClientMessage(msgEmpty);
+            return;
+        }
 
-			product = Spawn(class'Cigarettes', None,, loc);
+        if (player.Credits >= 8)
+        {
+            PlaySound(sound'VendingCoin', SLOT_None);
+            loc = Vector(Rotation) * CollisionRadius * 0.8;
+            loc.Z -= CollisionHeight * 0.6;
+            loc += Location;
 
-			if (product != None)
-			{
-				PlaySound(sound'VendingSmokes', SLOT_None);
-				product.Velocity = Vector(Rotation) * 100;
-				product.bFixedRotationDir = True;
-				product.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
-				product.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
-			}
+            product = Spawn(class'Cigarettes', None,, loc);
 
-			player.Credits -= 8;
-			player.ClientMessage(msgDispensed);
-			numUses--;
-		}
-		else
-			player.ClientMessage(msgNoCredits);
-	}
+            if (product != None)
+            {
+                PlaySound(sound'VendingSmokes', SLOT_None);
+                product.Velocity = Vector(Rotation) * 100;
+                product.bFixedRotationDir = True;
+                product.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+                product.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
+            }
+
+            player.Credits -= 8;
+            player.ClientMessage(msgDispensed);
+            numUses--;
+        }
+        else
+            player.ClientMessage(msgNoCredits);
+    }
 }
 
 defaultproperties

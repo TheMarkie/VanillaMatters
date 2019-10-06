@@ -42,28 +42,28 @@ var localized string ConfirmNoteDeletionLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	PopulateGoals();
-	PopulateNotes();
+    PopulateGoals();
+    PopulateNotes();
 
-	PersonaNavBarWindow(winNavBar).btnGoals.SetSensitivity(False);
+    PersonaNavBarWindow(winNavBar).btnGoals.SetSensitivity(False);
 
-	// Set focus to the AddNote button
-	SetFocusWindow(btnAddNote);
+    // Set focus to the AddNote button
+    SetFocusWindow(btnAddNote);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
-// WindowReady() 
+// WindowReady()
 // ----------------------------------------------------------------------
 
 event WindowReady()
 {
-	// Make sure the most recent note is scrolled to the top
-	if (firstNoteWindow != None)
-		firstNoteWindow.AskParentToShowArea();
+    // Make sure the most recent note is scrolled to the top
+    if (firstNoteWindow != None)
+        firstNoteWindow.AskParentToShowArea();
 }
 
 // ----------------------------------------------------------------------
@@ -72,11 +72,11 @@ event WindowReady()
 
 event DestroyWindow()
 {
-	player.bDisplayCompletedGoals = bDisplayCompletedGoals;
-	player.bConfirmNoteDeletes    = bConfirmNoteDeletes;
-	player.SaveConfig();
+    player.bDisplayCompletedGoals = bDisplayCompletedGoals;
+    player.bConfirmNoteDeletes    = bConfirmNoteDeletes;
+    player.SaveConfig();
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -85,19 +85,19 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateTitleWindow(9,   5, GoalsTitleText);
-	CreateTitleWindow(9, 209, NotesTitleText);
+    CreateTitleWindow(9,   5, GoalsTitleText);
+    CreateTitleWindow(9, 209, NotesTitleText);
 
-	winGoals = CreateScrollTileWindow(16,  21, 574, 154);
+    winGoals = CreateScrollTileWindow(16,  21, 574, 154);
 
-	winNotes = CreateScrollTileWindow(16, 226, 574, 182);
-	winNotes.SetMinorSpacing(4);
+    winNotes = CreateScrollTileWindow(16, 226, 574, 182);
+    winNotes.SetMinorSpacing(4);
 
-	CreateShowCompletedGoalsCheckbox();
-	CreateNotesButtons();
-	CreateConfirmNoteDeletionCheckbox();
+    CreateShowCompletedGoalsCheckbox();
+    CreateNotesButtons();
+    CreateConfirmNoteDeletionCheckbox();
 }
 
 // ----------------------------------------------------------------------
@@ -106,13 +106,13 @@ function CreateControls()
 
 function CreateShowCompletedGoalsCheckbox()
 {
-	chkShowCompletedGoals = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
+    chkShowCompletedGoals = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
 
-	bDisplayCompletedGoals = player.bDisplayCompletedGoals;
+    bDisplayCompletedGoals = player.bDisplayCompletedGoals;
 
-	chkShowCompletedGoals.SetText(DisplayCompletedGoals);
-	chkShowCompletedGoals.SetToggle(bDisplayCompletedGoals);
-	chkShowCompletedGoals.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 180);
+    chkShowCompletedGoals.SetText(DisplayCompletedGoals);
+    chkShowCompletedGoals.SetToggle(bDisplayCompletedGoals);
+    chkShowCompletedGoals.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 180);
 }
 
 // ----------------------------------------------------------------------
@@ -121,18 +121,18 @@ function CreateShowCompletedGoalsCheckbox()
 
 function CreateNotesButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 411);
-	winActionButtons.SetWidth(179);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(10, 411);
+    winActionButtons.SetWidth(179);
+    winActionButtons.FillAllSpace(False);
 
-	btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnAddNote.SetButtonText(AddButtonLabel);
+    btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnAddNote.SetButtonText(AddButtonLabel);
 
-	btnDeleteNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnDeleteNote.SetButtonText(DeleteButtonLabel);
+    btnDeleteNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnDeleteNote.SetButtonText(DeleteButtonLabel);
 }
 
 
@@ -142,13 +142,13 @@ function CreateNotesButtons()
 
 function CreateConfirmNoteDeletionCheckbox()
 {
-	chkConfirmNoteDeletion = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
+    chkConfirmNoteDeletion = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
 
-	bConfirmNoteDeletes = player.bConfirmNoteDeletes;
+    bConfirmNoteDeletes = player.bConfirmNoteDeletes;
 
-	chkConfirmNoteDeletion.SetText(ConfirmNoteDeletionLabel);
-	chkConfirmNoteDeletion.SetToggle(bConfirmNoteDeletes);
-	chkConfirmNoteDeletion.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 412);
+    chkConfirmNoteDeletion.SetText(ConfirmNoteDeletionLabel);
+    chkConfirmNoteDeletion.SetToggle(bConfirmNoteDeletes);
+    chkConfirmNoteDeletion.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 412);
 }
 
 // ----------------------------------------------------------------------
@@ -157,11 +157,11 @@ function CreateConfirmNoteDeletionCheckbox()
 
 function PopulateGoals()
 {
-	// First clear out any existing goals in the two tile windows
-	winGoals.DestroyAllChildren();
+    // First clear out any existing goals in the two tile windows
+    winGoals.DestroyAllChildren();
 
-	PopulateGoalsByType(True,  PrimaryGoalsHeader);
-	PopulateGoalsByType(False, SecondaryGoalsHeader);
+    PopulateGoalsByType(True,  PrimaryGoalsHeader);
+    PopulateGoalsByType(False, SecondaryGoalsHeader);
 }
 
 // ----------------------------------------------------------------------
@@ -170,90 +170,90 @@ function PopulateGoals()
 
 function PopulateGoalsByType(Bool bPrimaryGoals, String goalHeaderText)
 {
-	local DeusExGoal goal;
-	local bool bGoalsFound;
-	local PersonaGoalItemWindow goalWindow;
-	local PersonaHeaderTextWindow goalHeader;
+    local DeusExGoal goal;
+    local bool bGoalsFound;
+    local PersonaGoalItemWindow goalWindow;
+    local PersonaHeaderTextWindow goalHeader;
 
-	// Create Goals Header
-	goalHeader = PersonaHeaderTextWindow(winGoals.NewChild(Class'PersonaHeaderTextWindow'));
-	goalHeader.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	goalHeader.SetText(goalHeaderText);
+    // Create Goals Header
+    goalHeader = PersonaHeaderTextWindow(winGoals.NewChild(Class'PersonaHeaderTextWindow'));
+    goalHeader.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    goalHeader.SetText(goalHeaderText);
 
-	// Loop through all the Goals
-	goal = player.FirstGoal;
-	while( goal != None )
-	{
-		// Check if this is a primary or secondary goal as specified
-		// in the bPrimaryGoals parameter above.
+    // Loop through all the Goals
+    goal = player.FirstGoal;
+    while( goal != None )
+    {
+        // Check if this is a primary or secondary goal as specified
+        // in the bPrimaryGoals parameter above.
 
-		if (bPrimaryGoals == goal.bPrimaryGoal)
-		{
-			// Check to see if this goal has already been marked as Completed,
-			// and if so, only display if the chkShowCompletedGoals is true.
+        if (bPrimaryGoals == goal.bPrimaryGoal)
+        {
+            // Check to see if this goal has already been marked as Completed,
+            // and if so, only display if the chkShowCompletedGoals is true.
 
-			if ((!goal.bCompleted) || ((goal.bCompleted) && (chkShowCompletedGoals.GetToggle())))
-			{
-				bGoalsFound = True;
+            if ((!goal.bCompleted) || ((goal.bCompleted) && (chkShowCompletedGoals.GetToggle())))
+            {
+                bGoalsFound = True;
 
-				// Now create a window for the text
-				goalWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
+                // Now create a window for the text
+                goalWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
 
-				// Set goal properties
-				if (goal.bCompleted)
-					goalWindow.SetGoalProperties(goal.bPrimaryGoal, goal.bCompleted, goal.text @ GoalCompletedText);
-				else
-					goalWindow.SetGoalProperties(goal.bPrimaryGoal, goal.bCompleted, goal.text);
-			}
-		}
+                // Set goal properties
+                if (goal.bCompleted)
+                    goalWindow.SetGoalProperties(goal.bPrimaryGoal, goal.bCompleted, goal.text @ GoalCompletedText);
+                else
+                    goalWindow.SetGoalProperties(goal.bPrimaryGoal, goal.bCompleted, goal.text);
+            }
+        }
 
-		// Continue on to the next goal
-		goal = goal.next;
-	}
+        // Continue on to the next goal
+        goal = goal.next;
+    }
 
-	// If there are no goals of this type, then print "None"
-	if (!bGoalsFound)
-	{
-		// Now create a window for the text
-		goalWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
-		goalWindow.SetGoalProperties(bPrimaryGoals, True, NoGoalsLabel, True);
-	}
-}	
+    // If there are no goals of this type, then print "None"
+    if (!bGoalsFound)
+    {
+        // Now create a window for the text
+        goalWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
+        goalWindow.SetGoalProperties(bPrimaryGoals, True, NoGoalsLabel, True);
+    }
+}
 
 // ----------------------------------------------------------------------
 // PopulateNotes()
 //
-// Loops through all the notes and displays them 
+// Loops through all the notes and displays them
 // ----------------------------------------------------------------------
 
 function PopulateNotes()
 {
-	local PersonaNotesEditWindow noteWindow;
-	local DeusExNote note;
-	local bool   bWasVisible;
+    local PersonaNotesEditWindow noteWindow;
+    local DeusExNote note;
+    local bool   bWasVisible;
 
-	// Hide the notes, so we don't flood the tile window with ConfigureChanged() events
-	bWasVisible = winNotes.IsVisible(FALSE);
-	winNotes.Hide();
+    // Hide the notes, so we don't flood the tile window with ConfigureChanged() events
+    bWasVisible = winNotes.IsVisible(FALSE);
+    winNotes.Hide();
 
-	// First make sure there aren't already notes
-	winNotes.DestroyAllChildren();
+    // First make sure there aren't already notes
+    winNotes.DestroyAllChildren();
 
-	// Loop through all the notes
-	note = player.FirstNote;
-	while(note != None)
-	{
-		noteWindow = CreateNoteEditWindow( note );
+    // Loop through all the notes
+    note = player.FirstNote;
+    while(note != None)
+    {
+        noteWindow = CreateNoteEditWindow( note );
 
-		if (firstNoteWindow == None)
-			firstNoteWindow = noteWindow;
+        if (firstNoteWindow == None)
+            firstNoteWindow = noteWindow;
 
-		// Continue on to the next note
-		note = note.next;
-	}
+        // Continue on to the next note
+        note = note.next;
+    }
 
-	// Show the notes again, if they were visible before
-	winNotes.Show(bWasVisible);
+    // Show the notes again, if they were visible before
+    winNotes.Show(bWasVisible);
 }
 
 // ----------------------------------------------------------------------
@@ -262,38 +262,38 @@ function PopulateNotes()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (Super.ButtonActivated(buttonPressed))
-		return True;
+    if (Super.ButtonActivated(buttonPressed))
+        return True;
 
-	bHandled   = True;
+    bHandled   = True;
 
-	switch(buttonPressed)
-	{
-		case btnAddNote:
-			AddNote();
-			break;
+    switch(buttonPressed)
+    {
+        case btnAddNote:
+            AddNote();
+            break;
 
-		case btnDeleteNote:
-			if (bConfirmNoteDeletes)
-			{
-				root.MessageBox(DeleteNoteTitle, DeleteNotePrompt, 0, False, Self);
-			}
-			else
-			{
-				DeleteNote(currentNoteWindow);
-				currentNoteWindow = None;
-				EnableButtons();
-			}				
-			break;
+        case btnDeleteNote:
+            if (bConfirmNoteDeletes)
+            {
+                root.MessageBox(DeleteNoteTitle, DeleteNotePrompt, 0, False, Self);
+            }
+            else
+            {
+                DeleteNote(currentNoteWindow);
+                currentNoteWindow = None;
+                EnableButtons();
+            }
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -302,29 +302,29 @@ function bool ButtonActivated( Window buttonPressed )
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	// Ignore this even if we're deleting
-	if (PersonaNotesEditWindow(enterWindow) != None) 
-	{
-		currentNoteWindow = PersonaNotesEditWindow(enterWindow);
-		EnableButtons();
-	}
+    // Ignore this even if we're deleting
+    if (PersonaNotesEditWindow(enterWindow) != None)
+    {
+        currentNoteWindow = PersonaNotesEditWindow(enterWindow);
+        EnableButtons();
+    }
 }
 
 // ----------------------------------------------------------------------
 // FocusLeftDescendant()
 //
-// Save the contents of the text window into the Notes window, 
+// Save the contents of the text window into the Notes window,
 // but only if the note has changed.
 // ----------------------------------------------------------------------
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	local PersonaNotesEditWindow noteWindow;
+    local PersonaNotesEditWindow noteWindow;
 
-	noteWindow = PersonaNotesEditWindow(leaveWindow);
+    noteWindow = PersonaNotesEditWindow(leaveWindow);
 
-	if (noteWindow != None)
-		SaveNote(noteWindow);
+    if (noteWindow != None)
+        SaveNote(noteWindow);
 }
 
 // ----------------------------------------------------------------------
@@ -333,14 +333,14 @@ event FocusLeftDescendant(Window leaveWindow)
 
 function SaveNote(PersonaNotesEditWindow noteWindow)
 {
-	local DeusExNote note;
+    local DeusExNote note;
 
-	if ( noteWindow.HasTextChanged() )
-	{
-		note      = noteWindow.GetNote();
-		note.text = noteWindow.GetText();
-		noteWindow.ClearTextChangedFlag();
-	}
+    if ( noteWindow.HasTextChanged() )
+    {
+        note      = noteWindow.GetNote();
+        note.text = noteWindow.GetText();
+        noteWindow.ClearTextChangedFlag();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -349,38 +349,38 @@ function SaveNote(PersonaNotesEditWindow noteWindow)
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Nuke the msgbox
-	root.PopWindow();
+    // Nuke the msgbox
+    root.PopWindow();
 
-	if ( buttonNumber == 0 ) 
-	{
-		DeleteNote(currentNoteWindow);
-		currentNoteWindow = None;
-		EnableButtons();
-	}
+    if ( buttonNumber == 0 )
+    {
+        DeleteNote(currentNoteWindow);
+        currentNoteWindow = None;
+        EnableButtons();
+    }
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
 // AddNote()
 //
 // Creates a new edit window at the end of the tile window, allowing
-// the user to enter a new note.  
+// the user to enter a new note.
 // ----------------------------------------------------------------------
 
 function AddNote()
 {
-	local DeusExNote newNote;
-	local PersonaNotesEditWindow newNoteWindow;
+    local DeusExNote newNote;
+    local PersonaNotesEditWindow newNoteWindow;
 
-	// Create a new note and then a window to display it in
-	newNote = player.AddNote(defaultNoteText, True);
+    // Create a new note and then a window to display it in
+    newNote = player.AddNote(defaultNoteText, True);
 
-	newNoteWindow = CreateNoteEditWindow(newNote);
-	newNoteWindow.Lower();
-	newNoteWindow.SetSelectedArea(0, Len(defaultNoteText));
-	SetFocusWindow(newNoteWindow);
+    newNoteWindow = CreateNoteEditWindow(newNote);
+    newNoteWindow.Lower();
+    newNoteWindow.SetSelectedArea(0, Len(defaultNoteText));
+    SetFocusWindow(newNoteWindow);
 }
 
 // ----------------------------------------------------------------------
@@ -391,17 +391,17 @@ function AddNote()
 
 function DeleteNote(PersonaNotesEditWindow noteWindow)
 {
-	if (noteWindow == None)
-		return;
+    if (noteWindow == None)
+        return;
 
-	// Remove it from the collection
-	player.DeleteNote(noteWindow.GetNote());
+    // Remove it from the collection
+    player.DeleteNote(noteWindow.GetNote());
 
-	// Now remove it from the list
-	noteWindow.Destroy();
+    // Now remove it from the list
+    noteWindow.Destroy();
 
-	// Set focus to the Delete button
-	SetFocusWindow(btnAddNote);
+    // Set focus to the Delete button
+    SetFocusWindow(btnAddNote);
 }
 
 // ----------------------------------------------------------------------
@@ -412,21 +412,21 @@ function DeleteNote(PersonaNotesEditWindow noteWindow)
 
 event bool ToggleChanged(Window button, bool bNewToggle)
 {
-	if (button.IsA('PersonaNotesEditWindow'))
-	{
-		EnableButtons();
-	}
-	else if (button == chkShowCompletedGoals)
-	{
-		bDisplayCompletedGoals = bNewToggle;
-		PopulateGoals();
-	}
-	else if (button == chkConfirmNoteDeletion)
-	{
-		bConfirmNoteDeletes = bNewToggle;
-	}
+    if (button.IsA('PersonaNotesEditWindow'))
+    {
+        EnableButtons();
+    }
+    else if (button == chkShowCompletedGoals)
+    {
+        bDisplayCompletedGoals = bNewToggle;
+        PopulateGoals();
+    }
+    else if (button == chkConfirmNoteDeletion)
+    {
+        bConfirmNoteDeletes = bNewToggle;
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -435,12 +435,12 @@ event bool ToggleChanged(Window button, bool bNewToggle)
 
 function PersonaNotesEditWindow CreateNoteEditWindow(DeusExNote note)
 {
-	local PersonaNotesEditWindow newNoteWindow;
+    local PersonaNotesEditWindow newNoteWindow;
 
-	newNoteWindow = PersonaNotesEditWindow(winNotes.NewChild(Class'PersonaNotesEditWindow'));
-	newNoteWindow.SetNote(note);
-	
-	return newNoteWindow;
+    newNoteWindow = PersonaNotesEditWindow(winNotes.NewChild(Class'PersonaNotesEditWindow'));
+    newNoteWindow.SetNote(note);
+
+    return newNoteWindow;
 }
 
 // ----------------------------------------------------------------------
@@ -449,7 +449,7 @@ function PersonaNotesEditWindow CreateNoteEditWindow(DeusExNote note)
 
 function EnableButtons()
 {
-	btnDeleteNote.SetSensitivity(currentNoteWindow != None);
+    btnDeleteNote.SetSensitivity(currentNoteWindow != None);
 }
 
 // ----------------------------------------------------------------------

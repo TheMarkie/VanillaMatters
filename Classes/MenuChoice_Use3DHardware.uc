@@ -15,7 +15,7 @@ var Localized String RestartMessage;
 
 function LoadSetting()
 {
-	LoadSettingBool();
+    LoadSettingBool();
 }
 
 // ----------------------------------------------------------------------
@@ -24,7 +24,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	SaveSettingBool();
+    SaveSettingBool();
 }
 
 // ----------------------------------------------------------------------
@@ -33,13 +33,13 @@ function SaveSetting()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
+    Super.CycleNextValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -48,13 +48,13 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
+    Super.CyclePreviousValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -63,10 +63,10 @@ function CyclePreviousValue()
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	DeusExRootWindow(GetRootWindow()).PopWindow();
+    // Destroy the msgbox!
+    DeusExRootWindow(GetRootWindow()).PopWindow();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

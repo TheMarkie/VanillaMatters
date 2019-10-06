@@ -3,10 +3,10 @@
 //=============================================================================
 
 class MenuUIChoice extends Window
-	abstract;
+    abstract;
 
 var MenuUIChoiceButton btnAction;
-var DeusExPlayer player;				// Used for saving/loading/default
+var DeusExPlayer player;                // Used for saving/loading/default
 
 // Defaults
 var int choiceControlPosX;
@@ -15,7 +15,7 @@ var int buttonVerticalOffset;
 // Localized Strings
 var localized String helpText;
 var localized String actionText;
-var localized String configSetting;        
+var localized String configSetting;
 var localized String FalseTrue[2];
 
 // ----------------------------------------------------------------------
@@ -26,13 +26,13 @@ var localized String FalseTrue[2];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
+    player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(540, 21);
+    SetSize(540, 21);
 
-	CreateActionButton();
+    CreateActionButton();
 }
 
 // ----------------------------------------------------------------------
@@ -44,15 +44,15 @@ event InitWindow()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	if (buttonPressed == btnAction)
-	{
-		CycleNextValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
+    if (buttonPressed == btnAction)
+    {
+        CycleNextValue();
+        return True;
+    }
+    else
+    {
+        return Super.ButtonActivated(buttonPressed);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -63,12 +63,12 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (key == IK_Enter)
-		return False;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (key == IK_Enter)
+        return False;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -80,15 +80,15 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function bool ButtonActivatedRight( Window buttonPressed )
 {
-	if (buttonPressed == btnAction)
-	{
-		CyclePreviousValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
+    if (buttonPressed == btnAction)
+    {
+        CyclePreviousValue();
+        return True;
+    }
+    else
+    {
+        return Super.ButtonActivated(buttonPressed);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -113,10 +113,10 @@ function CyclePreviousValue()
 
 function CreateActionButton()
 {
-	btnAction = MenuUIChoiceButton(NewChild(Class'MenuUIChoiceButton'));
-	btnAction.SetButtonText(actionText);
-	btnAction.SetVerticalOffset(buttonVerticalOffset);
-	btnAction.EnableRightMouseClick();
+    btnAction = MenuUIChoiceButton(NewChild(Class'MenuUIChoiceButton'));
+    btnAction.SetButtonText(actionText);
+    btnAction.SetVerticalOffset(buttonVerticalOffset);
+    btnAction.EnableRightMouseClick();
 }
 
 // ----------------------------------------------------------------------
@@ -125,8 +125,8 @@ function CreateActionButton()
 
 function SetActionButtonWidth(int newWidth)
 {
-	if (btnAction != None)
-		btnAction.SetWidth(newWidth);
+    if (btnAction != None)
+        btnAction.SetWidth(newWidth);
 }
 
 // ----------------------------------------------------------------------
@@ -167,12 +167,12 @@ function ResetToDefault()
 
 function SaveMenuSettings()
 {
-	local MenuUIScreenWindow menuScreen;
+    local MenuUIScreenWindow menuScreen;
 
-	menuScreen = MenuUIScreenWindow(GetParent().GetParent());
+    menuScreen = MenuUIScreenWindow(GetParent().GetParent());
 
-	if (menuScreen != None)
-		menuScreen.SaveSettings();
+    if (menuScreen != None)
+        menuScreen.SaveSettings();
 }
 
 // ----------------------------------------------------------------------

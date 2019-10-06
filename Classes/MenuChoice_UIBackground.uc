@@ -10,7 +10,7 @@ class MenuChoice_UIBackground extends MenuUIChoiceEnum;
 
 function LoadSetting()
 {
-	SetValue(player.UIBackground);
+    SetValue(player.UIBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -19,15 +19,15 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.UIBackground = GetValue();
+    player.UIBackground = GetValue();
 
-	if (player.UIBackground == 1)
-		DeusExRootWindow(player.rootWindow).Hide();
+    if (player.UIBackground == 1)
+        DeusExRootWindow(player.rootWindow).Hide();
 
-	DeusExRootWindow(player.rootWindow).ShowSnapshot();
+    DeusExRootWindow(player.rootWindow).ShowSnapshot();
 
-	if (player.UIBackground == 1)
-		DeusExRootWindow(player.rootWindow).Show();
+    if (player.UIBackground == 1)
+        DeusExRootWindow(player.rootWindow).Show();
 }
 
 // ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(defaultValue);
+    SetValue(defaultValue);
 }
 
 // ----------------------------------------------------------------------

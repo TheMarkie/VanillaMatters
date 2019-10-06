@@ -3,7 +3,7 @@
 //=============================================================================
 
 class MenuScreenJoinGame expands MenuUIScreenWindow
-	config;
+    config;
 
 var MenuUIChoiceButton HostButton;
 var MenuUIChoiceButton JoinButton;
@@ -24,14 +24,14 @@ var localized string RefreshButtonHelpText;
 
 // Stuff for finding servers.
 
-var() config string		MasterServerAddress;	// Address of the master server
-var() config int		MasterServerTCPPort;	// Optional port that the master server is listening on
-var() config int 		Region;					// Region of the game server
-var() config int		MasterServerTimeout;
-var() config string		GameName;
+var() config string     MasterServerAddress;    // Address of the master server
+var() config int        MasterServerTCPPort;    // Optional port that the master server is listening on
+var() config int        Region;                 // Region of the game server
+var() config int        MasterServerTimeout;
+var() config string     GameName;
 
-var MenuUIScrollAreaWindow			ServerScroll;
-var MenuUIListWindow				ServerList;
+var MenuUIScrollAreaWindow          ServerScroll;
+var MenuUIListWindow                ServerList;
 
 var DeusExServerList PingedList;
 var DeusExServerList UnPingedList;
@@ -41,11 +41,11 @@ var bool bPingSuspend;
 var bool bPingResume;
 var bool bPingResumeInitial;
 
-var MenuUIListHeaderButtonWindow	btnHeaderHostName;
-var MenuUIListHeaderButtonWindow	btnHeaderMapName;
-var MenuUIListHeaderButtonWindow	btnHeaderGameType;
-var MenuUIListHeaderButtonWindow	btnHeaderNumPlayers;
-var MenuUIListHeaderButtonWindow	btnHeaderPing;
+var MenuUIListHeaderButtonWindow    btnHeaderHostName;
+var MenuUIListHeaderButtonWindow    btnHeaderMapName;
+var MenuUIListHeaderButtonWindow    btnHeaderGameType;
+var MenuUIListHeaderButtonWindow    btnHeaderNumPlayers;
+var MenuUIListHeaderButtonWindow    btnHeaderPing;
 
 var bool bHostNameSortOrder;
 var bool bMapNameSortOrder;
@@ -92,9 +92,9 @@ var localized String FullServerWarningMessage;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateJoinMenuButtons();
+    CreateJoinMenuButtons();
    CreateIPEditWindow();
    CreateGamesList();
    CreatePingLists();
@@ -125,19 +125,19 @@ function DestroyWindow()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case HostButton:
+    switch( buttonPressed )
+    {
+        case HostButton:
          ProcessMenuAction(MA_MenuScreen,Class'MenuScreenHostGame');
-			break;
+            break;
 
-		case JoinButton:
+        case JoinButton:
          HandleJoinGame();
-			break;
+            break;
 
       case RefreshButton:
          RefreshServerList();
@@ -173,15 +173,15 @@ function bool ButtonActivated( Window buttonPressed )
          ServerList.Sort();
          break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -190,15 +190,15 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
 {
-	if ((key == IK_Enter) && (iState == IST_Release))
-	{
+    if ((key == IK_Enter) && (iState == IST_Release))
+    {
       HandleJoinGame();
-		return True;
-	}
-	else
-	{
-		return Super.RawKeyPressed(key,iState,bRepeat);
-	}
+        return True;
+    }
+    else
+    {
+        return Super.RawKeyPressed(key,iState,bRepeat);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -207,8 +207,8 @@ event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	if (enterWindow.IsA('MenuUIChoiceButton'))
-	{
+    if (enterWindow.IsA('MenuUIChoiceButton'))
+    {
       if ((winHelp != None) && (MenuUIChoiceButton(enterWindow).helpText != ""))
       {
          winHelp.Show();
@@ -224,8 +224,8 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	if ((winHelp != None) && (!bHelpAlwaysOn))
-		winHelp.Hide();
+    if ((winHelp != None) && (!bHelpAlwaysOn))
+        winHelp.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -286,7 +286,7 @@ function PingUnpingedServers()
    local DeusExServerList CurrentServer;
 
    CurrentServer = UnpingedList;
-   
+
    UnPingedList.PingServers(True,False);
 }
 
@@ -320,7 +320,7 @@ function CreatePingLists()
 
    UnpingedList.Owner = Self;
    UnpingedList.SetupSentinel(False);
-   
+
    if (PingedList == None)
       PingedList = New(None) class'DeusExServerList';
 
@@ -334,14 +334,14 @@ function CreatePingLists()
 
 function DestroyPingLists()
 {
-	if(UnpingedList != None)
+    if(UnpingedList != None)
    {
-		UnpingedList.DestroyList();
+        UnpingedList.DestroyList();
    }
 
    if(PingedList != None)
    {
-		PingedList.DestroyList();
+        PingedList.DestroyList();
    }
 }
 
@@ -351,35 +351,35 @@ function DestroyPingLists()
 
 function FoundServer(string IP, int QueryPort, string Category, string GameName, optional string HostName)
 {
-	local DeusExServerList NewListEntry;
+    local DeusExServerList NewListEntry;
 
-	NewListEntry = UnPingedList.FindExistingServer(IP, QueryPort);
+    NewListEntry = UnPingedList.FindExistingServer(IP, QueryPort);
 
    if (NewListEntry == None)
       NewListEntry = PingedList.FindExistingServer(IP, QueryPort);
 
-	// Don't add if it's already in the existing list
-	if(NewListEntry == None)
-	{
-		// Add it to the server list(s)
-		NewListEntry = New(None) class'DeusExServerList';
+    // Don't add if it's already in the existing list
+    if(NewListEntry == None)
+    {
+        // Add it to the server list(s)
+        NewListEntry = New(None) class'DeusExServerList';
 
-		NewListEntry.IP = IP;
-		NewListEntry.QueryPort = QueryPort;
+        NewListEntry.IP = IP;
+        NewListEntry.QueryPort = QueryPort;
 
-		NewListEntry.Ping = 9999;
-		if(HostName != "")
-			NewListEntry.HostName = HostName;
-		else
-			NewListEntry.HostName = IP;
-		NewListEntry.Category = Category;
-		NewListEntry.GameName = GameName;
-		NewListEntry.bLocalServer = False;
+        NewListEntry.Ping = 9999;
+        if(HostName != "")
+            NewListEntry.HostName = HostName;
+        else
+            NewListEntry.HostName = IP;
+        NewListEntry.Category = Category;
+        NewListEntry.GameName = GameName;
+        NewListEntry.bLocalServer = False;
 
-		UnPingedList.AppendItem(NewListEntry);
-	}
+        UnPingedList.AppendItem(NewListEntry);
+    }
 
-	NewListEntry.bOldServer = False;
+    NewListEntry.bOldServer = False;
 }
 
 // ----------------------------------------------------------------------
@@ -397,9 +397,9 @@ function UpdateSelectionInfo(int RowID)
    ServerQueryPort = int(ServerList.GetField(RowID,5));
    ServerGamePort = int(ServerList.GetField(RowID,7));
    if (ServerGamePort == 0)
-	   IPWindow.SetText(ServerIP);
-   else 
-	   IPWindow.SetText(ServerIP$":"$ServerGamePort);
+       IPWindow.SetText(ServerIP);
+   else
+       IPWindow.SetText(ServerIP$":"$ServerGamePort);
 
    ListEntry = PingedList.FindExistingServer(ServerIP,ServerQueryPort);
    if (ListEntry != None)
@@ -437,7 +437,7 @@ function UpdateGameInfo(DeusExServerList ListEntry)
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // When the user clicks on an item in the list, update the game info
 // appropriately
@@ -451,13 +451,13 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
       return false;
    }
 
-	if (list == ServerList)
+    if (list == ServerList)
    {
       ClickRowID = focusRowID;
       ClickTimer = 0;
       UpdateSelectionInfo(focusRowID);
    }
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -477,31 +477,31 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 function CreateGamesList()
 {
-	ServerScroll = CreateScrollAreaWindow(winClient);
+    ServerScroll = CreateScrollAreaWindow(winClient);
 
-	ServerScroll.SetPos(7, 40);
-	ServerScroll.SetSize(611, 188);
+    ServerScroll.SetPos(7, 40);
+    ServerScroll.SetSize(611, 188);
 
-	ServerList = MenuUIListWindow(ServerScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	ServerList.EnableMultiSelect(False);
-	ServerList.EnableAutoExpandColumns(False);
+    ServerList = MenuUIListWindow(ServerScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    ServerList.EnableMultiSelect(False);
+    ServerList.EnableAutoExpandColumns(False);
 
-	ServerList.SetNumColumns(8);
+    ServerList.SetNumColumns(8);
 
-	ServerList.SetColumnWidth(0, 225);
-	ServerList.SetColumnType(0, COLTYPE_String);
-	
+    ServerList.SetColumnWidth(0, 225);
+    ServerList.SetColumnType(0, COLTYPE_String);
+
    ServerList.SetSortColumn(0, True);
-	ServerList.EnableAutoSort(True);
+    ServerList.EnableAutoSort(True);
 
    ServerList.SetColumnWidth(1, 154);
-	ServerList.SetColumnType(1, COLTYPE_String);
+    ServerList.SetColumnType(1, COLTYPE_String);
 
    ServerList.SetColumnWidth(2, 96);
-	ServerList.SetColumnType(2, COLTYPE_String);
-	
+    ServerList.SetColumnType(2, COLTYPE_String);
+
    ServerList.SetColumnWidth(3, 72);
-	ServerList.SetColumnType(3, COLTYPE_String);
+    ServerList.SetColumnType(3, COLTYPE_String);
 
    ServerList.SetColumnWidth(4, 52);
    ServerList.SetColumnType(4, COLTYPE_Float, "%.0f");
@@ -528,11 +528,11 @@ function CreateGamesList()
 
 function CreateHeaderButtons()
 {
-	btnHeaderHostName = CreateHeaderButton(7,  17, 224, strHostNameLabel, winClient);
-	btnHeaderMapName = CreateHeaderButton(234, 17, 151, strMapNameLabel, winClient);
-	btnHeaderGameType = CreateHeaderButton(388,  17, 94, strGameTypeLabel, winClient);
-	btnHeaderNumPlayers = CreateHeaderButton(485, 17, 68, strNumPlayersLabel, winClient);
-	btnHeaderPing = CreateHeaderButton(556,  17, 54, strPingLabel, winClient);
+    btnHeaderHostName = CreateHeaderButton(7,  17, 224, strHostNameLabel, winClient);
+    btnHeaderMapName = CreateHeaderButton(234, 17, 151, strMapNameLabel, winClient);
+    btnHeaderGameType = CreateHeaderButton(388,  17, 94, strGameTypeLabel, winClient);
+    btnHeaderNumPlayers = CreateHeaderButton(485, 17, 68, strNumPlayersLabel, winClient);
+    btnHeaderPing = CreateHeaderButton(556,  17, 54, strPingLabel, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -541,20 +541,20 @@ function CreateHeaderButtons()
 
 function CreateGameInfoList()
 {
-	GameInfoScroll = CreateScrollAreaWindow(winClient);
+    GameInfoScroll = CreateScrollAreaWindow(winClient);
 
-	GameInfoScroll.SetPos(144, 241);
-	GameInfoScroll.SetSize(464, 85);
+    GameInfoScroll.SetPos(144, 241);
+    GameInfoScroll.SetSize(464, 85);
 
-	GameInfoList = MenuUIListWindow(GameInfoScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	GameInfoList.EnableMultiSelect(False);
-	GameInfoList.EnableAutoExpandColumns(False);
+    GameInfoList = MenuUIListWindow(GameInfoScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    GameInfoList.EnableMultiSelect(False);
+    GameInfoList.EnableAutoExpandColumns(False);
 
-	GameInfoList.SetNumColumns(1);
+    GameInfoList.SetNumColumns(1);
 
-	GameInfoList.SetColumnWidth(0, 345);
-	GameInfoList.SetColumnType(0, COLTYPE_String);
-	GameInfoList.EnableAutoSort(False);
+    GameInfoList.SetColumnWidth(0, 345);
+    GameInfoList.SetColumnType(0, COLTYPE_String);
+    GameInfoList.EnableAutoSort(False);
 
    GameInfoList.SetSensitivity(False);
 }
@@ -565,26 +565,26 @@ function CreateGameInfoList()
 
 function CreateGameFilterBoxes()
 {
-	chkShowGameTypeOne = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
+    chkShowGameTypeOne = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowGameTypeOne.SetPos(154, 333);
-	chkShowGameTypeOne.SetText(GameTypeOneLabel);
-	chkShowGameTypeOne.SetFont(Font'FontMenuSmall');
-	chkShowGameTypeOne.SetToggle(bShowGameTypeOne);
+    chkShowGameTypeOne.SetPos(154, 333);
+    chkShowGameTypeOne.SetText(GameTypeOneLabel);
+    chkShowGameTypeOne.SetFont(Font'FontMenuSmall');
+    chkShowGameTypeOne.SetToggle(bShowGameTypeOne);
 
    chkShowGameTypeTwo = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowGameTypeTwo.SetPos(154, 347);
-	chkShowGameTypeTwo.SetText(GameTypeTwoLabel);
-	chkShowGameTypeTwo.SetFont(Font'FontMenuSmall');
-	chkShowGameTypeTwo.SetToggle(bShowGameTypeTwo);
+    chkShowGameTypeTwo.SetPos(154, 347);
+    chkShowGameTypeTwo.SetText(GameTypeTwoLabel);
+    chkShowGameTypeTwo.SetFont(Font'FontMenuSmall');
+    chkShowGameTypeTwo.SetToggle(bShowGameTypeTwo);
 
    chkShowAllGameTypes = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowAllGameTypes.SetPos(154, 360);
-	chkShowAllGameTypes.SetText(ShowAllGameTypesLabel);
-	chkShowAllGameTypes.SetFont(Font'FontMenuSmall');
-	chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
+    chkShowAllGameTypes.SetPos(154, 360);
+    chkShowAllGameTypes.SetText(ShowAllGameTypesLabel);
+    chkShowAllGameTypes.SetFont(Font'FontMenuSmall');
+    chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
 }
 
 // ----------------------------------------------------------------------
@@ -592,31 +592,31 @@ function CreateGameFilterBoxes()
 // ----------------------------------------------------------------------
 
 event bool ToggleChanged(Window button, bool bNewToggle)
-{	
-	if (button == chkShowGameTypeOne)
-	{
-	  bShowGameTypeOne = bNewToggle;
-	  if (bShowAllGameTypes && !bShowGameTypeOne)
-	  {
-		  bShowAllGameTypes = false;
-		  chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
-	  }
+{
+    if (button == chkShowGameTypeOne)
+    {
+      bShowGameTypeOne = bNewToggle;
+      if (bShowAllGameTypes && !bShowGameTypeOne)
+      {
+          bShowAllGameTypes = false;
+          chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
+      }
       chkShowGameTypeOne.SetToggle(bShowGameTypeOne);
       PopulateServerList();
-		return True;
-	}
+        return True;
+    }
    else if (button == chkShowGameTypeTwo)
-	{
-	  bShowGameTypeTwo = bNewToggle;
-	  if (bShowAllGameTypes && !bShowGameTypeTwo)
-	  {
-		  bShowAllGameTypes = false;
-		  chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
-	  }
+    {
+      bShowGameTypeTwo = bNewToggle;
+      if (bShowAllGameTypes && !bShowGameTypeTwo)
+      {
+          bShowAllGameTypes = false;
+          chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
+      }
       chkShowGameTypeTwo.SetToggle(bShowGameTypeTwo);
       PopulateServerList();
-		return True;
-	}
+        return True;
+    }
    else if (button == chkShowAllGameTypes)
    {
       bShowAllGameTypes = bNewToggle;
@@ -630,15 +630,15 @@ event bool ToggleChanged(Window button, bool bNewToggle)
       PopulateServerList();
       return True;
    }
-	else
-	{
-		return False;
-	}
+    else
+    {
+        return False;
+    }
 }
 
 // ----------------------------------------------------------------------
 // PopulateServerList()
-// ---------------------------------------------------------------------- 
+// ----------------------------------------------------------------------
 function PopulateServerList()
 {
    local DeusExServerList CurrentServer;
@@ -662,7 +662,7 @@ function PopulateServerList()
             ServerName = CurrentServer.IP;
          else
             ServerName = CurrentServer.HostName;
-         ServerList.AddRow(ServerName$";"$CurrentServer.MapName$";"$ServerGameType$";"$CurrentServer.NumPlayers$"/"$CurrentServer.MaxPlayers$";"$ServerPing$";"$CurrentServer.QueryPort$";"$CurrentServer.IP$";"$CurrentServer.GamePort);      
+         ServerList.AddRow(ServerName$";"$CurrentServer.MapName$";"$ServerGameType$";"$CurrentServer.NumPlayers$"/"$CurrentServer.MaxPlayers$";"$ServerPing$";"$CurrentServer.QueryPort$";"$CurrentServer.IP$";"$CurrentServer.GamePort);
       }
       CurrentServer = DeusExServerList(CurrentServer.Next);
    }
@@ -681,7 +681,7 @@ function string ConvertGameType(string GameTypeClassName)
       if ((GameClassNames[iClassIndex] ~= GameTypeClassName) && (GameHumanNames[iClassIndex] != ""))
          return GameHumanNames[iClassIndex];
    }
-    
+
    return GameTypeClassName;
 }
 
@@ -698,7 +698,7 @@ function string GameTypePackage(string GameTypeClassName)
       if ((GameClassNames[iClassIndex] ~= GameTypeClassName) && (GamePackages[iClassIndex] != ""))
          return GamePackages[iClassIndex];
    }
-    
+
    return "";
 }
 
@@ -719,9 +719,9 @@ function bool CanShowgame(string GameTypeClassName)
 
    TypePackage = GameTypePackage(GameTypeClassName);
    if (TypePackage != "")
-	   GameLoadString = TypePackage $ "." $ GameTypeClassName;
+       GameLoadString = TypePackage $ "." $ GameTypeClassName;
    else
-	   GameLoadString = GameTypeClassName;
+       GameLoadString = GameTypeClassName;
 
    GameClass = class<GameInfo>( Player.DynamicLoadObject( GameLoadString, class'Class', true) );
    if (GameClass == None)
@@ -752,7 +752,7 @@ function bool CanShowgame(string GameTypeClassName)
          return bShowGameTypeTwo;
       }
    }
-  
+
    RemoteGame.Destroy();
    return false;
 }
@@ -774,7 +774,7 @@ function RefreshServerList()
 // ----------------------------------------------------------------------
 function Tick(float Delta)
 {
-	PingedList.Tick(Delta);
+    PingedList.Tick(Delta);
 
    ClickTimer += Delta;
 
@@ -783,11 +783,11 @@ function Tick(float Delta)
       ClickRowID = -1;
    }
 
-	if(PingedList.bNeedUpdateCount)
-	{
-		PingedList.UpdateServerCount();
-		PingedList.bNeedUpdateCount = False;
-	}
+    if(PingedList.bNeedUpdateCount)
+    {
+        PingedList.UpdateServerCount();
+        PingedList.bNeedUpdateCount = False;
+    }
 
 }
 
@@ -810,7 +810,7 @@ function PingStatusDone(DeusExServerList DoneList)
    local int ServerQueryPort;
    local DeusExServerList ListEntry;
 
-   ServerIP = ServerList.GetField(ServerList.GetFocusRow(),6);   
+   ServerIP = ServerList.GetField(ServerList.GetFocusRow(),6);
    ServerQueryPort = int(ServerList.GetField(ServerList.GetFocusRow(),5));
 
    if ((DoneList.IP == ServerIP) && (DoneList.QueryPort == ServerQueryPort))
@@ -829,16 +829,16 @@ function CreateJoinMenuButtons()
 {
    //Create Host Game button
    HostButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
-	HostButton.SetButtonText(HostButtonName);
-	HostButton.SetPos(7, 239);
-	HostButton.SetWidth(121);
+    HostButton.SetButtonText(HostButtonName);
+    HostButton.SetPos(7, 239);
+    HostButton.SetWidth(121);
    HostButton.SetHelpText(HostButtonHelpText);
 
    //Create Join Game Button
    JoinButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
-	JoinButton.SetButtonText(JoinButtonName);
-	JoinButton.SetPos(7, 267);
-	JoinButton.SetWidth(121);
+    JoinButton.SetButtonText(JoinButtonName);
+    JoinButton.SetPos(7, 267);
+    JoinButton.SetWidth(121);
    JoinButton.SetHelpText(JoinButtonHelpText);
    JoinButton.SetSensitivity(False);
 
@@ -861,10 +861,10 @@ function CreateIPEditWindow()
 
 
    //Create edit window
-	IPWindow = CreateMenuEditWindow(7, 337, 121, 24, winClient);
+    IPWindow = CreateMenuEditWindow(7, 337, 121, 24, winClient);
 
    IPWindow.SetText("");
-	IPWindow.SetFilter(filterString);
+    IPWindow.SetFilter(filterString);
 }
 
 // ----------------------------------------------------------------------
@@ -884,20 +884,20 @@ function HandleJoinGame()
    ServerGamePort = int(ServerList.GetField(ServerList.GetFocusRow(),7));
 
    if (ServerGamePort == 0)
-	   FullString = ServerIP;
-   else 
-	   FullString = ServerIP$":"$ServerGamePort;
+       FullString = ServerIP;
+   else
+       FullString = ServerIP$":"$ServerGamePort;
 
    ListEntry = PingedList.FindExistingServer(ServerIP,ServerQueryPort);
    if ((ListEntry != None) && (IPWindow.GetText() ~= FullString))
    {
-	   //check max players.
+       //check max players.
       if (ListEntry.NumPlayers >= ListEntry.MaxPlayers)
-	  {
-		  messageBoxMode = MB_JoinGameWarning;
-		  root.MessageBox(FullServerWarningTitle, FullServerWarningMessage, 0, False, Self);
-		  return;
-	  }
+      {
+          messageBoxMode = MB_JoinGameWarning;
+          root.MessageBox(FullServerWarningTitle, FullServerWarningMessage, 0, False, Self);
+          return;
+      }
 
    }
 

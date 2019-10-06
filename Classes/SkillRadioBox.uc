@@ -7,9 +7,9 @@ var TileWindow skillWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	skillWindow = TileWindow(NewChild(Class'TileWindow'));
+    skillWindow = TileWindow(NewChild(Class'TileWindow'));
 }
 
 defaultproperties

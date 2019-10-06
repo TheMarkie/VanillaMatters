@@ -14,9 +14,9 @@ var MenuScreenAdjustColorsExample winExample;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateExampleWindow();	
+    CreateExampleWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -25,8 +25,8 @@ event InitWindow()
 
 function CreateExampleWindow()
 {
-	winExample = MenuScreenAdjustColorsExample(winClient.NewChild(Class'MenuScreenAdjustColorsExample'));
-	winExample.SetPos(395, 25);	
+    winExample = MenuScreenAdjustColorsExample(winClient.NewChild(Class'MenuScreenAdjustColorsExample'));
+    winExample.SetPos(395, 25);
 }
 
 // ----------------------------------------------------------------------
@@ -35,9 +35,9 @@ function CreateExampleWindow()
 
 function SaveSettings()
 {
-	Super.SaveSettings();
-	player.SaveConfig();
-	player.ThemeManager.SaveConfig();
+    Super.SaveSettings();
+    player.SaveConfig();
+    player.ThemeManager.SaveConfig();
 }
 
 // ----------------------------------------------------------------------

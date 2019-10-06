@@ -35,10 +35,10 @@ var localized String HeaderSubjectLabel;
 
 function CloseScreen(String action)
 {
-	if (winTerm != None)
-		winTerm.CloseHackAccountsWindow();
+    if (winTerm != None)
+        winTerm.CloseHackAccountsWindow();
 
-	Super.CloseScreen(action);
+    Super.CloseScreen(action);
 }
 
 // ----------------------------------------------------------------------
@@ -47,14 +47,14 @@ function CloseScreen(String action)
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
+    btnLogout = winButtonBar.AddButton(ButtonLabelLogout, HALIGN_Right);
 
-	CreateEmailListWindow();
-	CreateEmailViewWindow();
-	CreateEmailHeaders();
-	CreateHeaderButtons();
+    CreateEmailListWindow();
+    CreateEmailViewWindow();
+    CreateEmailHeaders();
+    CreateHeaderButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ function CreateControls()
 
 event WindowReady()
 {
-	SetFocusWindow(lstEmail);
+    SetFocusWindow(lstEmail);
 }
 
 // ----------------------------------------------------------------------
@@ -72,24 +72,24 @@ event WindowReady()
 
 function CreateEmailListWindow()
 {
-	local MenuUIScrollAreaWindow winScroll;
+    local MenuUIScrollAreaWindow winScroll;
 
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(373, 73);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(11, 22);
+    winScroll.SetSize(373, 73);
 
-	lstEmail = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	lstEmail.EnableMultiSelect(False);
-	lstEmail.EnableAutoExpandColumns(False);
-	lstEmail.EnableHotKeys(False);
+    lstEmail = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    lstEmail.EnableMultiSelect(False);
+    lstEmail.EnableAutoExpandColumns(False);
+    lstEmail.EnableHotKeys(False);
 
-	lstEmail.SetNumColumns(3);
-	lstEMail.HideColumn(2);
-	lstEmail.SetColumnType(2, COLTYPE_Float);
+    lstEmail.SetNumColumns(3);
+    lstEMail.HideColumn(2);
+    lstEmail.SetColumnType(2, COLTYPE_Float);
 
-	lstEmail.SetColumnWidth(0, 123);
-	lstEmail.SetColumnWidth(1, 250);
-	lstEmail.SetSortColumn(0, bFromSortOrder);
+    lstEmail.SetColumnWidth(0, 123);
+    lstEmail.SetColumnWidth(1, 250);
+    lstEmail.SetSortColumn(0, bFromSortOrder);
 }
 
 // ----------------------------------------------------------------------
@@ -98,16 +98,16 @@ function CreateEmailListWindow()
 
 function CreateEmailViewWindow()
 {
-	local MenuUIScrollAreaWindow winScroll;
+    local MenuUIScrollAreaWindow winScroll;
 
-	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 136);
-	winScroll.SetSize(373, 239);
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(11, 136);
+    winScroll.SetSize(373, 239);
 
-	winEmail = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
-	winEmail.SetTextMargins(4, 1);
-	winEmail.SetWordWrap(True);
-	winEmail.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winEmail = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
+    winEmail.SetTextMargins(4, 1);
+    winEmail.SetWordWrap(True);
+    winEmail.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -116,27 +116,27 @@ function CreateEmailViewWindow()
 
 function CreateEmailHeaders()
 {
-	local MenuUILabelWindow newLabel;
+    local MenuUILabelWindow newLabel;
 
-	// First create the headers
-	newLabel = CreateMenuLabel(12, 104, EmailFromHeader, winClient);
-	newLabel.SetFont(Font'FontMenuTitle');
+    // First create the headers
+    newLabel = CreateMenuLabel(12, 104, EmailFromHeader, winClient);
+    newLabel.SetFont(Font'FontMenuTitle');
 
-	newLabel = CreateMenuLabel(212, 104, EmailToHeader, winClient);
-	newLabel.SetFont(Font'FontMenuTitle');
+    newLabel = CreateMenuLabel(212, 104, EmailToHeader, winClient);
+    newLabel.SetFont(Font'FontMenuTitle');
 
-	newLabel = CreateMenuLabel(12, 118, EmailSubjectHeader, winClient);
-	newLabel.SetFont(Font'FontMenuTitle');
+    newLabel = CreateMenuLabel(12, 118, EmailSubjectHeader, winClient);
+    newLabel.SetFont(Font'FontMenuTitle');
 
-	winEmailCCHeader = CreateMenuLabel(212, 118, EmailCarbonCopyHeader, winClient);
-	winEmailCCHeader.SetFont(Font'FontMenuTitle');
-	winEmailCCHeader.Hide();
+    winEmailCCHeader = CreateMenuLabel(212, 118, EmailCarbonCopyHeader, winClient);
+    winEmailCCHeader.SetFont(Font'FontMenuTitle');
+    winEmailCCHeader.Hide();
 
-	// Now create the text fields
-	winEmailFrom    = CreateSmallMenuLabel( 50, 105, "", winClient);
-	winEmailTo      = CreateSmallMenuLabel(240, 105, "", winClient);
-	winEmailSubject = CreateSmallMenuLabel( 50, 119, "", winClient);
-	winEmailCC      = CreateSmallMenuLabel(240, 119, "", winClient);
+    // Now create the text fields
+    winEmailFrom    = CreateSmallMenuLabel( 50, 105, "", winClient);
+    winEmailTo      = CreateSmallMenuLabel(240, 105, "", winClient);
+    winEmailSubject = CreateSmallMenuLabel( 50, 119, "", winClient);
+    winEmailCC      = CreateSmallMenuLabel(240, 119, "", winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -145,8 +145,8 @@ function CreateEmailHeaders()
 
 function CreateHeaderButtons()
 {
-	btnHeaderFrom    = CreateHeaderButton(10,  3, 121, HeaderFromLabel, winClient);
-	btnHeaderSubject = CreateHeaderButton(134, 3, 187, HeaderSubjectLabel, winClient);
+    btnHeaderFrom    = CreateHeaderButton(10,  3, 121, HeaderFromLabel, winClient);
+    btnHeaderSubject = CreateHeaderButton(134, 3, 187, HeaderSubjectLabel, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -155,18 +155,18 @@ function CreateHeaderButtons()
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	if (winTerm.AreSpecialOptionsAvailable())
-	{
-		btnSpecial = winButtonBar.AddButton(ButtonLabelSpecial, HALIGN_Left);
-		CreateLeftEdgeWindow();
-	}
+    if (winTerm.AreSpecialOptionsAvailable())
+    {
+        btnSpecial = winButtonBar.AddButton(ButtonLabelSpecial, HALIGN_Left);
+        CreateLeftEdgeWindow();
+    }
 
-	// Create the Hack Accounts window (will only be created
-	// if the user hacked into the computer)
+    // Create the Hack Accounts window (will only be created
+    // if the user hacked into the computer)
 
-	winTerm.CreateHackAccountsWindow();
+    winTerm.CreateHackAccountsWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -175,49 +175,49 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local String emailName;
-	local String missionNumber;
-	local DeusExLevelInfo info;
-	local int emailInfoIndex;
-	local int rowId;
+    local String emailName;
+    local String missionNumber;
+    local DeusExLevelInfo info;
+    local int emailInfoIndex;
+    local int rowId;
 
-	Super.SetCompOwner(newCompOwner);
+    Super.SetCompOwner(newCompOwner);
 
-	info = player.GetLevelInfo();
+    info = player.GetLevelInfo();
 
-	// hack for the DX.DX splash level
-	if (info != None) 
-	{
-		if (info.MissionNumber < 10)
-			MissionNumber = "0" $ String(info.MissionNumber);
-		else
-			MissionNumber = String(info.MissionNumber);
-	}
+    // hack for the DX.DX splash level
+    if (info != None)
+    {
+        if (info.MissionNumber < 10)
+            MissionNumber = "0" $ String(info.MissionNumber);
+        else
+            MissionNumber = String(info.MissionNumber);
+    }
 
-	// Open the email menu based on the login id
-	// or if it's been hacked, use the first account in the list
-	emailName = MissionNumber $ "_EmailMenu_" $ winTerm.GetUserName();
+    // Open the email menu based on the login id
+    // or if it's been hacked, use the first account in the list
+    emailName = MissionNumber $ "_EmailMenu_" $ winTerm.GetUserName();
 
-	ProcessDeusExText(StringToName(emailName));
+    ProcessDeusExText(StringToName(emailName));
 
-	if (emailIndex != -1)
-	{
-		// Now populate our list
-		for(emailInfoIndex=0; emailInfoIndex<=emailIndex; emailInfoIndex++)
-			lstEmail.AddRow(emailInfo[emailInfoIndex].emailFrom $ ";" $ 
-			                emailInfo[emailInfoIndex].emailSubject $ ";" $ 
-							emailInfoIndex);
+    if (emailIndex != -1)
+    {
+        // Now populate our list
+        for(emailInfoIndex=0; emailInfoIndex<=emailIndex; emailInfoIndex++)
+            lstEmail.AddRow(emailInfo[emailInfoIndex].emailFrom $ ";" $
+                            emailInfo[emailInfoIndex].emailSubject $ ";" $
+                            emailInfoIndex);
 
-		// Select the first row
-		rowId = lstEmail.IndexToRowId(0);
-		lstEmail.SetRow(rowId, True);
-	}
-	else
-	{
-		// No Email, so just print a "No Email Today!" message
-		winEmail.SetText(NoEmailTodayText);
-		winEmail.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	}
+        // Select the first row
+        rowId = lstEmail.IndexToRowId(0);
+        lstEmail.SetRow(rowId, True);
+    }
+    else
+    {
+        // No Email, so just print a "No Email Today!" message
+        winEmail.SetText(NoEmailTodayText);
+        winEmail.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -226,73 +226,73 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnHeaderFrom:
-			bFromSortOrder = !bFromSortOrder;
-			lstEmail.SetSortColumn(0, bFromSortOrder);
-			lstEmail.Sort();
-			break;
+    switch( buttonPressed )
+    {
+        case btnHeaderFrom:
+            bFromSortOrder = !bFromSortOrder;
+            lstEmail.SetSortColumn(0, bFromSortOrder);
+            lstEmail.Sort();
+            break;
 
-		case btnHeaderSubject:
-			bSubjectSortOrder = !bSubjectSortOrder;
-			lstEmail.SetSortColumn(1, bSubjectSortOrder);
-			lstEmail.Sort();
-			break;
+        case btnHeaderSubject:
+            bSubjectSortOrder = !bSubjectSortOrder;
+            lstEmail.SetSortColumn(1, bSubjectSortOrder);
+            lstEmail.Sort();
+            break;
 
-		case btnLogout:
-			CloseScreen("EXIT");
-			break;
+        case btnLogout:
+            CloseScreen("EXIT");
+            break;
 
-		case btnSpecial:
-			CloseScreen("SPECIAL");
-			break;
+        case btnSpecial:
+            CloseScreen("SPECIAL");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
-// ListSelectionChanged() 
+// ListSelectionChanged()
 //
 // Show the appropriate bulletin
 // ----------------------------------------------------------------------
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-	local int emailInfoIndex;
+    local int emailInfoIndex;
 
-	emailInfoIndex = Int(lstEmail.GetField(focusRowId, 2));
+    emailInfoIndex = Int(lstEmail.GetField(focusRowId, 2));
 
-	// Generate the email header
-	winEmailFrom.SetText(emailInfo[emailInfoIndex].emailFrom);
-	winEmailTo.SetText(emailInfo[emailInfoIndex].emailTo);
-	winEmailSubject.SetText(emailInfo[emailInfoIndex].emailSubject);
+    // Generate the email header
+    winEmailFrom.SetText(emailInfo[emailInfoIndex].emailFrom);
+    winEmailTo.SetText(emailInfo[emailInfoIndex].emailTo);
+    winEmailSubject.SetText(emailInfo[emailInfoIndex].emailSubject);
 
-	if (emailInfo[emailInfoIndex].emailCC != "")
-	{
-		winEmailCCHeader.Show();
-		winEmailCC.SetText(emailInfo[emailInfoIndex].emailCC);
-	}
-	else
-	{
-		winEmailCCHeader.Hide();
-	}
+    if (emailInfo[emailInfoIndex].emailCC != "")
+    {
+        winEmailCCHeader.Show();
+        winEmailCC.SetText(emailInfo[emailInfoIndex].emailCC);
+    }
+    else
+    {
+        winEmailCCHeader.Hide();
+    }
 
-	// Process the body
-	winEmail.SetText("");
-	ProcessDeusExText(emailInfo[emailInfoIndex].emailName, winEmail);
+    // Process the body
+    winEmail.SetText("");
+    ProcessDeusExText(emailInfo[emailInfoIndex].emailName, winEmail);
 }
 
 // ----------------------------------------------------------------------
@@ -303,8 +303,8 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 function ChangeAccount()
 {
-	Super.ChangeAccount();
-	CloseScreen("EMAIL");
+    Super.ChangeAccount();
+    CloseScreen("EMAIL");
 }
 
 // ----------------------------------------------------------------------

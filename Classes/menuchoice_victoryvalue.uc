@@ -20,7 +20,7 @@ var localized string FragLimitHelpText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetVictoryType(player.ConsoleCommand("get DeusExMPGame VictoryCondition"));
 
@@ -63,7 +63,7 @@ function SetVictoryType(string VictoryType)
    }
 
    btnAction.SetButtonText(actionText);
-	btnSlider.SetTicks(numTicks, startValue, endValue);
+    btnSlider.SetTicks(numTicks, startValue, endValue);
 
    TickValue = TickPercent * NumTicks;
    log("new tick value is "$TickValue);

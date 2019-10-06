@@ -8,23 +8,23 @@ class UnTrigger extends Trigger;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	local Actor A;
+    local Actor A;
 
-	// UnTrigger event
-	if(Event != '')
-		foreach AllActors(class 'Actor', A, Event)
-			A.UnTrigger(Other, Instigator);
+    // UnTrigger event
+    if(Event != '')
+        foreach AllActors(class 'Actor', A, Event)
+            A.UnTrigger(Other, Instigator);
 }
 
 function Touch(Actor Other)
 {
-	local Actor A;
+    local Actor A;
 
-	// UnTrigger event
-	if (IsRelevant(Other))
-		if(Event != '')
-			foreach AllActors(class 'Actor', A, Event)
-				A.UnTrigger(Other, Pawn(Other));
+    // UnTrigger event
+    if (IsRelevant(Other))
+        if(Event != '')
+            foreach AllActors(class 'Actor', A, Event)
+                A.UnTrigger(Other, Pawn(Other));
 }
 
 defaultproperties

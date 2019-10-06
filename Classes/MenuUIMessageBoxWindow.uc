@@ -10,17 +10,17 @@ class MenuUIMessageBoxWindow expands MenuUIWindow;
 
 enum EMessageBoxModes
 {
-	MB_YesNo,
-	MB_OK,
+    MB_YesNo,
+    MB_OK,
 };
 
 enum EMessageBoxResults
 {
-	MR_Yes,
-	MR_No,
-	MR_OK
+    MR_Yes,
+    MR_No,
+    MR_OK
 };
-	
+
 // ----------------------------------------------------------------------
 // Local Variables
 // ----------------------------------------------------------------------
@@ -63,12 +63,12 @@ var localized string btnLabelCancel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Force the title bar to be a certain width;
-	winTitle.minTitleWidth = 250;
+    // Force the title bar to be a certain width;
+    winTitle.minTitleWidth = 250;
 
-	CreateTextWindow();
+    CreateTextWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -77,10 +77,10 @@ event InitWindow()
 
 function CreateTextWindow()
 {
-	winText = CreateMenuHeader(21, 13, "", winClient);
-	winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winText.SetFont(Font'FontMenuHeaders_DS');
-	winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
+    winText = CreateMenuHeader(21, 13, "", winClient);
+    winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winText.SetFont(Font'FontMenuHeaders_DS');
+    winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
 }
 
 // ----------------------------------------------------------------------
@@ -91,9 +91,9 @@ function CreateTextWindow()
 
 function SetMessageText( String msgText )
 {
-	winText.SetText(msgText);
+    winText.SetText(msgText);
 
-	AskParentForReconfigure();
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------
@@ -102,7 +102,7 @@ function SetMessageText( String msgText )
 
 function SetDeferredKeyPress(bool bNewDeferredKeyPress)
 {
-	bDeferredKeyPress = bNewDeferredKeyPress;
+    bDeferredKeyPress = bNewDeferredKeyPress;
 }
 
 // ----------------------------------------------------------------------
@@ -113,30 +113,30 @@ function SetDeferredKeyPress(bool bNewDeferredKeyPress)
 
 function SetMode( int newMode )
 {
-	// Store away
-	mbMode = newMode;
-	
-	// Now create buttons appropriately
+    // Store away
+    mbMode = newMode;
 
-	switch( mbMode )
-	{
-		case 0:			// MB_YesNo:
-			btnNo  = winButtonBar.AddButton(btnLabelNo, HALIGN_Right);
-			btnYes = winButtonBar.AddButton(btnLabelYes, HALIGN_Right);
-			numButtons = 2;
-			SetFocusWindow(btnYes);
-			break;
+    // Now create buttons appropriately
 
-		case 1:			// MB_OK:
-			btnOK = winButtonBar.AddButton(btnLabelOK, HALIGN_Right);
-			numButtons = 1;
-			SetFocusWindow(btnOK);
-			break;
-	}
+    switch( mbMode )
+    {
+        case 0:         // MB_YesNo:
+            btnNo  = winButtonBar.AddButton(btnLabelNo, HALIGN_Right);
+            btnYes = winButtonBar.AddButton(btnLabelYes, HALIGN_Right);
+            numButtons = 2;
+            SetFocusWindow(btnYes);
+            break;
 
-	// Tell the shadow which bitmap to use
-	if (winShadow != None)
-		MenuUIMessageBoxShadowWindow(winShadow).SetButtonCount(numButtons);
+        case 1:         // MB_OK:
+            btnOK = winButtonBar.AddButton(btnLabelOK, HALIGN_Right);
+            numButtons = 1;
+            SetFocusWindow(btnOK);
+            break;
+    }
+
+    // Tell the shadow which bitmap to use
+    if (winShadow != None)
+        MenuUIMessageBoxShadowWindow(winShadow).SetButtonCount(numButtons);
 }
 
 // ----------------------------------------------------------------------
@@ -145,7 +145,7 @@ function SetMode( int newMode )
 
 function int GetNumButtons()
 {
-	return numButtons;
+    return numButtons;
 }
 
 // ----------------------------------------------------------------------
@@ -154,7 +154,7 @@ function int GetNumButtons()
 
 function SetNotifyWindow( Window newWinNotify )
 {
-	winNotify = newWinNotify;
+    winNotify = newWinNotify;
 }
 
 // ----------------------------------------------------------------------
@@ -163,42 +163,42 @@ function SetNotifyWindow( Window newWinNotify )
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	Super.ButtonActivated(buttonPressed);
+    Super.ButtonActivated(buttonPressed);
 
-	switch( buttonPressed )
-	{
-		case btnYes:
-			if ((bDeferredKeyPress) && (IsKeyDown(IK_Enter) || IsKeyDown(IK_Space) || IsKeyDown(IK_Y)))
-				bKeyPressed = True;
-			else
-				PostResult(0);  // MR_Yes;
+    switch( buttonPressed )
+    {
+        case btnYes:
+            if ((bDeferredKeyPress) && (IsKeyDown(IK_Enter) || IsKeyDown(IK_Space) || IsKeyDown(IK_Y)))
+                bKeyPressed = True;
+            else
+                PostResult(0);  // MR_Yes;
 
-			bHandled = True;
-			break;
+            bHandled = True;
+            break;
 
-		case btnNo:
-			PostResult(1);
-			break;
+        case btnNo:
+            PostResult(1);
+            break;
 
-		case btnOK:
-			if ((bDeferredKeyPress) && (IsKeyDown(IK_Enter) || IsKeyDown(IK_Space) || IsKeyDown(IK_Y)))
-				bKeyPressed = True;
-			else
-				PostResult(0);
+        case btnOK:
+            if ((bDeferredKeyPress) && (IsKeyDown(IK_Enter) || IsKeyDown(IK_Space) || IsKeyDown(IK_Y)))
+                bKeyPressed = True;
+            else
+                PostResult(0);
 
-			bHandled = True;
-			break;
+            bHandled = True;
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -210,7 +210,7 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -219,55 +219,55 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	switch( key ) 
-	{	
-		case IK_Escape:
-			switch( mbMode )
-			{
-				case 0:		// MB_YesNo:
-					PostResult(1);
-					break;
-				case 1:		// MB_OK:
-					PostResult(0);
-					break;
-			}
-			bHandled = True;
-			break;
+    switch( key )
+    {
+        case IK_Escape:
+            switch( mbMode )
+            {
+                case 0:     // MB_YesNo:
+                    PostResult(1);
+                    break;
+                case 1:     // MB_OK:
+                    PostResult(0);
+                    break;
+            }
+            bHandled = True;
+            break;
 
-		case IK_Enter:	
-		case IK_Space:
-			if (bDeferredKeyPress) 
-				bKeyPressed = True;
-			else
-				PostResult(0);
+        case IK_Enter:
+        case IK_Space:
+            if (bDeferredKeyPress)
+                bKeyPressed = True;
+            else
+                PostResult(0);
 
-			bHandled = True;
-			break;
+            bHandled = True;
+            break;
 
-		case IK_Y:
-			if ( mbMode == 0  /*MB_YesNo*/ )
-			{
-				if (bDeferredKeyPress)
-					bKeyPressed = True;
-				else
-					PostResult(0);
+        case IK_Y:
+            if ( mbMode == 0  /*MB_YesNo*/ )
+            {
+                if (bDeferredKeyPress)
+                    bKeyPressed = True;
+                else
+                    PostResult(0);
 
-				bHandled = True;
-			}
-			break;
+                bHandled = True;
+            }
+            break;
 
-		case IK_N:
-			if ( mbMode == 0  /*MB_YesNo*/ )
-			{
-				PostResult(1);
-				bHandled = True;
-			}
-			break;
-	}
+        case IK_N:
+            if ( mbMode == 0  /*MB_YesNo*/ )
+            {
+                PostResult(1);
+                bHandled = True;
+            }
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -276,16 +276,16 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
 {
-	if (((key == IK_Enter) || (key == IK_Space) || (key == IK_Y)) &&
-	   ((iState == IST_Release) && (bKeyPressed)))
-	{
-		PostResult(0);
-		return True;
-	}
-	else
-	{
-		return false;  // don't handle
-	}
+    if (((key == IK_Enter) || (key == IK_Space) || (key == IK_Y)) &&
+       ((iState == IST_Release) && (bKeyPressed)))
+    {
+        PostResult(0);
+        return True;
+    }
+    else
+    {
+        return false;  // don't handle
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -297,8 +297,8 @@ event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
 
 function PostResult( int buttonNumber )
 {
-	if ( winNotify != None )
-		winNotify.BoxOptionSelected(Self, buttonNumber);
+    if ( winNotify != None )
+        winNotify.BoxOptionSelected(Self, buttonNumber);
 }
 
 // ----------------------------------------------------------------------

@@ -13,17 +13,17 @@ var localized string MustBeUsedOn;
 
 simulated function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
+    local PersonaInfoWindow winInfo;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	winInfo.Clear();
-	winInfo.SetTitle(itemName);
-	winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR() $ MustBeUsedOn);
+    winInfo.Clear();
+    winInfo.SetTitle(itemName);
+    winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR() $ MustBeUsedOn);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------

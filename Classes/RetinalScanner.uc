@@ -7,19 +7,19 @@ var() localized String msgUsed;
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local Actor A;
+    local Actor A;
 
-	Super.HackAction(Hacker, bHacked);
+    Super.HackAction(Hacker, bHacked);
 
-	if (bHacked)
-		if (Event != '')
-		{
-			if (Pawn(Hacker) != None)
-				Pawn(Hacker).ClientMessage(msgUsed);
+    if (bHacked)
+        if (Event != '')
+        {
+            if (Pawn(Hacker) != None)
+                Pawn(Hacker).ClientMessage(msgUsed);
 
-			foreach AllActors(class 'Actor', A, Event)
-				A.Trigger(Self, Pawn(Hacker));
-		}
+            foreach AllActors(class 'Actor', A, Event)
+                A.Trigger(Self, Pawn(Hacker));
+        }
 }
 
 defaultproperties

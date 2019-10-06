@@ -5,24 +5,24 @@ class ControlPanel extends HackableDevices;
 
 function StopHacking()
 {
-	Super.StopHacking();
+    Super.StopHacking();
 
-	if (hackStrength == 0.0)
-		PlayAnim('Open');
+    if (hackStrength == 0.0)
+        PlayAnim('Open');
 }
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local Actor A;
+    local Actor A;
 
-	Super.HackAction(Hacker, bHacked);
+    Super.HackAction(Hacker, bHacked);
 
-	if (bHacked)
-	{
-		if (Event != '')
-			foreach AllActors(class 'Actor', A, Event)
-				A.Trigger(Self, Pawn(Hacker));
-	}
+    if (bHacked)
+    {
+        if (Event != '')
+            foreach AllActors(class 'Actor', A, Event)
+                A.Trigger(Self, Pawn(Hacker));
+    }
 }
 
 defaultproperties

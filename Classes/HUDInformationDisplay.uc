@@ -26,16 +26,16 @@ var Texture texBorders[9];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Create the tile window that will contain all the text windows
-	winTile = TileWindow(NewChild(Class'TileWindow'));
-	winTile.SetOrder( ORDER_Down );
-	winTile.SetChildAlignments( HALIGN_Full, VALIGN_Top );
-	winTile.SetMargins(20, 0);
-	winTile.SetMinorSpacing(0);
-	winTile.MakeWidthsEqual(True);
-	winTile.MakeHeightsEqual(False);
+    // Create the tile window that will contain all the text windows
+    winTile = TileWindow(NewChild(Class'TileWindow'));
+    winTile.SetOrder( ORDER_Down );
+    winTile.SetChildAlignments( HALIGN_Full, VALIGN_Top );
+    winTile.SetMargins(20, 0);
+    winTile.SetMinorSpacing(0);
+    winTile.MakeWidthsEqual(True);
+    winTile.MakeHeightsEqual(False);
 }
 
 // ----------------------------------------------------------------------
@@ -45,32 +45,32 @@ event InitWindow()
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local float tileWidth, tileHeight;
+    local float tileWidth, tileHeight;
 
-	if (winTile.IsVisible())
-	{
-		if ((!bWidthSpecified) && (!bHeightSpecified))
-		{
-			winTile.QueryPreferredSize(preferredWidth, preferredHeight);
+    if (winTile.IsVisible())
+    {
+        if ((!bWidthSpecified) && (!bHeightSpecified))
+        {
+            winTile.QueryPreferredSize(preferredWidth, preferredHeight);
 
-			preferredHeight += topMargin + bottomMargin;
-	
-			if (preferredHeight < minHeight)
-				preferredHeight = minHeight;
-		}
-		else if (bWidthSpecified)
-		{
-			preferredHeight = winTile.QueryPreferredHeight(preferredWidth);
-			preferredHeight += topMargin + bottomMargin;
-	
-			if (preferredHeight < minHeight)
-				preferredHeight = minHeight;
-		}
-		else
-		{
-			preferredWidth = winTile.QueryPreferredWidth(preferredHeight + topMargin + bottomMargin);
-		}
-	}
+            preferredHeight += topMargin + bottomMargin;
+
+            if (preferredHeight < minHeight)
+                preferredHeight = minHeight;
+        }
+        else if (bWidthSpecified)
+        {
+            preferredHeight = winTile.QueryPreferredHeight(preferredWidth);
+            preferredHeight += topMargin + bottomMargin;
+
+            if (preferredHeight < minHeight)
+                preferredHeight = minHeight;
+        }
+        else
+        {
+            preferredWidth = winTile.QueryPreferredWidth(preferredHeight + topMargin + bottomMargin);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -79,7 +79,7 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function ConfigurationChanged()
 {
-	winTile.ConfigureChild(0, topMargin, width, height);
+    winTile.ConfigureChild(0, topMargin, width, height);
 }
 
 // ----------------------------------------------------------------------
@@ -88,7 +88,7 @@ function ConfigurationChanged()
 
 event bool ChildRequestedReconfiguration(window childWin)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -99,19 +99,19 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 function TextWindow AddTextWindow()
 {
-	local TextWindow winText;
+    local TextWindow winText;
 
-	// Create the Text window containing the message text
-	winText = TextWindow(winTile.NewChild(Class'TextWindow'));
-	winText.SetFont(fontInfo);
-	winText.SetTextColor(colInfoText);
-	winText.SetWordWrap(True);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);	
-	winText.SetTextMargins(0, 0);
+    // Create the Text window containing the message text
+    winText = TextWindow(winTile.NewChild(Class'TextWindow'));
+    winText.SetFont(fontInfo);
+    winText.SetTextColor(colInfoText);
+    winText.SetWordWrap(True);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText.SetTextMargins(0, 0);
 
-	AskParentForReconfigure();
+    AskParentForReconfigure();
 
-	return winText;
+    return winText;
 }
 
 // ----------------------------------------------------------------------
@@ -122,7 +122,7 @@ function TextWindow AddTextWindow()
 
 function ClearTextWindows()
 {
-	winTile.DestroyAllChildren();
+    winTile.DestroyAllChildren();
 }
 
 // ----------------------------------------------------------------------

@@ -11,8 +11,8 @@ class WeaponModLaser extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		weapon.bHasLaser = True;
+    if (weapon != None)
+        weapon.bHasLaser = True;
 }
 
 // ----------------------------------------------------------------------
@@ -21,10 +21,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveLaser && !weapon.bHasLaser);
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveLaser && !weapon.bHasLaser);
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

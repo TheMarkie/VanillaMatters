@@ -10,7 +10,7 @@ class MenuChoice_ObjectNames extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bObjectNames));
+    SetValue(int(!player.bObjectNames));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bObjectNames = !bool(GetValue());
+    player.bObjectNames = !bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bObjectNames));
+    SetValue(int(!player.bObjectNames));
 }
 
 // ----------------------------------------------------------------------

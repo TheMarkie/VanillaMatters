@@ -2,7 +2,7 @@
 // Robot.
 //=============================================================================
 class Robot extends ScriptedPawn
-	abstract;
+    abstract;
 
 var(Sounds) sound SearchingSound;
 var(Sounds) sound SpeechTargetAcquired;
@@ -20,25 +20,25 @@ var(Sounds) sound explosionSound;
 
 function InitGenerator()
 {
-	local Vector loc;
+    local Vector loc;
 
-	if ((sparkGen == None) || (sparkGen.bDeleteMe))
-	{
-		loc = Location;
-		loc.z += CollisionHeight/2;
-		sparkGen = Spawn(class'ParticleGenerator', Self,, loc, rot(16384,0,0));
-		if (sparkGen != None)
-			sparkGen.SetBase(Self);
-	}
+    if ((sparkGen == None) || (sparkGen.bDeleteMe))
+    {
+        loc = Location;
+        loc.z += CollisionHeight/2;
+        sparkGen = Spawn(class'ParticleGenerator', Self,, loc, rot(16384,0,0));
+        if (sparkGen != None)
+            sparkGen.SetBase(Self);
+    }
 }
 
 function DestroyGenerator()
 {
-	if (sparkGen != None)
-	{
-		sparkGen.DelayedDestroy();
-		sparkGen = None;
-	}
+    if (sparkGen != None)
+    {
+        sparkGen.DelayedDestroy();
+        sparkGen = None;
+    }
 }
 
 //
@@ -46,47 +46,47 @@ function DestroyGenerator()
 //
 function Tick(float deltaTime)
 {
-	local float pct, mod;
+    local float pct, mod;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
    // DEUS_EX AMSD All the MP robots have massive numbers of EMP hitpoints, not equal to the default.  In multiplayer, at least, only do this if
    // they are DAMAGED.
-	if ((Default.EMPHitPoints != EMPHitPoints) && (EMPHitPoints != 0) && ((Level.Netmode == NM_Standalone) || (EMPHitPoints < Default.EMPHitPoints)))
-	{
-		pct = (Default.EMPHitPoints - EMPHitPoints) / Default.EMPHitPoints;
-		mod = pct * (1.0 - (2.0 * FRand()));
-		DesiredSpeed = MaxDesiredSpeed + (mod * MaxDesiredSpeed * 0.5);
-		SoundPitch = Default.SoundPitch + (mod * 8.0);
-	}
+    if ((Default.EMPHitPoints != EMPHitPoints) && (EMPHitPoints != 0) && ((Level.Netmode == NM_Standalone) || (EMPHitPoints < Default.EMPHitPoints)))
+    {
+        pct = (Default.EMPHitPoints - EMPHitPoints) / Default.EMPHitPoints;
+        mod = pct * (1.0 - (2.0 * FRand()));
+        DesiredSpeed = MaxDesiredSpeed + (mod * MaxDesiredSpeed * 0.5);
+        SoundPitch = Default.SoundPitch + (mod * 8.0);
+    }
 
-	if (CrazedTimer > 0)
-	{
-		CrazedTimer -= deltaTime;
-		if (CrazedTimer < 0)
-			CrazedTimer = 0;
-	}
+    if (CrazedTimer > 0)
+    {
+        CrazedTimer -= deltaTime;
+        if (CrazedTimer < 0)
+            CrazedTimer = 0;
+    }
 
-	if (CrazedTimer > 0)
-		bReverseAlliances = true;
-	else
-		bReverseAlliances = false;
+    if (CrazedTimer > 0)
+        bReverseAlliances = true;
+    else
+        bReverseAlliances = false;
 }
 
 
 function ImpartMomentum(Vector momentum, Pawn instigatedBy)
 {
-	// nil
+    // nil
 }
 
 function bool ShouldFlee()
 {
-	return (Health <= MinHealth);
+    return (Health <= MinHealth);
 }
 
 function bool ShouldDropWeapon()
 {
-	return false;
+    return false;
 }
 
 //
@@ -94,34 +94,34 @@ function bool ShouldDropWeapon()
 //
 simulated event Destroyed()
 {
-	Super.Destroyed();
+    Super.Destroyed();
 
-	DestroyGenerator();
+    DestroyGenerator();
 }
 
 function Carcass SpawnCarcass()
 {
-	Explode(Location);
+    Explode(Location);
 
-	return None;
+    return None;
 }
 
 function bool IgnoreDamageType(Name damageType)
 {
-	if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation'))
-		return True;
-	else if ((damageType == 'Poison') || (damageType == 'PoisonEffect'))
-		return True;
-	else if (damageType == 'KnockedOut')
-		return True;
-	else
-		return False;
+    if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation'))
+        return True;
+    else if ((damageType == 'Poison') || (damageType == 'PoisonEffect'))
+        return True;
+    else if (damageType == 'KnockedOut')
+        return True;
+    else
+        return False;
 }
 
 function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 {
-	if (EMPHitPoints > 0)  // ignore orders if disabled
-		Super.SetOrders(orderName, newOrderTag, bImmediate);
+    if (EMPHitPoints > 0)  // ignore orders if disabled
+        Super.SetOrders(orderName, newOrderTag, bImmediate);
 }
 
 // ----------------------------------------------------------------------
@@ -130,177 +130,177 @@ function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImm
 
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType, bool bPlayAnim)
 {
-	local float actualDamage;
-	local int oldEMPHitPoints;
+    local float actualDamage;
+    local int oldEMPHitPoints;
 
-	// Vanilla Matters
-	local DeusExPlayer player;
+    // Vanilla Matters
+    local DeusExPlayer player;
 
-	local float origHealth;
+    local float origHealth;
 
-	player = DeusExPlayer( instigatedBy );
-	origHealth = Health;
+    player = DeusExPlayer( instigatedBy );
+    origHealth = Health;
 
-	// Robots are invincible to EMP in multiplayer as well
-	if (( Level.NetMode != NM_Standalone ) && (damageType == 'EMP') && (Self.IsA('MedicalBot') || Self.IsA('RepairBot')) )
-		return;
+    // Robots are invincible to EMP in multiplayer as well
+    if (( Level.NetMode != NM_Standalone ) && (damageType == 'EMP') && (Self.IsA('MedicalBot') || Self.IsA('RepairBot')) )
+        return;
 
-	if ( bInvincible )
-		return;
+    if ( bInvincible )
+        return;
 
-	// robots aren't affected by gas or radiation
-	if (IgnoreDamageType(damageType))
-		return;
+    // robots aren't affected by gas or radiation
+    if (IgnoreDamageType(damageType))
+        return;
 
-	// enough EMP damage shuts down the robot
-	if (damageType == 'EMP')
-	{
-		oldEMPHitPoints = EMPHitPoints;
-		EMPHitPoints   -= Damage;
+    // enough EMP damage shuts down the robot
+    if (damageType == 'EMP')
+    {
+        oldEMPHitPoints = EMPHitPoints;
+        EMPHitPoints   -= Damage;
 
-		// make smoke!
-		if (EMPHitPoints <= 0)
-		{
-			EMPHitPoints = 0;
-			if (oldEMPHitPoints > 0)
-			{
-				PlaySound(sound'EMPZap', SLOT_None,,, (CollisionRadius+CollisionHeight)*8, 2.0);
-				InitGenerator();
-				if (sparkGen != None)
-				{
-					sparkGen.LifeSpan = 6;
-					sparkGen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
-					sparkGen.particleDrawScale = 0.3;
-					sparkGen.bRandomEject = False;
-					sparkGen.ejectSpeed = 10.0;
-					sparkGen.bGravity = False;
-					sparkGen.bParticlesUnlit = True;
-					sparkGen.frequency = 0.3;
-					sparkGen.riseRate = 3;
-					sparkGen.spawnSound = Sound'Spark2';
-				}
-			}
-			AmbientSound = None;
-			if (GetStateName() != 'Disabled')
-				GotoState('Disabled');
-		}
+        // make smoke!
+        if (EMPHitPoints <= 0)
+        {
+            EMPHitPoints = 0;
+            if (oldEMPHitPoints > 0)
+            {
+                PlaySound(sound'EMPZap', SLOT_None,,, (CollisionRadius+CollisionHeight)*8, 2.0);
+                InitGenerator();
+                if (sparkGen != None)
+                {
+                    sparkGen.LifeSpan = 6;
+                    sparkGen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
+                    sparkGen.particleDrawScale = 0.3;
+                    sparkGen.bRandomEject = False;
+                    sparkGen.ejectSpeed = 10.0;
+                    sparkGen.bGravity = False;
+                    sparkGen.bParticlesUnlit = True;
+                    sparkGen.frequency = 0.3;
+                    sparkGen.riseRate = 3;
+                    sparkGen.spawnSound = Sound'Spark2';
+                }
+            }
+            AmbientSound = None;
+            if (GetStateName() != 'Disabled')
+                GotoState('Disabled');
+        }
 
-		// make sparks!
-		else if (sparkGen == None)
-		{
-			InitGenerator();
-			if (sparkGen != None)
-			{
-				sparkGen.particleTexture = Texture'Effects.Fire.SparkFX1';
-				sparkGen.particleDrawScale = 0.2;
-				sparkGen.bRandomEject = True;
-				sparkGen.ejectSpeed = 100.0;
-				sparkGen.bGravity = True;
-				sparkGen.bParticlesUnlit = True;
-				sparkGen.frequency = 0.2;
-				sparkGen.riseRate = 10;
-				sparkGen.spawnSound = Sound'Spark2';
-			}
-		}
+        // make sparks!
+        else if (sparkGen == None)
+        {
+            InitGenerator();
+            if (sparkGen != None)
+            {
+                sparkGen.particleTexture = Texture'Effects.Fire.SparkFX1';
+                sparkGen.particleDrawScale = 0.2;
+                sparkGen.bRandomEject = True;
+                sparkGen.ejectSpeed = 100.0;
+                sparkGen.bGravity = True;
+                sparkGen.bParticlesUnlit = True;
+                sparkGen.frequency = 0.2;
+                sparkGen.riseRate = 10;
+                sparkGen.spawnSound = Sound'Spark2';
+            }
+        }
 
-		return;
-	}
-	else if (damageType == 'NanoVirus')
-	{
-		CrazedTimer += 0.5*Damage;
-		return;
-	}
+        return;
+    }
+    else if (damageType == 'NanoVirus')
+    {
+        CrazedTimer += 0.5*Damage;
+        return;
+    }
 
-	// play a hit sound
-	PlayTakeHitSound(Damage, damageType, 1);
+    // play a hit sound
+    PlayTakeHitSound(Damage, damageType, 1);
 
-	// increase the pitch of the ambient sound when damaged
-	if (SoundPitch == Default.SoundPitch)
-		SoundPitch += 16;
+    // increase the pitch of the ambient sound when damaged
+    if (SoundPitch == Default.SoundPitch)
+        SoundPitch += 16;
 
-	actualDamage = Level.Game.ReduceDamage(Damage, DamageType, self, instigatedBy);
+    actualDamage = Level.Game.ReduceDamage(Damage, DamageType, self, instigatedBy);
 
-	// robots don't have soft, squishy bodies like humans do, so they're less
-	// susceptible to gunshots...
-	if (damageType == 'Shot')
-		actualDamage *= 0.25;  // quarter strength
+    // robots don't have soft, squishy bodies like humans do, so they're less
+    // susceptible to gunshots...
+    if (damageType == 'Shot')
+        actualDamage *= 0.25;  // quarter strength
 
-	// hitting robots with a prod won't stun them, and will only do a limited
-	// amount of damage...
-	else if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
-		actualDamage *= 0.5;  // half strength
+    // hitting robots with a prod won't stun them, and will only do a limited
+    // amount of damage...
+    else if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
+        actualDamage *= 0.5;  // half strength
 
-	// flame attacks don't really hurt robots much, either
-	else if ((damageType == 'Flamed') || (damageType == 'Burned'))
-		actualDamage *= 0.25;  // quarter strength
+    // flame attacks don't really hurt robots much, either
+    else if ((damageType == 'Flamed') || (damageType == 'Burned'))
+        actualDamage *= 0.25;  // quarter strength
 
-	if ((actualDamage > 0.01) && (actualDamage < 1))
-		actualDamage = 1;
-	actualDamage = int(actualDamage+0.5);
+    if ((actualDamage > 0.01) && (actualDamage < 1))
+        actualDamage = 1;
+    actualDamage = int(actualDamage+0.5);
 
-	if (ReducedDamageType == 'All') //God mode
-		actualDamage = 0;
-	else if (Inventory != None) //then check if carrying armor
-		actualDamage = Inventory.ReduceDamage(int(actualDamage), DamageType, HitLocation);
+    if (ReducedDamageType == 'All') //God mode
+        actualDamage = 0;
+    else if (Inventory != None) //then check if carrying armor
+        actualDamage = Inventory.ReduceDamage(int(actualDamage), DamageType, HitLocation);
 
-	if (!bInvincible)
-		Health -= int(actualDamage);
+    if (!bInvincible)
+        Health -= int(actualDamage);
 
-	if (Health <= 0)
-	{
-		ClearNextState();
-		//PlayDeathHit(actualDamage, hitLocation, damageType);
-		if ( actualDamage > mass )
-			Health = -1 * actualDamage;
-		Enemy = instigatedBy;
-		Died(instigatedBy, damageType, HitLocation);
-	}
-	MakeNoise(1.0);
+    if (Health <= 0)
+    {
+        ClearNextState();
+        //PlayDeathHit(actualDamage, hitLocation, damageType);
+        if ( actualDamage > mass )
+            Health = -1 * actualDamage;
+        Enemy = instigatedBy;
+        Died(instigatedBy, damageType, HitLocation);
+    }
+    MakeNoise(1.0);
 
-	// Vanilla Matters: Add in FP rate for damage dealth, based on health loss.
-	if ( player != None ) {
-		if ( player.FPSystem != none ) {
-			if ( damageType == 'EMP' ) {
-				player.FPSystem.AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-			}
-			else {
-				player.FPSystem.AddForwardPressure( FMax( origHealth - Health, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-			}
-		}
-	}
+    // Vanilla Matters: Add in FP rate for damage dealth, based on health loss.
+    if ( player != None ) {
+        if ( player.FPSystem != none ) {
+            if ( damageType == 'EMP' ) {
+                player.FPSystem.AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+            }
+            else {
+                player.FPSystem.AddForwardPressure( FMax( origHealth - Health, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+            }
+        }
+    }
 
-	ReactToInjury(instigatedBy, damageType, HITLOC_None);
+    ReactToInjury(instigatedBy, damageType, HITLOC_None);
 }
 
 function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 {
-	local Pawn oldEnemy;
+    local Pawn oldEnemy;
 
-	if (IgnoreDamageType(damageType))
-		return;
+    if (IgnoreDamageType(damageType))
+        return;
 
-	if (EMPHitPoints > 0)
-	{
-		if (damageType == 'NanoVirus')
-		{
-			oldEnemy = Enemy;
-			FindBestEnemy(false);
-			if (oldEnemy != Enemy)
-				PlayNewTargetSound();
-			instigatedBy = Enemy;
-		}
-		Super.ReactToInjury(instigatedBy, damageType, hitPos);
-	}
+    if (EMPHitPoints > 0)
+    {
+        if (damageType == 'NanoVirus')
+        {
+            oldEnemy = Enemy;
+            FindBestEnemy(false);
+            if (oldEnemy != Enemy)
+                PlayNewTargetSound();
+            instigatedBy = Enemy;
+        }
+        Super.ReactToInjury(instigatedBy, damageType, hitPos);
+    }
 }
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	else if (!IgnoreDamageType(damageType) && CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    else if (!IgnoreDamageType(damageType) && CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 
@@ -312,99 +312,99 @@ function ComputeFallDirection(float totalTime, int numFrames,
 
 function Explode(vector HitLocation)
 {
-	local int i, num;
-	local float explosionRadius;
-	local Vector loc;
-	local DeusExFragment s;
-	local ExplosionLight light;
+    local int i, num;
+    local float explosionRadius;
+    local Vector loc;
+    local DeusExFragment s;
+    local ExplosionLight light;
 
-	explosionRadius = (CollisionRadius + CollisionHeight) / 2;
-	PlaySound(explosionSound, SLOT_None, 2.0,, explosionRadius*32);
+    explosionRadius = (CollisionRadius + CollisionHeight) / 2;
+    PlaySound(explosionSound, SLOT_None, 2.0,, explosionRadius*32);
 
-	if (explosionRadius < 48.0)
-		PlaySound(sound'LargeExplosion1', SLOT_None,,, explosionRadius*32);
-	else
-		PlaySound(sound'LargeExplosion2', SLOT_None,,, explosionRadius*32);
+    if (explosionRadius < 48.0)
+        PlaySound(sound'LargeExplosion1', SLOT_None,,, explosionRadius*32);
+    else
+        PlaySound(sound'LargeExplosion2', SLOT_None,,, explosionRadius*32);
 
-	AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
 
-	// draw a pretty explosion
-	light = Spawn(class'ExplosionLight',,, HitLocation);
-	for (i=0; i<explosionRadius/20+1; i++)
-	{
-		loc = Location + VRand() * CollisionRadius;
-		if (explosionRadius < 16)
-		{
-			Spawn(class'ExplosionSmall',,, loc);
-			light.size = 2;
-		}
-		else if (explosionRadius < 32)
-		{
-			Spawn(class'ExplosionMedium',,, loc);
-			light.size = 4;
-		}
-		else
-		{
-			Spawn(class'ExplosionLarge',,, loc);
-			light.size = 8;
-		}
-	}
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, HitLocation);
+    for (i=0; i<explosionRadius/20+1; i++)
+    {
+        loc = Location + VRand() * CollisionRadius;
+        if (explosionRadius < 16)
+        {
+            Spawn(class'ExplosionSmall',,, loc);
+            light.size = 2;
+        }
+        else if (explosionRadius < 32)
+        {
+            Spawn(class'ExplosionMedium',,, loc);
+            light.size = 4;
+        }
+        else
+        {
+            Spawn(class'ExplosionLarge',,, loc);
+            light.size = 8;
+        }
+    }
 
-	// spawn some metal fragments
-	num = FMax(3, explosionRadius/6);
-	for (i=0; i<num; i++)
-	{
-		s = Spawn(class'MetalFragment', Owner);
-		if (s != None)
-		{
-			s.Instigator = Instigator;
-			s.CalcVelocity(Velocity, explosionRadius);
-			s.DrawScale = explosionRadius*0.075*FRand();
-			s.Skin = GetMeshTexture();
-			if (FRand() < 0.75)
-				s.bSmoking = True;
-		}
-	}
+    // spawn some metal fragments
+    num = FMax(3, explosionRadius/6);
+    for (i=0; i<num; i++)
+    {
+        s = Spawn(class'MetalFragment', Owner);
+        if (s != None)
+        {
+            s.Instigator = Instigator;
+            s.CalcVelocity(Velocity, explosionRadius);
+            s.DrawScale = explosionRadius*0.075*FRand();
+            s.Skin = GetMeshTexture();
+            if (FRand() < 0.75)
+                s.bSmoking = True;
+        }
+    }
 
-	// cause the damage
-	HurtRadius(0.5*explosionRadius, 8*explosionRadius, 'Exploded', 100*explosionRadius, Location);
+    // cause the damage
+    HurtRadius(0.5*explosionRadius, 8*explosionRadius, 'Exploded', 100*explosionRadius, Location);
 }
 
 function TweenToRunningAndFiring(float tweentime)
 {
-	bIsWalking = FALSE;
-	TweenAnimPivot('Run', tweentime);
+    bIsWalking = FALSE;
+    TweenAnimPivot('Run', tweentime);
 }
 
 function PlayRunningAndFiring()
 {
-	bIsWalking = FALSE;
-	LoopAnimPivot('Run');
+    bIsWalking = FALSE;
+    LoopAnimPivot('Run');
 }
 
 function TweenToShoot(float tweentime)
 {
-	TweenAnimPivot('Still', tweentime);
+    TweenAnimPivot('Still', tweentime);
 }
 
 function PlayShoot()
 {
-	PlayAnimPivot('Still');
+    PlayAnimPivot('Still');
 }
 
 function TweenToAttack(float tweentime)
 {
-	TweenAnimPivot('Still', tweentime);
+    TweenAnimPivot('Still', tweentime);
 }
 
 function PlayAttack()
 {
-	PlayAnimPivot('Still');
+    PlayAnimPivot('Still');
 }
 
 function PlayTurning()
 {
-	LoopAnimPivot('Walk');
+    LoopAnimPivot('Walk');
 }
 
 function PlayFalling()
@@ -413,86 +413,86 @@ function PlayFalling()
 
 function TweenToWalking(float tweentime)
 {
-	bIsWalking = True;
-	TweenAnimPivot('Walk', tweentime);
+    bIsWalking = True;
+    TweenAnimPivot('Walk', tweentime);
 }
 
 function PlayWalking()
 {
-	bIsWalking = True;
-	LoopAnimPivot('Walk');
+    bIsWalking = True;
+    LoopAnimPivot('Walk');
 }
 
 function TweenToRunning(float tweentime)
 {
-	bIsWalking = False;
-	PlayAnimPivot('Run',, tweentime);
+    bIsWalking = False;
+    PlayAnimPivot('Run',, tweentime);
 }
 
 function PlayRunning()
 {
-	bIsWalking = False;
-	LoopAnimPivot('Run');
+    bIsWalking = False;
+    LoopAnimPivot('Run');
 }
 
 function TweenToWaiting(float tweentime)
 {
-	TweenAnimPivot('Idle', tweentime);
+    TweenAnimPivot('Idle', tweentime);
 }
 
 function PlayWaiting()
 {
-	PlayAnimPivot('Idle');
+    PlayAnimPivot('Idle');
 }
 
 function PlaySwimming()
 {
-	LoopAnimPivot('Still');
+    LoopAnimPivot('Still');
 }
 
 function TweenToSwimming(float tweentime)
 {
-	TweenAnimPivot('Still', tweentime);
+    TweenAnimPivot('Still', tweentime);
 }
 
 function PlayLanded(float impactVel)
 {
-	bIsWalking = True;
+    bIsWalking = True;
 }
 
 function PlayDuck()
 {
-	TweenAnimPivot('Still', 0.25);
+    TweenAnimPivot('Still', 0.25);
 }
 
 function PlayRising()
 {
-	PlayAnimPivot('Still');
+    PlayAnimPivot('Still');
 }
 
 function PlayCrawling()
 {
-	LoopAnimPivot('Still');
+    LoopAnimPivot('Still');
 }
 
 function PlayFiring()
 {
-	LoopAnimPivot('Still',,0.1);
+    LoopAnimPivot('Still',,0.1);
 }
 
 function PlayReloadBegin()
 {
-	PlayAnimPivot('Still',, 0.1);
+    PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayReload()
 {
-	PlayAnimPivot('Still');
+    PlayAnimPivot('Still');
 }
 
 function PlayReloadEnd()
 {
-	PlayAnimPivot('Still',, 0.1);
+    PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayCowerBegin() {}
@@ -501,7 +501,7 @@ function PlayCowerEnd() {}
 
 function PlayDisabled()
 {
-	TweenAnimPivot('Still', 0.2);
+    TweenAnimPivot('Still', 0.2);
 }
 
 function PlayWeaponSwitch(Weapon newWeapon)
@@ -514,24 +514,24 @@ function PlayIdleSound()
 
 function PlayScanningSound()
 {
-	PlaySound(SearchingSound, SLOT_None,,, 2048);
-	PlaySound(SpeechScanning, SLOT_None,,, 2048);
+    PlaySound(SearchingSound, SLOT_None,,, 2048);
+    PlaySound(SpeechScanning, SLOT_None,,, 2048);
 }
 
 function PlaySearchingSound()
 {
-	PlaySound(SearchingSound, SLOT_None,,, 2048);
-	PlaySound(SpeechScanning, SLOT_None,,, 2048);
+    PlaySound(SearchingSound, SLOT_None,,, 2048);
+    PlaySound(SpeechScanning, SLOT_None,,, 2048);
 }
 
 function PlayTargetAcquiredSound()
 {
-	PlaySound(SpeechTargetAcquired, SLOT_None,,, 2048);
+    PlaySound(SpeechTargetAcquired, SLOT_None,,, 2048);
 }
 
 function PlayTargetLostSound()
 {
-	PlaySound(SpeechTargetLost, SLOT_None,,, 2048);
+    PlaySound(SpeechTargetLost, SLOT_None,,, 2048);
 }
 
 function PlayGoingForAlarmSound()
@@ -540,60 +540,60 @@ function PlayGoingForAlarmSound()
 
 function PlayOutOfAmmoSound()
 {
-	PlaySound(SpeechOutOfAmmo, SLOT_None,,, 2048);
+    PlaySound(SpeechOutOfAmmo, SLOT_None,,, 2048);
 }
 
 function PlayCriticalDamageSound()
 {
-	PlaySound(SpeechCriticalDamage, SLOT_None,,, 2048);
+    PlaySound(SpeechCriticalDamage, SLOT_None,,, 2048);
 }
 
 function PlayAreaSecureSound()
 {
-	PlaySound(SpeechAreaSecure, SLOT_None,,, 2048);
+    PlaySound(SpeechAreaSecure, SLOT_None,,, 2048);
 }
 
 
 
 state Disabled
 {
-	ignores bump, frob, reacttoinjury;
-	function BeginState()
-	{
-		StandUp();
-		BlockReactions(true);
-		bCanConverse = False;
-		SeekPawn = None;
-	}
-	function EndState()
-	{
-		ResetReactions();
-		bCanConverse = True;
-	}
+    ignores bump, frob, reacttoinjury;
+    function BeginState()
+    {
+        StandUp();
+        BlockReactions(true);
+        bCanConverse = False;
+        SeekPawn = None;
+    }
+    function EndState()
+    {
+        ResetReactions();
+        bCanConverse = True;
+    }
 
 Begin:
-	Acceleration=vect(0,0,0);
-	DesiredRotation=Rotation;
-	PlayDisabled();
+    Acceleration=vect(0,0,0);
+    DesiredRotation=Rotation;
+    PlayDisabled();
 
 Disabled:
 }
 
 state Fleeing
 {
-	function PickDestination()
-	{
-		local int     iterations;
-		local float   magnitude;
-		local rotator rot1;
+    function PickDestination()
+    {
+        local int     iterations;
+        local float   magnitude;
+        local rotator rot1;
 
-		iterations = 4;
-		magnitude  = 400*(FRand()*0.4+0.8);  // 400, +/-20%
-		rot1       = Rotator(Location-Enemy.Location);
-		if (!AIPickRandomDestination(40, magnitude, rot1.Yaw, 0.6, rot1.Pitch, 0.6, iterations,
-		                             FRand()*0.4+0.35, destLoc))
-			destLoc = Location;  // we give up
-	}
+        iterations = 4;
+        magnitude  = 400*(FRand()*0.4+0.8);  // 400, +/-20%
+        rot1       = Rotator(Location-Enemy.Location);
+        if (!AIPickRandomDestination(40, magnitude, rot1.Yaw, 0.6, rot1.Pitch, 0.6, iterations,
+                                     FRand()*0.4+0.35, destLoc))
+            destLoc = Location;  // we give up
+    }
 }
 
 // ------------------------------------------------------------

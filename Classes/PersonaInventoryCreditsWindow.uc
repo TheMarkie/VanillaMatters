@@ -16,16 +16,16 @@ var localized String CreditsLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetOrder(ORDER_Right);
-	SetChildAlignments(HALIGN_Full, VALIGN_Top);
-	SetMargins(0, 0);
-	SetMinorSpacing(5);
-	MakeWidthsEqual(False);
-	MakeHeightsEqual(True);
+    SetOrder(ORDER_Right);
+    SetChildAlignments(HALIGN_Full, VALIGN_Top);
+    SetMargins(0, 0);
+    SetMinorSpacing(5);
+    MakeWidthsEqual(False);
+    MakeHeightsEqual(True);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -34,15 +34,15 @@ event InitWindow()
 
 function CreateControls()
 {
-	local PersonaHeaderTextWindow winLabel;
+    local PersonaHeaderTextWindow winLabel;
 
-	winLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winLabel.SetHeight(15);
-	winLabel.SetText(CreditsLabel);
+    winLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winLabel.SetHeight(15);
+    winLabel.SetText(CreditsLabel);
 
-	winCredits = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winCredits.SetSize(63, 15);
-	winCredits.SetTextAlignments(HALIGN_Right, VALIGN_Center);
+    winCredits = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winCredits.SetSize(63, 15);
+    winCredits.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ function CreateControls()
 
 function SetCredits(int newCredits)
 {
-	winCredits.SetText(String(newCredits));
+    winCredits.SetText(String(newCredits));
 }
 
 // ----------------------------------------------------------------------

@@ -13,7 +13,7 @@ var String title;
 
 function SetPartIndex(int newPartIndex)
 {
-	partIndex = newPartIndex;
+    partIndex = newPartIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ function SetPartIndex(int newPartIndex)
 
 function int GetPartIndex()
 {
-	return partIndex;
+    return partIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -31,7 +31,7 @@ function int GetPartIndex()
 
 function SetDesc(String newDesc)
 {
-	desc = newDesc;
+    desc = newDesc;
 }
 
 // ----------------------------------------------------------------------
@@ -40,7 +40,7 @@ function SetDesc(String newDesc)
 
 function String GetDesc()
 {
-	return desc;
+    return desc;
 }
 
 // ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ function String GetDesc()
 
 function SetTitle(String newTitle)
 {
-	title = newTitle;
+    title = newTitle;
 }
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ function SetTitle(String newTitle)
 
 function String GetTitle()
 {
-	return title;
+    return title;
 }
 
 // ----------------------------------------------------------------------

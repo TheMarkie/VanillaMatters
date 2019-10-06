@@ -5,49 +5,49 @@ class Liquor40oz extends DeusExPickup;
 
 enum ESkinColor
 {
-	SC_Super45,
-	SC_Bottle2,
-	SC_Bottle3,
-	SC_Bottle4
+    SC_Super45,
+    SC_Bottle2,
+    SC_Bottle3,
+    SC_Bottle4
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Super45:		Skin = Texture'Liquor40ozTex1'; break;
-		case SC_Bottle2:		Skin = Texture'Liquor40ozTex2'; break;
-		case SC_Bottle3:		Skin = Texture'Liquor40ozTex3'; break;
-		case SC_Bottle4:		Skin = Texture'Liquor40ozTex4'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Super45:        Skin = Texture'Liquor40ozTex1'; break;
+        case SC_Bottle2:        Skin = Texture'Liquor40ozTex2'; break;
+        case SC_Bottle3:        Skin = Texture'Liquor40ozTex3'; break;
+        case SC_Bottle4:        Skin = Texture'Liquor40ozTex4'; break;
+    }
 }
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			player.HealPlayer(2, False);
-			player.drugEffectTimer += 10.0;
-		}
+        Super.BeginState();
 
-		UseOnce();
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            player.HealPlayer(2, False);
+            player.drugEffectTimer += 10.0;
+        }
+
+        UseOnce();
+    }
 Begin:
 }
 

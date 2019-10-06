@@ -9,7 +9,7 @@ class MenuChoice_ForwardPressure extends MenuChoice_EnabledDisabled;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	SetValue( int( !player.VM_bEnableFP ) );
+    SetValue( int( !player.VM_bEnableFP ) );
 }
 
 // ----------------------------------------------------------------------
@@ -17,14 +17,14 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	player.VM_bEnableFP = !bool( GetValue() );
+    player.VM_bEnableFP = !bool( GetValue() );
 }
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( int( !player.Default.VM_bEnableFP ) );
+    SetValue( int( !player.Default.VM_bEnableFP ) );
 }
 
 // ----------------------------------------------------------------------

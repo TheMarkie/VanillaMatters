@@ -10,10 +10,10 @@ class MenuUIListHeaderButtonWindow extends MenuUIBorderButtonWindow;
 
 event StyleChanged()
 {
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	// Override disabled color
-	colText[3] = colText[2];
+    // Override disabled color
+    colText[3] = colText[2];
 }
 
 // ----------------------------------------------------------------------

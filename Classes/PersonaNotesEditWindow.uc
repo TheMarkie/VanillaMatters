@@ -16,9 +16,9 @@ var Texture texBordersFocus[9];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetTextMargins(10, 5);
+    SetTextMargins(10, 5);
 }
 
 // ----------------------------------------------------------------------
@@ -28,26 +28,26 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw the Gamma Scale
-	gc.SetTileColor(colBracket);
-	gc.SetStyle(DSTY_Masked);
+{
+    // Draw the Gamma Scale
+    gc.SetTileColor(colBracket);
+    gc.SetStyle(DSTY_Masked);
 
-	// Draw background
-	gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBordersNormal);
+    // Draw background
+    gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBordersNormal);
 }
 
 // ----------------------------------------------------------------------
 // FilterChar()
 //
-// Backslaces are EVIL and cannot be entered, because of 
+// Backslaces are EVIL and cannot be entered, because of
 // travel export/import issues (we use this backslash to represent
 // the return character)
 // ----------------------------------------------------------------------
 
 function bool FilterChar(out string chStr)
 {
-	return (chStr != "\\");
+    return (chStr != "\\");
 }
 
 // ----------------------------------------------------------------------
@@ -56,9 +56,9 @@ function bool FilterChar(out string chStr)
 
 function SetNote( DeusExNote newNote )
 {
-	SetClientObject(newNote);
+    SetClientObject(newNote);
 
-	SetText( newNote.text );
+    SetText( newNote.text );
 }
 
 // ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ function SetNote( DeusExNote newNote )
 
 function DeusExNote GetNote()
 {
-	return DeusExNote(GetClientObject());
+    return DeusExNote(GetClientObject());
 }
 
 // ----------------------------------------------------------------------
@@ -76,13 +76,13 @@ function DeusExNote GetNote()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBracket = theme.GetColorFromName('HUDColor_HeaderText');
+    colBracket = theme.GetColorFromName('HUDColor_HeaderText');
 }
 
 // ----------------------------------------------------------------------

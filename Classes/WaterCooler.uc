@@ -9,53 +9,53 @@ var localized String msgEmpty;
 
 function Timer()
 {
-	bUsing = False;
-	AmbientSound = None;
+    bUsing = False;
+    AmbientSound = None;
 }
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	if (bUsing)
-		return;
+    if (bUsing)
+        return;
 
-	if (numUses <= 0)
-	{
-		if (Pawn(Frobber) != None)
-			Pawn(Frobber).ClientMessage(msgEmpty);
-		return;
-	}
+    if (numUses <= 0)
+    {
+        if (Pawn(Frobber) != None)
+            Pawn(Frobber).ClientMessage(msgEmpty);
+        return;
+    }
 
-	SetTimer(2.0, False);
-	bUsing = True;
+    SetTimer(2.0, False);
+    bUsing = True;
 
-	// heal the frobber a small bit
-	if (DeusExPlayer(Frobber) != None)
-		DeusExPlayer(Frobber).HealPlayer(1);
+    // heal the frobber a small bit
+    if (DeusExPlayer(Frobber) != None)
+        DeusExPlayer(Frobber).HealPlayer(1);
 
-	PlayAnim('Bubble');
-	AmbientSound = sound'WaterBubbling';
-	numUses--;
+    PlayAnim('Bubble');
+    AmbientSound = sound'WaterBubbling';
+    numUses--;
 }
 
 function Destroyed()
 {
-	local Vector HitLocation, HitNormal, EndTrace;
-	local Actor hit;
-	local WaterPool pool;
+    local Vector HitLocation, HitNormal, EndTrace;
+    local Actor hit;
+    local WaterPool pool;
 
-	// trace down about 20 feet if we're not in water
-	if (!Region.Zone.bWaterZone)
-	{
-		EndTrace = Location - vect(0,0,320);
-		hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
-		pool = spawn(class'WaterPool',,, HitLocation+HitNormal, Rotator(HitNormal));
-		if (pool != None)
-			pool.maxDrawScale = CollisionRadius / 20.0;
-	}
+    // trace down about 20 feet if we're not in water
+    if (!Region.Zone.bWaterZone)
+    {
+        EndTrace = Location - vect(0,0,320);
+        hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
+        pool = spawn(class'WaterPool',,, HitLocation+HitNormal, Rotator(HitNormal));
+        if (pool != None)
+            pool.maxDrawScale = CollisionRadius / 20.0;
+    }
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 defaultproperties

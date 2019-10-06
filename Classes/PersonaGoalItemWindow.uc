@@ -20,16 +20,16 @@ var Bool bPrimaryGoal;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetChildVAlignment(VALIGN_Top);
+    SetChildVAlignment(VALIGN_Top);
 
-	CreateTextWindows();
+    CreateTextWindows();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -38,8 +38,8 @@ event InitWindow()
 
 function CreateTextWindows()
 {
-	winBullet   = PersonaGoalTextWindow(NewChild(Class'PersonaGoalTextWindow'));
-	winGoalText = PersonaGoalTextWindow(NewChild(Class'PersonaGoalTextWindow'));
+    winBullet   = PersonaGoalTextWindow(NewChild(Class'PersonaGoalTextWindow'));
+    winGoalText = PersonaGoalTextWindow(NewChild(Class'PersonaGoalTextWindow'));
 }
 
 // ----------------------------------------------------------------------
@@ -48,17 +48,17 @@ function CreateTextWindows()
 
 function SetGoalProperties(bool bNewPrimaryGoal, bool bNewCompleted, string goalText, optional bool bNoBullet)
 {
-	bPrimaryGoal = bNewPrimaryGoal;
-	bCompleted   = bNewCompleted;
+    bPrimaryGoal = bNewPrimaryGoal;
+    bCompleted   = bNewCompleted;
 
-	winGoalText.SetText(goalText);
+    winGoalText.SetText(goalText);
 
-	if (bNoBullet)
-		winBullet.SetText("");
-	else
-		winBullet.SetText("~");
+    if (bNoBullet)
+        winBullet.SetText("");
+    else
+        winBullet.SetText("~");
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -67,25 +67,25 @@ function SetGoalProperties(bool bNewPrimaryGoal, bool bNewCompleted, string goal
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colText;
+    local ColorTheme theme;
+    local Color colText;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	colText = theme.GetColorFromName('HUDColor_NormalText');
+    // Title colors
+    colText = theme.GetColorFromName('HUDColor_NormalText');
 
-	// Display completed goals in a different color
-	if (bCompleted)
-	{
-		winBullet.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
-		winGoalText.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
-	}
-	else
-	{
-		winBullet.SetTextColor(colText);
-		winGoalText.SetTextColor(colText);
-	}
+    // Display completed goals in a different color
+    if (bCompleted)
+    {
+        winBullet.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
+        winGoalText.SetTextColorRGB(colText.r / 2, colText.g / 2, colText.b / 2);
+    }
+    else
+    {
+        winBullet.SetTextColor(colText);
+        winGoalText.SetTextColor(colText);
+    }
 }
 
 // ----------------------------------------------------------------------

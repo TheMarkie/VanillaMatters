@@ -12,13 +12,13 @@ class MenuMain expands MenuUIMenuWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	UpdateButtonStatus();
-	ShowVersionInfo();
+    UpdateButtonStatus();
+    ShowVersionInfo();
 
-	// Vanilla Matters: Show Vanilla Matters version.
-	ShowVanillaMattersInfo();
+    // Vanilla Matters: Show Vanilla Matters version.
+    ShowVanillaMattersInfo();
 }
 
 // ----------------------------------------------------------------------
@@ -27,25 +27,25 @@ event InitWindow()
 
 function UpdateButtonStatus()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	info = player.GetLevelInfo();
+    info = player.GetLevelInfo();
 
-	// Disable the "Save Game" and "Back to Game" menu choices
-	// if the player's dead or we're on the logo map.
-	//
-	// Also don't allow the user to save if a DataLink is playing
+    // Disable the "Save Game" and "Back to Game" menu choices
+    // if the player's dead or we're on the logo map.
+    //
+    // Also don't allow the user to save if a DataLink is playing
 
    // Don't disable in mp if dead.
 
-	if (((info != None) && (info.MissionNumber < 0)) || 
-	   ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))))
-	{
+    if (((info != None) && (info.MissionNumber < 0)) ||
+       ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))))
+    {
       if (Player.Level.NetMode == NM_Standalone)
       {
          winButtons[1].SetSensitivity(False);
          winButtons[7].SetSensitivity(False);
-      } 
+      }
    }
 
    // Disable the "Save Game", "New Game", "Intro", "Training" and "Load Game" menu choices if in multiplayer
@@ -58,24 +58,24 @@ function UpdateButtonStatus()
       winButtons[5].SetSensitivity(False);
    }
 
-	// Don't allow saving if a datalink is playing
-	if (player.dataLinkPlay != None)
-		winButtons[1].SetSensitivity(False);
+    // Don't allow saving if a datalink is playing
+    if (player.dataLinkPlay != None)
+        winButtons[1].SetSensitivity(False);
 
-	// Vanilla Matters: Disallow saving if not enough forward pressure.
-	if ( Player.VM_bEnableFP && Player.FPSystem != none ) {
-		if ( !Player.FPSystem.EnoughPressure( 100 ) ) {
-			winButtons[1].SetSensitivity( false );
-		}
-	}
+    // Vanilla Matters: Disallow saving if not enough forward pressure.
+    if ( Player.VM_bEnableFP && Player.FPSystem != none ) {
+        if ( !Player.FPSystem.EnoughPressure( 100 ) ) {
+            winButtons[1].SetSensitivity( false );
+        }
+    }
 
-	// Vanilla Matters: Disable multiplayer for now.
-	winButtons[8].SetSensitivity( false );
+    // Vanilla Matters: Disable multiplayer for now.
+    winButtons[8].SetSensitivity( false );
 
-	// DEUS_EX_DEMO - Uncomment when building demo
-	//
-	// Disable the "Play Intro" button for the demo
-//	winButtons[5].SetSensitivity(False);
+    // DEUS_EX_DEMO - Uncomment when building demo
+    //
+    // Disable the "Play Intro" button for the demo
+//  winButtons[5].SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -84,26 +84,26 @@ function UpdateButtonStatus()
 
 function ShowVersionInfo()
 {
-	local TextWindow version;
+    local TextWindow version;
 
-	version = TextWindow(NewChild(Class'TextWindow'));
-	version.SetTextMargins(0, 0);
-	version.SetWindowAlignments(HALIGN_Right, VALIGN_Bottom);
-	version.SetTextColorRGB(255, 255, 255);
-	version.SetTextAlignments(HALIGN_Right, VALIGN_Bottom);
-	version.SetText(player.GetDeusExVersion());
+    version = TextWindow(NewChild(Class'TextWindow'));
+    version.SetTextMargins(0, 0);
+    version.SetWindowAlignments(HALIGN_Right, VALIGN_Bottom);
+    version.SetTextColorRGB(255, 255, 255);
+    version.SetTextAlignments(HALIGN_Right, VALIGN_Bottom);
+    version.SetText(player.GetDeusExVersion());
 }
 
 // Vanilla Matters: Show Vanilla Matters version.
 function ShowVanillaMattersInfo() {
-	local TextWindow vmInfo;
+    local TextWindow vmInfo;
 
-	vmInfo = TextWindow( NewChild( Class'TextWindow' ) );
-	vmInfo.SetTextMargins( 0, 10 );
-	vmInfo.SetTextAlignments( HALIGN_Left, VALIGN_Top );
-	vmInfo.SetTextColorRGB( 255, 255, 255 );
-	vmInfo.SetWindowAlignments( HALIGN_Right, VALIGN_Top );
-	vmInfo.SetText( "VM" @ class'DeusExGameInfo'.static.GetVMVersion() );
+    vmInfo = TextWindow( NewChild( Class'TextWindow' ) );
+    vmInfo.SetTextMargins( 0, 10 );
+    vmInfo.SetTextAlignments( HALIGN_Left, VALIGN_Top );
+    vmInfo.SetTextColorRGB( 255, 255, 255 );
+    vmInfo.SetWindowAlignments( HALIGN_Right, VALIGN_Top );
+    vmInfo.SetText( "VM" @ class'DeusExGameInfo'.static.GetVMVersion() );
 }
 
 // ----------------------------------------------------------------------

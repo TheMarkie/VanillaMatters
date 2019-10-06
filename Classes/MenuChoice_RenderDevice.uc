@@ -14,27 +14,27 @@ var localized String RestartPromptMessage;
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local DeusExLevelInfo info;
-	local DeusExRootWindow root;
+    local DeusExLevelInfo info;
+    local DeusExRootWindow root;
 
-	root = DeusExRootWindow(GetRootWindow());
+    root = DeusExRootWindow(GetRootWindow());
 
-	info = player.GetLevelInfo();
+    info = player.GetLevelInfo();
 
-	// If the game is running, first *PROMPT* the user, becauase
-	// this will cause the game to quit and restart!!
+    // If the game is running, first *PROMPT* the user, becauase
+    // this will cause the game to quit and restart!!
 
-	if (((info != None) && (info.MissionNumber >= 0)) &&
-	   !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
-	{
-		root.MessageBox(PromptTitle, GamePromptMessage, 0, False, Self);
-	}
-	else
-	{
-		root.MessageBox(PromptTitle, RestartPromptMessage, 0, False, Self);
-	}
+    if (((info != None) && (info.MissionNumber >= 0)) &&
+       !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
+    {
+        root.MessageBox(PromptTitle, GamePromptMessage, 0, False, Self);
+    }
+    else
+    {
+        root.MessageBox(PromptTitle, RestartPromptMessage, 0, False, Self);
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -43,23 +43,23 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
-	local DeusExRootWindow root;
+    local DeusExRootWindow root;
 
-	root = DeusExRootWindow(GetRootWindow());
+    root = DeusExRootWindow(GetRootWindow());
 
-	// Destroy the msgbox!  
-	root.PopWindow();
+    // Destroy the msgbox!
+    root.PopWindow();
 
-	if (buttonNumber == 0) 
-	{
-		// First save any other changes the user made 
-		// while in this menu before restarting the game!
-		SaveMenuSettings();
+    if (buttonNumber == 0)
+    {
+        // First save any other changes the user made
+        // while in this menu before restarting the game!
+        SaveMenuSettings();
 
-		// Restart
-		player.ConsoleCommand("RELAUNCH -changevideo");
-	}
-	return true;
+        // Restart
+        player.ConsoleCommand("RELAUNCH -changevideo");
+    }
+    return true;
 }
 
 // ----------------------------------------------------------------------

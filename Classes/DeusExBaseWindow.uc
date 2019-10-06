@@ -9,17 +9,17 @@ class DeusExBaseWindow extends ModalWindow;
 // Possible Event Actions
 enum EScreenType
 {
-	ST_Menu,
-	ST_MenuScreen,
-	ST_Persona,
-	ST_DataVault,
-	ST_Computer,
-	ST_Conversation,
-	ST_HUD, 
-	ST_Popup,
-	ST_Tool,
-	ST_Credits,
-	ST_Other
+    ST_Menu,
+    ST_MenuScreen,
+    ST_Persona,
+    ST_DataVault,
+    ST_Computer,
+    ST_Conversation,
+    ST_HUD,
+    ST_Popup,
+    ST_Tool,
+    ST_Credits,
+    ST_Other
 };
 
 var EScreenType ScreenType;
@@ -52,19 +52,19 @@ var Color colDarkBlue;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	
-	// Set default mouse focus mode
-	SetMouseFocusMode(MFocus_Enter);
+    Super.InitWindow();
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Set default mouse focus mode
+    SetMouseFocusMode(MFocus_Enter);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(root.parentPawn);
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 
-	// Center this window
-	SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    // Get a pointer to the player
+    player = DeusExPlayer(root.parentPawn);
+
+    // Center this window
+    SetWindowAlignments(HALIGN_Center, VALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -76,57 +76,57 @@ event InitWindow()
 
 function bool CanPushScreen(Class <DeusExBaseWindow> newScreen)
 {
-	local bool bCanPush;
+    local bool bCanPush;
 
-	switch(ScreenType)
-	{
-		case ST_Menu:
-			bCanPush = ((newScreen.default.ScreenType == ST_Menu) ||
-						(newScreen.default.ScreenType == ST_MenuScreen));
-			break;
+    switch(ScreenType)
+    {
+        case ST_Menu:
+            bCanPush = ((newScreen.default.ScreenType == ST_Menu) ||
+                        (newScreen.default.ScreenType == ST_MenuScreen));
+            break;
 
-		case ST_MenuScreen:
-			bCanPush = (newScreen.default.ScreenType == ST_MenuScreen);
-			break;
+        case ST_MenuScreen:
+            bCanPush = (newScreen.default.ScreenType == ST_MenuScreen);
+            break;
 
-		case ST_Persona:
-			bCanPush = TRUE;
-			break;
+        case ST_Persona:
+            bCanPush = TRUE;
+            break;
 
-		case ST_DataVault:
-			bCanPush = TRUE;
-			break;
+        case ST_DataVault:
+            bCanPush = TRUE;
+            break;
 
-		case ST_Conversation:
-			bCanPush = FALSE;
-			break;
+        case ST_Conversation:
+            bCanPush = FALSE;
+            break;
 
-		case ST_Computer:
-			bCanPush = FALSE;
-			break;
+        case ST_Computer:
+            bCanPush = FALSE;
+            break;
 
-		case ST_HUD: 
-			bCanPush = TRUE;
-			break;
+        case ST_HUD:
+            bCanPush = TRUE;
+            break;
 
-		case ST_Popup:
-			bCanPush = FALSE;
-			break;
+        case ST_Popup:
+            bCanPush = FALSE;
+            break;
 
-		case ST_Tool:
-			bCanPush = (newScreen.default.ScreenType == ST_Tool);
-			break;
+        case ST_Tool:
+            bCanPush = (newScreen.default.ScreenType == ST_Tool);
+            break;
 
-		case ST_Credits:
-			bCanPush = FALSE;
-			break;
+        case ST_Credits:
+            bCanPush = FALSE;
+            break;
 
-		case ST_Other:
-			bCanPush = TRUE;
-			break;
-	}
+        case ST_Other:
+            bCanPush = TRUE;
+            break;
+    }
 
-	return bCanPush;
+    return bCanPush;
 }
 
 // ----------------------------------------------------------------------
@@ -138,52 +138,52 @@ function bool CanPushScreen(Class <DeusExBaseWindow> newScreen)
 
 function bool CanStack()
 {
-	local bool bCanStack;
+    local bool bCanStack;
 
-	switch(ScreenType)
-	{
-		case ST_Menu:
-			bCanStack = TRUE;
-			break;
+    switch(ScreenType)
+    {
+        case ST_Menu:
+            bCanStack = TRUE;
+            break;
 
-		case ST_MenuScreen:
-			bCanStack = TRUE;
-			break;
+        case ST_MenuScreen:
+            bCanStack = TRUE;
+            break;
 
-		case ST_Persona:
-			bCanStack = FALSE;
-			break;
+        case ST_Persona:
+            bCanStack = FALSE;
+            break;
 
-		case ST_DataVault:
-			bCanStack = FALSE;
-			break;
+        case ST_DataVault:
+            bCanStack = FALSE;
+            break;
 
-		case ST_Conversation:
-			bCanStack = FALSE;
-			break;
+        case ST_Conversation:
+            bCanStack = FALSE;
+            break;
 
-		case ST_Computer:
-			bCanStack = FALSE;
-			break;
+        case ST_Computer:
+            bCanStack = FALSE;
+            break;
 
-		case ST_HUD: 
-			bCanStack = TRUE;
-			break;
+        case ST_HUD:
+            bCanStack = TRUE;
+            break;
 
-		case ST_Popup:
-			bCanStack = TRUE;
-			break;
+        case ST_Popup:
+            bCanStack = TRUE;
+            break;
 
-		case ST_Tool:
-			bCanStack = TRUE;
-			break;
+        case ST_Tool:
+            bCanStack = TRUE;
+            break;
 
-		case ST_Other:
-			bCanStack = TRUE;
-			break;
-	}
+        case ST_Other:
+            bCanStack = TRUE;
+            break;
+    }
 
-	return bCanStack;
+    return bCanStack;
 }
 
 // ----------------------------------------------------------------------

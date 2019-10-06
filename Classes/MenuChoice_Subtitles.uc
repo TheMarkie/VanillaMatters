@@ -10,7 +10,7 @@ class MenuChoice_Subtitles extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(player.bSubtitles));
+    SetValue(int(player.bSubtitles));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bSubtitles = bool(GetValue());
+    player.bSubtitles = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(player.bSubtitles));
+    SetValue(int(player.bSubtitles));
 }
 
 // ----------------------------------------------------------------------

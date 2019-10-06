@@ -10,11 +10,11 @@ class MenuChoice_GoreLevel extends MenuUIChoiceEnum;
 
 function LoadSetting()
 {
-	// Check for German system and disable this option
-	if (player.Level.Game.bVeryLowGore)
-		btnAction.EnableWindow(False);
-	else
-		SetValue(int(!player.Level.Game.bLowGore));
+    // Check for German system and disable this option
+    if (player.Level.Game.bVeryLowGore)
+        btnAction.EnableWindow(False);
+    else
+        SetValue(int(!player.Level.Game.bLowGore));
 }
 
 // ----------------------------------------------------------------------
@@ -23,8 +23,8 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.Level.Game.bLowGore = !bool(GetValue());
-	player.Level.Game.SaveConfig();
+    player.Level.Game.bLowGore = !bool(GetValue());
+    player.Level.Game.SaveConfig();
 }
 
 // ----------------------------------------------------------------------
@@ -33,7 +33,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(defaultValue);
+    SetValue(defaultValue);
 }
 
 // ----------------------------------------------------------------------

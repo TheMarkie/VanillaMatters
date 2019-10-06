@@ -2,13 +2,13 @@
 // Keypad.
 //=============================================================================
 class Keypad extends HackableDevices
-	abstract;
+    abstract;
 
 var() string validCode;
 var() sound successSound;
 var() sound failureSound;
 var() name FailEvent;
-var() bool bToggleLock;		// if True, toggle the lock state instead of triggering
+var() bool bToggleLock;     // if True, toggle the lock state instead of triggering
 
 var HUDKeypadWindow keypadwindow;
 
@@ -29,16 +29,16 @@ replication
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local DeusExPlayer Player;
+    local DeusExPlayer Player;
 
-	// if we're already using this keypad, get out
-	if (keypadwindow != None)
-		return;
+    // if we're already using this keypad, get out
+    if (keypadwindow != None)
+        return;
 
-	Player = DeusExPlayer(Hacker);
+    Player = DeusExPlayer(Hacker);
 
-	if (Player != None)
-	{
+    if (Player != None)
+    {
       // DEUS_EX AMSD if we are in multiplayer, just act based on bHacked
       // if you want keypad windows to work in multiplayer, just get rid of this
       // if statement.  I've already got the windows working, they're just disabled.
@@ -52,10 +52,10 @@ function HackAction(Actor Hacker, bool bHacked)
          }
          return;
       }
-      
+
       //DEUS_EX AMSD Must call in player for replication to work.
       Player.ActivateKeypadWindow(Self, bHacked);
-	}
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -64,14 +64,14 @@ function HackAction(Actor Hacker, bool bHacked)
 // ----------------------------------------------------------------------
 simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
 {
-	local DeusExRootWindow root;
+    local DeusExRootWindow root;
 
    root = DeusExRootWindow(Hacker.rootWindow);
    if (root != None)
    {
       keypadwindow = HUDKeypadWindow(root.InvokeUIScreen(Class'HUDKeypadWindow', True));
       root.MaskBackground(True);
-      
+
       // copy the tag data to the actual class
       if (keypadwindow != None)
       {

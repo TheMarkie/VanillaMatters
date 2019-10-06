@@ -10,7 +10,7 @@ class MenuChoice_Crosshairs extends MenuChoice_VisibleHidden;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bCrosshairVisible));
+    SetValue(int(!player.bCrosshairVisible));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bCrosshairVisible = !bool(GetValue());
+    player.bCrosshairVisible = !bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bCrosshairVisible));
+    SetValue(int(!player.bCrosshairVisible));
 }
 
 // ----------------------------------------------------------------------

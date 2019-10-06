@@ -9,34 +9,34 @@ var int spinDir, spinSpeed;
 
 function Tick(float deltaTime)
 {
-	local Rotator rot;
+    local Rotator rot;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bSpinning)
-	{
-		rot = Rotation;
-		rot.Roll += spinDir * spinSpeed * deltaTime * (spinDuration - spinTime) / spinDuration;
-		SetRotation(rot);
-		spinTime += deltaTime;
-		if (spinTime >= spinDuration)
-			bSpinning = False;
-	}
+    if (bSpinning)
+    {
+        rot = Rotation;
+        rot.Roll += spinDir * spinSpeed * deltaTime * (spinDuration - spinTime) / spinDuration;
+        SetRotation(rot);
+        spinTime += deltaTime;
+        if (spinTime >= spinDuration)
+            bSpinning = False;
+    }
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	// spin the wheel in a random direction for a random amount of time at a random speed
-	if (FRand() < 0.5)
-		spinDir = -1;
-	else
-		spinDir = 1;
-	spinSpeed = Rand(64) * 1024;
-	spinDuration = FRand() * 5 + 2;
-	spinTime = 0;
-	bSpinning = True;
+    // spin the wheel in a random direction for a random amount of time at a random speed
+    if (FRand() < 0.5)
+        spinDir = -1;
+    else
+        spinDir = 1;
+    spinSpeed = Rand(64) * 1024;
+    spinDuration = FRand() * 5 + 2;
+    spinTime = 0;
+    bSpinning = True;
 }
 
 defaultproperties

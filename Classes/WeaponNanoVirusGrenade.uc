@@ -5,31 +5,31 @@ class WeaponNanoVirusGrenade extends DeusExWeapon;
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the NanoVirusGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
+    // if facing a wall, affix the NanoVirusGrenade to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
 
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // otherwise, throw as usual
+    Super.Fire(Value);
 }
 
 function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
 {
-	local Projectile proj;
+    local Projectile proj;
 
-	proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
+    proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
 
-	if (proj != None)
-		proj.PlayAnim('Open');
+    if (proj != None)
+        proj.PlayAnim('Open');
 }
 
 defaultproperties

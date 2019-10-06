@@ -8,17 +8,17 @@ var ATMWindow atmwindow;
 // userlist information
 struct sUserInfo
 {
-	var() string	accountNumber;
-	var() string	PIN;
-	var() int		balance;
+    var() string    accountNumber;
+    var() string    PIN;
+    var() int       balance;
 };
 
 var() sUserInfo userList[8];
 
-var bool bLockedOut;				// true if this ATM is locked out
-var() float lockoutDelay;			// delay until locked out ATM can be used
-var float lockoutTime;				// time when ATM was locked out
-var float lastHackTime;				// last time the ATM was hacked
+var bool bLockedOut;                // true if this ATM is locked out
+var() float lockoutDelay;           // delay until locked out ATM can be used
+var float lockoutTime;              // time when ATM was locked out
+var float lastHackTime;             // last time the ATM was hacked
 var localized String msgLockedOut;
 var bool bSuckedDryByHack;
 
@@ -28,46 +28,46 @@ var bool bSuckedDryByHack;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local DeusExPlayer Player;
-	local DeusExRootWindow root;
-	local float elapsed, delay;
+    local DeusExPlayer Player;
+    local DeusExRootWindow root;
+    local float elapsed, delay;
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	// if we're already using this ATM, get out
-	if (atmwindow != None)
-		return;
+    // if we're already using this ATM, get out
+    if (atmwindow != None)
+        return;
 
-	Player = DeusExPlayer(Frobber);
+    Player = DeusExPlayer(Frobber);
 
-	if (Player != None)
-	{
-		if (bLockedOut)
-		{
-			// computer skill shortens the lockout duration
-			delay = lockoutDelay / Player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
+    if (Player != None)
+    {
+        if (bLockedOut)
+        {
+            // computer skill shortens the lockout duration
+            delay = lockoutDelay / Player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
 
-			elapsed = Level.TimeSeconds - lockoutTime;
-			if (elapsed < delay)
-				Player.ClientMessage(Sprintf(msgLockedOut, Int(delay - elapsed)));
-			else
-				bLockedOut = False;
-		}
-		if (!bLockedOut)
-		{
-			root = DeusExRootWindow(Player.rootWindow);
-			if (root != None)
-			{
-				atmWindow = ATMWindow(root.InvokeUIScreen(Class'ATMWindow', True));
+            elapsed = Level.TimeSeconds - lockoutTime;
+            if (elapsed < delay)
+                Player.ClientMessage(Sprintf(msgLockedOut, Int(delay - elapsed)));
+            else
+                bLockedOut = False;
+        }
+        if (!bLockedOut)
+        {
+            root = DeusExRootWindow(Player.rootWindow);
+            if (root != None)
+            {
+                atmWindow = ATMWindow(root.InvokeUIScreen(Class'ATMWindow', True));
 
-				if (atmWindow != None)
-				{
-					atmWindow.SetCompOwner(Self);
-					atmWindow.ShowFirstScreen();
-				}
-			}
-		}
-	}
+                if (atmWindow != None)
+                {
+                    atmWindow.SetCompOwner(Self);
+                    atmWindow.ShowFirstScreen();
+                }
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -76,13 +76,13 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function int NumUsers()
 {
-	local int i;
+    local int i;
 
-	for (i=0; i<ArrayCount(userList); i++)
-		if (userList[i].accountNumber == "")
-			break;
+    for (i=0; i<ArrayCount(userList); i++)
+        if (userList[i].accountNumber == "")
+            break;
 
-	return i;
+    return i;
 }
 
 // ----------------------------------------------------------------------
@@ -91,21 +91,21 @@ function int NumUsers()
 
 function int GetBalance(int userIndex, float mod)
 {
-	local int i, sum;
+    local int i, sum;
 
-	sum = 0;
+    sum = 0;
 
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		sum = userList[userIndex].balance;
-	else if (userIndex == -1)
-	{
-		// if we've been hacked, sum all the accounts
-		for (i=0; i<ArrayCount(userList); i++)
-			sum += userList[i].balance;
-		sum *= mod;
-	}
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        sum = userList[userIndex].balance;
+    else if (userIndex == -1)
+    {
+        // if we've been hacked, sum all the accounts
+        for (i=0; i<ArrayCount(userList); i++)
+            sum += userList[i].balance;
+        sum *= mod;
+    }
 
-	return sum;
+    return sum;
 }
 
 // ----------------------------------------------------------------------
@@ -114,30 +114,30 @@ function int GetBalance(int userIndex, float mod)
 
 function ModBalance(int userIndex, int numCredits, bool bSync)
 {
-	local ATM atm;
-	local int i;
+    local ATM atm;
+    local int i;
 
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		userList[userIndex].balance -= numCredits;
-	else if (userIndex == -1)
-	{
-		// if we've been hacked, zero all the accounts if we have enough to transfer
-		for (i=0; i<ArrayCount(userList); i++)
-			userList[i].balance = 0;
-	}
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        userList[userIndex].balance -= numCredits;
+    else if (userIndex == -1)
+    {
+        // if we've been hacked, zero all the accounts if we have enough to transfer
+        for (i=0; i<ArrayCount(userList); i++)
+            userList[i].balance = 0;
+    }
 
-	// sync the balance with all other ATMs on this map
-	if (bSync)
-	{
-		foreach AllActors(class'ATM', atm)
-			for (i=0; i<atm.NumUsers(); i++)
-				if (atm != Self)
-					if ((Caps(userList[userIndex].accountNumber) == atm.GetAccountNumber(i)) &&
-						(Caps(userList[userIndex].PIN) == atm.GetPIN(i)))
-					{
-						atm.ModBalance(i, numCredits, False);
-					}
-	}
+    // sync the balance with all other ATMs on this map
+    if (bSync)
+    {
+        foreach AllActors(class'ATM', atm)
+            for (i=0; i<atm.NumUsers(); i++)
+                if (atm != Self)
+                    if ((Caps(userList[userIndex].accountNumber) == atm.GetAccountNumber(i)) &&
+                        (Caps(userList[userIndex].PIN) == atm.GetPIN(i)))
+                    {
+                        atm.ModBalance(i, numCredits, False);
+                    }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -146,12 +146,12 @@ function ModBalance(int userIndex, int numCredits, bool bSync)
 
 function string GetAccountNumber(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return Caps(userList[userIndex].accountNumber);
-	else if (userIndex == -1)
-		return "HACKED";
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return Caps(userList[userIndex].accountNumber);
+    else if (userIndex == -1)
+        return "HACKED";
 
-	return "ERR";
+    return "ERR";
 }
 
 // ----------------------------------------------------------------------
@@ -160,12 +160,12 @@ function string GetAccountNumber(int userIndex)
 
 function string GetPIN(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return Caps(userList[userIndex].PIN);
-	else if (userIndex == -1)
-		return "HACKED";
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return Caps(userList[userIndex].PIN);
+    else if (userIndex == -1)
+        return "HACKED";
 
-	return "ERR";
+    return "ERR";
 }
 
 // ----------------------------------------------------------------------

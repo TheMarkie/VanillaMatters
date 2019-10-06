@@ -5,9 +5,9 @@ class ExplosionSmall extends AnimatedSprite;
 
 simulated function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	Spawn(class'FireComet', None);
+    Spawn(class'FireComet', None);
 }
 
 defaultproperties

@@ -14,9 +14,9 @@ var String helpText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetWidth(243);
+    SetWidth(243);
 }
 
 // ----------------------------------------------------------------------
@@ -27,12 +27,12 @@ event InitWindow()
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (key == IK_Enter)
-		return False;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (key == IK_Enter)
+        return False;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function SetHelpText(String newHelpText)
 {
-	helpText = newHelpText;
+    helpText = newHelpText;
 }
 
 // ----------------------------------------------------------------------

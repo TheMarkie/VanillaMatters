@@ -5,22 +5,22 @@ class HKHangingPig extends HangingDecoration;
 
 function SpawnBlood(Vector HitLocation, float Damage)
 {
-	local int i;
+    local int i;
 
-	spawn(class'BloodSpurt',,,HitLocation);
-	spawn(class'BloodDrop',,,HitLocation);
-	for (i=0; i<int(Damage); i+=10)
-		spawn(class'BloodDrop',,,HitLocation);
+    spawn(class'BloodSpurt',,,HitLocation);
+    spawn(class'BloodDrop',,,HitLocation);
+    for (i=0; i<int(Damage); i+=10)
+        spawn(class'BloodDrop',,,HitLocation);
 }
 
 auto state Active
 {
-	function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
-	{
-		Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
-		if ((DamageType == 'Shot') || (DamageType == 'Exploded'))
-			SpawnBlood(HitLocation, Damage);
-	}
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+        if ((DamageType == 'Shot') || (DamageType == 'Exploded'))
+            SpawnBlood(HitLocation, Damage);
+    }
 }
 
 defaultproperties

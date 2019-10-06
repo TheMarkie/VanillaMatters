@@ -2,26 +2,26 @@
 // DumpLocation
 //=============================================================================
 class DumpLocation expands Object
-	native
-	noexport;
+    native
+    noexport;
 
 
 // Unreal-usable structure
 struct DumpLocationStruct
 {
-	var bool    bDeleted;
-	var int     LocationID;
-	var String  MapName;
-	var Vector  Location;
-	var Rotator ViewRotation;
-	var String  GameVersion;
-	var String  Title;
-	var String  Desc;
+    var bool    bDeleted;
+    var int     LocationID;
+    var String  MapName;
+    var Vector  Location;
+    var Rotator ViewRotation;
+    var String  GameVersion;
+    var String  Title;
+    var String  Desc;
 };
 
 var native int currentDumpFileLocation;
-var native DumpLocationstruct currentDumpLocation;		
-var native array<String> dumpFileDirectory;				
+var native DumpLocationstruct currentDumpLocation;
+var native array<String> dumpFileDirectory;
 var native int currentDumpFileIndex;
 var native int currentDumpLocationIndex;
 var native String currentUser;

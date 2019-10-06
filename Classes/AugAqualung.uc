@@ -10,35 +10,35 @@ var float mpEnergyDrain;
 
 state Active
 {
-	// Vanilla Matters: Keep increasing the breath span so it never runs out.
-	function Timer() {
-		Player.swimTimer = FMin( Player.swimTimer + 4, Player.swimDuration );
-	}
+    // Vanilla Matters: Keep increasing the breath span so it never runs out.
+    function Timer() {
+        Player.swimTimer = FMin( Player.swimTimer + 4, Player.swimDuration );
+    }
 
-	function EndState() {
-		if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
-			SetTimer( 1, false );
-		}
-	}
+    function EndState() {
+        if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
+            SetTimer( 1, false );
+        }
+    }
 
 Begin:
-	// Vanilla Matters: Bonus is now all handled in deusexplayer.
-	// VM: We're gonna deal with the last aug level by a timer.
-	if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
-		SetTimer( 1, true );
-	}
+    // Vanilla Matters: Bonus is now all handled in deusexplayer.
+    // VM: We're gonna deal with the last aug level by a timer.
+    if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
+        SetTimer( 1, true );
+    }
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+    }
 }
 
 defaultproperties

@@ -29,9 +29,9 @@ var Sound  EggFoundSounds[3];
 
 function ProcessText()
 {
-	PrintPicture(CreditsBannerTextures, 2, 1, 505, 75);
-	PrintLn();
-	Super.ProcessText();
+    PrintPicture(CreditsBannerTextures, 2, 1, 505, 75);
+    PrintLn();
+    Super.ProcessText();
 }
 
 // ----------------------------------------------------------------------
@@ -40,9 +40,9 @@ function ProcessText()
 
 function ProcessFinished()
 {
-	PrintLn();
-	PrintPicture(TeamPhotoTextures, 3, 1, 600, 236);
-	Super.ProcessFinished();
+    PrintLn();
+    PrintPicture(TeamPhotoTextures, 3, 1, 600, 236);
+    Super.ProcessFinished();
 }
 
 // ----------------------------------------------------------------------
@@ -51,16 +51,16 @@ function ProcessFinished()
 
 function FinishedScrolling()
 {
-	if (player.bQuotesenabled)
-	{
-		// Shut down the music
-//		player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
-		player.PlaySound(Sound'CreditsEnd');
-	}
-	else
-	{
-		Super.FinishedScrolling();
-	}
+    if (player.bQuotesenabled)
+    {
+        // Shut down the music
+//      player.ClientSetMusic(player.Level.Song, savedSongSection, 255, MTRAN_FastFade);
+        player.PlaySound(Sound'CreditsEnd');
+    }
+    else
+    {
+        Super.FinishedScrolling();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -69,34 +69,34 @@ function FinishedScrolling()
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (!bScrolling)
-	{
-		creditsEndSoundLength -= deltaTime;
+    if (!bScrolling)
+    {
+        creditsEndSoundLength -= deltaTime;
 
-		if (creditsEndSoundLength < 0.0)
-		{
-			bTickEnabled = False;
-			InvokeQuotesWindow();
-		}
-	}
+        if (creditsEndSoundLength < 0.0)
+        {
+            bTickEnabled = False;
+            InvokeQuotesWindow();
+        }
+    }
 
-	if (bShowEasterPhrases)
-	{
-		easterEggTimer -= deltaTime;
+    if (bShowEasterPhrases)
+    {
+        easterEggTimer -= deltaTime;
 
-		phraseCount = Rand(maxRandomPhrases);
-		// Create a random number of phrases
-		for(phraseIndex=0; phraseIndex<phraseCount; phraseIndex++)
-			CreateEasterPhrase();
+        phraseCount = Rand(maxRandomPhrases);
+        // Create a random number of phrases
+        for(phraseIndex=0; phraseIndex<phraseCount; phraseIndex++)
+            CreateEasterPhrase();
 
-		if (easterEggTimer < 0.0)
-		{
-			bShowEasterPhrases = False;
-			easterEggTimer = Default.easterEggTimer;
-		}
-	}
+        if (easterEggTimer < 0.0)
+        {
+            bShowEasterPhrases = False;
+            easterEggTimer = Default.easterEggTimer;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -105,15 +105,15 @@ function Tick(float deltaTime)
 
 function InvokeQuotesWindow()
 {
-	local QuotesWindow winQuotes;
+    local QuotesWindow winQuotes;
 
-	// Check to see if the 
-	if (player.bQuotesEnabled)
-	{
-		winQuotes = QuotesWindow(root.InvokeMenuScreen(Class'QuotesWindow'));
-		winQuotes.SetLoadIntro(bLoadIntro);
-		winQuotes.SetClearStack(True);
-	}
+    // Check to see if the
+    if (player.bQuotesEnabled)
+    {
+        winQuotes = QuotesWindow(root.InvokeMenuScreen(Class'QuotesWindow'));
+        winQuotes.SetLoadIntro(bLoadIntro);
+        winQuotes.SetClearStack(True);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -122,67 +122,67 @@ function InvokeQuotesWindow()
 
 event DestroyWindow()
 {
-	// Check to see if we need to load the intro
-	if (bLoadIntro)
-	{
-		player.Level.Game.SendPlayer(player, "dxonly");
-	}
+    // Check to see if we need to load the intro
+    if (bLoadIntro)
+    {
+        player.Level.Game.SendPlayer(player, "dxonly");
+    }
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
-// KeyPressed() 
+// KeyPressed()
 // ----------------------------------------------------------------------
 
 event bool KeyPressed(string key)
 {
-	local bool bKeyHandled;
+    local bool bKeyHandled;
 
-	if (IsKeyDown(IK_Alt))
-		return False;
+    if (IsKeyDown(IK_Alt))
+        return False;
 
-	// Check to see if the key entered is one of the 
-	// easter egg phrases
-	// 
-	// First check to see if this is an alphanum character
+    // Check to see if the key entered is one of the
+    // easter egg phrases
+    //
+    // First check to see if this is an alphanum character
 
-	if (player.bCheatsEnabled)
-	{
-		if (((key >= "A") && (key <= "Z")) ||
-		    ((key >= "a") && (key <= "z")) ||
-		    ((key >= "0") && (key <= "9")))
-		{
-			bKeyHandled = True;
+    if (player.bCheatsEnabled)
+    {
+        if (((key >= "A") && (key <= "Z")) ||
+            ((key >= "a") && (key <= "z")) ||
+            ((key >= "0") && (key <= "9")))
+        {
+            bKeyHandled = True;
 
-			// Convert lower-case to upper
-			if ((key >= "a") && (key <= "z"))
-				key = Chr(Asc(key) - 32);
+            // Convert lower-case to upper
+            if ((key >= "a") && (key <= "z"))
+                key = Chr(Asc(key) - 32);
 
-			easterSearch = easterSearch $ key;
+            easterSearch = easterSearch $ key;
 
-			// If this egg wasn't found *AND* the string is at 
-			// least two characters found, then play a BZZT sound
-			if (!ProcessEasterEgg())
-			{
-				// If the string is > 1 character, play a BZZT 
-				// sound.
-				if (Len(easterSearch) > 1)
-				{
-					// Play BZZT
-					PlayEggBadLetter();
-				}
+            // If this egg wasn't found *AND* the string is at
+            // least two characters found, then play a BZZT sound
+            if (!ProcessEasterEgg())
+            {
+                // If the string is > 1 character, play a BZZT
+                // sound.
+                if (Len(easterSearch) > 1)
+                {
+                    // Play BZZT
+                    PlayEggBadLetter();
+                }
 
-				// Reset string
-				easterSearch = "";
-			}
-		}
-	}
+                // Reset string
+                easterSearch = "";
+            }
+        }
+    }
 
-	if (bKeyHandled)
-		return True;
-	else
-		return Super.KeyPressed(key);
+    if (bKeyHandled)
+        return True;
+    else
+        return Super.KeyPressed(key);
 }
 
 // ----------------------------------------------------------------------
@@ -191,35 +191,35 @@ event bool KeyPressed(string key)
 
 function bool ProcessEasterEgg()
 {
-	local Int eggIndex;
-	local bool bPartialPhrase;
-	local bool bEggFound;
+    local Int eggIndex;
+    local bool bPartialPhrase;
+    local bool bEggFound;
 
-	bPartialPhrase = False;
+    bPartialPhrase = False;
 
-	// Loop through all the eggs and see if we have a matching phrase
-	for(eggIndex=0; eggIndex<arrayCount(easterStrings); eggIndex++)
-	{
-		if (easterstrings[eggIndex] == easterSearch)
-		{
-			EggFound(eggIndex);
-			bEggFound = True;
-			bPartialPhrase = False;
-			break;
-		}
+    // Loop through all the eggs and see if we have a matching phrase
+    for(eggIndex=0; eggIndex<arrayCount(easterStrings); eggIndex++)
+    {
+        if (easterstrings[eggIndex] == easterSearch)
+        {
+            EggFound(eggIndex);
+            bEggFound = True;
+            bPartialPhrase = False;
+            break;
+        }
 
-		// Do a partial search
-		if (InStr(easterStrings[eggIndex], easterSearch) != -1)
-		{
-			bPartialPhrase = True;
-		}
-	}
+        // Do a partial search
+        if (InStr(easterStrings[eggIndex], easterSearch) != -1)
+        {
+            bPartialPhrase = True;
+        }
+    }
 
-	// If this was a partial match, play a sound
-	if (bPartialPhrase)
-		PlayEggGoodLetter();
+    // If this was a partial match, play a sound
+    if (bPartialPhrase)
+        PlayEggGoodLetter();
 
-	return (bPartialPhrase || bEggFound);
+    return (bPartialPhrase || bEggFound);
 }
 
 // ----------------------------------------------------------------------
@@ -228,37 +228,37 @@ function bool ProcessEasterEgg()
 
 function EggFound(int eggIndex)
 {
-	PlayEggFoundSound();
+    PlayEggFoundSound();
 
-	easterPhraseIndex  = eggIndex;
-	bShowEasterPhrases = True;
+    easterPhraseIndex  = eggIndex;
+    bShowEasterPhrases = True;
 
-	// Now act on the phrase
-	if (easterSearch == "QUOTES")
-	{
-		player.bQuotesEnabled = True;
-		player.SaveConfig();
-	}
-	else if (easterSearch == "DANCEPARTY")
-	{
-		player.ConsoleCommand("OPEN 99_ENDGAME4");
-	}
-	else if (easterSearch == "THEREISNOSPOON")
-	{
-		player.Matrix();
-	}
-	else if (easterSearch == "HUTHUT")
-	{
-	}
-	else if (easterSearch == "BIGHEAD")
-	{
-	}
-	else if (easterSearch == "IAMWARREN")
-	{
-		player.IAmWarren();
-	}
+    // Now act on the phrase
+    if (easterSearch == "QUOTES")
+    {
+        player.bQuotesEnabled = True;
+        player.SaveConfig();
+    }
+    else if (easterSearch == "DANCEPARTY")
+    {
+        player.ConsoleCommand("OPEN 99_ENDGAME4");
+    }
+    else if (easterSearch == "THEREISNOSPOON")
+    {
+        player.Matrix();
+    }
+    else if (easterSearch == "HUTHUT")
+    {
+    }
+    else if (easterSearch == "BIGHEAD")
+    {
+    }
+    else if (easterSearch == "IAMWARREN")
+    {
+        player.IAmWarren();
+    }
 
-	easterSearch = "";
+    easterSearch = "";
 }
 
 // ----------------------------------------------------------------------
@@ -267,11 +267,11 @@ function EggFound(int eggIndex)
 
 function CreateEasterPhrase()
 {
-	local FadeTextWindow winFade;
+    local FadeTextWindow winFade;
 
-	winFade = FadeTextWindow(NewChild(Class'FadeTextWindow'));
-	winFade.SetText(foundStrings[easterPhraseIndex]);
-	winFade.SetPos(Rand(width) - Rand(100), Rand(height));
+    winFade = FadeTextWindow(NewChild(Class'FadeTextWindow'));
+    winFade.SetText(foundStrings[easterPhraseIndex]);
+    winFade.SetPos(Rand(width) - Rand(100), Rand(height));
 }
 
 // ----------------------------------------------------------------------
@@ -280,8 +280,8 @@ function CreateEasterPhrase()
 
 function PlayEggFoundSound()
 {
-	// Temporary
-	player.PlaySound(EggFoundSounds[Rand(ArrayCount(EggFoundSounds))]);
+    // Temporary
+    player.PlaySound(EggFoundSounds[Rand(ArrayCount(EggFoundSounds))]);
 }
 
 // ----------------------------------------------------------------------
@@ -290,8 +290,8 @@ function PlayEggFoundSound()
 
 function PlayEggGoodLetter()
 {
-	// Temporary
-	player.PlaySound(EggGoodLetterSounds[Rand(ArrayCount(EggGoodLetterSounds))]);
+    // Temporary
+    player.PlaySound(EggGoodLetterSounds[Rand(ArrayCount(EggGoodLetterSounds))]);
 }
 
 // ----------------------------------------------------------------------
@@ -300,8 +300,8 @@ function PlayEggGoodLetter()
 
 function PlayEggBadLetter()
 {
-	// Temporary
-	player.PlaySound(EggBadLetterSounds[Rand(ArrayCount(EggBadLetterSounds))]);
+    // Temporary
+    player.PlaySound(EggBadLetterSounds[Rand(ArrayCount(EggBadLetterSounds))]);
 }
 
 // ----------------------------------------------------------------------

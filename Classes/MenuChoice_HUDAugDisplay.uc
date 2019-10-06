@@ -10,7 +10,7 @@ class MenuChoice_HUDAugDisplay extends MenuUIChoiceEnum;
 
 function LoadSetting()
 {
-	SetValue(int(player.bHUDShowAllAugs));
+    SetValue(int(player.bHUDShowAllAugs));
 }
 
 // ----------------------------------------------------------------------
@@ -19,8 +19,8 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bHUDShowAllAugs = bool(GetValue());
-	player.AugmentationSystem.RefreshAugDisplay();
+    player.bHUDShowAllAugs = bool(GetValue());
+    player.AugmentationSystem.RefreshAugDisplay();
 }
 
 // ----------------------------------------------------------------------
@@ -29,7 +29,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(defaultValue);
+    SetValue(defaultValue);
 }
 
 // ----------------------------------------------------------------------

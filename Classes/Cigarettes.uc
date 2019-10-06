@@ -4,105 +4,105 @@
 class Cigarettes extends DeusExPickup;
 
 // Vanilla Matters
-var travel int timesPuffed;		// Check for how many times the smoke puff has appeared.
-var travel Actor user;			// The pawn who used this because we're gonna make it disappear.
+var travel int timesPuffed;     // Check for how many times the smoke puff has appeared.
+var travel Actor user;          // The pawn who used this because we're gonna make it disappear.
 
 var localized string VM_msgCantSmoke;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	// Vanilla Matters: Make the smoke puff appear over time and do damage.
-	function Timer() {
-		local Pawn P;
-		local DeusExPlayer player;
+    // Vanilla Matters: Make the smoke puff appear over time and do damage.
+    function Timer() {
+        local Pawn P;
+        local DeusExPlayer player;
 
-		local vector loc;
-		local rotator rot;
-		local SmokeTrail puff;
+        local vector loc;
+        local rotator rot;
+        local SmokeTrail puff;
 
-		P = Pawn( user );
-		player = DeusExPlayer( user );
+        P = Pawn( user );
+        player = DeusExPlayer( user );
 
-		if ( P != None ) {
-			if ( ( player != None && ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) ) || timesPuffed >= 10 ) {
-				SetTimer( 3.0, false );
+        if ( P != None ) {
+            if ( ( player != None && ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) ) || timesPuffed >= 10 ) {
+                SetTimer( 3.0, false );
 
-				bActive = false;
+                bActive = false;
 
-				if ( NumCopies <= 0 ) {
-					Destroy();
-				}
-				else {
-					UpdateBeltText();
-				}
-			}
+                if ( NumCopies <= 0 ) {
+                    Destroy();
+                }
+                else {
+                    UpdateBeltText();
+                }
+            }
 
-			loc = user.Location;
-			rot = user.Rotation;
-			loc += 2.0 * user.CollisionRadius * vector( P.ViewRotation );
-			loc.Z += user.CollisionHeight * 0.9;
-			puff = Spawn( class'SmokeTrail', user,, loc, rot );
+            loc = user.Location;
+            rot = user.Rotation;
+            loc += 2.0 * user.CollisionRadius * vector( P.ViewRotation );
+            loc.Z += user.CollisionHeight * 0.9;
+            puff = Spawn( class'SmokeTrail', user,, loc, rot );
 
-			if (puff != None)
-			{
-				puff.DrawScale = 1.0;
-				puff.origScale = puff.DrawScale;
-			}
+            if (puff != None)
+            {
+                puff.DrawScale = 1.0;
+                puff.origScale = puff.DrawScale;
+            }
 
-			if ( timesPuffed % 2 == 0 ) {
-				P.TakeDamage( 2, P, P.Location, vect( 0,0,0 ), 'PoisonGas' );
-			}
+            if ( timesPuffed % 2 == 0 ) {
+                P.TakeDamage( 2, P, P.Location, vect( 0,0,0 ), 'PoisonGas' );
+            }
 
-			if ( Rand( 3 ) > 0 ) {
-				PlaySound( sound'MaleCough' );
-			}
+            if ( Rand( 3 ) > 0 ) {
+                PlaySound( sound'MaleCough' );
+            }
 
-			timesPuffed = timesPuffed + 1;
-		}
-	}
+            timesPuffed = timesPuffed + 1;
+        }
+    }
 
-	function BeginState() {
-		local DeusExPlayer player;
+    function BeginState() {
+        local DeusExPlayer player;
 
-		user = Owner;
+        user = Owner;
 
-		player = DeusExPlayer( Owner );
+        player = DeusExPlayer( Owner );
 
-		if ( player != None ) {
-			// VM: Prevent smoking while swimming or using Rebreather.
-			if ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) {
-				player.ClientMessage( VM_msgCantSmoke );
+        if ( player != None ) {
+            // VM: Prevent smoking while swimming or using Rebreather.
+            if ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) {
+                player.ClientMessage( VM_msgCantSmoke );
 
-				user = None;
+                user = None;
 
-				Super.Activate();
+                Super.Activate();
 
-				return;
-			}
+                return;
+            }
 
-			Super.BeginState();
+            Super.BeginState();
 
-			timesPuffed = 0;
+            timesPuffed = 0;
 
-			bActive = true;
+            bActive = true;
 
-			SetTimer( 3.0, true );
+            SetTimer( 3.0, true );
 
-			NumCopies = NumCopies - 1;
-			if ( NumCopies <= 0 ) {
-				player.DeleteInventory( self );
+            NumCopies = NumCopies - 1;
+            if ( NumCopies <= 0 ) {
+                player.DeleteInventory( self );
 
-				if ( player.IsHolding( self ) ) {
-					player.VM_HeldInHand = none;
-				}
-			}
-		}
-	}
+                if ( player.IsHolding( self ) ) {
+                    player.VM_HeldInHand = none;
+                }
+            }
+        }
+    }
 Begin:
 }
 

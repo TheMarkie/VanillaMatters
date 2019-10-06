@@ -6,20 +6,20 @@ class BobPage extends HumanMilitary;
 function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
                             Vector offset, Name damageType)
 {
-	if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
-		return 0;
-	else
-		return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
+    if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
+        return 0;
+    else
+        return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
 }
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
-	if (!bCollideActors && !bBlockActors && !bBlockPlayers)
-		return;
-	if (CanShowPain())
-		TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    if (CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 defaultproperties

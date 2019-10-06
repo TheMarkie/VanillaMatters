@@ -19,11 +19,11 @@ var int shadowOffsetY;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	SetSize(shadowWidth, shadowHeight);
+    Super.InitWindow();
+    SetSize(shadowWidth, shadowHeight);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 }
 
 defaultproperties

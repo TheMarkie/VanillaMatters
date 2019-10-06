@@ -9,26 +9,26 @@ class Binoculars extends DeusExPickup;
 
 state Activated
 {
-	function Activate()
-	{
-		local DeusExPlayer player;
+    function Activate()
+    {
+        local DeusExPlayer player;
 
-		Super.Activate();
+        Super.Activate();
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.DesiredFOV = player.Default.DesiredFOV;
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+            player.DesiredFOV = player.Default.DesiredFOV;
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-	
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		RefreshScopeDisplay(player, False);
-	}
+        Super.BeginState();
+
+        player = DeusExPlayer(Owner);
+        RefreshScopeDisplay(player, False);
+    }
 Begin:
 }
 
@@ -38,19 +38,19 @@ Begin:
 
 state DeActivated
 {
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			// Hide the Scope View
-			DeusExRootWindow(player.rootWindow).scopeView.DeactivateView();
-		}
-	}
+        Super.BeginState();
+
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            // Hide the Scope View
+            DeusExRootWindow(player.rootWindow).scopeView.DeactivateView();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -59,11 +59,11 @@ state DeActivated
 
 function RefreshScopeDisplay(DeusExPlayer player, optional bool bInstant)
 {
-	if ((bActive) && (player != None))
-	{
-		// Show the Scope View
-		DeusExRootWindow(player.rootWindow).scopeView.ActivateView(20, True, bInstant);
-	}
+    if ((bActive) && (player != None))
+    {
+        // Show the Scope View
+        DeusExRootWindow(player.rootWindow).scopeView.ActivateView(20, True, bInstant);
+    }
 }
 
 // ----------------------------------------------------------------------

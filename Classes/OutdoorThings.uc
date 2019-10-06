@@ -2,7 +2,7 @@
 // OutdoorThings.
 //=============================================================================
 class OutdoorThings extends DeusExDecoration
-	abstract;
+    abstract;
 
 defaultproperties
 {

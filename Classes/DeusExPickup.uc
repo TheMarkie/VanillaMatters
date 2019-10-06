@@ -2,18 +2,18 @@
 // DeusExPickup.
 //=============================================================================
 class DeusExPickup extends Pickup
-	abstract;
+    abstract;
 
-var bool            bBreakable;		// true if we can destroy this item
-var class<Fragment> fragType;		// fragments created when pickup is destroyed
-var int				maxCopies;		// 0 means unlimited copies
+var bool            bBreakable;     // true if we can destroy this item
+var class<Fragment> fragType;       // fragments created when pickup is destroyed
+var int             maxCopies;      // 0 means unlimited copies
 
 var localized String CountLabel;
 var localized String msgTooMany;
 
 // Vanilla Matters
-var Texture		VM_handsTex;						// Hands texture.
-var int			VM_handsTexPos[2];					// Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
+var Texture     VM_handsTex;                        // Hands texture.
+var int         VM_handsTexPos[2];                  // Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
 
 // ----------------------------------------------------------------------
 // Networking Replication
@@ -28,35 +28,35 @@ replication
 
 // Vanilla Matters: Override to add in colored hands skin.
 simulated function RenderOverlays( Canvas canvas ) {
-	local bool changed;
-	local int i;
-	local DeusExPlayer player;
+    local bool changed;
+    local int i;
+    local DeusExPlayer player;
 
-	if ( Mesh == PlayerViewMesh ) {
-		if ( VM_handsTex == none ) {
-			player = DeusExPlayer( Owner );
-			if ( player != none ) {
-				VM_handsTex = player.GetHandsSkin();
-			}
-		}
+    if ( Mesh == PlayerViewMesh ) {
+        if ( VM_handsTex == none ) {
+            player = DeusExPlayer( Owner );
+            if ( player != none ) {
+                VM_handsTex = player.GetHandsSkin();
+            }
+        }
 
-		for ( i = 0; i < 2; i++ ) {
-			if ( VM_handsTexPos[i] >= 0 ) {
-				MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
-				changed = true;
-			}
-		}
-	}
+        for ( i = 0; i < 2; i++ ) {
+            if ( VM_handsTexPos[i] >= 0 ) {
+                MultiSkins[VM_handsTexPos[i]] = VM_handsTex;
+                changed = true;
+            }
+        }
+    }
 
-	super.RenderOverlays( canvas );
+    super.RenderOverlays( canvas );
 
-	if ( changed ) {
-		for ( i = 0; i < 2; i++ ) {
-			if ( VM_handsTexPos[i] >= 0 ) {
-				MultiSkins[VM_handsTexPos[i]] = none;
-			}
-		}
-	}
+    if ( changed ) {
+        for ( i = 0; i < 2; i++ ) {
+            if ( VM_handsTexPos[i] >= 0 ) {
+                MultiSkins[VM_handsTexPos[i]] = none;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -68,71 +68,71 @@ simulated function RenderOverlays( Canvas canvas ) {
 
 function bool HandlePickupQuery( inventory Item )
 {
-	local DeusExPlayer player;
-	local Inventory anItem;
-	local Bool bAlreadyHas;
-	local Bool bResult;
+    local DeusExPlayer player;
+    local Inventory anItem;
+    local Bool bAlreadyHas;
+    local Bool bResult;
 
-	if ( Item.Class == Class )
-	{
-		player = DeusExPlayer(Owner);
-		bResult = False;
+    if ( Item.Class == Class )
+    {
+        player = DeusExPlayer(Owner);
+        bResult = False;
 
-		// Check to see if the player already has one of these in 
-		// his inventory
-		anItem = player.FindInventoryType(Item.Class);
+        // Check to see if the player already has one of these in
+        // his inventory
+        anItem = player.FindInventoryType(Item.Class);
 
-		if ((anItem != None) && (bCanHaveMultipleCopies))
-		{
-			// don't actually put it in the hand, just add it to the count
+        if ((anItem != None) && (bCanHaveMultipleCopies))
+        {
+            // don't actually put it in the hand, just add it to the count
 
-			// Vanilla Matters: Let the player fill up the stack and allows a chance to quick use the remaining copies.
-			NumCopies = NumCopies + DeusExPickup( item ).NumCopies;
-			if ( MaxCopies > 0 && NumCopies > MaxCopies ) {
-				player.ClientMessage(msgTooMany);
+            // Vanilla Matters: Let the player fill up the stack and allows a chance to quick use the remaining copies.
+            NumCopies = NumCopies + DeusExPickup( item ).NumCopies;
+            if ( MaxCopies > 0 && NumCopies > MaxCopies ) {
+                player.ClientMessage(msgTooMany);
 
-				DeusExPickup( Item ).NumCopies = FMin( NumCopies - MaxCopies, DeusExPickup( Item ).NumCopies );
-				NumCopies = MaxCopies;
+                DeusExPickup( Item ).NumCopies = FMin( NumCopies - MaxCopies, DeusExPickup( Item ).NumCopies );
+                NumCopies = MaxCopies;
 
-				if ( player.TakeHold( Item ) && !player.WasHolding( Item ) ) {
-					player.ClientMessage( Sprintf( player.VM_msgTakeHoldInstead, Item.ItemName ) );
-				}
+                if ( player.TakeHold( Item ) && !player.WasHolding( Item ) ) {
+                    player.ClientMessage( Sprintf( player.VM_msgTakeHoldInstead, Item.ItemName ) );
+                }
 
-				UpdateBeltText();
+                UpdateBeltText();
 
-				return true;
-			}
+                return true;
+            }
 
-			bResult = True;
-		}
+            bResult = True;
+        }
 
-		if (bResult)
-		{
-			player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
+        if (bResult)
+        {
+            player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
 
-			// Destroy me!
+            // Destroy me!
          // DEUS_EX AMSD In multiplayer, we don't want to destroy the item, we want it to set to respawn
          if (Level.NetMode != NM_Standalone)
             Item.SetRespawn();
-         else			
+         else
             Item.Destroy();
-		}
-		else
-		{
-			bResult = Super.HandlePickupQuery(Item);
-		}
+        }
+        else
+        {
+            bResult = Super.HandlePickupQuery(Item);
+        }
 
-		// Update object belt text
-		if (bResult)			
-			UpdateBeltText();
+        // Update object belt text
+        if (bResult)
+            UpdateBeltText();
 
-		return bResult;
-	}
+        return bResult;
+    }
 
-	if ( Inventory == None )
-		return false;
+    if ( Inventory == None )
+        return false;
 
-	return Inventory.HandlePickupQuery(Item);
+    return Inventory.HandlePickupQuery(Item);
 }
 
 // ----------------------------------------------------------------------
@@ -143,27 +143,27 @@ function bool HandlePickupQuery( inventory Item )
 
 function UseOnce()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	player = DeusExPlayer(Owner);
-	NumCopies--;
+    player = DeusExPlayer(Owner);
+    NumCopies--;
 
-	if (!IsA('SkilledTool'))
-		GotoState('DeActivated');
+    if (!IsA('SkilledTool'))
+        GotoState('DeActivated');
 
-	if (NumCopies <= 0)
-	{
-		// Vanilla Matters: Clear HeldInHand then makes the pickup destroy itself.
-		if ( player.IsHolding( self ) ) {
-			player.VM_HeldInHand = None;
-		}
+    if (NumCopies <= 0)
+    {
+        // Vanilla Matters: Clear HeldInHand then makes the pickup destroy itself.
+        if ( player.IsHolding( self ) ) {
+            player.VM_HeldInHand = None;
+        }
 
-		Destroy();
-	}
-	else
-	{
-		UpdateBeltText();
-	}
+        Destroy();
+    }
+    else
+    {
+        UpdateBeltText();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -172,53 +172,53 @@ function UseOnce()
 
 function UpdateBeltText()
 {
-	local DeusExRootWindow root;
+    local DeusExRootWindow root;
 
-	if (DeusExPlayer(Owner) != None)
-	{
-		root = DeusExRootWindow(DeusExPlayer(Owner).rootWindow);
+    if (DeusExPlayer(Owner) != None)
+    {
+        root = DeusExRootWindow(DeusExPlayer(Owner).rootWindow);
 
-		// Update object belt text
-		if ((bInObjectBelt) && (root != None) && (root.hud != None) && (root.hud.belt != None))
-			root.hud.belt.UpdateObjectText(beltPos);
-	}
+        // Update object belt text
+        if ((bInObjectBelt) && (root != None) && (root.hud != None) && (root.hud.belt != None))
+            root.hud.belt.UpdateObjectText(beltPos);
+    }
 }
 
 // ----------------------------------------------------------------------
 // BreakItSmashIt()
 // ----------------------------------------------------------------------
 
-simulated function BreakItSmashIt(class<fragment> FragType, float size) 
+simulated function BreakItSmashIt(class<fragment> FragType, float size)
 {
-	local int i;
-	local DeusExFragment s;
+    local int i;
+    local DeusExFragment s;
 
-	for (i=0; i<Int(size); i++) 
-	{
-		s = DeusExFragment(Spawn(FragType, Owner));
-		if (s != None)
-		{
-			s.Instigator = Instigator;
-			s.CalcVelocity(Velocity,0);
-			s.DrawScale = ((FRand() * 0.05) + 0.05) * size;
-			s.Skin = GetMeshTexture();
+    for (i=0; i<Int(size); i++)
+    {
+        s = DeusExFragment(Spawn(FragType, Owner));
+        if (s != None)
+        {
+            s.Instigator = Instigator;
+            s.CalcVelocity(Velocity,0);
+            s.DrawScale = ((FRand() * 0.05) + 0.05) * size;
+            s.Skin = GetMeshTexture();
 
-			// play a good breaking sound for the first fragment
-			if (i == 0)
-				s.PlaySound(sound'GlassBreakSmall', SLOT_None,,, 768);
-		}
-	}
+            // play a good breaking sound for the first fragment
+            if (i == 0)
+                s.PlaySound(sound'GlassBreakSmall', SLOT_None,,, 768);
+        }
+    }
 
-	Destroy();
+    Destroy();
 }
 
 singular function BaseChange()
 {
-	Super.BaseChange();
+    Super.BaseChange();
 
-	// Make sure we fall if we don't have a base
-	if ((base == None) && (Owner == None))
-		SetPhysics(PHYS_Falling);
+    // Make sure we fall if we don't have a base
+    if ((base == None) && (Owner == None))
+        SetPhysics(PHYS_Falling);
 }
 
 // ----------------------------------------------------------------------
@@ -227,28 +227,28 @@ singular function BaseChange()
 
 auto state Pickup
 {
-	// if we hit the ground fast enough, break it, smash it!!!
-	function Landed(Vector HitNormal)
-	{
-		Super.Landed(HitNormal);
+    // if we hit the ground fast enough, break it, smash it!!!
+    function Landed(Vector HitNormal)
+    {
+        Super.Landed(HitNormal);
 
-		if (bBreakable)
-			if (VSize(Velocity) > 400)
-				BreakItSmashIt(fragType, (CollisionRadius + CollisionHeight) / 2);
-	}
+        if (bBreakable)
+            if (VSize(Velocity) > 400)
+                BreakItSmashIt(fragType, (CollisionRadius + CollisionHeight) / 2);
+    }
 
-	// Vanilla Matters: Reset hand skins.
-	function BeginState() {
-		local int i;
-		
-		for ( i = 0; i < 2; i++ ) {
-			if ( VM_handsTexPos[i] >= 0 ) {
-				MultiSkins[VM_handsTexPos[i]] = none;
-			}
-		}
+    // Vanilla Matters: Reset hand skins.
+    function BeginState() {
+        local int i;
 
-		Super.BeginState();
-	}
+        for ( i = 0; i < 2; i++ ) {
+            if ( VM_handsTexPos[i] >= 0 ) {
+                MultiSkins[VM_handsTexPos[i]] = none;
+            }
+        }
+
+        Super.BeginState();
+    }
 }
 
 state DeActivated
@@ -261,24 +261,24 @@ state DeActivated
 
 simulated function bool UpdateInfo(Object winObject)
 {
-	local PersonaInfoWindow winInfo;
-	local string str;
+    local PersonaInfoWindow winInfo;
+    local string str;
 
-	winInfo = PersonaInfoWindow(winObject);
-	if (winInfo == None)
-		return False;
+    winInfo = PersonaInfoWindow(winObject);
+    if (winInfo == None)
+        return False;
 
-	winInfo.SetTitle(itemName);
-	winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
+    winInfo.SetTitle(itemName);
+    winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
 
-	if (bCanHaveMultipleCopies)
-	{
-		// Print the number of copies
-		str = CountLabel @ String(NumCopies);
-		winInfo.AppendText(str);
-	}
+    if (bCanHaveMultipleCopies)
+    {
+        // Print the number of copies
+        str = CountLabel @ String(NumCopies);
+        winInfo.AppendText(str);
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -287,14 +287,14 @@ simulated function bool UpdateInfo(Object winObject)
 
 function PlayLandingSound()
 {
-	if (LandSound != None)
-	{
-		if (Velocity.Z <= -200)
-		{
-			PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
-			AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
-		}
-	}
+    if (LandSound != None)
+    {
+        if (Velocity.Z <= -200)
+        {
+            PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
+            AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
+        }
+    }
 }
 
 

@@ -15,10 +15,10 @@ var int partIndex;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(66, 13);
-	SetButtonText(HealButtonLabel);	
+    SetSize(66, 13);
+    SetButtonText(HealButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ event InitWindow()
 
 function SetPartIndex(int newPartIndex)
 {
-	partIndex = newPartIndex;
+    partIndex = newPartIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ function SetPartIndex(int newPartIndex)
 
 function int GetPartIndex()
 {
-	return partIndex;
+    return partIndex;
 }
 
 // ----------------------------------------------------------------------

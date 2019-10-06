@@ -10,7 +10,7 @@ class MenuChoice_HUDBordersVisible extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(player.bHUDBordersVisible));
+    SetValue(int(player.bHUDBordersVisible));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bHUDBordersVisible = bool(GetValue());
+    player.bHUDBordersVisible = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,9 +28,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	player.bHUDBordersVisible = bool(defaultValue);
-	SetValue(defaultValue);
-	ChangeStyle();
+    player.bHUDBordersVisible = bool(defaultValue);
+    SetValue(defaultValue);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -39,9 +39,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	player.bHUDBordersVisible = bool(GetValue());
-	ChangeStyle();
+    Super.CycleNextValue();
+    player.bHUDBordersVisible = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	player.bHUDBordersVisible = bool(GetValue());
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    player.bHUDBordersVisible = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // WashingtonDecoration.
 //=============================================================================
 class WashingtonDecoration extends DeusExDecoration
-	abstract;
+    abstract;
 
 defaultproperties
 {

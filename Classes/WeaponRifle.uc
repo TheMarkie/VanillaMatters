@@ -3,25 +3,25 @@
 //=============================================================================
 class WeaponRifle extends DeusExWeapon;
 
-var float	mpNoScopeMult;
+var float   mpNoScopeMult;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-		ReloadCount = mpReloadCount;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+        ReloadCount = mpReloadCount;
       bHasMuzzleFlash = True;
       ReloadCount = 1;
       ReloadTime = ShotTime;
-	}
+    }
 }
 
 defaultproperties

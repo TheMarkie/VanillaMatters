@@ -10,7 +10,7 @@ class MenuChoice_HUDTranslucency extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(player.bHUDBackgroundTranslucent));
+    SetValue(int(player.bHUDBackgroundTranslucent));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bHUDBackgroundTranslucent = bool(GetValue());
+    player.bHUDBackgroundTranslucent = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,9 +28,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	player.bHUDBackgroundTranslucent = bool(defaultValue);
-	SetValue(defaultValue);
-	ChangeStyle();
+    player.bHUDBackgroundTranslucent = bool(defaultValue);
+    SetValue(defaultValue);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -39,9 +39,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	player.bHUDBackgroundTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CycleNextValue();
+    player.bHUDBackgroundTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	player.bHUDBackgroundTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    player.bHUDBackgroundTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

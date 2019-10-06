@@ -12,34 +12,34 @@ var() name ordersTag;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	if (StartPatrolling())
-	{
-		Super.Trigger(Other, Instigator);
-		if (bTriggerOnceOnly)
-			Destroy();
-	}
+    if (StartPatrolling())
+    {
+        Super.Trigger(Other, Instigator);
+        if (bTriggerOnceOnly)
+            Destroy();
+    }
 }
 
 singular function Touch(Actor Other)
 {
-	if (!IsRelevant(Other))
-		return;
+    if (!IsRelevant(Other))
+        return;
 
-	if (StartPatrolling())
-		if (bTriggerOnceOnly)
-			Destroy();
+    if (StartPatrolling())
+        if (bTriggerOnceOnly)
+            Destroy();
 }
 
 function bool StartPatrolling()
 {
-	local ScriptedPawn P;
+    local ScriptedPawn P;
 
-	// find the target NPC to start on the patrol route
-	if (Event != '')
-		foreach AllActors (class'ScriptedPawn', P, Event)
-			P.SetOrders(Orders, ordersTag, True);
+    // find the target NPC to start on the patrol route
+    if (Event != '')
+        foreach AllActors (class'ScriptedPawn', P, Event)
+            P.SetOrders(Orders, ordersTag, True);
 
-	return True;
+    return True;
 }
 
 defaultproperties

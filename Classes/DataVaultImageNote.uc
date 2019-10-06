@@ -3,7 +3,7 @@
 //=============================================================================
 
 class DataVaultImageNote expands Object
-	native;
+    native;
 
 var travel String              noteText;
 var travel INT                 posX;

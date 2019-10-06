@@ -10,7 +10,7 @@ class MenuChoice_SurroundSound extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	LoadSettingBool();
+    LoadSettingBool();
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	SaveSettingBool();
+    SaveSettingBool();
 }
 
 // ----------------------------------------------------------------------

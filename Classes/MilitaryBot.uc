@@ -5,34 +5,34 @@ class MilitaryBot extends Robot;
 
 enum ESkinColor
 {
-	SC_UNATCO,
-	SC_Chinese
+    SC_UNATCO,
+    SC_Chinese
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_UNATCO:		Skin = Texture'MilitaryBotTex1'; break;
-		case SC_Chinese:	Skin = Texture'MilitaryBotTex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_UNATCO:     Skin = Texture'MilitaryBotTex1'; break;
+        case SC_Chinese:    Skin = Texture'MilitaryBotTex2'; break;
+    }
 }
 
 function PlayDisabled()
 {
-	local int rnd;
+    local int rnd;
 
-	rnd = Rand(3);
-	if (rnd == 0)
-		TweenAnimPivot('Disabled1', 0.2);
-	else if (rnd == 1)
-		TweenAnimPivot('Disabled2', 0.2);
-	else
-		TweenAnimPivot('Still', 0.2);
+    rnd = Rand(3);
+    if (rnd == 0)
+        TweenAnimPivot('Disabled1', 0.2);
+    else if (rnd == 1)
+        TweenAnimPivot('Disabled2', 0.2);
+    else
+        TweenAnimPivot('Still', 0.2);
 }
 
 defaultproperties

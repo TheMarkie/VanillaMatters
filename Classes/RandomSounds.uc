@@ -38,96 +38,96 @@ var bool bPlaying;
 //
 function Tick(float deltaTime)
 {
-	local int i;
-	local float rnd, freq, diff;
+    local int i;
+    local float rnd, freq, diff;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	// if we are playing, check to see when we should stop
-	if (bPlaying)
-	{
-		// only fade or doppler for ambients
-		if (bAmbient[cur] > 0)
-		{
-			diff = duration - timer;
+    // if we are playing, check to see when we should stop
+    if (bPlaying)
+    {
+        // only fade or doppler for ambients
+        if (bAmbient[cur] > 0)
+        {
+            diff = duration - timer;
 
-			// fade in until 2 seconds
-			// scale from 0.0 to 1.0
-			if ((timer < 2.0) && (bFade[cur] > 0))
-				SoundVolume = Volume[cur] * (timer / 2.0);
+            // fade in until 2 seconds
+            // scale from 0.0 to 1.0
+            if ((timer < 2.0) && (bFade[cur] > 0))
+                SoundVolume = Volume[cur] * (timer / 2.0);
 
-			// fade out at 2 seconds left
-			// scale from 1.0 to 0.0
-			if ((diff < 2.0) && (bFade[cur] > 0))
-				SoundVolume = Volume[cur] * (diff / 2.0);
+            // fade out at 2 seconds left
+            // scale from 1.0 to 0.0
+            if ((diff < 2.0) && (bFade[cur] > 0))
+                SoundVolume = Volume[cur] * (diff / 2.0);
 
-			// doppler out at 4 seconds left
-			// scale from 1.0 to 0.85
-			if ((diff < 4.0) && (bFakeDoppler[cur] > 0))
-				SoundPitch = Pitch[cur] * (((diff / 4.0) * 0.15) + 0.85);
-		}
-		if (timer > duration)
-		{
-			if (bAmbient[cur] > 0)
-				AmbientSound = None;
-			timer = 0;
-			bPlaying = False;
-		}
-	}
-	else if (timer >= 1.0)		// otherwise, test for a new sound
-	{
-		rnd = FRand();
-		freq = 0;
-		for (i=0; i<num; i++)
-		{
-			// make the test percentage cumulative
-			freq += frequency[i];
+            // doppler out at 4 seconds left
+            // scale from 1.0 to 0.85
+            if ((diff < 4.0) && (bFakeDoppler[cur] > 0))
+                SoundPitch = Pitch[cur] * (((diff / 4.0) * 0.15) + 0.85);
+        }
+        if (timer > duration)
+        {
+            if (bAmbient[cur] > 0)
+                AmbientSound = None;
+            timer = 0;
+            bPlaying = False;
+        }
+    }
+    else if (timer >= 1.0)      // otherwise, test for a new sound
+    {
+        rnd = FRand();
+        freq = 0;
+        for (i=0; i<num; i++)
+        {
+            // make the test percentage cumulative
+            freq += frequency[i];
 
-			if (rnd < freq)
-			{
-				if (bAmbient[i] > 0)
-				{
-					AmbientSound = sounds[i];
-					duration = FRand() * (maxDuration[i] - minDuration[i]) + minDuration[i];
-					SoundVolume = Volume[i];
-					SoundPitch = Pitch[i];
-				}
-				else
-				{
-					PlaySound(sounds[i], SLOT_None);
-					duration = 2;		// 2 seconds for one-shot sounds
-				}
+            if (rnd < freq)
+            {
+                if (bAmbient[i] > 0)
+                {
+                    AmbientSound = sounds[i];
+                    duration = FRand() * (maxDuration[i] - minDuration[i]) + minDuration[i];
+                    SoundVolume = Volume[i];
+                    SoundPitch = Pitch[i];
+                }
+                else
+                {
+                    PlaySound(sounds[i], SLOT_None);
+                    duration = 2;       // 2 seconds for one-shot sounds
+                }
 
-				cur = i;
-				timer = 0;
-				bPlaying = True;
-				return;
-			}
-		}
+                cur = i;
+                timer = 0;
+                bPlaying = True;
+                return;
+            }
+        }
 
-		timer -=1.0;
-	}
+        timer -=1.0;
+    }
 
-	timer += deltaTime;
+    timer += deltaTime;
 }
 
 function BeginPlay()
 {
-	local int i;
+    local int i;
 
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	num = 0;
-	timer = 0;
-	cur = 0;
-	bPlaying = False;
-	AmbientSound = None;
-	for (i=0; i<8; i++)
-	{
-		if (sounds[i] == None)
-			break;
-		num++;
-	}
+    num = 0;
+    timer = 0;
+    cur = 0;
+    bPlaying = False;
+    AmbientSound = None;
+    for (i=0; i<8; i++)
+    {
+        if (sounds[i] == None)
+            break;
+        num++;
+    }
 }
 
 defaultproperties

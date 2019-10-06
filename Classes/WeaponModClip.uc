@@ -11,19 +11,19 @@ class WeaponModClip extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	local int diff;
+    local int diff;
 
-	if (weapon != None)
-	{
-		diff = Float(weapon.Default.ReloadCount) * WeaponModifier;
+    if (weapon != None)
+    {
+        diff = Float(weapon.Default.ReloadCount) * WeaponModifier;
 
-		// make sure we add at least one
-		if (diff < 1)
-			diff = 1;
+        // make sure we add at least one
+        if (diff < 1)
+            diff = 1;
 
-		weapon.ReloadCount += diff;
-		weapon.ModReloadCount += WeaponModifier;
-	}
+        weapon.ReloadCount += diff;
+        weapon.ModReloadCount += WeaponModifier;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -32,10 +32,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveModReloadCount && !weapon.HasMaxClipMod());
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveModReloadCount && !weapon.HasMaxClipMod());
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

@@ -10,7 +10,7 @@ class MenuChoice_ToggleCrouch extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bToggleCrouch));
+    SetValue(int(!player.bToggleCrouch));
 }
 
 // ----------------------------------------------------------------------
@@ -19,15 +19,15 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bToggleCrouch = !bool(GetValue());
+    player.bToggleCrouch = !bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
-// -------------------------------	---------------------------------------
+// -------------------------------  ---------------------------------------
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bToggleCrouch));
+    SetValue(int(!player.bToggleCrouch));
 }
 
 // ----------------------------------------------------------------------

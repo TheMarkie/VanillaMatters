@@ -2,17 +2,17 @@
 // Computers.
 //=============================================================================
 class Computers extends ElectronicDevices
-	abstract;
+    abstract;
 
 struct sSpecialOptions
 {
-	var() localized string	Text;
-	var() localized string	TriggerText;
-	var() string			userName;
-	var() name				TriggerEvent;
-	var() name				UnTriggerEvent;
-	var() bool				bTriggerOnceOnly;
-	var bool				bAlreadyTriggered;
+    var() localized string  Text;
+    var() localized string  TriggerText;
+    var() string            userName;
+    var() name              TriggerEvent;
+    var() name              UnTriggerEvent;
+    var() bool              bTriggerOnceOnly;
+    var bool                bAlreadyTriggered;
 };
 
 var() localized sSpecialOptions specialOptions[4];
@@ -21,27 +21,27 @@ var class<NetworkTerminal> terminalType;
 var NetworkTerminal termwindow;
 var bool bOn;
 var bool bAnimating;
-var bool bLockedOut;				// true if this terminal is locked out
-var() float lockoutDelay;			// delay until locked out terminal can be used
-var float lockoutTime;				// time when terminal was locked out
-var float lastHackTime;				// last time the terminal was hacked
+var bool bLockedOut;                // true if this terminal is locked out
+var() float lockoutDelay;           // delay until locked out terminal can be used
+var float lockoutTime;              // time when terminal was locked out
+var float lastHackTime;             // last time the terminal was hacked
 var DeusExPlayer curFrobber;     // player currently frobbing.
 var localized String msgLockedOut;
 
 enum EAccessLevel
 {
-	AL_Untrained,
-	AL_Trained,
-	AL_Advanced,
-	AL_Master
+    AL_Untrained,
+    AL_Trained,
+    AL_Advanced,
+    AL_Master
 };
 
 // userlist information
 struct sUserInfo
 {
-	var() string		userName;
-	var() string		password;
-	var() EAccessLevel	accessLevel;
+    var() string        userName;
+    var() string        password;
+    var() EAccessLevel  accessLevel;
 };
 
 var() sUserInfo userList[8];
@@ -57,42 +57,42 @@ var() string TextPackage; // Package from which text for emails/bulletins for th
 
 enum EComputerNodes
 {
-	CN_UNATCO, 
-	CN_VersaLife,
-	CN_QueensTower,
-	CN_USNavy,
-	CN_MJ12Net,
-	CN_PageIndustries,
-	CN_Area51,
-	CN_Everett,
-	CN_NSF,
-	CN_NYC,
-	CN_China,
-	CN_HKNet,
-	CN_QuickStop,
-	CN_LuckyMoney,
-	CN_Illuminati
+    CN_UNATCO,
+    CN_VersaLife,
+    CN_QueensTower,
+    CN_USNavy,
+    CN_MJ12Net,
+    CN_PageIndustries,
+    CN_Area51,
+    CN_Everett,
+    CN_NSF,
+    CN_NYC,
+    CN_China,
+    CN_HKNet,
+    CN_QuickStop,
+    CN_LuckyMoney,
+    CN_Illuminati
 };
 
 struct sNodeInfo
 {
-	var localized string nodeName;
-	var localized string nodeDesc;
-	var string nodeAddress;
-	var Texture nodeTexture;
+    var localized string nodeName;
+    var localized string nodeDesc;
+    var string nodeAddress;
+    var Texture nodeTexture;
 };
 
 var() EComputerNodes ComputerNode;
 var   localized sNodeInfo NodeInfo[20];
 
 // alarm vars
-var float lastAlarmTime;		// last time the alarm was sounded
-var int alarmTimeout;			// how long before the alarm silences itself
+var float lastAlarmTime;        // last time the alarm was sounded
+var int alarmTimeout;           // how long before the alarm silences itself
 
 var localized string CompInUseMsg;
 
 // Vanilla Matters
-var travel float VM_lastRemainingDetectionTime;		// When the player logs out, saves how much detectionTime is left.
+var travel float VM_lastRemainingDetectionTime;     // When the player logs out, saves how much detectionTime is left.
 
 // -----------------------------------------------------------------------
 // PostBeginPlay
@@ -108,44 +108,44 @@ function PostBeginPlay()
 //
 function BeginAlarm()
 {
-	AmbientSound = Sound'Klaxon2';
-	SoundVolume = 128;
-	SoundRadius = 64;
-	SoundPitch = 64;
-	lastAlarmTime = Level.TimeSeconds;
-	AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+    AmbientSound = Sound'Klaxon2';
+    SoundVolume = 128;
+    SoundRadius = 64;
+    SoundPitch = 64;
+    lastAlarmTime = Level.TimeSeconds;
+    AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 
-	// make sure we can't go into stasis while we're alarming
-	bStasis = False;
+    // make sure we can't go into stasis while we're alarming
+    bStasis = False;
 }
 
 function EndAlarm()
 {
-	AmbientSound = Default.AmbientSound;
-	SoundVolume = Default.SoundVolume;
-	SoundRadius = Default.SoundRadius;
-	SoundPitch = Default.SoundPitch;
-	lastAlarmTime = 0;
-	AIEndEvent('Alarm', EAITYPE_Audio);
+    AmbientSound = Default.AmbientSound;
+    SoundVolume = Default.SoundVolume;
+    SoundRadius = Default.SoundRadius;
+    SoundPitch = Default.SoundPitch;
+    lastAlarmTime = 0;
+    AIEndEvent('Alarm', EAITYPE_Audio);
 
-	// reset our stasis info
-	bStasis = Default.bStasis;
+    // reset our stasis info
+    bStasis = Default.bStasis;
 }
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
    // DEUS_EX AMSD IN multiplayer, set lockout to 0
    if (Level.NetMode != NM_Standalone)
       bLockedOut = False;
 
-	// shut off the alarm if the timeout has expired
-	if (lastAlarmTime != 0)
-	{
-		if (Level.TimeSeconds - lastAlarmTime >= alarmTimeout)
-			EndAlarm();
-	}
+    // shut off the alarm if the timeout has expired
+    if (lastAlarmTime != 0)
+    {
+        if (Level.TimeSeconds - lastAlarmTime >= alarmTimeout)
+            EndAlarm();
+    }
 }
 // ----------------------------------------------------------------------
 // ChangePlayerVisibility()
@@ -153,13 +153,13 @@ function Tick(float deltaTime)
 
 function ChangePlayerVisibility(bool bInviso)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
    if (Level.NetMode != NM_Standalone)
       return;
-	player = DeusExPlayer(GetPlayerPawn());
-	if (player != None)
-		player.MakePlayerIgnored(!bInviso);
+    player = DeusExPlayer(GetPlayerPawn());
+    if (player != None)
+        player.MakePlayerIgnored(!bInviso);
 }
 
 // ----------------------------------------------------------------------
@@ -168,38 +168,38 @@ function ChangePlayerVisibility(bool bInviso)
 
 state On
 {
-	function Tick(float deltaTime)
-	{
-		Global.Tick(deltaTime);
+    function Tick(float deltaTime)
+    {
+        Global.Tick(deltaTime);
 
-		if (bOn)
-		{
-			if ((termwindow == None) && (Level.NetMode == NM_Standalone))
-			{
-				GotoState('Off');
-			}            
-			if (curFrobber == None)
-			{
-				GotoState('Off');
-			}
-			// Vanilla Matters: Reduce the distance to prevent activating then running away. Ignore distance limit if it's injected.
-			else if ( !VM_injected && VSize( curFrobber.Location - Location ) > ( curFrobber.MaxFrobDistance + CollisionRadius + curFrobber.CollisionRadius ) ) {
-				curFrobber = None;
-			}
-		}
-	}
+        if (bOn)
+        {
+            if ((termwindow == None) && (Level.NetMode == NM_Standalone))
+            {
+                GotoState('Off');
+            }
+            if (curFrobber == None)
+            {
+                GotoState('Off');
+            }
+            // Vanilla Matters: Reduce the distance to prevent activating then running away. Ignore distance limit if it's injected.
+            else if ( !VM_injected && VSize( curFrobber.Location - Location ) > ( curFrobber.MaxFrobDistance + CollisionRadius + curFrobber.CollisionRadius ) ) {
+                curFrobber = None;
+            }
+        }
+    }
 
 Begin:
-	if (!bOn)
-	{
-		AdditionalActivation(curFrobber);
-		bAnimating = True;
-		PlayAnim('Activate');
-		FinishAnim();
-		bOn = True;
-		bAnimating = False;
-		TryInvoke();
-	}
+    if (!bOn)
+    {
+        AdditionalActivation(curFrobber);
+        bAnimating = True;
+        PlayAnim('Activate');
+        FinishAnim();
+        bOn = True;
+        bAnimating = False;
+        TryInvoke();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -209,25 +209,25 @@ Begin:
 auto state Off
 {
 Begin:
-	if (bOn)
-	{
-		AdditionalDeactivation(curFrobber);
-		bAnimating = True;
-		PlayAnim('Deactivate');
-		FinishAnim();
-		bOn = False;
-		bAnimating = False;
-		if (bLockedOut)
-			BeginAlarm();
+    if (bOn)
+    {
+        AdditionalDeactivation(curFrobber);
+        bAnimating = True;
+        PlayAnim('Deactivate');
+        FinishAnim();
+        bOn = False;
+        bAnimating = False;
+        if (bLockedOut)
+            BeginAlarm();
 
-		// Resume any datalinks that may have started while we were 
-		// in the computers (don't want them to start until we pop back out)
-		ResumeDataLinks();
-		curFrobber = None;
+        // Resume any datalinks that may have started while we were
+        // in the computers (don't want them to start until we pop back out)
+        ResumeDataLinks();
+        curFrobber = None;
 
-		// Vanilla Matters
-		VM_injected = false;
-	}
+        // Vanilla Matters
+        VM_injected = false;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -236,13 +236,13 @@ Begin:
 
 function ResumeDataLinks()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	player = curFrobber;
-	if (player != None)
-	{
-		player.ResumeDataLinks();
-	}
+    player = curFrobber;
+    if (player != None)
+    {
+        player.ResumeDataLinks();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -253,7 +253,7 @@ function TryInvoke()
 {
    if (IsInState('Off'))
       return;
-   
+
    if (!Invoke())
    {
       GotoState('Off');
@@ -268,21 +268,21 @@ function TryInvoke()
 
 function bool Invoke()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	if (termwindow != None)
-		return False;
+    if (termwindow != None)
+        return False;
 
-	player = curFrobber;
-	if (player != None)
-	{
+    player = curFrobber;
+    if (player != None)
+    {
       //pass timing info so the player can keep the time uptodate on his end.
       player.InvokeComputerScreen(self, lastHackTime, Level.TimeSeconds);
       // set owner for relevancy fer sure;
       SetOwner(Player);
-	}
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -291,11 +291,11 @@ function bool Invoke()
 
 function CloseOut()
 {
-	if (curFrobber != None)
-	{
-		//curFrobber = None;
-		GotoState('Off');
-	}
+    if (curFrobber != None)
+    {
+        //curFrobber = None;
+        GotoState('Off');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -304,40 +304,40 @@ function CloseOut()
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local DeusExPlayer player;
-	local float elapsed, delay;
+    local DeusExPlayer player;
+    local float elapsed, delay;
 
-	// Don't allow someone else to use the computer when already in use.
-	if (curFrobber != None)
-	{
-		if (DeusExPlayer(Frobber) != None)
-			DeusExPlayer(Frobber).ClientMessage(Sprintf(CompInUseMsg,curFrobber.PlayerReplicationInfo.PlayerName));
-		return;
-	}
+    // Don't allow someone else to use the computer when already in use.
+    if (curFrobber != None)
+    {
+        if (DeusExPlayer(Frobber) != None)
+            DeusExPlayer(Frobber).ClientMessage(Sprintf(CompInUseMsg,curFrobber.PlayerReplicationInfo.PlayerName));
+        return;
+    }
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	// DEUS_EX AMSD get player from frobber, not from getplayerpawn
-	player = DeusExPlayer(Frobber);
-	if (player != None)
-	{
-		if (bLockedOut)
-		{
-			// computer skill shortens the lockout duration
-			delay = lockoutDelay / player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
+    // DEUS_EX AMSD get player from frobber, not from getplayerpawn
+    player = DeusExPlayer(Frobber);
+    if (player != None)
+    {
+        if (bLockedOut)
+        {
+            // computer skill shortens the lockout duration
+            delay = lockoutDelay / player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
 
-			elapsed = Level.TimeSeconds - lockoutTime;
-			if (elapsed < delay)
-				player.ClientMessage(Sprintf(msgLockedOut, Int(delay - elapsed)));
-			else
-				bLockedOut = False;
-		}
-		if (!bAnimating && !bLockedOut)
-		{
-			curFrobber = player;
-			GotoState('On');
-		}
-	}
+            elapsed = Level.TimeSeconds - lockoutTime;
+            if (elapsed < delay)
+                player.ClientMessage(Sprintf(msgLockedOut, Int(delay - elapsed)));
+            else
+                bLockedOut = False;
+        }
+        if (!bAnimating && !bLockedOut)
+        {
+            curFrobber = player;
+            GotoState('On');
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -346,13 +346,13 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function int NumUsers()
 {
-	local int i;
+    local int i;
 
-	for (i=0; i<ArrayCount(userList); i++)
-		if (userList[i].userName == "")
-			break;
+    for (i=0; i<ArrayCount(userList); i++)
+        if (userList[i].userName == "")
+            break;
 
-	return i;
+    return i;
 }
 
 // ----------------------------------------------------------------------
@@ -361,10 +361,10 @@ function int NumUsers()
 
 function string GetUserName(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return userList[userIndex].userName;
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return userList[userIndex].userName;
 
-	return "ERR";
+    return "ERR";
 }
 
 // ----------------------------------------------------------------------
@@ -373,10 +373,10 @@ function string GetUserName(int userIndex)
 
 function string GetPassword(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return userList[userIndex].password;
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return userList[userIndex].password;
 
-	return "ERR";
+    return "ERR";
 }
 
 // ----------------------------------------------------------------------
@@ -385,10 +385,10 @@ function string GetPassword(int userIndex)
 
 function int GetAccessLevel(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return Int(userList[userIndex].accessLevel);
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return Int(userList[userIndex].accessLevel);
 
-	return 0;
+    return 0;
 }
 
 // ----------------------------------------------------------------------
@@ -397,7 +397,7 @@ function int GetAccessLevel(int userIndex)
 
 function String GetNodeName()
 {
-	return nodeInfo[Int(ComputerNode)].nodeName;
+    return nodeInfo[Int(ComputerNode)].nodeName;
 }
 
 // ----------------------------------------------------------------------
@@ -406,7 +406,7 @@ function String GetNodeName()
 
 function String GetNodeDesc()
 {
-	return nodeInfo[Int(ComputerNode)].nodeDesc;
+    return nodeInfo[Int(ComputerNode)].nodeDesc;
 }
 
 // ----------------------------------------------------------------------
@@ -415,7 +415,7 @@ function String GetNodeDesc()
 
 function String GetNodeAddress()
 {
-	return nodeInfo[Int(ComputerNode)].nodeAddress;
+    return nodeInfo[Int(ComputerNode)].nodeAddress;
 }
 
 // ----------------------------------------------------------------------
@@ -424,7 +424,7 @@ function String GetNodeAddress()
 
 function Texture GetNodeTexture()
 {
-	return nodeInfo[Int(ComputerNode)].nodeTexture;
+    return nodeInfo[Int(ComputerNode)].nodeTexture;
 }
 
 // ----------------------------------------------------------------------

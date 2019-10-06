@@ -7,10 +7,10 @@ class Dart extends DeusExProjectile;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-		Damage = mpDamage;
+    if ( Level.NetMode != NM_Standalone )
+        Damage = mpDamage;
 }
 
 defaultproperties

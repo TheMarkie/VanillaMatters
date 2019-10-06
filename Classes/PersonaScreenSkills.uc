@@ -5,16 +5,16 @@
 class PersonaScreenSkills extends PersonaScreenBaseWindow;
 
 // Vanilla Matters: Custom background and border to fix the empty spot of the removed skills.
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.bmp"		NAME="SkillsBackground_4"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.bmp"		NAME="SkillsBackground_5"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.bmp"		NAME="SkillsBackground_6"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_4.bmp"		NAME="SkillsBorder_4"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_5.bmp"		NAME="SkillsBorder_5"		GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_6.bmp"		NAME="SkillsBorder_6"		GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.bmp"     NAME="SkillsBackground_4"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.bmp"     NAME="SkillsBackground_5"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.bmp"     NAME="SkillsBackground_6"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_4.bmp"     NAME="SkillsBorder_4"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_5.bmp"     NAME="SkillsBorder_5"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBorder_6.bmp"     NAME="SkillsBorder_6"       GROUP="VMUI" MIPS=Off
 
 var PersonaActionButtonWindow btnUpgrade;
 var TileWindow                winTile;
-var Skill			          selectedSkill;
+var Skill                     selectedSkill;
 var PersonaSkillButtonWindow  selectedSkillButton;
 var PersonaHeaderTextWindow   winSkillPoints;
 var PersonaInfoWindow         winInfo;
@@ -37,11 +37,11 @@ var localized String SkillUpgradedLevelLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	PersonaNavBarWindow(winNavBar).btnSkills.SetSensitivity(False);
+    PersonaNavBarWindow(winNavBar).btnSkills.SetSensitivity(False);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -50,16 +50,16 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	CreateTitleWindow(9, 5, SkillsTitleText);
-	CreateInfoWindow();
-	CreateButtons();
-	CreateSkillsHeaders();
-	CreateSkillsTileWindow();
-	CreateSkillsList();
-	CreateSkillPointsWindow();
-	CreateStatusWindow();
+    CreateTitleWindow(9, 5, SkillsTitleText);
+    CreateInfoWindow();
+    CreateButtons();
+    CreateSkillsHeaders();
+    CreateSkillsTileWindow();
+    CreateSkillsList();
+    CreateSkillPointsWindow();
+    CreateStatusWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -68,10 +68,10 @@ function CreateControls()
 
 function CreateStatusWindow()
 {
-	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	//winStatus.SetPos(356, 329);
-	// Vanilla Matters: Move the status bar up to fit the new shortened menu.
-	winStatus.SetPos( 356, 275 );
+    winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
+    //winStatus.SetPos(356, 329);
+    // Vanilla Matters: Move the status bar up to fit the new shortened menu.
+    winStatus.SetPos( 356, 275 );
 }
 
 // ----------------------------------------------------------------------
@@ -80,15 +80,15 @@ function CreateStatusWindow()
 
 function CreateSkillsTileWindow()
 {
-	winTile = TileWindow(winClient.NewChild(Class'TileWindow'));
+    winTile = TileWindow(winClient.NewChild(Class'TileWindow'));
 
-	winTile.SetPos(12, 39);
-	//winTile.SetSize(302, 297);
-	// Vanilla Matters: Reduce the skills tile window size to fit the shortened menu.
-	winTile.SetSize( 302, 243 );
-	winTile.SetMinorSpacing(0);
-	winTile.SetMargins(0, 0);
-	winTile.SetOrder(ORDER_Down);
+    winTile.SetPos(12, 39);
+    //winTile.SetSize(302, 297);
+    // Vanilla Matters: Reduce the skills tile window size to fit the shortened menu.
+    winTile.SetSize( 302, 243 );
+    winTile.SetMinorSpacing(0);
+    winTile.SetMargins(0, 0);
+    winTile.SetOrder(ORDER_Down);
 }
 
 // ----------------------------------------------------------------------
@@ -97,11 +97,11 @@ function CreateSkillsTileWindow()
 
 function CreateInfoWindow()
 {
-	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(356, 22);
-	//winInfo.SetSize(238, 299);
-	// Vanilla Matters: Reduce the info window size to fit the shortened menu.
-	winInfo.SetSize( 238, 245 );
+    winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
+    winInfo.SetPos(356, 22);
+    //winInfo.SetSize(238, 299);
+    // Vanilla Matters: Reduce the info window size to fit the shortened menu.
+    winInfo.SetSize( 238, 245 );
 }
 
 // ----------------------------------------------------------------------
@@ -110,17 +110,17 @@ function CreateInfoWindow()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	//winActionButtons.SetPos(10, 338);
-	// Vanilla Matters: Move the button up to fit the new shortened menu.
-	winActionButtons.SetPos( 10, 284 );
-	winActionButtons.SetWidth(149);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    //winActionButtons.SetPos(10, 338);
+    // Vanilla Matters: Move the button up to fit the new shortened menu.
+    winActionButtons.SetPos( 10, 284 );
+    winActionButtons.SetWidth(149);
+    winActionButtons.FillAllSpace(False);
 
-	btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnUpgrade.SetButtonText(UpgradeButtonLabel);
+    btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnUpgrade.SetButtonText(UpgradeButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -129,15 +129,15 @@ function CreateButtons()
 
 function CreateSkillsHeaders()
 {
-	local PersonaNormalTextWindow winText;
+    local PersonaNormalTextWindow winText;
 
-	winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetPos(177, 24);
-	winText.SetText(SkillLevelHeaderText);
+    winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
+    winText.SetPos(177, 24);
+    winText.SetText(SkillLevelHeaderText);
 
-	winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetPos(247, 24);
-	winText.SetText(PointsNeededHeaderText);
+    winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
+    winText.SetPos(247, 24);
+    winText.SetText(PointsNeededHeaderText);
 }
 
 // ----------------------------------------------------------------------
@@ -146,30 +146,30 @@ function CreateSkillsHeaders()
 
 function CreateSkillsList()
 {
-	local Skill aSkill;
-	local int   buttonIndex;
-	local PersonaSkillButtonWindow skillButton;
-	local PersonaSkillButtonWindow firstButton;
+    local Skill aSkill;
+    local int   buttonIndex;
+    local PersonaSkillButtonWindow skillButton;
+    local PersonaSkillButtonWindow firstButton;
 
-	// Iterate through the skills, adding them to our list
-	aSkill = player.SkillSystem.FirstSkill;
-	while(aSkill != None)
-	{
-		if (aSkill.SkillName != "")
-		{
-			skillButton = PersonaSkillButtonWindow(winTile.NewChild(Class'PersonaSkillButtonWindow'));
-			skillButton.SetSkill(aSkill);
+    // Iterate through the skills, adding them to our list
+    aSkill = player.SkillSystem.FirstSkill;
+    while(aSkill != None)
+    {
+        if (aSkill.SkillName != "")
+        {
+            skillButton = PersonaSkillButtonWindow(winTile.NewChild(Class'PersonaSkillButtonWindow'));
+            skillButton.SetSkill(aSkill);
 
-			skillButtons[buttonIndex++] = skillButton;
+            skillButtons[buttonIndex++] = skillButton;
 
-			if (firstButton == None)
-				firstButton = skillButton;
-		}
-		aSkill = aSkill.next;
-	}
+            if (firstButton == None)
+                firstButton = skillButton;
+        }
+        aSkill = aSkill.next;
+    }
 
-	// Select the first skill
-	SelectSkillButton(skillButton);
+    // Select the first skill
+    SelectSkillButton(skillButton);
 }
 
 // ----------------------------------------------------------------------
@@ -178,22 +178,22 @@ function CreateSkillsList()
 
 function CreateSkillPointsWindow()
 {
-	local PersonaHeaderTextWindow winText;
+    local PersonaHeaderTextWindow winText;
 
-	winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	//winText.SetPos(180, 341);
-	// Vanilla Matters: Move the skill points text up to fit the new shortened menu.
-	winText.SetPos( 180, 287 );
-	winText.SetHeight(15);
-	winText.SetText(SkillPointsHeaderText);
+    winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
+    //winText.SetPos(180, 341);
+    // Vanilla Matters: Move the skill points text up to fit the new shortened menu.
+    winText.SetPos( 180, 287 );
+    winText.SetHeight(15);
+    winText.SetText(SkillPointsHeaderText);
 
-	winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	//winSkillPoints.SetPos(250, 341);
-	// Vanilla Matters: Move the skill points text up to fit the new shortened menu.
-	winSkillPoints.SetPos( 250, 287 );
-	winSkillPoints.SetSize(54, 15);
-	winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);
-	winSkillPoints.SetText(player.SkillPointsAvail);
+    winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
+    //winSkillPoints.SetPos(250, 341);
+    // Vanilla Matters: Move the skill points text up to fit the new shortened menu.
+    winSkillPoints.SetPos( 250, 287 );
+    winSkillPoints.SetSize(54, 15);
+    winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);
+    winSkillPoints.SetText(player.SkillPointsAvail);
 }
 
 // ----------------------------------------------------------------------
@@ -202,33 +202,33 @@ function CreateSkillPointsWindow()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	if (Super.ButtonActivated(buttonPressed))
-		return True;
+    if (Super.ButtonActivated(buttonPressed))
+        return True;
 
-	bHandled   = True;
+    bHandled   = True;
 
-	// Check if this is one of our Skills buttons
-	if (buttonPressed.IsA('PersonaSkillButtonWindow'))
-	{
-		SelectSkillButton(PersonaSkillButtonWindow(buttonPressed));
-	}
-	else
-	{
-		switch(buttonPressed)
-		{
-			case btnUpgrade:
-				UpgradeSkill();
-				break;
+    // Check if this is one of our Skills buttons
+    if (buttonPressed.IsA('PersonaSkillButtonWindow'))
+    {
+        SelectSkillButton(PersonaSkillButtonWindow(buttonPressed));
+    }
+    else
+    {
+        switch(buttonPressed)
+        {
+            case btnUpgrade:
+                UpgradeSkill();
+                break;
 
-			default:
-				bHandled = False;
-				break;
-		}
-	}
+            default:
+                bHandled = False;
+                break;
+        }
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -237,26 +237,26 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( key ) 
-	{
-		case IK_Up:
-			SelectPreviousSkillButton();
-			break;
+    switch( key )
+    {
+        case IK_Up:
+            SelectPreviousSkillButton();
+            break;
 
-		case IK_Down:
-			SelectNextSkillButton();
-			break;
+        case IK_Down:
+            SelectNextSkillButton();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -265,21 +265,21 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function SelectSkillButton(PersonaSkillButtonWindow buttonPressed)
 {
-	// Don't do extra work.
-	if (selectedSkillButton != buttonPressed)
-	{
-		// Deselect current button
-		if (selectedSkillButton != None)
-			selectedSkillButton.SelectButton(False);
+    // Don't do extra work.
+    if (selectedSkillButton != buttonPressed)
+    {
+        // Deselect current button
+        if (selectedSkillButton != None)
+            selectedSkillButton.SelectButton(False);
 
-		selectedSkillButton = buttonPressed;
-		selectedSkill       = selectedSkillButton.GetSkill();
+        selectedSkillButton = buttonPressed;
+        selectedSkill       = selectedSkillButton.GetSkill();
 
-		selectedSkill.UpdateInfo(winInfo);
-		selectedSkillButton.SelectButton(True);
+        selectedSkill.UpdateInfo(winInfo);
+        selectedSkillButton.SelectButton(True);
 
-		EnableButtons();
-	}
+        EnableButtons();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -288,14 +288,14 @@ function SelectSkillButton(PersonaSkillButtonWindow buttonPressed)
 
 function SelectPreviousSkillButton()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	skillIndex = GetCurrentSkillButtonIndex();
+    skillIndex = GetCurrentSkillButtonIndex();
 
-	if (--skillIndex < 0)
-		skillIndex = GetSkillButtonCount() - 1;
+    if (--skillIndex < 0)
+        skillIndex = GetSkillButtonCount() - 1;
 
-	skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
+    skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
 }
 
 // ----------------------------------------------------------------------
@@ -304,14 +304,14 @@ function SelectPreviousSkillButton()
 
 function SelectNextSkillButton()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	skillIndex = GetCurrentSkillButtonIndex();
+    skillIndex = GetCurrentSkillButtonIndex();
 
-	if (++skillIndex >= GetSkillButtonCount())
-		skillIndex = 0;
+    if (++skillIndex >= GetSkillButtonCount())
+        skillIndex = 0;
 
-	skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
+    skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
 }
 
 // ----------------------------------------------------------------------
@@ -320,21 +320,21 @@ function SelectNextSkillButton()
 
 function int GetCurrentSkillButtonIndex()
 {
-	local int buttonIndex;
-	local int returnIndex;
+    local int buttonIndex;
+    local int returnIndex;
 
-	returnIndex = -1;
+    returnIndex = -1;
 
-	for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
-	{
-		if (skillButtons[buttonIndex] == selectedSkillButton)
-		{
-			returnIndex = buttonIndex;
-			break;
-		}		
-	}
+    for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
+    {
+        if (skillButtons[buttonIndex] == selectedSkillButton)
+        {
+            returnIndex = buttonIndex;
+            break;
+        }
+    }
 
-	return returnIndex;
+    return returnIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -343,15 +343,15 @@ function int GetCurrentSkillButtonIndex()
 
 function int GetSkillButtonCount()
 {
-	local int buttonIndex;
+    local int buttonIndex;
 
-	for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
-	{
-		if (skillButtons[buttonIndex] == None)
-			break;
-	}	
+    for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
+    {
+        if (skillButtons[buttonIndex] == None)
+            break;
+    }
 
-	return buttonIndex;
+    return buttonIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -360,19 +360,19 @@ function int GetSkillButtonCount()
 
 function UpgradeSkill()
 {
-	// First make sure we have a skill selected
-	if ( selectedSkill == None )
-		return;
+    // First make sure we have a skill selected
+    if ( selectedSkill == None )
+        return;
 
-	selectedSkill.IncLevel();
-	selectedSkillButton.RefreshSkillInfo();
+    selectedSkill.IncLevel();
+    selectedSkillButton.RefreshSkillInfo();
 
-	// Send status message
-	winStatus.AddText(Sprintf(SkillUpgradedLevelLabel, selectedSkill.SkillName));
-	
-	winSkillPoints.SetText(player.SkillPointsAvail);
-		
-	EnableButtons();
+    // Send status message
+    winStatus.AddText(Sprintf(SkillUpgradedLevelLabel, selectedSkill.SkillName));
+
+    winSkillPoints.SetText(player.SkillPointsAvail);
+
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -381,19 +381,19 @@ function UpgradeSkill()
 
 function EnableButtons()
 {
-	// Abort if a skill item isn't selected
-	if ( selectedSkill == None )
-	{
-		btnUpgrade.SetSensitivity(False);
-	}
-	else
-	{
-		// Upgrade Skill only available if the skill is not at 
-		// the maximum -and- the user has enough skill points
-		// available to upgrade the skill
+    // Abort if a skill item isn't selected
+    if ( selectedSkill == None )
+    {
+        btnUpgrade.SetSensitivity(False);
+    }
+    else
+    {
+        // Upgrade Skill only available if the skill is not at
+        // the maximum -and- the user has enough skill points
+        // available to upgrade the skill
 
-		btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
-	}
+        btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -403,7 +403,7 @@ function EnableButtons()
 function RefreshWindow(float DeltaTime)
 {
     if (selectedSkill != None)
-    {    
+    {
         selectedSkillButton.RefreshSkillInfo();
     }
 

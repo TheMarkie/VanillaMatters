@@ -3,68 +3,68 @@
 //=============================================================================
 class AutoTurretGun extends HackableDevices;
 
-var int		team;
-var String	titleString;
-var float	updateTime;
+var int     team;
+var String  titleString;
+var float   updateTime;
 
 replication
 {
-	reliable if (Role==ROLE_Authority)
-		team, titleString;
+    reliable if (Role==ROLE_Authority)
+        team, titleString;
 }
 
 function Destroyed()
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	turret = AutoTurret(Owner);
-	if (turret != None)
-	{
-		turret.gun = None;
-		turret.Destroy();
-		SetOwner(None);
-	}
-	Super.Destroyed();		
+    turret = AutoTurret(Owner);
+    if (turret != None)
+    {
+        turret.gun = None;
+        turret.Destroy();
+        SetOwner(None);
+    }
+    Super.Destroyed();
 }
 
 function ResetComputerAlignment()
 {
-	local AutoTurret turret;
-	local ComputerSecurity TempComp;
-	local int ViewIndex;
+    local AutoTurret turret;
+    local ComputerSecurity TempComp;
+    local int ViewIndex;
 
-	turret = AutoTurret(Owner);
+    turret = AutoTurret(Owner);
 
-	if (( Level.NetMode != NM_Standalone ) && ( turret != None ))
-	{
-		//Find the associated computer
-		foreach AllActors(class'ComputerSecurity',TempComp)
-		{
-			for (ViewIndex = 0; ViewIndex < ArrayCount(TempComp.Views); ViewIndex++)
-			{
-				if (TempComp.Views[ViewIndex].turretTag == turret.Tag)
-				{
-					TempComp.Team = -1;
-				}
-			}
-		}
-	}
+    if (( Level.NetMode != NM_Standalone ) && ( turret != None ))
+    {
+        //Find the associated computer
+        foreach AllActors(class'ComputerSecurity',TempComp)
+        {
+            for (ViewIndex = 0; ViewIndex < ArrayCount(TempComp.Views); ViewIndex++)
+            {
+                if (TempComp.Views[ViewIndex].turretTag == turret.Tag)
+                {
+                    TempComp.Team = -1;
+                }
+            }
+        }
+    }
 }
 
 function HackAction(Actor Hacker, bool bHacked)
 {
    local ComputerSecurity CompOwner;
    local ComputerSecurity TempComp;
-	local AutoTurret turret;
+    local AutoTurret turret;
    local SecurityCamera Camera;
    local name CameraTag;
    local int ViewIndex;
 
-	Super.HackAction(Hacker, bHacked);
+    Super.HackAction(Hacker, bHacked);
 
-	turret = AutoTurret(Owner);
-	if (bHacked && (turret != None))
-	{
+    turret = AutoTurret(Owner);
+    if (bHacked && (turret != None))
+    {
       if (Level.NetMode == NM_Standalone)
       {
          if (!turret.bDisabled)
@@ -116,62 +116,62 @@ function HackAction(Actor Hacker, bool bHacked)
             }
          }
       }
-	}
+    }
 }
 
 function Tick(float deltaTime)
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	// As a client, it was possible for the turret to become irrelevant to you while the gun remained relevant
-	if  ((Level.NetMode != NM_Standalone) && (updateTime < Level.Timeseconds))
-	{
-		updateTime = Level.Timeseconds + 2.0;
-		turret = AutoTurret(Owner);
-		if ( turret != None )
-		{
-			if ( team != turret.team )
-				team = turret.team;
-			if (!( titleString ~= turret.titleString ))
-				titleString = turret.titleString;
-		}
-	}
+    // As a client, it was possible for the turret to become irrelevant to you while the gun remained relevant
+    if  ((Level.NetMode != NM_Standalone) && (updateTime < Level.Timeseconds))
+    {
+        updateTime = Level.Timeseconds + 2.0;
+        turret = AutoTurret(Owner);
+        if ( turret != None )
+        {
+            if ( team != turret.team )
+                team = turret.team;
+            if (!( titleString ~= turret.titleString ))
+                titleString = turret.titleString;
+        }
+    }
 }
 
 function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
 {
-	if (( Level.NetMode != NM_Standalone ) && (EventInstigator.IsA('DeusExPlayer')))
-		DeusExPlayer(EventInstigator).ServerConditionalNotifyMsg( DeusExPlayer(EventInstigator).MPMSG_TurretInv );
+    if (( Level.NetMode != NM_Standalone ) && (EventInstigator.IsA('DeusExPlayer')))
+        DeusExPlayer(EventInstigator).ServerConditionalNotifyMsg( DeusExPlayer(EventInstigator).MPMSG_TurretInv );
 
-	Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+    Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
 }
 
 function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-	{
-		bInvincible = True;
+    if ( Level.NetMode != NM_Standalone )
+    {
+        bInvincible = True;
       hackStrength = 0.6;
-	}
+    }
 }
 
 function PostBeginPlay()
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	turret = AutoTurret(Owner);
+    turret = AutoTurret(Owner);
 
-	if (( Level.NetMode != NM_Standalone ) && ( turret != None ))
-	{
-		team = turret.team;
-		titleString = turret.titleString;
-	}
+    if (( Level.NetMode != NM_Standalone ) && ( turret != None ))
+    {
+        team = turret.team;
+        titleString = turret.titleString;
+    }
 }
 
 defaultproperties

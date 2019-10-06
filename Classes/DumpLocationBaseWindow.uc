@@ -14,14 +14,14 @@ var Bool bSaveDumpLocation;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	dumpLoc = CreateDumpLoc();
+    dumpLoc = CreateDumpLoc();
 
-	// Create the controls
-	CreateControls();
+    // Create the controls
+    CreateControls();
 
-	EnableButtons();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -30,8 +30,8 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	if (!bSaveDumpLocation)
-		DestroyDumpLoc();
+    if (!bSaveDumpLocation)
+        DestroyDumpLoc();
 }
 
 // ----------------------------------------------------------------------
@@ -59,16 +59,16 @@ function EnableButtons()
 
 function DumpLocation CreateDumpLoc()
 {
-	local DumpLocation newDumpLoc;
+    local DumpLocation newDumpLoc;
 
-	if (player != None)
-	{
-		// Create our DumpLocation object
-		newDumpLoc = player.CreateDumpLocationObject();
-		newDumpLoc.SetPlayer(player);
-	}
+    if (player != None)
+    {
+        // Create our DumpLocation object
+        newDumpLoc = player.CreateDumpLocationObject();
+        newDumpLoc.SetPlayer(player);
+    }
 
-	return newDumpLoc;
+    return newDumpLoc;
 }
 
 // ----------------------------------------------------------------------
@@ -77,11 +77,11 @@ function DumpLocation CreateDumpLoc()
 
 function DestroyDumpLoc()
 {
-	if (dumpLoc != None)
-	{
-		CriticalDelete(dumpLoc);
-		dumpLoc = None;
-	}
+    if (dumpLoc != None)
+    {
+        CriticalDelete(dumpLoc);
+        dumpLoc = None;
+    }
 }
 
 // ----------------------------------------------------------------------

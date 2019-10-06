@@ -5,24 +5,24 @@ class Sodacan extends DeusExPickup;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.HealPlayer(2, False);
+        Super.BeginState();
 
-		PlaySound(sound'MaleBurp');
-		UseOnce();
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+            player.HealPlayer(2, False);
+
+        PlaySound(sound'MaleBurp');
+        UseOnce();
+    }
 Begin:
 }
 

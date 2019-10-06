@@ -23,10 +23,10 @@ var MenuUIChoice currentChoice;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateChoices();
-	LoadSettings();
+    CreateChoices();
+    LoadSettings();
 }
 
 // ----------------------------------------------------------------------
@@ -35,19 +35,19 @@ event InitWindow()
 
 function CreateChoices()
 {
-	local int choiceIndex;
-	local MenuUIChoice newChoice;
+    local int choiceIndex;
+    local MenuUIChoice newChoice;
 
-	// Loop through the Menu Choices and create the appropriate buttons
-	for(choiceIndex=0; choiceIndex<arrayCount(choices); choiceIndex++)
-	{
-		if (choices[choiceIndex] != None)
-		{
-			newChoice = MenuUIChoice(winClient.NewChild(choices[choiceIndex]));
-			newChoice.SetPos(choiceStartX, choiceStartY + (choiceCount * choiceVerticalGap) - newChoice.buttonVerticalOffset);
-			choiceCount++;
-		}
-	}
+    // Loop through the Menu Choices and create the appropriate buttons
+    for(choiceIndex=0; choiceIndex<arrayCount(choices); choiceIndex++)
+    {
+        if (choices[choiceIndex] != None)
+        {
+            newChoice = MenuUIChoice(winClient.NewChild(choices[choiceIndex]));
+            newChoice.SetPos(choiceStartX, choiceStartY + (choiceCount * choiceVerticalGap) - newChoice.buttonVerticalOffset);
+            choiceCount++;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -56,24 +56,24 @@ function CreateChoices()
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	local MenuUIChoice choice;
+    local MenuUIChoice choice;
 
-	if (enterWindow.IsA('MenuUIActionButtonWindow'))
-	{
-		// Check to see if the parent is our MenuUIChoice window
-		choice = MenuUIChoice(enterWindow.GetParent());
+    if (enterWindow.IsA('MenuUIActionButtonWindow'))
+    {
+        // Check to see if the parent is our MenuUIChoice window
+        choice = MenuUIChoice(enterWindow.GetParent());
 
-		if (choice != None)
-		{
-			currentChoice = choice;
+        if (choice != None)
+        {
+            currentChoice = choice;
 
-			if ((winHelp != None) && (currentChoice.helpText != ""))
-			{
-				winHelp.Show();
-				winHelp.SetText(currentChoice.helpText);
-			}
-		}
-	}
+            if ((winHelp != None) && (currentChoice.helpText != ""))
+            {
+                winHelp.Show();
+                winHelp.SetText(currentChoice.helpText);
+            }
+        }
+    }
 }
 
 
@@ -83,10 +83,10 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	if ((winHelp != None) && (!bHelpAlwaysOn))
-		winHelp.Hide();
+    if ((winHelp != None) && (!bHelpAlwaysOn))
+        winHelp.Hide();
 
-	currentChoice = None;
+    currentChoice = None;
 }
 
 // ----------------------------------------------------------------------
@@ -95,16 +95,16 @@ event FocusLeftDescendant(Window leaveWindow)
 
 function LoadSettings()
 {
-	local Window btnChoice;
+    local Window btnChoice;
 
-	btnChoice = winClient.GetTopChild();
-	while(btnChoice != None)
-	{
-		if (btnChoice.IsA('MenuUIChoice'))
-			MenuUIChoice(btnChoice).LoadSetting();
+    btnChoice = winClient.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).LoadSetting();
 
-		btnChoice = btnChoice.GetLowerSibling();
-	}
+        btnChoice = btnChoice.GetLowerSibling();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -113,18 +113,18 @@ function LoadSettings()
 
 function SaveSettings()
 {
-	local Window btnChoice;
+    local Window btnChoice;
 
-	btnChoice = winClient.GetTopChild();
-	while(btnChoice != None)
-	{
-		if (btnChoice.IsA('MenuUIChoice'))
-			MenuUIChoice(btnChoice).SaveSetting();
+    btnChoice = winClient.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).SaveSetting();
 
-		btnChoice = btnChoice.GetLowerSibling();
-	}
+        btnChoice = btnChoice.GetLowerSibling();
+    }
 
-	Super.SaveSettings();
+    Super.SaveSettings();
 }
 
 // ----------------------------------------------------------------------
@@ -133,18 +133,18 @@ function SaveSettings()
 
 function CancelScreen()
 {
-	local Window btnChoice;
+    local Window btnChoice;
 
-	btnChoice = winClient.GetTopChild();
-	while(btnChoice != None)
-	{
-		if (btnChoice.IsA('MenuUIChoice'))
-			MenuUIChoice(btnChoice).CancelSetting();
+    btnChoice = winClient.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).CancelSetting();
 
-		btnChoice = btnChoice.GetLowerSibling();
-	}
+        btnChoice = btnChoice.GetLowerSibling();
+    }
 
-	Super.CancelScreen();
+    Super.CancelScreen();
 }
 
 // ----------------------------------------------------------------------
@@ -153,16 +153,16 @@ function CancelScreen()
 
 function ResetToDefaults()
 {
-	local Window btnChoice;
+    local Window btnChoice;
 
-	btnChoice = winClient.GetTopChild();
-	while(btnChoice != None)
-	{
-		if (btnChoice.IsA('MenuUIChoice'))
-			MenuUIChoice(btnChoice).ResetToDefault();
+    btnChoice = winClient.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).ResetToDefault();
 
-		btnChoice = btnChoice.GetLowerSibling();
-	}
+        btnChoice = btnChoice.GetLowerSibling();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -173,42 +173,42 @@ function ResetToDefaults()
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
-	bHandled = True;
+    local bool bHandled;
+    bHandled = True;
 
-	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
-		return False;
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
+        return False;
 
-	switch( key ) 
-	{	
-		// If a MenuUIChoice has focus, cycle to previous choice
-		case IK_Left:
-			if (currentChoice != None)
-			{
-				bHandled = True;
-				PlaySound(Sound'Menu_Press', 0.25); 
-				currentChoice.CyclePreviousValue();
-			}
-			break;
+    switch( key )
+    {
+        // If a MenuUIChoice has focus, cycle to previous choice
+        case IK_Left:
+            if (currentChoice != None)
+            {
+                bHandled = True;
+                PlaySound(Sound'Menu_Press', 0.25);
+                currentChoice.CyclePreviousValue();
+            }
+            break;
 
-		// If a MenuEnumButton has focus, cycle to next choice
-		case IK_Right:
-			if (currentChoice != None)
-			{
-				bHandled = True;
-				PlaySound(Sound'Menu_Press', 0.25); 
-				currentChoice.CycleNextValue();
-			}
-			break;
+        // If a MenuEnumButton has focus, cycle to next choice
+        case IK_Right:
+            if (currentChoice != None)
+            {
+                bHandled = True;
+                PlaySound(Sound'Menu_Press', 0.25);
+                currentChoice.CycleNextValue();
+            }
+            break;
 
-		default:
-			bHandled = False;
-	}
+        default:
+            bHandled = False;
+    }
 
-	if (!bHandled)
-		return Super.VirtualKeyPressed(key, bRepeat);
-	else
-		return bHandled;
+    if (!bHandled)
+        return Super.VirtualKeyPressed(key, bRepeat);
+    else
+        return bHandled;
 }
 
 // ----------------------------------------------------------------------

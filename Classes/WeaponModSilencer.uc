@@ -11,8 +11,8 @@ class WeaponModSilencer extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		weapon.bHasSilencer = True;
+    if (weapon != None)
+        weapon.bHasSilencer = True;
 }
 
 // ----------------------------------------------------------------------
@@ -21,10 +21,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveSilencer && !weapon.bHasSilencer);
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveSilencer && !weapon.bHasSilencer);
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

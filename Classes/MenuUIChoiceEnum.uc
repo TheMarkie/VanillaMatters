@@ -23,9 +23,9 @@ var int    defaultInfoPosX;
 
 event InitWindow()
 {
-	CreateInfoButton();
+    CreateInfoButton();
 
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -37,15 +37,15 @@ event InitWindow()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	if (buttonPressed == btnInfo)
-	{
-		CycleNextValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
+    if (buttonPressed == btnInfo)
+    {
+        CycleNextValue();
+        return True;
+    }
+    else
+    {
+        return Super.ButtonActivated(buttonPressed);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -54,20 +54,20 @@ function bool ButtonActivated( Window buttonPressed )
 
 function CycleNextValue()
 {
-	local int newValue;
+    local int newValue;
 
-	// Cycle to the next value, but make sure we don't exceed the 
-	// bounds of the enumText array.  If we do, start back at the 
-	// bottom.
+    // Cycle to the next value, but make sure we don't exceed the
+    // bounds of the enumText array.  If we do, start back at the
+    // bottom.
 
-	newValue = GetValue() + 1;
+    newValue = GetValue() + 1;
 
-	if (newValue == arrayCount(enumText))
-		newValue = 0;
-	else if (enumText[newValue] == "")
-		newValue = 0;
+    if (newValue == arrayCount(enumText))
+        newValue = 0;
+    else if (enumText[newValue] == "")
+        newValue = 0;
 
-	SetValue(newValue);
+    SetValue(newValue);
 }
 
 // ----------------------------------------------------------------------
@@ -76,23 +76,23 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	local int newValue;
+    local int newValue;
 
-	// Cycle to the next value, but make sure we don't exceed the 
-	// bounds of the enumText array.  If we do, start back at the 
-	// bottom.
+    // Cycle to the next value, but make sure we don't exceed the
+    // bounds of the enumText array.  If we do, start back at the
+    // bottom.
 
-	newValue = GetValue() - 1;
+    newValue = GetValue() - 1;
 
-	if (newValue < 0)
-	{
-		newValue = arrayCount(enumText) - 1;
+    if (newValue < 0)
+    {
+        newValue = arrayCount(enumText) - 1;
 
-		while((enumText[newValue] == "") && (newValue > 0))
-			newValue--;	
-	}
+        while((enumText[newValue] == "") && (newValue > 0))
+            newValue--;
+    }
 
-	SetValue(newValue);
+    SetValue(newValue);
 }
 
 // ----------------------------------------------------------------------
@@ -101,11 +101,11 @@ function CyclePreviousValue()
 
 function CreateInfoButton()
 {
-	btnInfo = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
+    btnInfo = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
 
-	btnInfo.SetSelectability(False);
-	btnInfo.SetSize(defaultInfoWidth, 19);
-	btnInfo.SetPos(defaultInfoPosX, 0);
+    btnInfo.SetSelectability(False);
+    btnInfo.SetSize(defaultInfoWidth, 19);
+    btnInfo.SetPos(defaultInfoPosX, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -114,7 +114,7 @@ function CreateInfoButton()
 
 function UpdateInfoButton()
 {
-	btnInfo.SetButtonText(enumText[currentValue]);
+    btnInfo.SetButtonText(enumText[currentValue]);
 }
 
 // ----------------------------------------------------------------------
@@ -123,8 +123,8 @@ function UpdateInfoButton()
 
 function SetValue(int newValue)
 {
-	currentValue = newValue;
-	UpdateInfoButton();
+    currentValue = newValue;
+    UpdateInfoButton();
 }
 
 // ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ function SetValue(int newValue)
 
 function float GetValue()
 {
-	return currentValue;
+    return currentValue;
 }
 
 // ----------------------------------------------------------------------
@@ -142,10 +142,10 @@ function float GetValue()
 
 function LoadSetting()
 {
-	if (configSetting != "")
-		SetValue(int(player.ConsoleCommand("get " $ configSetting)));
-	else
-		ResetToDefault();
+    if (configSetting != "")
+        SetValue(int(player.ConsoleCommand("get " $ configSetting)));
+    else
+        ResetToDefault();
 }
 
 // ----------------------------------------------------------------------
@@ -154,14 +154,14 @@ function LoadSetting()
 
 function LoadSettingBool()
 {
-	local String boolString;
+    local String boolString;
 
-	boolString = player.ConsoleCommand("get " $ configSetting);
+    boolString = player.ConsoleCommand("get " $ configSetting);
 
-	if (boolString == "True")
-		setValue(1);
-	else
-		setValue(0);
+    if (boolString == "True")
+        setValue(1);
+    else
+        setValue(0);
 }
 
 // ----------------------------------------------------------------------
@@ -170,8 +170,8 @@ function LoadSettingBool()
 
 function SaveSetting()
 {
-	if (configSetting != "")
-		player.ConsoleCommand("set " $ configSetting $ " " $ GetValue());
+    if (configSetting != "")
+        player.ConsoleCommand("set " $ configSetting $ " " $ GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -180,7 +180,7 @@ function SaveSetting()
 
 function SaveSettingBool()
 {
-	player.ConsoleCommand("set " $ configSetting $ " " $ Bool(GetValue()));
+    player.ConsoleCommand("set " $ configSetting $ " " $ Bool(GetValue()));
 }
 
 // ----------------------------------------------------------------------
@@ -188,11 +188,11 @@ function SaveSettingBool()
 
 function ResetToDefault()
 {
-	if (configSetting != "")
-	{
-		player.ConsoleCommand("set " $ configSetting $ " " $ defaultValue);
-		LoadSetting();
-	}
+    if (configSetting != "")
+    {
+        player.ConsoleCommand("set " $ configSetting $ " " $ defaultValue);
+        LoadSetting();
+    }
 }
 
 // ----------------------------------------------------------------------

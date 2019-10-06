@@ -9,23 +9,23 @@ var float time;
 
 function BeginPlay()
 {
-	// Gore check
-	if (Level.Game.bLowGore || Level.Game.bVeryLowGore)
-	{
-		Destroy();
-		return;
-	}
-	Super.BeginPlay();
+    // Gore check
+    if (Level.Game.bLowGore || Level.Game.bVeryLowGore)
+    {
+        Destroy();
+        return;
+    }
+    Super.BeginPlay();
 }
 
 function Tick(float deltaTime)
 {
-	time += deltaTime;
-	if (time <= spreadTime)
-	{
-		DrawScale = maxDrawScale * time / spreadTime;
-		ReattachDecal(vect(0.1,0.1,0));
-	}
+    time += deltaTime;
+    if (time <= spreadTime)
+    {
+        DrawScale = maxDrawScale * time / spreadTime;
+        ReattachDecal(vect(0.1,0.1,0));
+    }
 }
 
 defaultproperties

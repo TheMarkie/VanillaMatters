@@ -15,11 +15,11 @@ var Int textureCols;
 
 function SetTextures(Texture newPictureTextures[6], int newTextureCols, int newTextureRows)
 {
-	textureRows = newTextureRows;
-	textureCols = newTextureCols;
+    textureRows = newTextureRows;
+    textureCols = newTextureCols;
 
-	for(textureIndex=0; textureIndex<arrayCount(pictureTextures); textureIndex++)
-		pictureTextures[textureIndex] = newPictureTextures[textureIndex];
+    for(textureIndex=0; textureIndex<arrayCount(pictureTextures); textureIndex++)
+        pictureTextures[textureIndex] = newPictureTextures[textureIndex];
 }
 
 // ----------------------------------------------------------------------
@@ -27,20 +27,20 @@ function SetTextures(Texture newPictureTextures[6], int newTextureCols, int newT
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw window background
-	gc.SetStyle(DSTY_Masked);
+{
+    // Draw window background
+    gc.SetStyle(DSTY_Masked);
 
-	textureIndex = 0;
+    textureIndex = 0;
 
-	for(rowIndex=0; rowIndex<textureRows; rowIndex++)
-	{
-		for(colIndex=0; colIndex<textureCols; colIndex++)
-		{
-			gc.DrawIcon(colIndex * 256, rowIndex * 256, pictureTextures[textureIndex]);
-			textureIndex++;
-		}
-	}
+    for(rowIndex=0; rowIndex<textureRows; rowIndex++)
+    {
+        for(colIndex=0; colIndex<textureCols; colIndex++)
+        {
+            gc.DrawIcon(colIndex * 256, rowIndex * 256, pictureTextures[textureIndex]);
+            textureIndex++;
+        }
+    }
 }
 
 defaultproperties

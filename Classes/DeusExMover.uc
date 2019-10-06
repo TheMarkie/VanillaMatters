@@ -3,68 +3,68 @@
 //=============================================================================
 class DeusExMover extends Mover;
 
-var() bool 				bOneWay;				// this door can only be opened from one side
-var() bool 				bLocked;				// this door is locked
-var() bool 				bPickable;				// this lock can be picked
-var() float 			lockStrength;			// "toughness" of the lock on this door - 0.0 is easy, 1.0 is hard
+var() bool              bOneWay;                // this door can only be opened from one side
+var() bool              bLocked;                // this door is locked
+var() bool              bPickable;              // this lock can be picked
+var() float             lockStrength;           // "toughness" of the lock on this door - 0.0 is easy, 1.0 is hard
 var() float          initiallockStrength; // for resetting lock, initial lock strength of door.
 var() bool           bInitialLocked;      // for resetting lock
-var() bool 				bBreakable;				// this door can be destroyed
-var() float				doorStrength;			// "toughness" of this door - 0.0 is weak, 1.0 is strong
-var() name				KeyIDNeeded;			// key ID code to open the door
-var() bool				bHighlight;				// should this door highlight when focused?
-var() bool				bFrobbable;				// this door can be frobbed
+var() bool              bBreakable;             // this door can be destroyed
+var() float             doorStrength;           // "toughness" of this door - 0.0 is weak, 1.0 is strong
+var() name              KeyIDNeeded;            // key ID code to open the door
+var() bool              bHighlight;             // should this door highlight when focused?
+var() bool              bFrobbable;             // this door can be frobbed
 
-var bool				bPicking;				// a lockpick is currently being used
-var float				pickValue;				// how much this lockpick is currently picking
-var float				pickTime;				// how much time it takes to use a single lockpick
-var int					numPicks;				// how many times to reduce hack strength
+var bool                bPicking;               // a lockpick is currently being used
+var float               pickValue;              // how much this lockpick is currently picking
+var float               pickTime;               // how much time it takes to use a single lockpick
+var int                 numPicks;               // how many times to reduce hack strength
 var float            TicksSinceLastPick; //num ticks done since last pickstrength update(includes partials)
 var float            TicksPerPick;       // num ticks needed for a hackstrength update (includes partials)
-var float			 LastTickTime;		 // Time at which last tick occurred.
+var float            LastTickTime;       // Time at which last tick occurred.
 
-var DeusExPlayer		pickPlayer;				// the player that is picking
-var Lockpick			curPick;				// the lockpick that is being used
+var DeusExPlayer        pickPlayer;             // the player that is picking
+var Lockpick            curPick;                // the lockpick that is being used
 
-var() int 				minDamageThreshold;		// damage below this amount doesn't count
-var bool				bDestroyed;				// has this mover already been destroyed?
+var() int               minDamageThreshold;     // damage below this amount doesn't count
+var bool                bDestroyed;             // has this mover already been destroyed?
 
-var() int				NumFragments;			// number of fragments to spew on destroy
-var() float				FragmentScale;			// scale of fragments
-var() int				FragmentSpread;			// distance fragments will be thrown
-var() class<Fragment>	FragmentClass;			// which fragment
-var() texture			FragmentTexture;		// what texture to use on fragments
-var() bool				bFragmentTranslucent;	// are these fragments translucent?
-var() bool				bFragmentUnlit;			// are these fragments unlit?
-var() sound				ExplodeSound1;			// small explosion sound
-var() sound				ExplodeSound2;			// large explosion sound
-var() bool				bDrawExplosion;			// should we draw an explosion?
-var() bool				bIsDoor;				// is this mover an actual door?
+var() int               NumFragments;           // number of fragments to spew on destroy
+var() float             FragmentScale;          // scale of fragments
+var() int               FragmentSpread;         // distance fragments will be thrown
+var() class<Fragment>   FragmentClass;          // which fragment
+var() texture           FragmentTexture;        // what texture to use on fragments
+var() bool              bFragmentTranslucent;   // are these fragments translucent?
+var() bool              bFragmentUnlit;         // are these fragments unlit?
+var() sound             ExplodeSound1;          // small explosion sound
+var() sound             ExplodeSound2;          // large explosion sound
+var() bool              bDrawExplosion;         // should we draw an explosion?
+var() bool              bIsDoor;                // is this mover an actual door?
 
 var() float          TimeSinceReset;   // how long since we relocked it
 var() float          TimeToReset;      // how long between relocks
 
-var localized string	msgKeyLocked;			// message when key locked door
-var localized string	msgKeyUnlocked;			// message when key unlocked door
-var localized string	msgLockpickSuccess;		// message when lock is picked
-var localized string	msgOneWayFail;			// message when one-way door can't be opened
-var localized string	msgLocked;				// message when the door is locked
-var localized string	msgPicking;				// message when the door is being picked
-var localized string	msgAlreadyUnlocked;		// message when the door is already unlocked
-var localized string	msgNoNanoKey;			// message when the player doesn't have the right nanokey
+var localized string    msgKeyLocked;           // message when key locked door
+var localized string    msgKeyUnlocked;         // message when key unlocked door
+var localized string    msgLockpickSuccess;     // message when lock is picked
+var localized string    msgOneWayFail;          // message when one-way door can't be opened
+var localized string    msgLocked;              // message when the door is locked
+var localized string    msgPicking;             // message when the door is being picked
+var localized string    msgAlreadyUnlocked;     // message when the door is already unlocked
+var localized string    msgNoNanoKey;           // message when the player doesn't have the right nanokey
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// keep these within limits
-	lockStrength = FClamp(lockStrength, 0.0, 1.0);
-	doorStrength = FClamp(doorStrength, 0.0, 1.0);
+    // keep these within limits
+    lockStrength = FClamp(lockStrength, 0.0, 1.0);
+    doorStrength = FClamp(doorStrength, 0.0, 1.0);
 
-	if (!bPickable)
-		lockStrength = 1.0;
-	if (!bBreakable)
-		doorStrength = 1.0;
+    if (!bPickable)
+        lockStrength = 1.0;
+    if (!bBreakable)
+        doorStrength = 1.0;
 
    initiallockStrength = lockStrength;
    TimeSinceReset = 0.0;
@@ -89,56 +89,56 @@ replication
 //
 function ComputeMovementArea(out vector center, out vector area)
 {
-	local int     i, j;
-	local float   mult;
-	local int     count;
-	local vector  box1, box2;
-	local vector  minVect;
-	local vector  maxVect;
-	local vector  newLocation;
-	local rotator newRotation;
+    local int     i, j;
+    local float   mult;
+    local int     count;
+    local vector  box1, box2;
+    local vector  minVect;
+    local vector  maxVect;
+    local vector  newLocation;
+    local rotator newRotation;
 
-	if (NumKeys > 0)  // better safe than silly
-	{
-		// Initialize our bounding box
-		GetBoundingBox(box1, box2, false, KeyPos[0]+BasePos, KeyRot[0]+BaseRot);
+    if (NumKeys > 0)  // better safe than silly
+    {
+        // Initialize our bounding box
+        GetBoundingBox(box1, box2, false, KeyPos[0]+BasePos, KeyRot[0]+BaseRot);
 
-		// Compute the total area of our bounding box
-		for (i=1; i<NumKeys; i++)
-		{
-			if (KeyRot[i] == KeyRot[i-1])
-				count = 1;
-			else
-				count = 3;
-			for (j=0; j<count; j++)
-			{
-				mult = float(j+1)/count;
-				newLocation = BasePos + (KeyPos[i]-KeyPos[i-1])*mult + KeyPos[i-1];
-				newRotation = BaseRot + (KeyRot[i]-KeyRot[i-1])*mult + KeyRot[i-1];
-				if (GetBoundingBox(minVect, maxVect, false, newLocation, newRotation))
-				{
-					// Expand the bounding box
-					box1.X = FMin(FMin(box1.X, maxVect.X), minVect.X);
-					box1.Y = FMin(FMin(box1.Y, maxVect.Y), minVect.Y);
-					box1.Z = FMin(FMin(box1.Z, maxVect.Z), minVect.Z);
-					box2.X = FMax(FMax(box2.X, maxVect.X), minVect.X);
-					box2.Y = FMax(FMax(box2.Y, maxVect.Y), minVect.Y);
-					box2.Z = FMax(FMax(box2.Z, maxVect.Z), minVect.Z);
-				}
-			}
-		}
-	}
+        // Compute the total area of our bounding box
+        for (i=1; i<NumKeys; i++)
+        {
+            if (KeyRot[i] == KeyRot[i-1])
+                count = 1;
+            else
+                count = 3;
+            for (j=0; j<count; j++)
+            {
+                mult = float(j+1)/count;
+                newLocation = BasePos + (KeyPos[i]-KeyPos[i-1])*mult + KeyPos[i-1];
+                newRotation = BaseRot + (KeyRot[i]-KeyRot[i-1])*mult + KeyRot[i-1];
+                if (GetBoundingBox(minVect, maxVect, false, newLocation, newRotation))
+                {
+                    // Expand the bounding box
+                    box1.X = FMin(FMin(box1.X, maxVect.X), minVect.X);
+                    box1.Y = FMin(FMin(box1.Y, maxVect.Y), minVect.Y);
+                    box1.Z = FMin(FMin(box1.Z, maxVect.Z), minVect.Z);
+                    box2.X = FMax(FMax(box2.X, maxVect.X), minVect.X);
+                    box2.Y = FMax(FMax(box2.Y, maxVect.Y), minVect.Y);
+                    box2.Z = FMax(FMax(box2.Z, maxVect.Z), minVect.Z);
+                }
+            }
+        }
+    }
 
-	// Fallback
-	else
-	{
-		box1 = vect(0,0,0);
-		box2 = vect(0,0,0);
-	}
+    // Fallback
+    else
+    {
+        box1 = vect(0,0,0);
+        box2 = vect(0,0,0);
+    }
 
-	// Compute center/area of the bounding box and return
-	center = (box1+box2)/2;
-	area = box2 - center;
+    // Compute center/area of the bounding box and return
+    center = (box1+box2)/2;
+    area = box2 - center;
 
 }
 
@@ -147,28 +147,28 @@ function ComputeMovementArea(out vector center, out vector area)
 //
 function FinishNotify()
 {
-	local Pawn   curPawn;
-	local vector box1, box2;
-	local vector center, area;
-	local float  distX, distY, distZ;
-	local float  maxX, maxY, maxZ;
-	local float  dist;
-	local float  maxDist;
-	local vector tempVect;
-	local bool   bNotify;
+    local Pawn   curPawn;
+    local vector box1, box2;
+    local vector center, area;
+    local float  distX, distY, distZ;
+    local float  maxX, maxY, maxZ;
+    local float  dist;
+    local float  maxDist;
+    local vector tempVect;
+    local bool   bNotify;
 
-	Super.FinishNotify();
+    Super.FinishNotify();
 
-	if ((NumKeys > 0) && (MoverEncroachType == ME_IgnoreWhenEncroach))
-	{
-		GetBoundingBox(box1, box2, false, KeyPos[KeyNum]+BasePos, KeyRot[KeyNum]+BaseRot);
-		center  = (box1+box2)/2;
-		area    = box2 - center;
-		maxDist = VSize(area)+200;
+    if ((NumKeys > 0) && (MoverEncroachType == ME_IgnoreWhenEncroach))
+    {
+        GetBoundingBox(box1, box2, false, KeyPos[KeyNum]+BasePos, KeyRot[KeyNum]+BaseRot);
+        center  = (box1+box2)/2;
+        area    = box2 - center;
+        maxDist = VSize(area)+200;
       // XXXDEUS_EX AMSD Slow Pawn Iterator
-		//foreach RadiusActors(Class'Pawn', curPawn, maxDist)
+        //foreach RadiusActors(Class'Pawn', curPawn, maxDist)
       for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
-		{
+        {
          if ((CurPawn != None) && (VSize(CurPawn.Location - Location) < (MaxDist + CurPawn.CollisionRadius)))
          {
             bNotify = false;
@@ -197,8 +197,8 @@ function FinishNotify()
             if (bNotify)
                curPawn.EncroachedByMover(self);
          }
-		}
-	}
+        }
+    }
 }
 
 //
@@ -206,11 +206,11 @@ function FinishNotify()
 //
 function DropThings()
 {
-	local actor A;
+    local actor A;
 
-	// drop everything that is on us
-	foreach BasedActors(class'Actor', A)
-		A.SetPhysics(PHYS_Falling);
+    // drop everything that is on us
+    foreach BasedActors(class'Actor', A)
+        A.SetPhysics(PHYS_Falling);
 }
 
 //
@@ -218,99 +218,99 @@ function DropThings()
 //
 function BlowItUp(Pawn instigatedBy)
 {
-	local int i;
-	local Fragment frag;
-	local Actor A;
-	local DeusExDecal D;
-	local Vector spawnLoc;
-	local ExplosionLight light;
+    local int i;
+    local Fragment frag;
+    local Actor A;
+    local DeusExDecal D;
+    local Vector spawnLoc;
+    local ExplosionLight light;
 
-	// force the mover to stop
-	if (Leader != None)
-		Leader.MakeGroupStop();
+    // force the mover to stop
+    if (Leader != None)
+        Leader.MakeGroupStop();
 
-	Instigator = instigatedBy;
+    Instigator = instigatedBy;
 
-	// trigger our event
-	if (Event != '')
-		foreach AllActors(class'Actor', A, Event)
-			if (A != None)
-				A.Trigger(Self, instigatedBy);
+    // trigger our event
+    if (Event != '')
+        foreach AllActors(class'Actor', A, Event)
+            if (A != None)
+                A.Trigger(Self, instigatedBy);
 
-	// destroy all effects that are on us
-	foreach BasedActors(class'DeusExDecal', D)
-		D.Destroy();
+    // destroy all effects that are on us
+    foreach BasedActors(class'DeusExDecal', D)
+        D.Destroy();
 
-	DropThings();
+    DropThings();
 
-	// get the origin of the mover
-	spawnLoc = Location - (PrePivot >> Rotation);
+    // get the origin of the mover
+    spawnLoc = Location - (PrePivot >> Rotation);
 
-	// spawn some fragments and make a sound
-	for (i=0; i<NumFragments; i++)
-	{
-		frag = Spawn(FragmentClass,,, spawnLoc + FragmentSpread * VRand());
-		if (frag != None)
-		{
-			frag.Instigator = instigatedBy;
+    // spawn some fragments and make a sound
+    for (i=0; i<NumFragments; i++)
+    {
+        frag = Spawn(FragmentClass,,, spawnLoc + FragmentSpread * VRand());
+        if (frag != None)
+        {
+            frag.Instigator = instigatedBy;
 
-			// make the last fragment just drop down so we have something to attach the sound to
-			if (i == NumFragments - 1)
-				frag.Velocity = vect(0,0,0);
-			else
-				frag.CalcVelocity(VRand(), FragmentSpread);
+            // make the last fragment just drop down so we have something to attach the sound to
+            if (i == NumFragments - 1)
+                frag.Velocity = vect(0,0,0);
+            else
+                frag.CalcVelocity(VRand(), FragmentSpread);
 
-			frag.DrawScale = FragmentScale;
-			if (FragmentTexture != None)
-				frag.Skin = FragmentTexture;
-			if (bFragmentTranslucent)
-				frag.Style = STY_Translucent;
-			if (bFragmentUnlit)
-				frag.bUnlit = True;
-		}
-	}
+            frag.DrawScale = FragmentScale;
+            if (FragmentTexture != None)
+                frag.Skin = FragmentTexture;
+            if (bFragmentTranslucent)
+                frag.Style = STY_Translucent;
+            if (bFragmentUnlit)
+                frag.bUnlit = True;
+        }
+    }
 
-	// should we draw explosion effects?
-	if (bDrawExplosion)
-	{
-		light = Spawn(class'ExplosionLight',,, spawnLoc);
-		if (FragmentSpread < 64)
-		{
-			Spawn(class'ExplosionSmall',,, spawnLoc);
-			if (light != None)
-				light.size = 2;
-		}
-		else if (FragmentSpread < 128)
-		{
-			Spawn(class'ExplosionMedium',,, spawnLoc);
-			if (light != None)
-				light.size = 4;
-		}
-		else
-		{
-			Spawn(class'ExplosionLarge',,, spawnLoc);
-			if (light != None)
-				light.size = 8;
-		}
-	}
+    // should we draw explosion effects?
+    if (bDrawExplosion)
+    {
+        light = Spawn(class'ExplosionLight',,, spawnLoc);
+        if (FragmentSpread < 64)
+        {
+            Spawn(class'ExplosionSmall',,, spawnLoc);
+            if (light != None)
+                light.size = 2;
+        }
+        else if (FragmentSpread < 128)
+        {
+            Spawn(class'ExplosionMedium',,, spawnLoc);
+            if (light != None)
+                light.size = 4;
+        }
+        else
+        {
+            Spawn(class'ExplosionLarge',,, spawnLoc);
+            if (light != None)
+                light.size = 8;
+        }
+    }
 
-	// alert NPCs that I'm breaking
-	AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
+    // alert NPCs that I'm breaking
+    AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
 
-	MakeNoise(2.0);
-	if (frag != None)
-	{
-		if (NumFragments <= 5)
-			frag.PlaySound(ExplodeSound1, SLOT_None, 2.0,, FragmentSpread*256);
-		else
-			frag.PlaySound(ExplodeSound2, SLOT_None, 2.0,, FragmentSpread*256);
-	}
+    MakeNoise(2.0);
+    if (frag != None)
+    {
+        if (NumFragments <= 5)
+            frag.PlaySound(ExplodeSound1, SLOT_None, 2.0,, FragmentSpread*256);
+        else
+            frag.PlaySound(ExplodeSound2, SLOT_None, 2.0,, FragmentSpread*256);
+    }
 
    //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
    RemoteRole = ROLE_DumbProxy;
-	SetLocation(Location+vect(0,0,20000));		// move it out of the way
-	SetCollision(False, False, False);			// and make it non-colliding
-	bDestroyed = True;
+    SetLocation(Location+vect(0,0,20000));      // move it out of the way
+    SetCollision(False, False, False);          // and make it non-colliding
+    bDestroyed = True;
 }
 
 //
@@ -321,24 +321,24 @@ function BlowItUp(Pawn instigatedBy)
 
 singular function SupportActor(Actor standingActor)
 {
-	local float  zVelocity;
-	local float  baseMass;
-	local float  standingMass;
+    local float  zVelocity;
+    local float  baseMass;
+    local float  standingMass;
 
-	zVelocity = standingActor.Velocity.Z;
-	// We've been stomped!
-	if (zVelocity < -500)
-	{
-		standingMass = FMax(1, standingActor.Mass);
-		baseMass     = FMax(1, Mass);
-		TakeDamage((1 - standingMass/baseMass * zVelocity/30),
-		           standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
-	}
+    zVelocity = standingActor.Velocity.Z;
+    // We've been stomped!
+    if (zVelocity < -500)
+    {
+        standingMass = FMax(1, standingActor.Mass);
+        baseMass     = FMax(1, Mass);
+        TakeDamage((1 - standingMass/baseMass * zVelocity/30),
+                   standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
+    }
 
-	if (!bDestroyed)
-		standingActor.SetBase(self);
-	else
-		standingActor.SetPhysics(PHYS_Falling);
+    if (!bDestroyed)
+        standingActor.SetBase(self);
+    else
+        standingActor.SetPhysics(PHYS_Falling);
 }
 
 
@@ -347,47 +347,47 @@ singular function SupportActor(Actor standingActor)
 //
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
-	// Vanilla Matters
-	local DeusExPlayer player;
+    // Vanilla Matters
+    local DeusExPlayer player;
 
-	player = DeusExPlayer( instigatedBy );
+    player = DeusExPlayer( instigatedBy );
 
-	if (bDestroyed)
-		return;
+    if (bDestroyed)
+        return;
 
-	if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas'))
-		return;
+    if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas'))
+        return;
 
-	if ((damageType == 'Stunned') || (damageType == 'Radiation'))
-		return;
+    if ((damageType == 'Stunned') || (damageType == 'Radiation'))
+        return;
 
-	if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
-		return;
+    if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
+        return;
 
-	if (bBreakable)
-	{
-		// add up the damage
-		// if (Damage >= minDamageThreshold)
-		// 	doorStrength -= Damage * 0.01;
-//		else
-//			doorStrength -= Damage * 0.001;		// damage below the threshold does 1/10th the damage
+    if (bBreakable)
+    {
+        // add up the damage
+        // if (Damage >= minDamageThreshold)
+        //  doorStrength -= Damage * 0.01;
+//      else
+//          doorStrength -= Damage * 0.001;     // damage below the threshold does 1/10th the damage
 
-		// Vanilla Matters: Move the above down here so we can add in FP stuff.
-		if ( Damage >= minDamageThreshold ) {
-			doorStrength = doorStrength - ( Damage * 0.01 );
+        // Vanilla Matters: Move the above down here so we can add in FP stuff.
+        if ( Damage >= minDamageThreshold ) {
+            doorStrength = doorStrength - ( Damage * 0.01 );
 
-			// VM: Add FP rate for damage dealt. Caps at max doorStrength.
-			if ( player != None ) {
-				if ( player.FPSystem != none ) {
-					player.FPSystem.AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-				}
-			}
-		}
+            // VM: Add FP rate for damage dealt. Caps at max doorStrength.
+            if ( player != None ) {
+                if ( player.FPSystem != none ) {
+                    player.FPSystem.AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
+                }
+            }
+        }
 
-		doorStrength = FClamp(doorStrength, 0.0, 1.0);
-		if (doorStrength ~= 0.0)
-			BlowItUp(instigatedBy);
-	}
+        doorStrength = FClamp(doorStrength, 0.0, 1.0);
+        if (doorStrength ~= 0.0)
+            BlowItUp(instigatedBy);
+    }
 }
 
 //
@@ -395,19 +395,19 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 //
 function Timer()
 {
-	local DeusExMover M;
+    local DeusExMover M;
 
-	if (bPicking)
-	{
-		curPick.PlayUseAnim();
+    if (bPicking)
+    {
+        curPick.PlayUseAnim();
 
-	  // TicksSinceLastPick += (Level.TimeSeconds - LastTickTime) * 10;
-	  // LastTickTime = Level.TimeSeconds;
+      // TicksSinceLastPick += (Level.TimeSeconds - LastTickTime) * 10;
+      // LastTickTime = Level.TimeSeconds;
       //TicksSinceLastPick = TicksSinceLastPick + 1;
 
       // Vanilla Matters: Fix the infinite lockpick bug.
       TicksSinceLastPick = TicksSinceLastPick + ( LastTickTime * 10 );
-	  LastTickTime = 0;
+      LastTickTime = 0;
 
       //while (TicksSinceLastPick > TicksPerPick)
       // VM: It should check for remaining picks.
@@ -415,54 +415,54 @@ function Timer()
       {
          numPicks--;
          lockStrength -= 0.01;
-         TicksSinceLastPick = TicksSinceLastPick - TicksPerPick;      
+         TicksSinceLastPick = TicksSinceLastPick - TicksPerPick;
          lockStrength = FClamp(lockStrength, 0.0, 1.0);
 
-		// Vanilla Matters: Add in FP for lockpicking.
-		if ( pickPlayer.FPSystem != none ) {
-			pickPlayer.FPSystem.AddForwardPressure( pickPlayer.FPSystem.VM_fpUtility + pickPlayer.FPSystem.fpUtilityLBS );
-		}
+        // Vanilla Matters: Add in FP for lockpicking.
+        if ( pickPlayer.FPSystem != none ) {
+            pickPlayer.FPSystem.AddForwardPressure( pickPlayer.FPSystem.VM_fpUtility + pickPlayer.FPSystem.fpUtilityLBS );
+        }
       }
 
-		// pick all like-tagged movers at once (for double doors and such)
-		if ((Tag != '') && (Tag != 'DeusExMover'))
-			foreach AllActors(class'DeusExMover', M, Tag)
-				if (M != Self)
-					M.lockStrength = lockStrength;
+        // pick all like-tagged movers at once (for double doors and such)
+        if ((Tag != '') && (Tag != 'DeusExMover'))
+            foreach AllActors(class'DeusExMover', M, Tag)
+                if (M != Self)
+                    M.lockStrength = lockStrength;
 
-		// did we unlock it?
-		if (lockStrength ~= 0.0)
-		{
-			lockStrength = 0.0;
-			bLocked = False;
+        // did we unlock it?
+        if (lockStrength ~= 0.0)
+        {
+            lockStrength = 0.0;
+            bLocked = False;
          TimeSinceReset = 0.0;
 
-			// unlock all like-tagged movers at once (for double doors and such)
-			if ((Tag != '') && (Tag != 'DeusExMover'))
-				foreach AllActors(class'DeusExMover', M, Tag)
-					if (M != Self)
-					{
-						M.bLocked = False;
-						M.TimeSinceReset = 0;
-						M.lockStrength = 0.0;
-					}
+            // unlock all like-tagged movers at once (for double doors and such)
+            if ((Tag != '') && (Tag != 'DeusExMover'))
+                foreach AllActors(class'DeusExMover', M, Tag)
+                    if (M != Self)
+                    {
+                        M.bLocked = False;
+                        M.TimeSinceReset = 0;
+                        M.lockStrength = 0.0;
+                    }
 
-			pickPlayer.ClientMessage(msgLockpickSuccess);
-			StopPicking();
-		}
+            pickPlayer.ClientMessage(msgLockpickSuccess);
+            StopPicking();
+        }
 
-		// are we done with this pick?
-		else if (numPicks <= 0)
-			StopPicking();
+        // are we done with this pick?
+        else if (numPicks <= 0)
+            StopPicking();
 
-		// check to see if we've moved too far away from the door to continue
-		else if (pickPlayer.frobTarget != Self)
-			StopPicking();
+        // check to see if we've moved too far away from the door to continue
+        else if (pickPlayer.frobTarget != Self)
+            StopPicking();
 
-		// check to see if we've put the lockpick away
-		else if (pickPlayer.inHand != curPick)
-			StopPicking();
-	}
+        // check to see if we've put the lockpick away
+        else if (pickPlayer.inHand != curPick)
+            StopPicking();
+    }
 }
 
 //
@@ -479,19 +479,19 @@ function Tick(float deltaTime)
          lockStrength = initiallockStrength;
          TimeSinceReset = 0.0;
          if (lockStrength > 0)
-		 {
-			 //Force door closed and locked appropriately.
-			 DoClose();
-			 bLocked = bInitialLocked;
-		 }
+         {
+             //Force door closed and locked appropriately.
+             DoClose();
+             bLocked = bInitialLocked;
+         }
       }
    }
    // In multi, force it closed if locked.  Keep trying until it closes.
    if ((Level.NetMode != NM_Standalone) && (bLocked) && (KeyNum != 0))
-	   DoClose();
+       DoClose();
 
-	// Vanilla Matters: Make it use deltaTime instead of level time.
-	LastTickTime = LastTickTime + deltaTime;
+    // Vanilla Matters: Make it use deltaTime instead of level time.
+    LastTickTime = LastTickTime + deltaTime;
 
    Super.Tick(deltaTime);
 }
@@ -501,17 +501,17 @@ function Tick(float deltaTime)
 //
 function StopPicking()
 {
-	// alert NPCs that I'm not messing with stuff anymore
-	AIEndEvent('MegaFutz', EAITYPE_Visual);
-	bPicking = False;
-	if (curPick != None)
-	{
-		curPick.StopUseAnim();
-		curPick.bBeingUsed = False;
-		curPick.UseOnce();
-	}
-	curPick = None;
-	SetTimer(0.1, False);
+    // alert NPCs that I'm not messing with stuff anymore
+    AIEndEvent('MegaFutz', EAITYPE_Visual);
+    bPicking = False;
+    if (curPick != None)
+    {
+        curPick.StopUseAnim();
+        curPick.bBeingUsed = False;
+        curPick.UseOnce();
+    }
+    curPick = None;
+    SetTimer(0.1, False);
 }
 
 //
@@ -519,208 +519,208 @@ function StopPicking()
 //
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local Pawn P;
-	local DeusExPlayer Player;
-	local bool bOpenIt, bDone;
-	local string msg;
-	local Vector X, Y, Z;
-	local float dotp;
-	local DeusExMover M;
+    local Pawn P;
+    local DeusExPlayer Player;
+    local bool bOpenIt, bDone;
+    local string msg;
+    local Vector X, Y, Z;
+    local float dotp;
+    local DeusExMover M;
 
-	// if we shouldn't be frobbed, get out
-	if (!bFrobbable)
-		return;
+    // if we shouldn't be frobbed, get out
+    if (!bFrobbable)
+        return;
 
-	// if we are destroyed, don't do anything
-	if (bDestroyed)
-		return;
+    // if we are destroyed, don't do anything
+    if (bDestroyed)
+        return;
 
-	// make sure we frob our leader if we are a slave
-	if (bSlave)
-		if (Leader != None)
-			Leader.Frob(Frobber, frobWith);
+    // make sure we frob our leader if we are a slave
+    if (bSlave)
+        if (Leader != None)
+            Leader.Frob(Frobber, frobWith);
 
-	P = Pawn(Frobber);
-	Player = DeusExPlayer(P);
-	bOpenIt = False;
-	bDone = False;
-	msg = msgLocked;
+    P = Pawn(Frobber);
+    Player = DeusExPlayer(P);
+    bOpenIt = False;
+    bDone = False;
+    msg = msgLocked;
 
-	// make sure someone is trying to open the door
-	if (P == None)
-		return;
+    // make sure someone is trying to open the door
+    if (P == None)
+        return;
 
-	// ugly hack, so animals can't open doors
-	if (P.IsA('Animal'))
-		return;
+    // ugly hack, so animals can't open doors
+    if (P.IsA('Animal'))
+        return;
 
-	// Let any non-player pawn open any door for now
-	if (Player == None)
-	{
-		bOpenIt = True;
-		msg = "";
-		bDone = True;
-	}
+    // Let any non-player pawn open any door for now
+    if (Player == None)
+    {
+        bOpenIt = True;
+        msg = "";
+        bDone = True;
+    }
 
-	// If we are already trying to pick it, print a message
-	if (bPicking)
-	{
-		msg = msgPicking;
-		bDone = True;
-	}
+    // If we are already trying to pick it, print a message
+    if (bPicking)
+    {
+        msg = msgPicking;
+        bDone = True;
+    }
 
-	// If the door is not closed, it can always be closed no matter what
-	if ((KeyNum != 0) || (PrevKeyNum != 0))
-	{
-		bOpenIt = True;
-		msg = "";
-		bDone = True;
-	}
+    // If the door is not closed, it can always be closed no matter what
+    if ((KeyNum != 0) || (PrevKeyNum != 0))
+    {
+        bOpenIt = True;
+        msg = "";
+        bDone = True;
+    }
 
-	// check to see if this is a one-way door
-	if (!bDone && bOneWay)
-	{
-		GetAxes(Rotation, X, Y, Z);
-		dotp = (Location - Frobber.Location) dot X;
+    // check to see if this is a one-way door
+    if (!bDone && bOneWay)
+    {
+        GetAxes(Rotation, X, Y, Z);
+        dotp = (Location - Frobber.Location) dot X;
 
-		// if we're on the wrong side of the door, then don't open
-		if (dotp > 0.0)
-		{
-			bOpenIt = False;
-			msg = msgOneWayFail;
-			bDone = True;
-		}
-	}
+        // if we're on the wrong side of the door, then don't open
+        if (dotp > 0.0)
+        {
+            bOpenIt = False;
+            msg = msgOneWayFail;
+            bDone = True;
+        }
+    }
 
-	//
-	// If the door is locked, the player must do one of the following to open it
-	// without triggers or explosions:
-	// 1. Use the KeyIDNeeded 
-	// 2. Use the Lockpick and SkillLockpicking
-	//
-	if (!bDone)
-	{
-		// Get what's in the player's hand
-		if (frobWith != None)
-		{
-			// check for the use of lockpicks
-			if (bPickable && frobWith.IsA('Lockpick') && (Player.SkillSystem != None))
-			{
-				if (bLocked)
-				{
-					// alert NPCs that I'm messing with stuff
-					AIStartEvent('MegaFutz', EAITYPE_Visual);
+    //
+    // If the door is locked, the player must do one of the following to open it
+    // without triggers or explosions:
+    // 1. Use the KeyIDNeeded
+    // 2. Use the Lockpick and SkillLockpicking
+    //
+    if (!bDone)
+    {
+        // Get what's in the player's hand
+        if (frobWith != None)
+        {
+            // check for the use of lockpicks
+            if (bPickable && frobWith.IsA('Lockpick') && (Player.SkillSystem != None))
+            {
+                if (bLocked)
+                {
+                    // alert NPCs that I'm messing with stuff
+                    AIStartEvent('MegaFutz', EAITYPE_Visual);
 
-					pickValue = Player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking');
-					pickPlayer = Player;
-					curPick = LockPick(frobWith);
-					curPick.bBeingUsed = True;
-					curPick.PlayUseAnim();
-					bPicking = True;
+                    pickValue = Player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking');
+                    pickPlayer = Player;
+                    curPick = LockPick(frobWith);
+                    curPick.bBeingUsed = True;
+                    curPick.PlayUseAnim();
+                    bPicking = True;
                //DEUS_EX AMSD In multiplayer, slow it down further at low skill levels
                numPicks = PickValue * 100;
                if (Level.Netmode != NM_Standalone)
                   pickTime = default.pickTime / (pickValue * pickValue);
                TicksPerPick = (PickTime * 10.0) / numPicks;
-			   //LastTickTime = Level.TimeSeconds;
+               //LastTickTime = Level.TimeSeconds;
 
-			   // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
-			   LastTickTime = 0;
+               // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
+               LastTickTime = 0;
 
                TicksSinceLastPick = 0;
-					SetTimer(0.1, True);
-					msg = msgPicking;
-				}
-				else
-				{
-					msg = msgAlreadyUnlocked;
-				}
-			}
-			else if ((KeyIDNeeded != '') && frobWith.IsA('NanoKeyRing') && (lockStrength > 0.0))
-			{
-				// check for the correct key use
-				NanoKeyRing(frobWith).PlayUseAnim();
-				if (NanoKeyRing(frobWith).HasKey(KeyIDNeeded))
-				{
-					bLocked = !bLocked;		// toggle the lock state
-					TimeSinceReset = 0;
+                    SetTimer(0.1, True);
+                    msg = msgPicking;
+                }
+                else
+                {
+                    msg = msgAlreadyUnlocked;
+                }
+            }
+            else if ((KeyIDNeeded != '') && frobWith.IsA('NanoKeyRing') && (lockStrength > 0.0))
+            {
+                // check for the correct key use
+                NanoKeyRing(frobWith).PlayUseAnim();
+                if (NanoKeyRing(frobWith).HasKey(KeyIDNeeded))
+                {
+                    bLocked = !bLocked;     // toggle the lock state
+                    TimeSinceReset = 0;
 
-					// toggle the lock state for all like-tagged movers at once (for double doors and such)
-					if ((Tag != '') && (Tag != 'DeusExMover'))
-						foreach AllActors(class'DeusExMover', M, Tag)
-							if (M != Self)
-							{
-								M.bLocked = !M.bLocked;
-								M.TimeSinceReset = 0;
-							}
+                    // toggle the lock state for all like-tagged movers at once (for double doors and such)
+                    if ((Tag != '') && (Tag != 'DeusExMover'))
+                        foreach AllActors(class'DeusExMover', M, Tag)
+                            if (M != Self)
+                            {
+                                M.bLocked = !M.bLocked;
+                                M.TimeSinceReset = 0;
+                            }
 
-					bOpenIt = False;
-					if (bLocked)
-						msg = msgKeyLocked;
-					else
-						msg = msgKeyUnlocked;
-				}
-				else if (bLocked)
-				{
-					bOpenIt = False;
-					msg = msgNoNanoKey;
-				}
-				else
-				{
-					msg = msgAlreadyUnlocked;
-				}
-			}
-			else if (!bLocked)
-			{
-				bOpenIt = True;
-				msg = "";
-			}
-		}
-		else if (!bLocked)
-		{
-			bOpenIt = True;
-			msg = "";
-		}
-	}
+                    bOpenIt = False;
+                    if (bLocked)
+                        msg = msgKeyLocked;
+                    else
+                        msg = msgKeyUnlocked;
+                }
+                else if (bLocked)
+                {
+                    bOpenIt = False;
+                    msg = msgNoNanoKey;
+                }
+                else
+                {
+                    msg = msgAlreadyUnlocked;
+                }
+            }
+            else if (!bLocked)
+            {
+                bOpenIt = True;
+                msg = "";
+            }
+        }
+        else if (!bLocked)
+        {
+            bOpenIt = True;
+            msg = "";
+        }
+    }
 
-	// give the player a message
-	if ((Player != None) && (msg != ""))
-		Player.ClientMessage(msg);
+    // give the player a message
+    if ((Player != None) && (msg != ""))
+        Player.ClientMessage(msg);
 
-	// open it!
-	if (bOpenIt)
-	{
-		Super.Frob(Frobber, frobWith);
-		Trigger(Frobber, P);
+    // open it!
+    if (bOpenIt)
+    {
+        Super.Frob(Frobber, frobWith);
+        Trigger(Frobber, P);
 
-		// trigger all like-tagged movers at once (for double doors and such)
-		if ((Tag != '') && (Tag != 'DeusExMover'))
-			foreach AllActors(class'DeusExMover', M, Tag)
-				if (M != Self)
-					M.Trigger(Frobber, P);
-	}
+        // trigger all like-tagged movers at once (for double doors and such)
+        if ((Tag != '') && (Tag != 'DeusExMover'))
+            foreach AllActors(class'DeusExMover', M, Tag)
+                if (M != Self)
+                    M.Trigger(Frobber, P);
+    }
 }
 
 function DoOpen()
 {
-	local DeusExMover M;
-	if (Level.NetMode != NM_Standalone)
-	{
-		// In multiplayer, unlock doors that get opened.
-		// toggle the lock state for all like-tagged movers at once (for double doors and such)
-		bLocked = false;
-		TimeSinceReset = 0;
-		lockStrength = 0.0;
-		if ((Tag != '') && (Tag != 'DeusExMover'))
-			foreach AllActors(class'DeusExMover', M, Tag)
-			if (M != Self)
-			{
-				M.bLocked = false;
-				M.TimeSinceReset = 0;
-				M.lockStrength = 0;
-			}
-	}
-	Super.DoOpen();
+    local DeusExMover M;
+    if (Level.NetMode != NM_Standalone)
+    {
+        // In multiplayer, unlock doors that get opened.
+        // toggle the lock state for all like-tagged movers at once (for double doors and such)
+        bLocked = false;
+        TimeSinceReset = 0;
+        lockStrength = 0.0;
+        if ((Tag != '') && (Tag != 'DeusExMover'))
+            foreach AllActors(class'DeusExMover', M, Tag)
+            if (M != Self)
+            {
+                M.bLocked = false;
+                M.TimeSinceReset = 0;
+                M.lockStrength = 0;
+            }
+    }
+    Super.DoOpen();
 }
 
 //
@@ -728,38 +728,38 @@ function DoOpen()
 //
 state() TriggerOpenTimed
 {
-	function Trigger( actor Other, pawn EventInstigator )
-	{
-		if (!bDestroyed)
-			Super.Trigger(Other, EventInstigator);
-	}
+    function Trigger( actor Other, pawn EventInstigator )
+    {
+        if (!bDestroyed)
+            Super.Trigger(Other, EventInstigator);
+    }
 }
 
 state() TriggerToggle
 {
-	function Trigger( actor Other, pawn EventInstigator )
-	{
-		if (!bDestroyed)
-			Super.Trigger(Other, EventInstigator);
-	}
+    function Trigger( actor Other, pawn EventInstigator )
+    {
+        if (!bDestroyed)
+            Super.Trigger(Other, EventInstigator);
+    }
 }
 
 state() TriggerControl
 {
-	function Trigger( actor Other, pawn EventInstigator )
-	{
-		if (!bDestroyed)
-			Super.Trigger(Other, EventInstigator);
-	}
+    function Trigger( actor Other, pawn EventInstigator )
+    {
+        if (!bDestroyed)
+            Super.Trigger(Other, EventInstigator);
+    }
 }
 
 state() TriggerPound
 {
-	function Trigger( actor Other, pawn EventInstigator )
-	{
-		if (!bDestroyed)
-			Super.Trigger(Other, EventInstigator);
-	}
+    function Trigger( actor Other, pawn EventInstigator )
+    {
+        if (!bDestroyed)
+            Super.Trigger(Other, EventInstigator);
+    }
 }
 
 defaultproperties

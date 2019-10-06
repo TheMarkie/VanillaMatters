@@ -12,7 +12,7 @@ var localized String msgSecond;
 
 function LoadSetting()
 {
-	SetValue(player.GetLogTimeout());
+    SetValue(player.GetLogTimeout());
 }
 
 // ----------------------------------------------------------------------
@@ -21,7 +21,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.SetLogTimeout(GetValue());
+    player.SetLogTimeout(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -30,14 +30,14 @@ function SaveSetting()
 
 function SetEnumerators()
 {
-	local float timeOut;
-	local int enumIndex;
+    local float timeOut;
+    local int enumIndex;
 
-	enumIndex=0;
-	for(timeOut=1.0; timeOut<=10; timeOut+=0.5)
-	{
-		SetEnumeration(enumIndex++, Left(String(timeOut), Instr(String(timeOut), ".") + 2) $ msgSecond);
-	}
+    enumIndex=0;
+    for(timeOut=1.0; timeOut<=10; timeOut+=0.5)
+    {
+        SetEnumeration(enumIndex++, Left(String(timeOut), Instr(String(timeOut), ".") + 2) $ msgSecond);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ function SetEnumerators()
 
 function ResetToDefault()
 {
-	SetValue(defaultValue);
+    SetValue(defaultValue);
 }
 
 // ----------------------------------------------------------------------

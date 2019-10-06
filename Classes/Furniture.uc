@@ -2,7 +2,7 @@
 // Furniture.
 //=============================================================================
 class Furniture extends DeusExDecoration
-	abstract;
+    abstract;
 
 defaultproperties
 {

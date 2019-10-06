@@ -13,28 +13,28 @@ var float mpBlastRadius;
 
 simulated function DrawExplosionEffects(vector HitLocation, vector HitNormal)
 {
-	local ParticleGenerator gen;
+    local ParticleGenerator gen;
 
-	// create a particle generator shooting out plasma spheres
-	gen = Spawn(class'ParticleGenerator',,, HitLocation, Rotator(HitNormal));
-	if (gen != None)
-	{
+    // create a particle generator shooting out plasma spheres
+    gen = Spawn(class'ParticleGenerator',,, HitLocation, Rotator(HitNormal));
+    if (gen != None)
+    {
       gen.RemoteRole = ROLE_None;
-		gen.particleDrawScale = 1.0;
-		gen.checkTime = 0.10;
-		gen.frequency = 1.0;
-		gen.ejectSpeed = 200.0;
-		gen.bGravity = True;
-		gen.bRandomEject = True;
-		gen.particleLifeSpan = 0.75;
-		gen.particleTexture = Texture'Effects.Fire.Proj_PRifle';
-		gen.LifeSpan = 1.3;
-	}
+        gen.particleDrawScale = 1.0;
+        gen.checkTime = 0.10;
+        gen.frequency = 1.0;
+        gen.ejectSpeed = 200.0;
+        gen.bGravity = True;
+        gen.bRandomEject = True;
+        gen.particleLifeSpan = 0.75;
+        gen.particleTexture = Texture'Effects.Fire.Proj_PRifle';
+        gen.LifeSpan = 1.3;
+    }
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
    if ((Level.NetMode == NM_Standalone) || (Level.NetMode == NM_ListenServer))
       SpawnPlasmaEffects();
@@ -42,13 +42,13 @@ function PostBeginPlay()
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// Vanilla Matters: Fix plasma bolt damage being always MP.
-	if ( Level.NetMode != NM_Standalone ) {
-		Damage = mpDamage;
-		blastRadius = mpBlastRadius;
-	}
+    // Vanilla Matters: Fix plasma bolt damage being always MP.
+    if ( Level.NetMode != NM_Standalone ) {
+        Damage = mpDamage;
+        blastRadius = mpBlastRadius;
+    }
 }
 
 simulated function PostNetBeginPlay()
@@ -60,34 +60,34 @@ simulated function PostNetBeginPlay()
 // DEUS_EX AMSD Should not be called as server propagating to clients.
 simulated function SpawnPlasmaEffects()
 {
-	local Rotator rot;
+    local Rotator rot;
    rot = Rotation;
-	rot.Yaw -= 32768;
+    rot.Yaw -= 32768;
 
    pGen2 = Spawn(class'ParticleGenerator', Self,, Location, rot);
-	if (pGen2 != None)
-	{
+    if (pGen2 != None)
+    {
       pGen2.RemoteRole = ROLE_None;
-		pGen2.particleTexture = Texture'Effects.Fire.Proj_PRifle';
-		pGen2.particleDrawScale = 0.1;
-		pGen2.checkTime = 0.04;
-		pGen2.riseRate = 0.0;
-		pGen2.ejectSpeed = 100.0;
-		pGen2.particleLifeSpan = 0.5;
-		pGen2.bRandomEject = True;
-		pGen2.SetBase(Self);
-	}
-   
+        pGen2.particleTexture = Texture'Effects.Fire.Proj_PRifle';
+        pGen2.particleDrawScale = 0.1;
+        pGen2.checkTime = 0.04;
+        pGen2.riseRate = 0.0;
+        pGen2.ejectSpeed = 100.0;
+        pGen2.particleLifeSpan = 0.5;
+        pGen2.bRandomEject = True;
+        pGen2.SetBase(Self);
+    }
+
 }
 
 simulated function Destroyed()
 {
-	if (pGen1 != None)
-		pGen1.DelayedDestroy();
-	if (pGen2 != None)
-		pGen2.DelayedDestroy();
+    if (pGen1 != None)
+        pGen1.DelayedDestroy();
+    if (pGen2 != None)
+        pGen2.DelayedDestroy();
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 defaultproperties

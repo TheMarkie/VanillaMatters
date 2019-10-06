@@ -5,12 +5,12 @@ class RocketLAW extends Rocket;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if (( Level.NetMode != NM_Standalone ) && (Class == Class'RocketLAW'))
-	{
-		SoundRadius = 64;
-	}
+    if (( Level.NetMode != NM_Standalone ) && (Class == Class'RocketLAW'))
+    {
+        SoundRadius = 64;
+    }
 }
 
 defaultproperties

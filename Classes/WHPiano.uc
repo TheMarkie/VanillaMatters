@@ -7,27 +7,27 @@ var bool bUsing;
 
 function Timer()
 {
-	bUsing = False;
+    bUsing = False;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	local float rnd;
+    local float rnd;
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	if (bUsing)
-		return;
+    if (bUsing)
+        return;
 
-	SetTimer(2.0, False);
-	bUsing = True;
+    SetTimer(2.0, False);
+    bUsing = True;
 
-	rnd = FRand();
+    rnd = FRand();
 
-	if (rnd < 0.5)
-		PlaySound(sound'Piano1', SLOT_Misc,,, 256);
-	else
-		PlaySound(sound'Piano2', SLOT_Misc,,, 256);
+    if (rnd < 0.5)
+        PlaySound(sound'Piano1', SLOT_Misc,,, 256);
+    else
+        PlaySound(sound'Piano2', SLOT_Misc,,, 256);
 }
 
 defaultproperties

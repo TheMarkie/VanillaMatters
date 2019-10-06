@@ -5,8 +5,8 @@
 class MenuScreenJoinLan expands MenuScreenJoinGame;
 
 var DeusExLocalLink Link;
-var string						BeaconProduct;
-var int							ServerBeaconPort;
+var string                      BeaconProduct;
+var int                         ServerBeaconPort;
 
 // ----------------------------------------------------------------------
 // Query()
@@ -27,8 +27,8 @@ function Query()
 
 function QueryFinished(bool bSuccess, optional string ErrorMsg)
 {
-	Link.Destroy();
-	Link = None;
+    Link.Destroy();
+    Link = None;
 
    PingUnpingedServers();
 }
@@ -39,9 +39,9 @@ function QueryFinished(bool bSuccess, optional string ErrorMsg)
 
 function ShutdownLink()
 {
-	if(Link != None)
-		Link.Destroy();
-	Link = None;
+    if(Link != None)
+        Link.Destroy();
+    Link = None;
 }
 
 // ----------------------------------------------------------------------
@@ -57,25 +57,25 @@ function string GetExtraJoinOptions()
 // ----------------------------------------------------------------------
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case HostButton:
+    switch( buttonPressed )
+    {
+        case HostButton:
          ProcessMenuAction(MA_MenuScreen,Class'MenuScreenHostLan');
-			break;
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------

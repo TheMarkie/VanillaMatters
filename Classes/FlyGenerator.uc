@@ -5,10 +5,10 @@ class FlyGenerator extends PawnGenerator;
 
 function ZoneChange(ZoneInfo NewZone)
 {
-	Super.ZoneChange(NewZone);
+    Super.ZoneChange(NewZone);
 
-	if (NewZone.bWaterZone)
-		StopGenerator();
+    if (NewZone.bWaterZone)
+        StopGenerator();
 }
 
 defaultproperties

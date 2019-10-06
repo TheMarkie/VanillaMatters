@@ -7,9 +7,9 @@ class PersonaImageWindow expands PersonaBaseWindow;
 // Input system states.
 enum ENoteMode
 {
-	NM_Normal,		// Normal, not doing anything with notes
-	NM_PreAdd,		// About to add a note
-	NM_Adding		// Adding a note now
+    NM_Normal,      // Normal, not doing anything with notes
+    NM_PreAdd,      // About to add a note
+    NM_Adding       // Adding a note now
 };
 
 var DataVaultImage image;
@@ -35,40 +35,40 @@ var localized string NewNoteLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(imageSizeX, imageSizeY);
+    SetSize(imageSizeX, imageSizeY);
 
-	// Get a pointer to the root window
-	root = DeusExRootWindow(GetRootWindow());
+    // Get a pointer to the root window
+    root = DeusExRootWindow(GetRootWindow());
 }
 
 // ----------------------------------------------------------------------
 // DrawWindow()
 //
-// Draws all the image.  If no image available, then draws the text, 
+// Draws all the image.  If no image available, then draws the text,
 // "No Images Available" instead.
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
 {
-	if ( image == None )
-	{
-		gc.SetHorizontalAlignment(HALIGN_Center);
-		gc.SetVerticalAlignment(VALIGN_Center);
-		gc.SetFont(fontNoImages);
-		gc.SetTextColor(colTextNoImages);
-		gc.DrawText(0, 0, width, height, strNoImages);
-	}
-	else
-	{
-		gc.SetStyle(DSTY_Normal);
+    if ( image == None )
+    {
+        gc.SetHorizontalAlignment(HALIGN_Center);
+        gc.SetVerticalAlignment(VALIGN_Center);
+        gc.SetFont(fontNoImages);
+        gc.SetTextColor(colTextNoImages);
+        gc.DrawText(0, 0, width, height, strNoImages);
+    }
+    else
+    {
+        gc.SetStyle(DSTY_Normal);
 
-		gc.DrawTexture(  0,   0, 256, 256, 0, 0, image.imageTextures[0]);
-		gc.DrawTexture(256,   0, 144, 256, 0, 0, image.imageTextures[1]);
-		gc.DrawTexture(  0, 256, 256, 144, 0, 0, image.imageTextures[2]);
-		gc.DrawTexture(256, 256, 144, 144, 0, 0, image.imageTextures[3]);
-	}	
+        gc.DrawTexture(  0,   0, 256, 256, 0, 0, image.imageTextures[0]);
+        gc.DrawTexture(256,   0, 144, 256, 0, 0, image.imageTextures[1]);
+        gc.DrawTexture(  0, 256, 256, 144, 0, 0, image.imageTextures[2]);
+        gc.DrawTexture(256, 256, 144, 144, 0, 0, image.imageTextures[3]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -77,154 +77,154 @@ event DrawWindow(GC gc)
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-	// Ignore this even if we're deleting
-	if ( PersonaImageNoteWindow(enterWindow) != None ) 
-	{
-		if ( currentNoteWindow != None )
-			currentNoteWindow.SetNormalColors();
+    // Ignore this even if we're deleting
+    if ( PersonaImageNoteWindow(enterWindow) != None )
+    {
+        if ( currentNoteWindow != None )
+            currentNoteWindow.SetNormalColors();
 
-		currentNoteWindow = PersonaImageNoteWindow(enterWindow);
-	}
+        currentNoteWindow = PersonaImageNoteWindow(enterWindow);
+    }
 }
 
 // ----------------------------------------------------------------------
 // FocusLeftDescendant()
 //
-// Save the contents of the text window into the Notes window, 
+// Save the contents of the text window into the Notes window,
 // but only if the note has changed.
 // ----------------------------------------------------------------------
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	local PersonaImageNoteWindow noteWindow;
+    local PersonaImageNoteWindow noteWindow;
 
-	noteWindow = PersonaImageNoteWindow(leaveWindow);
+    noteWindow = PersonaImageNoteWindow(leaveWindow);
 
-	if ( noteWindow != None )
-		SaveNote(noteWindow);
+    if ( noteWindow != None )
+        SaveNote(noteWindow);
 }
 
 // ----------------------------------------------------------------------
 // MouseButtonReleased()
 //
-// If the user clicks the mouse button and we're in "Add Note Mode", 
+// If the user clicks the mouse button and we're in "Add Note Mode",
 // then create a new note window where the user clicks with the mouse.
 // ----------------------------------------------------------------------
 
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	local DataVaultImageNote imageNote;
-	local PersonaImageNoteWindow editNote;
-	local Bool bHandled;
-	local int clipX, clipY;
+    local DataVaultImageNote imageNote;
+    local PersonaImageNoteWindow editNote;
+    local Bool bHandled;
+    local int clipX, clipY;
 
-	bHandled = False;
+    bHandled = False;
 
-	// Get the hell out of here if there's no image
-	if (image == None)
-		return bHandled;
+    // Get the hell out of here if there's no image
+    if (image == None)
+        return bHandled;
 
-	switch( noteMode )
-	{
-		case NM_Normal:		
-			break;
+    switch( noteMode )
+    {
+        case NM_Normal:
+            break;
 
-		case NM_PreAdd:
-			// Create a new ImageNote, then add it to the list of notes
-			// for this image.
+        case NM_PreAdd:
+            // Create a new ImageNote, then add it to the list of notes
+            // for this image.
 
-			imageNote = player.CreateDataVaultImageNoteObject();
-			imageNote.posX = pointX;
-			imageNote.posY = pointY;
-			imageNote.noteText = NewNoteLabel;
-			image.AddNote(imageNote);	
+            imageNote = player.CreateDataVaultImageNoteObject();
+            imageNote.posX = pointX;
+            imageNote.posY = pointY;
+            imageNote.noteText = NewNoteLabel;
+            image.AddNote(imageNote);
 
-			// Now create an edit control that will be the visual representation 
-			// of this note.
+            // Now create an edit control that will be the visual representation
+            // of this note.
 
-			ClipWindow(GetParent()).GetChildPosition(clipX, clipY);
-			editNote = PersonaImageNoteWindow(NewChild(Class'PersonaImageNoteWindow'));
-			editNote.SetNote(imageNote);
-			ClipWindow(GetParent()).SetChildPosition(clipX, clipY);
+            ClipWindow(GetParent()).GetChildPosition(clipX, clipY);
+            editNote = PersonaImageNoteWindow(NewChild(Class'PersonaImageNoteWindow'));
+            editNote.SetNote(imageNote);
+            ClipWindow(GetParent()).SetChildPosition(clipX, clipY);
 
-			currentNoteWindow = editNote;
+            currentNoteWindow = editNote;
 
-			SetFocusWindow(editNote);
-			editNote.SetSelectedArea(0, Len(NewNoteLabel));
+            SetFocusWindow(editNote);
+            editNote.SetSelectedArea(0, Len(NewNoteLabel));
 
-			bHandled = True;
-			noteMode = NM_Adding;
-			break;
+            bHandled = True;
+            noteMode = NM_Adding;
+            break;
 
-		case NM_Adding:
-			break;
-	}
+        case NM_Adding:
+            break;
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
 // VirtualKeyPressed()
 //
-// If the user presses Escape while editing a note, save it and 
+// If the user presses Escape while editing a note, save it and
 // release the mouse.
 // ----------------------------------------------------------------------
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bHandled;
-	bHandled = False;
+    local bool bHandled;
+    bHandled = False;
 
-	switch( key ) 
-	{
-		case IK_Escape:
-			if ( noteMode == NM_PreAdd )
-			{
-				noteMode = NM_Normal;
-				bHandled = True;
-			}
-			else if ( noteMode == NM_Adding )
-			{
-				// Check to see if the note has changed.  If the 
-				// user didn't change the default text, then just
-				// ABORT!
-				if ((currentNoteWindow.GetText() != NewNoteLabel) && (currentNoteWindow.GetText() != ""))
-					SaveNote(currentNoteWindow);
-				else
-					DeleteNote();
+    switch( key )
+    {
+        case IK_Escape:
+            if ( noteMode == NM_PreAdd )
+            {
+                noteMode = NM_Normal;
+                bHandled = True;
+            }
+            else if ( noteMode == NM_Adding )
+            {
+                // Check to see if the note has changed.  If the
+                // user didn't change the default text, then just
+                // ABORT!
+                if ((currentNoteWindow.GetText() != NewNoteLabel) && (currentNoteWindow.GetText() != ""))
+                    SaveNote(currentNoteWindow);
+                else
+                    DeleteNote();
 
-				noteMode = NM_Normal;
-				bHandled = True;
-			}
-			break;
-	}
+                noteMode = NM_Normal;
+                bHandled = True;
+            }
+            break;
+    }
 
-	if ( !bHandled )
-		return Super.VirtualKeyPressed(key, bRepeat);
-	else
-		return bHandled;
+    if ( !bHandled )
+        return Super.VirtualKeyPressed(key, bRepeat);
+    else
+        return bHandled;
 }
 
 // ----------------------------------------------------------------------
 // SetImage()
-// 
+//
 // Sets the image associated with this window and resizes accordingly.
 // Then goes through all the notes and adds them as appopriate
 // ----------------------------------------------------------------------
 
 function SetImage(DataVaultImage newImage)
 {
-	image = newImage;
-	currentNoteWindow = None;
+    image = newImage;
+    currentNoteWindow = None;
 
-	// First nuke any existing note buttons
-	DeleteNoteWindows();
+    // First nuke any existing note buttons
+    DeleteNoteWindows();
 
-	if ( image != None )
-	{
-		// Create all the notes
-		CreateNotes();
-	}
+    if ( image != None )
+    {
+        // Create all the notes
+        CreateNotes();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -235,7 +235,7 @@ function SetImage(DataVaultImage newImage)
 
 function DataVaultImage GetImage()
 {
-	return image;
+    return image;
 }
 
 // ----------------------------------------------------------------------
@@ -247,43 +247,43 @@ function DataVaultImage GetImage()
 
 function CreateNotes()
 {
-	local DataVaultImageNote imageNote;
-	local PersonaImageNoteWindow editNote;
+    local DataVaultImageNote imageNote;
+    local PersonaImageNoteWindow editNote;
 
-	imageNote = image.firstNote;
+    imageNote = image.firstNote;
 
-	while( imageNote != None )
-	{
-		editNote = PersonaImageNoteWindow(NewChild(Class'PersonaImageNoteWindow'));
-		
-		editNote.SetNote(imageNote);
-		editNote.Show(bShowNotes);
+    while( imageNote != None )
+    {
+        editNote = PersonaImageNoteWindow(NewChild(Class'PersonaImageNoteWindow'));
 
-		imageNote = imageNote.nextNote;
-	}
+        editNote.SetNote(imageNote);
+        editNote.Show(bShowNotes);
+
+        imageNote = imageNote.nextNote;
+    }
 }
 
 // ----------------------------------------------------------------------
 // DeleteNoteWindows()
-// 
+//
 // Deletes any note edit windows
 // ----------------------------------------------------------------------
 
 function DeleteNoteWindows()
 {
-	local Window window;
-	local Window nextWindow;
+    local Window window;
+    local Window nextWindow;
 
-	window = GetTopChild();
-	while( window != None )
-	{
-		nextWindow = window.GetLowerSibling();
+    window = GetTopChild();
+    while( window != None )
+    {
+        nextWindow = window.GetLowerSibling();
 
-		if (PersonaImageNoteWindow(window) != None)
-			window.Destroy();
+        if (PersonaImageNoteWindow(window) != None)
+            window.Destroy();
 
-		window = nextWindow;
-	}
+        window = nextWindow;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -292,7 +292,7 @@ function DeleteNoteWindows()
 
 function Bool IsNoteSelected()
 {
-	return currentNoteWindow != None;	
+    return currentNoteWindow != None;
 }
 
 // ----------------------------------------------------------------------
@@ -301,14 +301,14 @@ function Bool IsNoteSelected()
 
 function SaveNote(PersonaImageNoteWindow noteWindow)
 {
-	local DataVaultImageNote imageNote;
+    local DataVaultImageNote imageNote;
 
-	if ( noteWindow.HasTextChanged() )
-	{	
-		imageNote = DataVaultImageNote(noteWindow.GetClientObject());
-		imageNote.noteText = noteWindow.GetText();
-	}
-}	
+    if ( noteWindow.HasTextChanged() )
+    {
+        imageNote = DataVaultImageNote(noteWindow.GetClientObject());
+        imageNote.noteText = noteWindow.GetText();
+    }
+}
 
 // ----------------------------------------------------------------------
 // DeleteNote()
@@ -318,12 +318,12 @@ function SaveNote(PersonaImageNoteWindow noteWindow)
 
 function DeleteNote()
 {
-	if ( currentNoteWindow != None )
-	{
-		image.DeleteNote(DataVaultImageNote(currentNoteWindow.GetClientObject()) );
-		currentNoteWindow.Destroy();
-		currentNoteWindow = None;
-	}
+    if ( currentNoteWindow != None )
+    {
+        image.DeleteNote(DataVaultImageNote(currentNoteWindow.GetClientObject()) );
+        currentNoteWindow.Destroy();
+        currentNoteWindow = None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -334,24 +334,24 @@ function DeleteNote()
 
 function ShowNotes(bool bNewShowNotes)
 {
-	local Window window;
-	local Window nextWindow;
+    local Window window;
+    local Window nextWindow;
 
-	bShowNotes = bNewShowNotes;
+    bShowNotes = bNewShowNotes;
 
-	if (image != None)
-	{
-		window = GetTopChild(False);
-		while( window != None )
-		{
-			nextWindow = window.GetLowerSibling(False);
+    if (image != None)
+    {
+        window = GetTopChild(False);
+        while( window != None )
+        {
+            nextWindow = window.GetLowerSibling(False);
 
-			if (PersonaImageNoteWindow(window) != None)
-				window.Show(bShowNotes);
+            if (PersonaImageNoteWindow(window) != None)
+                window.Show(bShowNotes);
 
-			window = nextWindow;
-		}
-	}
+            window = nextWindow;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -360,7 +360,7 @@ function ShowNotes(bool bNewShowNotes)
 
 function SetAddNoteMode(Bool bNewAddMode)
 {
-	noteMode = NM_PreAdd;
+    noteMode = NM_PreAdd;
 }
 
 // ----------------------------------------------------------------------

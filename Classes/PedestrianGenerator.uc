@@ -2,7 +2,7 @@
 // PedestrianGenerator.
 //=============================================================================
 class PedestrianGenerator extends PawnGenerator
-	abstract;
+    abstract;
 
 defaultproperties
 {

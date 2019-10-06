@@ -39,144 +39,144 @@ replication
 
 // Vanilla Matters: Gonna rewrite all that stuff above to optimize things and add new features.
 state Active {
-	function Timer() {
-		local Actor target;
-		local DeusExProjectile proj;
-		// local DeusExWeapon w;
+    function Timer() {
+        local Actor target;
+        local DeusExProjectile proj;
+        // local DeusExWeapon w;
 
-		local float cost;
-		local bool enoughEnergy;
-		local bool enoughDistance;
+        local float cost;
+        local bool enoughEnergy;
+        local bool enoughDistance;
 
-		// local Vector HitLocation, X, Y, Z;
-		// local ExplosionLight light;
-		// local SphereEffect sphere;
+        // local Vector HitLocation, X, Y, Z;
+        // local ExplosionLight light;
+        // local SphereEffect sphere;
 
-		if ( Level.NetMode != NM_Standalone ) {
-			defenseSoundTime = defenseSoundTime + 0.1;
+        if ( Level.NetMode != NM_Standalone ) {
+            defenseSoundTime = defenseSoundTime + 0.1;
 
-			if ( defenseSoundTime >= defenseSoundDelay ) {
-				Player.PlaySound( Sound'AugDefenseOn', SLOT_Interact, 1.0,, LevelValues[CurrentLevel] * 1.33, 0.75 );
-				defenseSoundTime = defenseSoundTime - defenseSoundDelay;
-			}
-		}
+            if ( defenseSoundTime >= defenseSoundDelay ) {
+                Player.PlaySound( Sound'AugDefenseOn', SLOT_Interact, 1.0,, LevelValues[CurrentLevel] * 1.33, 0.75 );
+                defenseSoundTime = defenseSoundTime - defenseSoundDelay;
+            }
+        }
 
-		target = FindNearestTarget();
+        target = FindNearestTarget();
 
-		if ( target != None ) {
-			proj = DeusExProjectile( target );
+        if ( target != None ) {
+            proj = DeusExProjectile( target );
 
-			// // VM: Calculate cost based on distance, and check if the player has enough energy.
-			// if ( proj != none ) {
-			// 	cost = 2;
-			// }
-			// else {
-			// 	cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
-			// }
+            // // VM: Calculate cost based on distance, and check if the player has enough energy.
+            // if ( proj != none ) {
+            //  cost = 2;
+            // }
+            // else {
+            //  cost = ( VM_targetDistance / LevelValues[0] ) * VM_defenseBaseCost;
+            // }
 
-			cost = VM_defenseBaseCost;
+            cost = VM_defenseBaseCost;
 
-			enoughEnergy = Player.CanDrain( cost );
+            enoughEnergy = Player.CanDrain( cost );
 
-			enoughDistance = ( VM_targetDistance <= LevelValues[CurrentLevel] );
+            enoughDistance = ( VM_targetDistance <= LevelValues[CurrentLevel] );
 
-			SetDefenseAugStatus( true, CurrentLevel, target, enoughEnergy, enoughDistance );
-			Player.PlaySound( Sound'GEPGunLock', SLOT_None,,,, 2.0 );
-		}
-		else {
-			SetDefenseAugStatus( false, CurrentLevel, none );
-			// VM_defenseWeaponTime = 0;
+            SetDefenseAugStatus( true, CurrentLevel, target, enoughEnergy, enoughDistance );
+            Player.PlaySound( Sound'GEPGunLock', SLOT_None,,,, 2.0 );
+        }
+        else {
+            SetDefenseAugStatus( false, CurrentLevel, none );
+            // VM_defenseWeaponTime = 0;
 
-			return;
-		}
+            return;
+        }
 
-		if ( !enoughEnergy || !enoughDistance ) {
-			return;
-		}
+        if ( !enoughEnergy || !enoughDistance ) {
+            return;
+        }
 
-		if ( proj != None ) {
-			// VM_defenseWeaponTime = 0;
-			// VM_currentSP = none;
+        if ( proj != None ) {
+            // VM_defenseWeaponTime = 0;
+            // VM_currentSP = none;
 
-			proj.bAggressiveExploded= true;
-			proj.Explode( target.Location, vect( 0, 0, 1 ) );
+            proj.bAggressiveExploded= true;
+            proj.Explode( target.Location, vect( 0, 0, 1 ) );
 
-			AddImmediateEnergyRate( cost );
+            AddImmediateEnergyRate( cost );
 
-			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
-		}
-		// else if ( ScriptedPawn( target ) != None ) {
-		// 	VM_defenseWeaponTime = VM_defenseWeaponTime + 0.1;
+            Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
+        }
+        // else if ( ScriptedPawn( target ) != None ) {
+        //  VM_defenseWeaponTime = VM_defenseWeaponTime + 0.1;
 
-		// 	if ( target != VM_currentSP ) {
-		// 		VM_defenseWeaponTime = 0;
-		// 		VM_defenseWeaponDelay = VM_defenseWeaponBaseDelay + ( ( VM_targetDistance / LevelValues[0] ) * VM_defenseWeaponBaseDelay );
-		// 		VM_currentSP = ScriptedPawn( target );
+        //  if ( target != VM_currentSP ) {
+        //      VM_defenseWeaponTime = 0;
+        //      VM_defenseWeaponDelay = VM_defenseWeaponBaseDelay + ( ( VM_targetDistance / LevelValues[0] ) * VM_defenseWeaponBaseDelay );
+        //      VM_currentSP = ScriptedPawn( target );
 
-		// 		return;
-		// 	}
+        //      return;
+        //  }
 
-		// 	if ( VM_defenseWeaponTime >= VM_defenseWeaponDelay ) {
-		// 		VM_defenseWeaponTime = 0;
+        //  if ( VM_defenseWeaponTime >= VM_defenseWeaponDelay ) {
+        //      VM_defenseWeaponTime = 0;
 
-		// 		w = DeusExWeapon( Pawn( target ).Weapon );
-		// 		if ( w != None ) {
-		// 			// VM: Gotta do this to get the accurate weapon position in third person.
-		// 			HitLocation = target.Location + ( ( VM_currentSP.default.CollisionHeight - VM_currentSP.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( w.FireOffset >> VM_currentSP.ViewRotation );
+        //      w = DeusExWeapon( Pawn( target ).Weapon );
+        //      if ( w != None ) {
+        //          // VM: Gotta do this to get the accurate weapon position in third person.
+        //          HitLocation = target.Location + ( ( VM_currentSP.default.CollisionHeight - VM_currentSP.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( w.FireOffset >> VM_currentSP.ViewRotation );
 
-		// 			VM_currentSP.DropWeapon();
-		// 			target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0] * VM_defenseWeaponDamageMult, Player, HitLocation, vect( 0, 0, 0 ), 'Shot' );
-		// 			w.Destroy();
+        //          VM_currentSP.DropWeapon();
+        //          target.TakeDamage( w.HitDamage * ( w.ReloadCount - w.ClipCount ) * w.VM_ShotCount[0] * VM_defenseWeaponDamageMult, Player, HitLocation, vect( 0, 0, 0 ), 'Shot' );
+        //          w.Destroy();
 
-		// 			// VM: Replicate what happens to projectiles detonated by the aug.
-		// 			light = Spawn( class'ExplosionLight',,, HitLocation );
-		// 			if ( light != None ) {
-		// 				light.RemoteRole = ROLE_None;
-		// 			}
+        //          // VM: Replicate what happens to projectiles detonated by the aug.
+        //          light = Spawn( class'ExplosionLight',,, HitLocation );
+        //          if ( light != None ) {
+        //              light.RemoteRole = ROLE_None;
+        //          }
 
-		// 			sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 16384, 0, 0 ) );
-		// 			if ( sphere != None ) {
-		// 				sphere.RemoteRole = ROLE_None;
-		// 				sphere.size = 0.5;
-		// 			}
-		// 			sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 0, 0, 0 ) );
-		// 			if ( sphere != None ) {
-		// 				sphere.RemoteRole = ROLE_None;
-		// 				sphere.size = 0.5;
-		// 			}
-		// 			sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 0, 16384, 0 ) );
-		// 			if ( sphere != None ) {
-		// 				sphere.RemoteRole = ROLE_None;
-		// 				sphere.size = 0.5;
-		// 			}
+        //          sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 16384, 0, 0 ) );
+        //          if ( sphere != None ) {
+        //              sphere.RemoteRole = ROLE_None;
+        //              sphere.size = 0.5;
+        //          }
+        //          sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 0, 0, 0 ) );
+        //          if ( sphere != None ) {
+        //              sphere.RemoteRole = ROLE_None;
+        //              sphere.size = 0.5;
+        //          }
+        //          sphere = Spawn( class'SphereEffect',,, HitLocation, rot( 0, 16384, 0 ) );
+        //          if ( sphere != None ) {
+        //              sphere.RemoteRole = ROLE_None;
+        //              sphere.size = 0.5;
+        //          }
 
-		// 			AddImmediateEnergyRate( cost );
+        //          AddImmediateEnergyRate( cost );
 
-		// 			Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
-		// 			target.PlaySound( Sound'SmallExplosion1', SLOT_None, 1.0,, LevelValues[CurrentLevel], 0.75 );
-		// 		}
-		// 	}
-		// }
-	}
+        //          Player.PlaySound( Sound'ProdFire', SLOT_None,,,, 2.0 );
+        //          target.PlaySound( Sound'SmallExplosion1', SLOT_None, 1.0,, LevelValues[CurrentLevel], 0.75 );
+        //      }
+        //  }
+        // }
+    }
 
-	function EndState() {
-		SetTimer( 0.1, false );
-	}
+    function EndState() {
+        SetTimer( 0.1, false );
+    }
 
 Begin:
-	defenseSoundTime = 0;
-	// VM_defenseWeaponTime = 0;
-	// VM_defenseWeaponDelay = 0;
-	SetTimer( 0.1, true );
+    defenseSoundTime = 0;
+    // VM_defenseWeaponTime = 0;
+    // VM_defenseWeaponDelay = 0;
+    SetTimer( 0.1, true );
 }
 
 state Inactive {
 Begin:
-	SetDefenseAugStatus( false, CurrentLevel, none );
-	defenseSoundTime = 0;
-	// VM_defenseWeaponTime = 0;
-	// VM_defenseWeaponDelay = 0;
-	// VM_currentSP = none;
+    SetDefenseAugStatus( false, CurrentLevel, none );
+    defenseSoundTime = 0;
+    // VM_defenseWeaponTime = 0;
+    // VM_defenseWeaponDelay = 0;
+    // VM_currentSP = none;
 }
 
 // ------------------------------------------------------------------------------
@@ -187,78 +187,78 @@ Begin:
 
 // Vanilla Matters: A new function that finds also ScriptedPawns attacking the player.
 simulated function Actor FindNearestTarget() {
-	local DeusExProjectile proj;
-	// local ScriptedPawn sp;
-	// local DeusExWeapon w;
-	local bool bValid;
-	local float dist, mindist;
+    local DeusExProjectile proj;
+    // local ScriptedPawn sp;
+    // local DeusExWeapon w;
+    local bool bValid;
+    local float dist, mindist;
 
-	local Actor target;
+    local Actor target;
 
-	target = None;
-	mindist = LevelValues[CurrentLevel] * 3;
-	foreach AllActors( class'DeusExProjectile', proj ) {
-		dist = VSize( Player.Location - proj.Location );
-		if ( dist > mindist ) {
-			continue;
-		}
+    target = None;
+    mindist = LevelValues[CurrentLevel] * 3;
+    foreach AllActors( class'DeusExProjectile', proj ) {
+        dist = VSize( Player.Location - proj.Location );
+        if ( dist > mindist ) {
+            continue;
+        }
 
-		if (Level.NetMode != NM_Standalone ) {
-			bValid = !proj.bIgnoresNanoDefense;
-		}
-		else {
-			// VM: Gonna use a special condition for plasma bolts, because otherwise MIBs will be rendered useless.
-			bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) && ( proj.bExplodes && !proj.IsA( 'PlasmaBolt' ) ) );
-		}
+        if (Level.NetMode != NM_Standalone ) {
+            bValid = !proj.bIgnoresNanoDefense;
+        }
+        else {
+            // VM: Gonna use a special condition for plasma bolts, because otherwise MIBs will be rendered useless.
+            bValid = ( !proj.IsA( 'Cloud' ) && !proj.IsA( 'Tracer' ) && !proj.IsA( 'GreaselSpit' ) && !proj.IsA( 'GraySpit' ) && ( proj.bExplodes && !proj.IsA( 'PlasmaBolt' ) ) );
+        }
 
-		bValid = bValid && ( proj.Owner != Player && !( TeamDMGame( Player.DXGame ) != None && TeamDMGame( Player.DXGame ).ArePlayersAllied( DeusExPlayer( proj.Owner ), Player ) ) );
+        bValid = bValid && ( proj.Owner != Player && !( TeamDMGame( Player.DXGame ) != None && TeamDMGame( Player.DXGame ).ArePlayersAllied( DeusExPlayer( proj.Owner ), Player ) ) );
 
-		bValid = bValid && Player.LineOfSightTo( proj );
+        bValid = bValid && Player.LineOfSightTo( proj );
 
-		if ( bValid ) {
-			if ( !proj.bStuck ) {
-				mindist = dist;
-				target = proj;
-			}
-		}
-	}
+        if ( bValid ) {
+            if ( !proj.bStuck ) {
+                mindist = dist;
+                target = proj;
+            }
+        }
+    }
 
-	// if ( target != None ) {
-	// 	VM_targetDistance = mindist;
+    // if ( target != None ) {
+    //  VM_targetDistance = mindist;
 
-	// 	return target;
-	// }
+    //  return target;
+    // }
 
-	// bValid = false;
-	// mindist = LevelValues[CurrentLevel] * 3;
-	// foreach AllActors( class'ScriptedPawn', sp ) {
-	// 	dist = VSize( Player.Location - sp.Location );
-	// 	if ( dist > mindist ) {
-	// 		continue;
-	// 	}
+    // bValid = false;
+    // mindist = LevelValues[CurrentLevel] * 3;
+    // foreach AllActors( class'ScriptedPawn', sp ) {
+    //  dist = VSize( Player.Location - sp.Location );
+    //  if ( dist > mindist ) {
+    //      continue;
+    //  }
 
-	// 	// VM: This function only works in SP because it'd be insanely unfair in MP.
-	// 	bValid = Level.NetMode == NM_Standalone;
+    //  // VM: This function only works in SP because it'd be insanely unfair in MP.
+    //  bValid = Level.NetMode == NM_Standalone;
 
-	// 	bValid = bValid && ( !sp.IsA( 'Animal' ) && !sp.IsA( 'Robot' ) && !sp.IsA( 'MJ12Commando' ) );
+    //  bValid = bValid && ( !sp.IsA( 'Animal' ) && !sp.IsA( 'Robot' ) && !sp.IsA( 'MJ12Commando' ) );
 
-	// 	bValid = bValid && ( !sp.IsInState( 'Dying' ) && sp.IsInState( 'Attacking' ) && sp.Enemy == Player );
+    //  bValid = bValid && ( !sp.IsInState( 'Dying' ) && sp.IsInState( 'Attacking' ) && sp.Enemy == Player );
 
-	// 	bValid = bValid && ( Player.LineOfSightTo( sp ) && sp.CanSee( Player ) );
+    //  bValid = bValid && ( Player.LineOfSightTo( sp ) && sp.CanSee( Player ) );
 
-	// 	if ( bValid ) {
-	// 		w = DeusExWeapon( sp.Weapon );
+    //  if ( bValid ) {
+    //      w = DeusExWeapon( sp.Weapon );
 
-	// 		if ( w != None && !w.IsInState( 'DownWeapon' ) && w.bInstantHit && !w.bHandtoHand ) {
-	// 			mindist = dist;
-	// 			target = sp;
-	// 		}
-	// 	}
-	// }
+    //      if ( w != None && !w.IsInState( 'DownWeapon' ) && w.bInstantHit && !w.bHandtoHand ) {
+    //          mindist = dist;
+    //          target = sp;
+    //      }
+    //  }
+    // }
 
-	VM_targetDistance = mindist;
+    VM_targetDistance = mindist;
 
-	return target;
+    return target;
 }
 
 // ------------------------------------------------------------------------------
@@ -271,29 +271,29 @@ simulated function Actor FindNearestTarget() {
 
 // Vanilla Matters: Change it to use actor.
 simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, Actor defenseTarget, optional bool enoughEnergy, optional bool enoughDistance ) {
-	if ( Player == None || Player.rootWindow == None ) {
-		return;
-	}
+    if ( Player == None || Player.rootWindow == None ) {
+        return;
+    }
 
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.bDefenseActive = bDefenseActive;
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseLevel = defenseLevel;
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseTarget = defenseTarget;
-	// VM: Pass this to the hud so it won't have to do the calculations again.
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughEnergy = enoughEnergy;
-	DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughDistance = enoughDistance;
+    DeusExRootWindow( Player.rootWindow ).hud.augDisplay.bDefenseActive = bDefenseActive;
+    DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseLevel = defenseLevel;
+    DeusExRootWindow( Player.rootWindow ).hud.augDisplay.defenseTarget = defenseTarget;
+    // VM: Pass this to the hud so it won't have to do the calculations again.
+    DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughEnergy = enoughEnergy;
+    DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughDistance = enoughDistance;
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-		defenseSoundTime=0;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+        defenseSoundTime=0;
+    }
 }
 
 defaultproperties

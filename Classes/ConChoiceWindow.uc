@@ -7,17 +7,17 @@ var Object userObject;
 
 function InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 function SetUserObject( object newUserObject )
 {
-	userObject = newUserObject;
+    userObject = newUserObject;
 }
 
 function Object GetUserObject()
 {
-	return userObject;
+    return userObject;
 }
 
 defaultproperties

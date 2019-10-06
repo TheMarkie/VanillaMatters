@@ -11,35 +11,35 @@ var() localized String awardMessage;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 
-	player = DeusExPlayer(Instigator);
+    player = DeusExPlayer(Instigator);
 
-	if (player != None)
-	{
-		player.SkillPointsAdd(skillPointsAdded);
-		player.ClientMessage(awardMessage);
-	}
+    if (player != None)
+    {
+        player.SkillPointsAdd(skillPointsAdded);
+        player.ClientMessage(awardMessage);
+    }
 }
 
 function Touch(Actor Other)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	Super.Touch(Other);
+    Super.Touch(Other);
 
-	if (IsRelevant(Other))
-	{
-		player = DeusExPlayer(Other);
+    if (IsRelevant(Other))
+    {
+        player = DeusExPlayer(Other);
 
-		if (player != None)
-		{
-			player.SkillPointsAdd(skillPointsAdded);
-			player.ClientMessage(awardMessage);
-		}
-	}
+        if (player != None)
+        {
+            player.SkillPointsAdd(skillPointsAdded);
+            player.ClientMessage(awardMessage);
+        }
+    }
 }
 
 defaultproperties

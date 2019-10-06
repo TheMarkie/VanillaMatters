@@ -4,16 +4,16 @@
 class TechGoggles extends ChargedPickup;
 
 // Vanilla Matters
-var travel int VM_currentVisionLevel;				// Allow player to swap between night vision and infrared.
+var travel int VM_currentVisionLevel;               // Allow player to swap between night vision and infrared.
 
 // ----------------------------------------------------------------------
 // ChargedPickupBegin()
 // ----------------------------------------------------------------------
 
 function ChargedPickupBegin( DeusExPlayer Player ) {
-	Super.ChargedPickupBegin( Player );
+    Super.ChargedPickupBegin( Player );
 
-	UpdateHUDDisplay( Player );
+    UpdateHUDDisplay( Player );
 }
 
 // ----------------------------------------------------------------------
@@ -22,42 +22,42 @@ function ChargedPickupBegin( DeusExPlayer Player ) {
 
 // Vanilla Matters
 function UpdateHUDDisplay( DeusExPlayer Player ) {
-	local AugmentationDisplayWindow augWnd;
+    local AugmentationDisplayWindow augWnd;
 
-	augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
+    augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
 
-	augWnd.VM_visionLevels[0] = VM_currentVisionLevel;
-	if ( VM_currentVisionLevel >= 3 ) {
-		augWnd.VM_visionValues[0] = 320;
-	}
-	else {
-		augWnd.VM_visionValues[0] = 0;
-	}
+    augWnd.VM_visionLevels[0] = VM_currentVisionLevel;
+    if ( VM_currentVisionLevel >= 3 ) {
+        augWnd.VM_visionValues[0] = 320;
+    }
+    else {
+        augWnd.VM_visionValues[0] = 0;
+    }
 }
 
 // Vanilla Matters: Switch between night vision and infrared.
 function ExtraFunction( DeusExPlayer player ) {
-	local AugmentationDisplayWindow augWnd;
-	local int level;
+    local AugmentationDisplayWindow augWnd;
+    local int level;
 
-	if ( !bIsActive ) {
-		return;
-	}
+    if ( !bIsActive ) {
+        return;
+    }
 
-	level = VM_currentVisionLevel;
+    level = VM_currentVisionLevel;
 
-	if ( VM_currentVisionLevel > 1 ) {
-		VM_currentVisionLevel = 1;
-	}
-	else {
-		VM_currentVisionLevel = FMax( player.SkillSystem.GetSkillLevel( class'SkillEnviro' ), 1 );
-	}
+    if ( VM_currentVisionLevel > 1 ) {
+        VM_currentVisionLevel = 1;
+    }
+    else {
+        VM_currentVisionLevel = FMax( player.SkillSystem.GetSkillLevel( class'SkillEnviro' ), 1 );
+    }
 
-	if ( level != VM_currentVisionLevel ) {
-		PlaySound( ActivateSound, SLOT_None );
-	}
+    if ( level != VM_currentVisionLevel ) {
+        PlaySound( ActivateSound, SLOT_None );
+    }
 
-	UpdateHUDDisplay( player );
+    UpdateHUDDisplay( player );
 }
 
 // ----------------------------------------------------------------------
@@ -66,14 +66,14 @@ function ExtraFunction( DeusExPlayer player ) {
 
 // Vanilla Matters
 function ChargedPickupEnd( DeusExPlayer Player ) {
-	local AugmentationDisplayWindow augWnd;
+    local AugmentationDisplayWindow augWnd;
 
-	augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
+    augWnd = DeusExRootWindow( Player.rootWindow ).hud.augDisplay;
 
-	Super.ChargedPickupEnd( Player );
+    Super.ChargedPickupEnd( Player );
 
-	augWnd.VM_visionLevels[0] = 0;
-	augWnd.VM_visionValues[0] = 0;
+    augWnd.VM_visionLevels[0] = 0;
+    augWnd.VM_visionValues[0] = 0;
 }
 
 // ----------------------------------------------------------------------

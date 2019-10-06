@@ -5,7 +5,7 @@
 class MenuChoice_MusicVolume extends MenuChoice_Volume;
 
 // ----------------------------------------------------------------------
-// ScalePositionChanged() 
+// ScalePositionChanged()
 //
 // Update the Mouse Sensitivity value
 // ----------------------------------------------------------------------
@@ -13,15 +13,15 @@ class MenuChoice_MusicVolume extends MenuChoice_Volume;
 event bool ScalePositionChanged(Window scale, int newTickPosition,
                                 float newValue, bool bFinal)
 {
-	// Don't do anything while initializing as we get several 
-	// ScalePositionChanged() events before LoadSetting() is called.
+    // Don't do anything while initializing as we get several
+    // ScalePositionChanged() events before LoadSetting() is called.
 
-	if (bInitializing)
-		return False;
+    if (bInitializing)
+        return False;
 
-	Player.SetInstantMusicVolume(byte(newValue));
+    Player.SetInstantMusicVolume(byte(newValue));
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -30,8 +30,8 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
 
 function LoadSetting()
 {
-	Super.LoadSetting();
-	Player.SetInstantMusicVolume(GetValue());
+    Super.LoadSetting();
+    Player.SetInstantMusicVolume(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -40,8 +40,8 @@ function LoadSetting()
 
 function CancelSetting()
 {
-	Super.CancelSetting();
-	LoadSetting();
+    Super.CancelSetting();
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------

@@ -7,20 +7,20 @@ var bool bOn;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	if (bOn)
-	{
-		PlaySound(sound'Switch4ClickOff');
-		PlayAnim('Off');
-	}
-	else
-	{
-		PlaySound(sound'Switch4ClickOn');
-		PlayAnim('On');
-	}
+    if (bOn)
+    {
+        PlaySound(sound'Switch4ClickOff');
+        PlayAnim('Off');
+    }
+    else
+    {
+        PlaySound(sound'Switch4ClickOn');
+        PlayAnim('On');
+    }
 
-	bOn = !bOn;
+    bOn = !bOn;
 }
 
 defaultproperties

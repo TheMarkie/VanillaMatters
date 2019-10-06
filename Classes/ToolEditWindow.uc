@@ -25,20 +25,20 @@ var String filterString;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetBackground(Texture'Solid');
-	SetTileColor(colBackgroundSensitive);
+    SetBackground(Texture'Solid');
+    SetTileColor(colBackgroundSensitive);
 
-	SetFont(fontText);
-	SetTextColor(colText);
-	SetInsertionPointType(INSTYPE_Insert);
-	EnableSingleLineEditing(True);
-	SetInsertionPointTexture(textureInsert, colInsert);
-	SetSelectedAreaTexture(Texture'Solid', colHighlight);
-	SetSelectedAreaTextColor(colTextSelected);
-	SetEditCursor(Texture'ToolMouseInsertCursor');
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetFont(fontText);
+    SetTextColor(colText);
+    SetInsertionPointType(INSTYPE_Insert);
+    EnableSingleLineEditing(True);
+    SetInsertionPointTexture(textureInsert, colInsert);
+    SetSelectedAreaTexture(Texture'Solid', colHighlight);
+    SetSelectedAreaTextColor(colTextSelected);
+    SetEditCursor(Texture'ToolMouseInsertCursor');
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -49,21 +49,21 @@ event InitWindow()
 
 function bool FilterChar(out string chStr)
 {
-	local int filterIndex;
-	local bool bResult;
+    local int filterIndex;
+    local bool bResult;
 
-	bResult = True;
+    bResult = True;
 
-	for(filterIndex=0; filterIndex < Len(filterString); filterIndex++)
-	{
-		if ( Mid(filterString, filterIndex, 1) == chStr )
-		{
-			bResult = False;
-			break;
-		}
-	}
+    for(filterIndex=0; filterIndex < Len(filterString); filterIndex++)
+    {
+        if ( Mid(filterString, filterIndex, 1) == chStr )
+        {
+            bResult = False;
+            break;
+        }
+    }
 
-	return bResult;
+    return bResult;
 }
 
 // ----------------------------------------------------------------------
@@ -73,10 +73,10 @@ function bool FilterChar(out string chStr)
 
 event SensitivityChanged(bool bNewSensitivity)
 {
-	if (bNewSensitivity)
-		SetTileColor(colBackgroundSensitive);
-	else
-		SetTileColor(colBackgroundInsensitive);
+    if (bNewSensitivity)
+        SetTileColor(colBackgroundSensitive);
+    else
+        SetTileColor(colBackgroundInsensitive);
 }
 
 // ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ event SensitivityChanged(bool bNewSensitivity)
 
 function SetFilter(String newFilter)
 {
-	filterString = newFilter;
+    filterString = newFilter;
 }
 
 // ----------------------------------------------------------------------

@@ -23,11 +23,11 @@ var Color colBarBack;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(71, 39);
+    SetSize(71, 39);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -36,10 +36,10 @@ event InitWindow()
 
 function CreateControls()
 {
-	CreateHealthBar();
-	CreateTitle();
-	CreateHealButton();
-	CreateRegionButton();
+    CreateHealthBar();
+    CreateTitle();
+    CreateHealButton();
+    CreateRegionButton();
 }
 
 // ----------------------------------------------------------------------
@@ -48,23 +48,23 @@ function CreateControls()
 
 function CreateHealthBar()
 {
-	winHealthBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
-	winHealthBar.SetPos(4, 13);
-	winHealthBar.SetSize(66, 11);
-	winHealthBar.SetValues(0, 100);
-	winHealthBar.SetVertical(False);
-	winHealthBar.SetScaleColorModifier(0.5);
-	winHealthBar.UseScaledColor(True);
-	winHealthBar.SetDrawBackground(True);
-	winHealthBar.SetBackColor(colBarBack);
+    winHealthBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
+    winHealthBar.SetPos(4, 13);
+    winHealthBar.SetSize(66, 11);
+    winHealthBar.SetValues(0, 100);
+    winHealthBar.SetVertical(False);
+    winHealthBar.SetScaleColorModifier(0.5);
+    winHealthBar.UseScaledColor(True);
+    winHealthBar.SetDrawBackground(True);
+    winHealthBar.SetBackColor(colBarBack);
 
-	winHealthBarText = TextWindow(NewChild(Class'TextWindow'));
-	winHealthBarText.SetPos(4, 14);
-	winHealthBarText.SetSize(66, 11);
-	winHealthBarText.SetTextMargins(0, 0);
-	winHealthBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winHealthBarText.SetFont(Font'FontMenuSmall_DS');
-	winHealthBarText.SetTextColorRGB(255, 255, 255);
+    winHealthBarText = TextWindow(NewChild(Class'TextWindow'));
+    winHealthBarText.SetPos(4, 14);
+    winHealthBarText.SetSize(66, 11);
+    winHealthBarText.SetTextMargins(0, 0);
+    winHealthBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winHealthBarText.SetFont(Font'FontMenuSmall_DS');
+    winHealthBarText.SetTextColorRGB(255, 255, 255);
 }
 
 // ----------------------------------------------------------------------
@@ -73,9 +73,9 @@ function CreateHealthBar()
 
 function CreateHealButton()
 {
-	btnHeal = PersonaHealthActionButtonWindow(NewChild(Class'PersonaHealthActionButtonWindow'));
-	btnHeal.SetPos(5, 26);
-	btnHeal.Raise();
+    btnHeal = PersonaHealthActionButtonWindow(NewChild(Class'PersonaHealthActionButtonWindow'));
+    btnHeal.SetPos(5, 26);
+    btnHeal.Raise();
 }
 
 // ----------------------------------------------------------------------
@@ -84,9 +84,9 @@ function CreateHealButton()
 
 function CreateRegionButton()
 {
-	btnRegion = ButtonWindow(NewChild(Class'ButtonWindow'));
-	btnRegion.SetPos(0, 0);
-	btnRegion.SetSize(98, 25);
+    btnRegion = ButtonWindow(NewChild(Class'ButtonWindow'));
+    btnRegion.SetPos(0, 0);
+    btnRegion.SetSize(98, 25);
 }
 
 // ----------------------------------------------------------------------
@@ -95,9 +95,9 @@ function CreateRegionButton()
 
 function CreateTitle()
 {
-	winTitle = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winTitle.SetSize(50, 11);
-	winTitle.SetPos(3, 2);
+    winTitle = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winTitle.SetSize(50, 11);
+    winTitle.SetPos(3, 2);
 }
 
 // ----------------------------------------------------------------------
@@ -106,10 +106,10 @@ function CreateTitle()
 
 function SetPartIndex(int newPartIndex)
 {
-	partIndex = newPartIndex;
+    partIndex = newPartIndex;
 
-	if (btnHeal != None)
-		btnHeal.SetPartIndex(newPartIndex);
+    if (btnHeal != None)
+        btnHeal.SetPartIndex(newPartIndex);
 }
 
 // ----------------------------------------------------------------------
@@ -118,7 +118,7 @@ function SetPartIndex(int newPartIndex)
 
 function int GetPartIndex()
 {
-	return partIndex;
+    return partIndex;
 }
 
 // ----------------------------------------------------------------------
@@ -127,9 +127,9 @@ function int GetPartIndex()
 
 function SetMaxHealth(float newMaxHealth)
 {
-	maxHealth = newMaxHealth;
+    maxHealth = newMaxHealth;
 
-	winHealthBar.SetValues(0, maxHealth);
+    winHealthBar.SetValues(0, maxHealth);
 }
 
 // ----------------------------------------------------------------------
@@ -138,10 +138,10 @@ function SetMaxHealth(float newMaxHealth)
 
 function SetHealth(float newHealth)
 {
-	currentHealth = newHealth;
+    currentHealth = newHealth;
 
-	winHealthBar.SetCurrentValue(currentHealth);
-	winHealthBarText.SetText(String(Int(newHealth)) @ "/" @ String(Int(maxHealth)));
+    winHealthBar.SetCurrentValue(currentHealth);
+    winHealthBarText.SetText(String(Int(newHealth)) @ "/" @ String(Int(maxHealth)));
 }
 
 // ----------------------------------------------------------------------
@@ -150,7 +150,7 @@ function SetHealth(float newHealth)
 
 function Bool IsDamaged()
 {
-	return (currentHealth < maxHealth);
+    return (currentHealth < maxHealth);
 }
 
 // ----------------------------------------------------------------------
@@ -159,8 +159,8 @@ function Bool IsDamaged()
 
 function SetTitle(String newTitle)
 {
-	if (winTitle != None)
-		winTitle.SetText(newTitle);
+    if (winTitle != None)
+        winTitle.SetText(newTitle);
 }
 
 // ----------------------------------------------------------------------
@@ -169,10 +169,10 @@ function SetTitle(String newTitle)
 
 function String GetTitle()
 {
-	if (winTitle != None)
-		return winTitle.GetText();
-	else
-		return "";
+    if (winTitle != None)
+        return winTitle.GetText();
+    else
+        return "";
 }
 
 // ----------------------------------------------------------------------
@@ -181,8 +181,8 @@ function String GetTitle()
 
 function ShowHealButton(bool bShow)
 {
-	if (btnHeal != None)
-		btnHeal.Show(bShow);
+    if (btnHeal != None)
+        btnHeal.Show(bShow);
 }
 
 // ----------------------------------------------------------------------
@@ -191,12 +191,12 @@ function ShowHealButton(bool bShow)
 
 function EnableButtons()
 {
-	local medKit medKit;
+    local medKit medKit;
 
-	// First make sure the player has a medkit
-	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    // First make sure the player has a medkit
+    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
 
-	btnHeal.EnableWindow((currentHealth < maxHealth) && (medKit != None));
+    btnHeal.EnableWindow((currentHealth < maxHealth) && (medKit != None));
 }
 
 // ----------------------------------------------------------------------

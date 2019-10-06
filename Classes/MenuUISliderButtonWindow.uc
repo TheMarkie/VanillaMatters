@@ -26,40 +26,40 @@ var Bool bUseScaleText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(defaultWidth, defaultHeight);
+    SetSize(defaultWidth, defaultHeight);
 
-	// Create the Scale Manager Window
-	winScaleManager = ScaleManagerWindow(NewChild(Class'ScaleManagerWindow'));
-	winScaleManager.SetSize(defaultScaleWidth, 21);
-	winScaleManager.SetMarginSpacing(20);
+    // Create the Scale Manager Window
+    winScaleManager = ScaleManagerWindow(NewChild(Class'ScaleManagerWindow'));
+    winScaleManager.SetSize(defaultScaleWidth, 21);
+    winScaleManager.SetMarginSpacing(20);
 
-	// Create the slider window 
-	winSlider = ScaleWindow(winScaleManager.NewChild(Class'ScaleWindow'));
-	winSlider.SetScaleOrientation(ORIENT_Horizontal);
-	winSlider.SetThumbSpan(0);
-	winSlider.SetScaleTexture(defaultScaleTexture, defaultScaleWidth, 21, 8, 8);
-	winSlider.SetThumbTexture(defaultThumbTexture, 9, 15);
-	winSlider.SetScaleSounds(Sound'Menu_Press', None, Sound'Menu_Slider');
-	winSlider.SetSoundVolume(0.25);
+    // Create the slider window
+    winSlider = ScaleWindow(winScaleManager.NewChild(Class'ScaleWindow'));
+    winSlider.SetScaleOrientation(ORIENT_Horizontal);
+    winSlider.SetThumbSpan(0);
+    winSlider.SetScaleTexture(defaultScaleTexture, defaultScaleWidth, 21, 8, 8);
+    winSlider.SetThumbTexture(defaultThumbTexture, 9, 15);
+    winSlider.SetScaleSounds(Sound'Menu_Press', None, Sound'Menu_Slider');
+    winSlider.SetSoundVolume(0.25);
 
-	// Create the text window
-	if (bUseScaleText)
-	{
-		winScaleText = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
-		winScaleText.SetSelectability(False);
-		winScaleText.SetWidth(60);
-		winScaleText.SetPos(184, 1);
-	}
+    // Create the text window
+    if (bUseScaleText)
+    {
+        winScaleText = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
+        winScaleText.SetSelectability(False);
+        winScaleText.SetWidth(60);
+        winScaleText.SetPos(184, 1);
+    }
 
-	// Tell the Scale Manager wazzup.
-	winScaleManager.SetScale(winSlider);
+    // Tell the Scale Manager wazzup.
+    winScaleManager.SetScale(winSlider);
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -68,8 +68,8 @@ event InitWindow()
 
 function SetTicks( int numTicks, int startValue, int endValue)
 {
-	winSlider.SetValueRange(startValue, endValue);
-	winSlider.SetNumTicks(numTicks);
+    winSlider.SetValueRange(startValue, endValue);
+    winSlider.SetNumTicks(numTicks);
 }
 
 // ----------------------------------------------------------------------
@@ -80,10 +80,10 @@ function SetTicks( int numTicks, int startValue, int endValue)
 event bool ScalePositionChanged(Window scale, int newTickPosition,
                                 float newValue, bool bFinal)
 {
-	if (winScaleText != None)
-		winScaleText.SetButtonText(winSlider.GetValueString());
+    if (winScaleText != None)
+        winScaleText.SetButtonText(winSlider.GetValueString());
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -92,17 +92,17 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colButtonFace;
+    local ColorTheme theme;
+    local Color colButtonFace;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	// Title colors
-	colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
+    // Title colors
+    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
 
-	winSlider.SetThumbColor(colButtonFace);
-	winSlider.SetScaleColor(colButtonFace);
-	winSlider.SetTickColor(colButtonFace);
+    winSlider.SetThumbColor(colButtonFace);
+    winSlider.SetScaleColor(colButtonFace);
+    winSlider.SetTickColor(colButtonFace);
 }
 
 // ----------------------------------------------------------------------

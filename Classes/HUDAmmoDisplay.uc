@@ -3,13 +3,13 @@
 //=============================================================================
 class HUDAmmoDisplay expands HUDBaseWindow;
 
-var Bool			bVisible;
-var Color			colAmmoText;		// Ammo count text color
-var Color			colAmmoLowText;		// Color when ammo low
-var Color			colNormalText;		// color for normal weapon messages
-var Color			colTrackingText;	// color when weapon is tracking
-var Color			colLockedText;		// color when weapon is locked
-var DeusExPlayer	player;
+var Bool            bVisible;
+var Color           colAmmoText;        // Ammo count text color
+var Color           colAmmoLowText;     // Color when ammo low
+var Color           colNormalText;      // color for normal weapon messages
+var Color           colTrackingText;    // color when weapon is tracking
+var Color           colLockedText;      // color when weapon is locked
+var DeusExPlayer    player;
 var int             infoX;
 
 var localized String NotAvailable;
@@ -22,7 +22,7 @@ var localized String ClipsLabel;
 var int ammoRemaining;
 var int ammoInClip;
 var DeusExWeapon weapon;
-		
+
 // Defaults
 var Texture texBackground;
 var Texture texBorder;
@@ -36,27 +36,27 @@ var localized String VM_RoundsLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	bTickEnabled = TRUE;
+    bTickEnabled = TRUE;
 
-	Hide();
+    Hide();
 
-	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
+    player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(95, 77);
+    SetSize(95, 77);
 }
- 
+
 // ----------------------------------------------------------------------
 // Tick()
 // ----------------------------------------------------------------------
 
 event Tick(float deltaSeconds)
 {
-	if ((player.Weapon != None) && ( bVisible ))
-		Show();
-	else
-		Hide();
+    if ((player.Weapon != None) && ( bVisible ))
+        Show();
+    else
+        Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -65,87 +65,87 @@ event Tick(float deltaSeconds)
 
 event DrawWindow(GC gc)
 {
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 
-	// No need to draw anything if the player doesn't have
-	// a weapon selected
+    // No need to draw anything if the player doesn't have
+    // a weapon selected
 
-	if (player != None)
-		weapon = DeusExWeapon(player.Weapon);
+    if (player != None)
+        weapon = DeusExWeapon(player.Weapon);
 
-	if ( weapon != None )
-	{
-		// Draw the weapon icon
-		gc.SetStyle(DSTY_Masked);
-		gc.SetTileColorRGB(255, 255, 255);
-		gc.DrawTexture(22, 20, 40, 35, 0, 0, weapon.icon);
-		
-		// Draw the ammo count
-		gc.SetFont(Font'FontTiny');
-		gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-		gc.EnableWordWrap(false);
+    if ( weapon != None )
+    {
+        // Draw the weapon icon
+        gc.SetStyle(DSTY_Masked);
+        gc.SetTileColorRGB(255, 255, 255);
+        gc.DrawTexture(22, 20, 40, 35, 0, 0, weapon.icon);
 
-		// how much ammo of this type do we have left?
-		if (weapon.AmmoType != None)
-			ammoRemaining = weapon.AmmoType.AmmoAmount;
-		else
-			ammoRemaining = 0;
+        // Draw the ammo count
+        gc.SetFont(Font'FontTiny');
+        gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+        gc.EnableWordWrap(false);
 
-		if ( ammoRemaining < weapon.LowAmmoWaterMark )
-			gc.SetTextColor(colAmmoLowText);
-		else
-			gc.SetTextColor(colAmmoText);
+        // how much ammo of this type do we have left?
+        if (weapon.AmmoType != None)
+            ammoRemaining = weapon.AmmoType.AmmoAmount;
+        else
+            ammoRemaining = 0;
 
-		// Ammo count drawn differently depending on user's setting
-		if (weapon.ReloadCount > 1 )
-		{
-			// how much ammo is left in the current clip?
-			ammoInClip = weapon.AmmoLeftInClip();
-			//clipsRemaining = weapon.NumClips();
+        if ( ammoRemaining < weapon.LowAmmoWaterMark )
+            gc.SetTextColor(colAmmoLowText);
+        else
+            gc.SetTextColor(colAmmoText);
 
-			// Vanilla Matters: No longer show the placeholder text during reloading.
-			gc.DrawText( infoX, 26, 20, 9, ammoInClip );
+        // Ammo count drawn differently depending on user's setting
+        if (weapon.ReloadCount > 1 )
+        {
+            // how much ammo is left in the current clip?
+            ammoInClip = weapon.AmmoLeftInClip();
+            //clipsRemaining = weapon.NumClips();
 
-			// Vanilla Matters: Cut out clipsRemaining calls.
-			if ( ammoRemaining <= ammoInClip || ammoRemaining < ( weapon.ReloadCount * 2 ) ) {
-				gc.SetTextColor( colAmmoLowText );
-			}
-			else {
-				gc.SetTextColor( colAmmoText );
-			}
+            // Vanilla Matters: No longer show the placeholder text during reloading.
+            gc.DrawText( infoX, 26, 20, 9, ammoInClip );
 
-			// Vanilla Matters: Show how much ammo left instead of how many clips.
-			gc.DrawText( infoX, 38, 20, 9, ammoRemaining - ammoInClip );
-		}
-		else
-		{
-			gc.DrawText(infoX, 38, 20, 9, NotAvailable);
+            // Vanilla Matters: Cut out clipsRemaining calls.
+            if ( ammoRemaining <= ammoInClip || ammoRemaining < ( weapon.ReloadCount * 2 ) ) {
+                gc.SetTextColor( colAmmoLowText );
+            }
+            else {
+                gc.SetTextColor( colAmmoText );
+            }
 
-			if (weapon.ReloadCount == 0)
-			{
-				gc.DrawText(infoX, 26, 20, 9, NotAvailable);
-			}
-			else
-			{
-				if (weapon.IsInState('Reload'))
-					gc.DrawText(infoX, 26, 20, 9, msgReloading);
-				else
-					gc.DrawText(infoX, 26, 20, 9, ammoRemaining);
-			}
-		}
+            // Vanilla Matters: Show how much ammo left instead of how many clips.
+            gc.DrawText( infoX, 38, 20, 9, ammoRemaining - ammoInClip );
+        }
+        else
+        {
+            gc.DrawText(infoX, 38, 20, 9, NotAvailable);
 
-		// Now, let's draw the targetting information
-		if (weapon.bCanTrack)
-		{
-			if (weapon.LockMode == LOCK_Locked)
-				gc.SetTextColor(colLockedText);
-			else if (weapon.LockMode == LOCK_Acquire)
-				gc.SetTextColor(colTrackingText);
-			else
-				gc.SetTextColor(colNormalText);
-			gc.DrawText(25, 56, 65, 8, weapon.TargetMessage);
-		}
-	}
+            if (weapon.ReloadCount == 0)
+            {
+                gc.DrawText(infoX, 26, 20, 9, NotAvailable);
+            }
+            else
+            {
+                if (weapon.IsInState('Reload'))
+                    gc.DrawText(infoX, 26, 20, 9, msgReloading);
+                else
+                    gc.DrawText(infoX, 26, 20, 9, ammoRemaining);
+            }
+        }
+
+        // Now, let's draw the targetting information
+        if (weapon.bCanTrack)
+        {
+            if (weapon.LockMode == LOCK_Locked)
+                gc.SetTextColor(colLockedText);
+            else if (weapon.LockMode == LOCK_Acquire)
+                gc.SetTextColor(colTrackingText);
+            else
+                gc.SetTextColor(colNormalText);
+            gc.DrawText(25, 56, 65, 8, weapon.TargetMessage);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -154,20 +154,20 @@ event DrawWindow(GC gc)
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(13, 13, 80, 54, 0, 0, texBackground);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(13, 13, 80, 54, 0, 0, texBackground);
 
-	// Draw the Ammo and Clips text labels
-	gc.SetFont(Font'FontTiny');
-	gc.SetTextColor(colText);
-	gc.SetAlignments(HALIGN_Center, VALIGN_Top);
+    // Draw the Ammo and Clips text labels
+    gc.SetFont(Font'FontTiny');
+    gc.SetTextColor(colText);
+    gc.SetAlignments(HALIGN_Center, VALIGN_Top);
 
-	gc.DrawText(66, 17, 21, 8, AmmoLabel);
-	//gc.DrawText(66, 48, 21, 8, ClipsLabel);
+    gc.DrawText(66, 17, 21, 8, AmmoLabel);
+    //gc.DrawText(66, 48, 21, 8, ClipsLabel);
 
-	// Vanilla Matters: Draw RNDS instead of CLIPS.
-	gc.DrawText( 66, 48, 21, 8, VM_RoundsLabel );
+    // Vanilla Matters: Draw RNDS instead of CLIPS.
+    gc.DrawText( 66, 48, 21, 8, VM_RoundsLabel );
 }
 
 // ----------------------------------------------------------------------
@@ -176,12 +176,12 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 95, 77, 0, 0, texBorder);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawTexture(0, 0, 95, 77, 0, 0, texBorder);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -190,7 +190,7 @@ function DrawBorder(GC gc)
 
 function SetVisibility( bool bNewVisibility )
 {
-	bVisible = bNewVisibility;
+    bVisible = bNewVisibility;
 }
 
 // ----------------------------------------------------------------------

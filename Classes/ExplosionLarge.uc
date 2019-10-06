@@ -5,12 +5,12 @@ class ExplosionLarge extends AnimatedSprite;
 
 simulated function PostBeginPlay()
 {
-	local int i;
+    local int i;
 
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	for (i=0; i<6; i++)
-		Spawn(class'FireComet', None);
+    for (i=0; i<6; i++)
+        Spawn(class'FireComet', None);
 }
 
 defaultproperties

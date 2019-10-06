@@ -11,9 +11,9 @@ var Texture texShadows[9];
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	gc.SetStyle(DSTY_Modulated);
-	gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texShadows);
+{
+    gc.SetStyle(DSTY_Modulated);
+    gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texShadows);
 }
 
 // ----------------------------------------------------------------------

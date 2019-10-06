@@ -14,11 +14,11 @@ var Font fontText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetFont(fontText);
-	SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	SetTextMargins(5, 2);
+    SetFont(fontText);
+    SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    SetTextMargins(5, 2);
 }
 
 // ----------------------------------------------------------------------

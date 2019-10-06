@@ -15,21 +15,21 @@ Begin:
 
 function Deactivate()
 {
-	//Super.Deactivate();
+    //Super.Deactivate();
 
      // Vanilla Matters: Can't turn it off now.
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+    }
 }
 
 defaultproperties

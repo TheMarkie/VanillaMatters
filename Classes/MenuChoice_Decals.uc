@@ -10,23 +10,23 @@ class MenuChoice_Decals extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	local String detailString;
-	local int enumIndex;
-	local int detailChoice;
+    local String detailString;
+    local int enumIndex;
+    local int detailChoice;
 
-	detailString = player.ConsoleCommand("get " $ configSetting);
-	detailChoice = 0;
+    detailString = player.ConsoleCommand("get " $ configSetting);
+    detailChoice = 0;
 
-	for (enumIndex=0; enumIndex<arrayCount(FalseTrue); enumIndex++)
-	{
-		if (FalseTrue[enumIndex] == detailString)
-		{
-			detailChoice = enumIndex;
-			break;
-		}	
-	}
+    for (enumIndex=0; enumIndex<arrayCount(FalseTrue); enumIndex++)
+    {
+        if (FalseTrue[enumIndex] == detailString)
+        {
+            detailChoice = enumIndex;
+            break;
+        }
+    }
 
-	SetValue(detailChoice);
+    SetValue(detailChoice);
 }
 
 // ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.ConsoleCommand("set " $ configSetting $ " " $ FalseTrue[GetValue()]);
+    player.ConsoleCommand("set " $ configSetting $ " " $ FalseTrue[GetValue()]);
 }
 
 // ----------------------------------------------------------------------

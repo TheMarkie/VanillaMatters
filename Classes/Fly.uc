@@ -6,14 +6,14 @@ class Fly extends Animal;
 
 function bool IsNearHome(vector position)
 {
-	local bool bNear;
+    local bool bNear;
 
-	bNear = true;
-	if (bUseHome)
-		if (VSize(HomeLoc-position) > HomeExtent)
-			bNear = false;
+    bNear = true;
+    if (bUseHome)
+        if (VSize(HomeLoc-position) > HomeExtent)
+            bNear = false;
 
-	return bNear;
+    return bNear;
 }
 
 
@@ -21,83 +21,83 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos) 
 
 state Wandering
 {
-	event HitWall(vector HitNormal, actor HitWall)
-	{
-		local rotator dir;
-		local float   elasticity;
-		local float   minVel, maxHVel;
-		local vector  tempVect;
+    event HitWall(vector HitNormal, actor HitWall)
+    {
+        local rotator dir;
+        local float   elasticity;
+        local float   minVel, maxHVel;
+        local vector  tempVect;
 
-		elasticity = 0.3;
-		Velocity = elasticity*((Velocity dot HitNormal) * HitNormal * (-2.0) + Velocity);
-		DesiredRotation = Rotation;
-	}
+        elasticity = 0.3;
+        Velocity = elasticity*((Velocity dot HitNormal) * HitNormal * (-2.0) + Velocity);
+        DesiredRotation = Rotation;
+    }
 
-	function Tick(float deltaTime)
-	{
-		Super.Tick(deltatime);
-	}
+    function Tick(float deltaTime)
+    {
+        Super.Tick(deltatime);
+    }
 
-	function vector PickDirection()
-	{
-		local vector  dirVector;
-		local rotator rot;
+    function vector PickDirection()
+    {
+        local vector  dirVector;
+        local rotator rot;
 
-		if (!IsNearHome(Location))
-			dirVector = Normal(homeLoc - Location)*AirSpeed*4;
-		else
-			dirVector = Velocity;
-		dirVector += VRand()*AirSpeed*2;
-		dirVector = Normal(dirVector);
-		rot = Rotator(dirVector);
-		if (VSize(Velocity) < AirSpeed*0.5)
-		{
-			Acceleration = dirVector*AirSpeed;
-			SetRotation(rot);
-		}
-		return vector(rot)*200+Location;
-	}
+        if (!IsNearHome(Location))
+            dirVector = Normal(homeLoc - Location)*AirSpeed*4;
+        else
+            dirVector = Velocity;
+        dirVector += VRand()*AirSpeed*2;
+        dirVector = Normal(dirVector);
+        rot = Rotator(dirVector);
+        if (VSize(Velocity) < AirSpeed*0.5)
+        {
+            Acceleration = dirVector*AirSpeed;
+            SetRotation(rot);
+        }
+        return vector(rot)*200+Location;
+    }
 
-	function BeginState()
-	{
-		Super.BeginState();
-		BlockReactions();
-		Acceleration = vector(Rotation)*AccelRate;
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+        BlockReactions();
+        Acceleration = vector(Rotation)*AccelRate;
+    }
 
 Begin:
-	bBounce = True;
-	destPoint = None;
-	MoveTo(Location+Vector(Rotation)*(CollisionRadius+5), 1);
+    bBounce = True;
+    destPoint = None;
+    MoveTo(Location+Vector(Rotation)*(CollisionRadius+5), 1);
 
 Init:
-	bAcceptBump = false;
-	TweenToWalking(0.15);
-	WaitForLanding();
-	FinishAnim();
+    bAcceptBump = false;
+    TweenToWalking(0.15);
+    WaitForLanding();
+    FinishAnim();
 
 Wander:
-	PlayWalking();
+    PlayWalking();
 
 Moving:
-	TurnTo(PickDirection());
-	Sleep(0.0);
-	Goto('Moving');
+    TurnTo(PickDirection());
+    Sleep(0.0);
+    Goto('Moving');
 
 ContinueWander:
 ContinueFromDoor:
-	PlayWalking();
-	Goto('Wander');
+    PlayWalking();
+    Goto('Wander');
 }
 
 
 function PlayWalking()
 {
-	LoopAnimPivot('Still');
+    LoopAnimPivot('Still');
 }
 function TweenToWalking(float tweentime)
 {
-	TweenAnimPivot('Still', tweentime);
+    TweenAnimPivot('Still', tweentime);
 }
 
 

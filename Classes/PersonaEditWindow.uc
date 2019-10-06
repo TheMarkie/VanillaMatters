@@ -21,45 +21,45 @@ var Font  fontText;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	
-	SetFont(fontText);
-	SetInsertionPointType(INSTYPE_Insert);
-	EnableSingleLineEditing(False);
+    Super.InitWindow();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    SetFont(fontText);
+    SetInsertionPointType(INSTYPE_Insert);
+    EnableSingleLineEditing(False);
 
-	StyleChanged();
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
+
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
-// VirtualKeyPressed() 
+// VirtualKeyPressed()
 // ----------------------------------------------------------------------
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bIgnoreKey;
+    local bool bIgnoreKey;
 
-	if (Super.VirtualKeyPressed(key, bRepeat))
-		return True;
+    if (Super.VirtualKeyPressed(key, bRepeat))
+        return True;
 
-	// Return true except for keys we want to be processed 
-	// externally, like Escape an Tab
+    // Return true except for keys we want to be processed
+    // externally, like Escape an Tab
 
-	switch(key)
-	{
-		case IK_Tab:
-		case IK_Escape:
-			bIgnoreKey = False;
-			break;
-		
-		default:
-			bIgnoreKey = True;
-			break;
-	}
+    switch(key)
+    {
+        case IK_Tab:
+        case IK_Escape:
+            bIgnoreKey = False;
+            break;
 
-	return bIgnoreKey;
+        default:
+            bIgnoreKey = True;
+            break;
+    }
+
+    return bIgnoreKey;
 }
 
 // ----------------------------------------------------------------------
@@ -68,21 +68,21 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	colText          = theme.GetColorFromName('HUDColor_ListText');
-	colHighlight     = theme.GetColorFromName('HUDColor_ListHighlight');
-	colCursor        = theme.GetColorFromName('HUDColor_Cursor');
+    // Title colors
+    colText          = theme.GetColorFromName('HUDColor_ListText');
+    colHighlight     = theme.GetColorFromName('HUDColor_ListHighlight');
+    colCursor        = theme.GetColorFromName('HUDColor_Cursor');
 
-	SetTextColor(colText);
-	SetTileColor(colHighlight);
-	SetSelectedAreaTexture(Texture'Solid', colText);
-	SetSelectedAreaTextColor(colBlack);
-	SetEditCursor(Texture'DeusExEditCursor', Texture'DeusExEditCursor_Shadow', colCursor);
-	SetInsertionPointTexture(Texture'Solid', colCursor);
+    SetTextColor(colText);
+    SetTileColor(colHighlight);
+    SetSelectedAreaTexture(Texture'Solid', colText);
+    SetSelectedAreaTextColor(colBlack);
+    SetEditCursor(Texture'DeusExEditCursor', Texture'DeusExEditCursor_Shadow', colCursor);
+    SetInsertionPointTexture(Texture'Solid', colCursor);
 }
 
 // ----------------------------------------------------------------------

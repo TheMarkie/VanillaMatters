@@ -11,11 +11,11 @@ class DeusExEditWindow expands EditWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetTextAlignments( HALIGN_Left, VALIGN_Top );
-	SetInsertionPointType(INSTYPE_Insert);
-	SetEditCursor(Texture'DeusExEditCursor');
+    SetTextAlignments( HALIGN_Left, VALIGN_Top );
+    SetInsertionPointType(INSTYPE_Insert);
+    SetEditCursor(Texture'DeusExEditCursor');
 }
 
 defaultproperties

@@ -10,69 +10,69 @@ var EVAlign childVAlign;
 function ComputeChildSizes(bool bWidthSpecified, out float preferredWidth,
                            bool bHeightSpecified, out float preferredHeight)
 {
-	local float  totalWidth;
-	local float  maxHeight;
-	local Window child;
-	local Window nextChild;
+    local float  totalWidth;
+    local float  maxHeight;
+    local Window child;
+    local Window nextChild;
 
-	totalWidth = 0;
-	maxHeight  = 0;
+    totalWidth = 0;
+    maxHeight  = 0;
 
-	child = GetBottomChild();
-	while (child != None)
-	{
-		nextChild = child.GetHigherSibling();
+    child = GetBottomChild();
+    while (child != None)
+    {
+        nextChild = child.GetHigherSibling();
 
-		child.holdX = totalWidth;
-		child.holdY = 0;
-		if (nextChild == None)  // last child
-		{
-			if (bWidthSpecified)
-			{
-				child.holdWidth  = preferredWidth - totalWidth;
-				child.holdHeight = child.QueryPreferredHeight(child.holdWidth);
-			}
-			else
-				child.QueryPreferredSize(child.holdWidth, child.holdHeight);
-		}
-		else
-		{
-			child.QueryPreferredSize(child.holdWidth, child.holdHeight);
-			totalWidth += childSpacing;
-		}
+        child.holdX = totalWidth;
+        child.holdY = 0;
+        if (nextChild == None)  // last child
+        {
+            if (bWidthSpecified)
+            {
+                child.holdWidth  = preferredWidth - totalWidth;
+                child.holdHeight = child.QueryPreferredHeight(child.holdWidth);
+            }
+            else
+                child.QueryPreferredSize(child.holdWidth, child.holdHeight);
+        }
+        else
+        {
+            child.QueryPreferredSize(child.holdWidth, child.holdHeight);
+            totalWidth += childSpacing;
+        }
 
-		totalWidth += child.holdWidth;
-		if (maxHeight < child.holdHeight)
-			maxHeight = child.holdHeight;
+        totalWidth += child.holdWidth;
+        if (maxHeight < child.holdHeight)
+            maxHeight = child.holdHeight;
 
-		child = nextChild;
-	}
+        child = nextChild;
+    }
 
-	if (bHeightSpecified)
-		maxHeight = preferredHeight;
+    if (bHeightSpecified)
+        maxHeight = preferredHeight;
 
-	child = GetBottomChild();
-	while (child != None)
-	{
-		if      (childVAlign == VALIGN_Top)
-			child.holdY = 0;
-		else if (childVAlign == VALIGN_Center)
-			child.holdY = (maxHeight - child.holdHeight)/2.0;
-		else if (childVAlign == VALIGN_Bottom)
-			child.holdY = maxHeight - child.holdHeight;
-		else if (childVAlign == VALIGN_Full)
-		{
-			child.holdY      = 0;
-			child.holdHeight = maxHeight;
-		}
+    child = GetBottomChild();
+    while (child != None)
+    {
+        if      (childVAlign == VALIGN_Top)
+            child.holdY = 0;
+        else if (childVAlign == VALIGN_Center)
+            child.holdY = (maxHeight - child.holdHeight)/2.0;
+        else if (childVAlign == VALIGN_Bottom)
+            child.holdY = maxHeight - child.holdHeight;
+        else if (childVAlign == VALIGN_Full)
+        {
+            child.holdY      = 0;
+            child.holdHeight = maxHeight;
+        }
 
-		child = child.GetHigherSibling();
-	}
+        child = child.GetHigherSibling();
+    }
 
-	if (!bWidthSpecified)
-		preferredWidth  = totalWidth;
-	if (!bHeightSpecified)
-		preferredHeight = maxHeight;
+    if (!bWidthSpecified)
+        preferredWidth  = totalWidth;
+    if (!bHeightSpecified)
+        preferredHeight = maxHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -82,7 +82,7 @@ function ComputeChildSizes(bool bWidthSpecified, out float preferredWidth,
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	ComputeChildSizes(bWidthSpecified, preferredWidth, bHeightSpecified, preferredHeight);
+    ComputeChildSizes(bWidthSpecified, preferredWidth, bHeightSpecified, preferredHeight);
 }
 
 // ----------------------------------------------------------------------
@@ -91,20 +91,20 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function ConfigurationChanged()
 {
-	local float  tempWidth, tempHeight;
-	local Window child;
+    local float  tempWidth, tempHeight;
+    local Window child;
 
-	// just for safety
-	tempWidth  = width;
-	tempHeight = height;
-	ComputeChildSizes(true, tempWidth, true, tempHeight);
+    // just for safety
+    tempWidth  = width;
+    tempHeight = height;
+    ComputeChildSizes(true, tempWidth, true, tempHeight);
 
-	child = GetBottomChild();
-	while (child != None)
-	{
-		child.ConfigureChild(child.holdX, child.holdY, child.holdWidth, child.holdHeight);
-		child = child.GetHigherSibling();
-	}
+    child = GetBottomChild();
+    while (child != None)
+    {
+        child.ConfigureChild(child.holdX, child.holdY, child.holdWidth, child.holdHeight);
+        child = child.GetHigherSibling();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ function ConfigurationChanged()
 
 event bool ChildRequestedReconfiguration(window childWin)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -122,11 +122,11 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 function SetChildSpacing(float newChildSpacing)
 {
-	if (childSpacing != newChildSpacing)
-	{
-		childSpacing = newChildSpacing;
-		AskParentForReconfigure();
-	}
+    if (childSpacing != newChildSpacing)
+    {
+        childSpacing = newChildSpacing;
+        AskParentForReconfigure();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -135,11 +135,11 @@ function SetChildSpacing(float newChildSpacing)
 
 function SetChildVAlignment(EVAlign newChildVAlign)
 {
-	if (childVAlign != newChildVAlign)
-	{
-		childVAlign = newChildVAlign;
-		AskParentForReconfigure();
-	}
+    if (childVAlign != newChildVAlign)
+    {
+        childVAlign = newChildVAlign;
+        AskParentForReconfigure();
+    }
 }
 
 defaultproperties

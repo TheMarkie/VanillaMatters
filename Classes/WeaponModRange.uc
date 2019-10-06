@@ -11,11 +11,11 @@ class WeaponModRange extends WeaponMod;
 
 function ApplyMod(DeusExWeapon weapon)
 {
-	if (weapon != None)
-	{
-		weapon.AccurateRange    += (weapon.Default.AccurateRange * WeaponModifier);
-		weapon.ModAccurateRange += WeaponModifier;
-	}
+    if (weapon != None)
+    {
+        weapon.AccurateRange    += (weapon.Default.AccurateRange * WeaponModifier);
+        weapon.ModAccurateRange += WeaponModifier;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -24,10 +24,10 @@ function ApplyMod(DeusExWeapon weapon)
 
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
-	if (weapon != None)
-		return (weapon.bCanHaveModAccurateRange && !weapon.HasMaxRangeMod());
-	else
-		return False;
+    if (weapon != None)
+        return (weapon.bCanHaveModAccurateRange && !weapon.HasMaxRangeMod());
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------

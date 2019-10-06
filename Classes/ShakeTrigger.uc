@@ -12,23 +12,23 @@ var() float shakeVertMagnitude;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	Instigator.ShakeView(shakeTime, shakeRollMagnitude, shakeVertMagnitude);
+    Instigator.ShakeView(shakeTime, shakeRollMagnitude, shakeVertMagnitude);
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 }
 
 function Touch(Actor Other)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	if (IsRelevant(Other))
-	{
-		player = DeusExPlayer(Other);
-		if (player != None)
-			player.ShakeView(shakeTime, shakeRollMagnitude, shakeVertMagnitude);
+    if (IsRelevant(Other))
+    {
+        player = DeusExPlayer(Other);
+        if (player != None)
+            player.ShakeView(shakeTime, shakeRollMagnitude, shakeVertMagnitude);
 
-		Super.Touch(Other);
-	}
+        Super.Touch(Other);
+    }
 }
 
 defaultproperties

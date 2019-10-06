@@ -2,26 +2,26 @@
 // Tree.
 //=============================================================================
 class Tree extends OutdoorThings
-	abstract;
+    abstract;
 
-var() float soundFreq;		// chance of making a sound every 5 seconds
+var() float soundFreq;      // chance of making a sound every 5 seconds
 
 function Timer()
 {
-	if (FRand() < soundFreq)
-	{
-		// play wind sounds at random pitch offsets
-		if (FRand() < 0.5)
-			PlaySound(sound'WindGust1', SLOT_Misc,,, 2048, 0.7 + 0.6 * FRand());
-		else
-			PlaySound(sound'WindGust2', SLOT_Misc,,, 2048, 0.7 + 0.6 * FRand());
-	}
+    if (FRand() < soundFreq)
+    {
+        // play wind sounds at random pitch offsets
+        if (FRand() < 0.5)
+            PlaySound(sound'WindGust1', SLOT_Misc,,, 2048, 0.7 + 0.6 * FRand());
+        else
+            PlaySound(sound'WindGust2', SLOT_Misc,,, 2048, 0.7 + 0.6 * FRand());
+    }
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
-	SetTimer(4.0 + 2.0 * FRand(), True);
+    Super.PostBeginPlay();
+    SetTimer(4.0 + 2.0 * FRand(), True);
 }
 
 defaultproperties

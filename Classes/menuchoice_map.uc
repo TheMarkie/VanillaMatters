@@ -14,8 +14,8 @@ var DXMapList MapList;
 
 event InitWindow()
 {
-	Super.InitWindow();
-     
+    Super.InitWindow();
+
    PopulateMapFiles();
 
    SetInitialMap();
@@ -29,7 +29,7 @@ event InitWindow()
 
 function PopulateMapFiles()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    MapList = player.Spawn(class'DXMapList');
 
@@ -54,7 +54,7 @@ function SetInitialMap()
 {
    local int CurrentMapNum;
 
-   CurrentMapNum = int(player.ConsoleCommand("get" @ configsetting));  
+   CurrentMapNum = int(player.ConsoleCommand("get" @ configsetting));
 
    SetValue(CurrentMapNum);
 }
@@ -75,9 +75,9 @@ function SaveSetting()
 function LoadSetting()
 {
    local int CurrentMapNum;
-   
+
    CurrentMapNum = int(player.ConsoleCommand("get" @ configsetting));
-   
+
    SetValue(CurrentMapNum);
 }
 
@@ -86,7 +86,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ defaultvalue);
    LoadSetting();
 }

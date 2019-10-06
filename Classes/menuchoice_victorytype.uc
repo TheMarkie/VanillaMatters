@@ -17,9 +17,9 @@ var MenuScreenHostGame hostparent;
 
 event InitWindow()
 {
-	PopulateVictoryTypes();
+    PopulateVictoryTypes();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialVictoryType();
 
@@ -32,7 +32,7 @@ event InitWindow()
 
 function PopulateVictoryTypes()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    for (typeIndex = 0; typeIndex < arrayCount(VictoryNames); typeIndex++)
    {
@@ -91,7 +91,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.ConsoleCommand("set " $ configSetting $ " " $ GetModuleName(defaultValue));
    LoadSetting();
 }
@@ -104,7 +104,7 @@ function SetValue(int newValue)
 {
    Super.SetValue(newValue);
 
-   if ( (hostParent != None) && (hostParent.VictoryValueChoice != None) )   
+   if ( (hostParent != None) && (hostParent.VictoryValueChoice != None) )
       hostParent.VictoryValueChoice.SetVictoryType(GetModuleName(newValue));
 }
 

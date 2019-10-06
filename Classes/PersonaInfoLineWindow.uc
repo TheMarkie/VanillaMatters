@@ -14,9 +14,9 @@ var Color colLine;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetHeight(5);
+    SetHeight(5);
 }
 
 // ----------------------------------------------------------------------
@@ -25,11 +25,11 @@ event InitWindow()
 
 event DrawWindow(GC gc)
 {
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 
-	gc.SetStyle(DSTY_Normal);
-	gc.SetTileColor(colLine);
-	gc.DrawPattern(0, 2, width, 1, 0, 0, Texture'Solid' );
+    gc.SetStyle(DSTY_Normal);
+    gc.SetTileColor(colLine);
+    gc.DrawPattern(0, 2, width, 1, 0, 0, Texture'Solid' );
 }
 
 // ----------------------------------------------------------------------
@@ -38,14 +38,14 @@ event DrawWindow(GC gc)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	// Title colors
-	colLine = theme.GetColorFromName('HUDColor_NormalText');
+    // Title colors
+    colLine = theme.GetColorFromName('HUDColor_NormalText');
 }
 
 defaultproperties

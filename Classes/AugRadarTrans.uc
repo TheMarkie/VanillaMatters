@@ -13,25 +13,25 @@ Begin:
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 }
 
 function float GetEnergyRate()
 {
-	return energyRate * LevelValues[CurrentLevel];
+    return energyRate * LevelValues[CurrentLevel];
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
       AugmentationLocation = LOC_Torso;
-	}
+    }
 }
 
 defaultproperties

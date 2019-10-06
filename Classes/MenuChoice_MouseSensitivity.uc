@@ -10,8 +10,8 @@ class MenuChoice_MouseSensitivity extends MenuUIChoiceSlider;
 
 function LoadSetting()
 {
-	saveValue = player.MouseSensitivity;
-	SetValue(player.MouseSensitivity);
+    saveValue = player.MouseSensitivity;
+    SetValue(player.MouseSensitivity);
 }
 
 // ----------------------------------------------------------------------
@@ -20,7 +20,7 @@ function LoadSetting()
 
 function CancelSetting()
 {
-	player.UpdateSensitivity(saveValue);
+    player.UpdateSensitivity(saveValue);
 }
 
 // ----------------------------------------------------------------------
@@ -32,8 +32,8 @@ function ResetToDefault()
 log("MenuChoice_MouseSensitivy::ResetToDefaults()----------------------");
 log("  devaultValue = "$  defaultValue);
 
-	player.UpdateSensitivity(defaultValue);
-	SetValue(player.MouseSensitivity);
+    player.UpdateSensitivity(defaultValue);
+    SetValue(player.MouseSensitivity);
 }
 
 // ----------------------------------------------------------------------
@@ -42,14 +42,14 @@ log("  devaultValue = "$  defaultValue);
 
 function SetEnumerators()
 {
-	local int enumIndex;
+    local int enumIndex;
 
-	for(enumIndex=1;enumIndex<11;enumIndex++)
-		SetEnumeration(enumIndex-1, enumIndex);
+    for(enumIndex=1;enumIndex<11;enumIndex++)
+        SetEnumeration(enumIndex-1, enumIndex);
 }
 
 // ----------------------------------------------------------------------
-// ScalePositionChanged() 
+// ScalePositionChanged()
 //
 // Update the Mouse Sensitivity value
 // ----------------------------------------------------------------------
@@ -57,14 +57,14 @@ function SetEnumerators()
 event bool ScalePositionChanged(Window scale, int newTickPosition,
                                 float newValue, bool bFinal)
 {
-	// Don't do anything while initializing as we get several 
-	// ScalePositionChanged() events before LoadSetting() is called.
+    // Don't do anything while initializing as we get several
+    // ScalePositionChanged() events before LoadSetting() is called.
 
-	if (bInitializing)
-		return False;
+    if (bInitializing)
+        return False;
 
-	player.UpdateSensitivity(GetValue());
-	return false;
+    player.UpdateSensitivity(GetValue());
+    return false;
 }
 
 // ----------------------------------------------------------------------

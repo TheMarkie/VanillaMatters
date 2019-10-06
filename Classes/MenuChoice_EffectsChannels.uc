@@ -10,16 +10,16 @@ class MenuChoice_EffectsChannels extends MenuUIChoiceSlider;
 
 function SetEnumerators()
 {
-	local int enumIndex;
-	local int counter;
+    local int enumIndex;
+    local int counter;
 
-	counter = 0;
+    counter = 0;
 
-	for(enumIndex=4;enumIndex<17;enumIndex++)
-	{
-		SetEnumeration(counter, enumIndex);
-		counter++;
-	}
+    for(enumIndex=4;enumIndex<17;enumIndex++)
+    {
+        SetEnumeration(counter, enumIndex);
+        counter++;
+    }
 }
 
 // ----------------------------------------------------------------------

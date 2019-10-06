@@ -9,38 +9,38 @@ class Fireball extends DeusExProjectile;
 
 simulated function Tick(float deltaTime)
 {
-	local float value;
-	local float sizeMult;
+    local float value;
+    local float sizeMult;
 
-	// don't Super.Tick() becuase we don't want gravity to affect the stream
-	time += deltaTime;
+    // don't Super.Tick() becuase we don't want gravity to affect the stream
+    time += deltaTime;
 
-	value = 1.0+time;
-	if (MinDrawScale > 0)
-		sizeMult = MaxDrawScale/MinDrawScale;
-	else
-		sizeMult = 1;
+    value = 1.0+time;
+    if (MinDrawScale > 0)
+        sizeMult = MaxDrawScale/MinDrawScale;
+    else
+        sizeMult = 1;
 
-	DrawScale = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
-	ScaleGlow = Default.ScaleGlow/(value*value*value);
+    DrawScale = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
+    ScaleGlow = Default.ScaleGlow/(value*value*value);
 }
 
 function ZoneChange(ZoneInfo NewZone)
 {
-	Super.ZoneChange(NewZone);
+    Super.ZoneChange(NewZone);
 
-	// If the fireball enters water, extingish it
-	if (NewZone.bWaterZone)
-		Destroy();
+    // If the fireball enters water, extingish it
+    if (NewZone.bWaterZone)
+        Destroy();
 }
 
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if ( Level.NetMode != NM_Standalone )
-		Damage = mpDamage;
+    if ( Level.NetMode != NM_Standalone )
+        Damage = mpDamage;
 }
 
 defaultproperties

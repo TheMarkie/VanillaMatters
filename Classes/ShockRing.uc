@@ -7,16 +7,16 @@ var float size;
 
 simulated function Tick(float deltaTime)
 {
-	DrawScale = size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan;
-	ScaleGlow = LifeSpan / Default.LifeSpan;
+    DrawScale = size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan;
+    ScaleGlow = LifeSpan / Default.LifeSpan;
 }
 
 simulated function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	if (size > 5)
-		Skin = Texture'FlatFXTex43';
+    if (size > 5)
+        Skin = Texture'FlatFXTex43';
 }
 
 defaultproperties

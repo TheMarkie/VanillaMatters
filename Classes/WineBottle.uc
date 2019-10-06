@@ -5,26 +5,26 @@ class WineBottle extends DeusExPickup;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			player.HealPlayer(2, False);
-			player.drugEffectTimer += 5.0;
-		}
+        Super.BeginState();
 
-		UseOnce();
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            player.HealPlayer(2, False);
+            player.drugEffectTimer += 5.0;
+        }
+
+        UseOnce();
+    }
 Begin:
 }
 

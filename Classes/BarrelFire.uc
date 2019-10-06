@@ -7,27 +7,27 @@ var float lastDamageTime;
 
 function DamageOther(Actor Other)
 {
-	if ((Other != None) && !Other.IsA('ScriptedPawn'))
-	{
-		// only take damage every second
-		if (Level.TimeSeconds - lastDamageTime >= 1.0)
-		{
-			Other.TakeDamage(5, None, Location, vect(0,0,0), 'Burned');
-			lastDamageTime = Level.TimeSeconds;
-		}
-	}
+    if ((Other != None) && !Other.IsA('ScriptedPawn'))
+    {
+        // only take damage every second
+        if (Level.TimeSeconds - lastDamageTime >= 1.0)
+        {
+            Other.TakeDamage(5, None, Location, vect(0,0,0), 'Burned');
+            lastDamageTime = Level.TimeSeconds;
+        }
+    }
 }
 
 singular function SupportActor(Actor Other)
 {
-	DamageOther(Other);
-	Super.SupportActor(Other);
+    DamageOther(Other);
+    Super.SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
-	DamageOther(Other);
-	Super.Bump(Other);
+    DamageOther(Other);
+    Super.Bump(Other);
 }
 
 defaultproperties

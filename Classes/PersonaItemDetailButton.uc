@@ -19,11 +19,11 @@ var localized String CountLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetItem(None);
+    SetItem(None);
 
-	SetSensitivity(bDisabledByDefault);
+    SetSensitivity(bDisabledByDefault);
 }
 
 // ----------------------------------------------------------------------
@@ -31,23 +31,23 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	local String str;
-	local float strWidth, strHeight;
+{
+    local String str;
+    local float strWidth, strHeight;
 
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 
-	// Don't draw count if we're ignoring
-	if (!bIgnoreCount)
-	{
-		str = Sprintf(CountLabel, itemCount);
+    // Don't draw count if we're ignoring
+    if (!bIgnoreCount)
+    {
+        str = Sprintf(CountLabel, itemCount);
 
-		gc.SetFont(Font'FontMenuSmall_DS');
-		gc.SetAlignments(HALIGN_Center, VALIGN_Top);
-		gc.SetTextColor(colHeaderText);
-		gc.GetTextExtent(0, strWidth, strHeight, str);
-		gc.DrawText(0, height - strHeight, width, strHeight, str);
-	}
+        gc.SetFont(Font'FontMenuSmall_DS');
+        gc.SetAlignments(HALIGN_Center, VALIGN_Top);
+        gc.SetTextColor(colHeaderText);
+        gc.GetTextExtent(0, strWidth, strHeight, str);
+        gc.DrawText(0, height - strHeight, width, strHeight, str);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -56,14 +56,14 @@ event DrawWindow(GC gc)
 
 function SetItem(DeusExPickup newItem)
 {
-	item = newItem;
+    item = newItem;
 
-	SetClientObject(item);
+    SetClientObject(item);
 
-	if (item != None)
-		itemCount = item.NumCopies;
+    if (item != None)
+        itemCount = item.NumCopies;
 
-	UpdateIconColor();
+    UpdateIconColor();
 }
 
 // ----------------------------------------------------------------------
@@ -72,17 +72,17 @@ function SetItem(DeusExPickup newItem)
 
 function UpdateIconColor()
 {
-	// Show the icon in half intensity if the player doesn't have it!
-	if ((item != None) || (bIgnoreCount) || ((!bIgnoreCount) && (itemCount > 0)))
-	{
-		colIcon = Default.colIcon;
-	}
-	else
-	{
-		colIcon.r = Default.colIcon.r / 2;
-		colIcon.g = Default.colIcon.g / 2;
-		colIcon.b = Default.colIcon.b / 2;
-	}
+    // Show the icon in half intensity if the player doesn't have it!
+    if ((item != None) || (bIgnoreCount) || ((!bIgnoreCount) && (itemCount > 0)))
+    {
+        colIcon = Default.colIcon;
+    }
+    else
+    {
+        colIcon.r = Default.colIcon.r / 2;
+        colIcon.g = Default.colIcon.g / 2;
+        colIcon.b = Default.colIcon.b / 2;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -91,8 +91,8 @@ function UpdateIconColor()
 
 function SetIgnoreCount(bool bIgnore)
 {
-	bIgnoreCount = bIgnore;
-	SetItem(Item);
+    bIgnoreCount = bIgnore;
+    SetItem(Item);
 }
 
 
@@ -102,9 +102,9 @@ function SetIgnoreCount(bool bIgnore)
 
 function SetCount(int newCount)
 {
-	itemCount = newCount;
+    itemCount = newCount;
 
-	UpdateIconColor();
+    UpdateIconColor();
 }
 
 // ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ function SetCount(int newCount)
 
 function SetCountLabel(String newLabel)
 {
-	CountLabel = newLabel;
+    CountLabel = newLabel;
 }
 
 // ----------------------------------------------------------------------

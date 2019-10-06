@@ -2,7 +2,7 @@
 // HUDMissionStartTextDisplay
 //=============================================================================
 class HUDMissionStartTextDisplay extends Window
-	transient;
+    transient;
 
 // ----------------------------------------------------------------------
 // Local Variables
@@ -30,20 +30,20 @@ var Color colBlack;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	winTextShadow = TextWindow(NewChild(Class'TextWindow'));
-	winTextShadow.SetFont(fontText);
-	winTextShadow.SetTextColor(colBlack);
-	winTextShadow.SetTextMargins(0, 0);
-	winTextShadow.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winTextShadow = TextWindow(NewChild(Class'TextWindow'));
+    winTextShadow.SetFont(fontText);
+    winTextShadow.SetTextColor(colBlack);
+    winTextShadow.SetTextMargins(0, 0);
+    winTextShadow.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
-	winText = TextWindow(NewChild(Class'TextWindow'));
-	winText.SetFont(fontText);
-	winText.SetTextColor(colText);
-	winText.EnableTranslucentText(True);
-	winText.SetTextMargins(0, 0);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    winText = TextWindow(NewChild(Class'TextWindow'));
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.EnableTranslucentText(True);
+    winText.SetTextMargins(0, 0);
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------
@@ -52,20 +52,20 @@ event InitWindow()
 
 function Tick(float deltaTime)
 {
-	if (bSpewingText)
-	{
-		PrintNextCharacter();
-	}
-	else
-	{
-		displayTime -= deltaTime;
+    if (bSpewingText)
+    {
+        PrintNextCharacter();
+    }
+    else
+    {
+        displayTime -= deltaTime;
 
-		if (displayTime <= 0)
-		{
-			bTickEnabled = False;
-			HideMessage();
-		}
-	}
+        if (displayTime <= 0)
+        {
+            bTickEnabled = False;
+            HideMessage();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -74,27 +74,27 @@ function Tick(float deltaTime)
 
 function HideMessage()
 {
-	Hide();
+    Hide();
 }
 
 // ----------------------------------------------------------------------
-// ParentRequestedPreferredSize() 
+// ParentRequestedPreferredSize()
 // ----------------------------------------------------------------------
 
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local GC gc;
+    local GC gc;
 
-	gc = GetGC();
+    gc = GetGC();
 
-	gc.SetFont(fontText);
-	gc.GetTextExtent(maxTextWidth, preferredWidth, preferredHeight, ConvertScriptString(message));
+    gc.SetFont(fontText);
+    gc.GetTextExtent(maxTextWidth, preferredWidth, preferredHeight, ConvertScriptString(message));
 
-	preferredWidth  += shadowDist;
-	preferredHeight += shadowDist;
+    preferredWidth  += shadowDist;
+    preferredHeight += shadowDist;
 
-	ReleaseGC(gc);
+    ReleaseGC(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -106,8 +106,8 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 function ConfigurationChanged()
 {
 
-	winText.ConfigureChild(0, 0, width, height);
-	winTextShadow.ConfigureChild(shadowDist, shadowDist, width, height);
+    winText.ConfigureChild(0, 0, width, height);
+    winTextShadow.ConfigureChild(shadowDist, shadowDist, width, height);
 }
 
 // ----------------------------------------------------------------------
@@ -116,7 +116,7 @@ function ConfigurationChanged()
 
 event bool ChildRequestedReconfiguration(window childWin)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -125,14 +125,14 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 function AddMessage(String str)
 {
-	if (str != "")
-	{
-		if (message != "")
-		{
-			message = message $ "|n";
-		}
-		message = message $ str;
-	}
+    if (str != "")
+    {
+        if (message != "")
+        {
+            message = message $ "|n";
+        }
+        message = message $ str;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -141,10 +141,10 @@ function AddMessage(String str)
 
 function StartMessage()
 {
-	Show();
-	AskParentForReconfigure();
-	bTickEnabled = True;
-	bSpewingText = True;
+    Show();
+    AskParentForReconfigure();
+    bTickEnabled = True;
+    bSpewingText = True;
 }
 
 // ----------------------------------------------------------------------
@@ -153,26 +153,26 @@ function StartMessage()
 
 function PrintNextCharacter()
 {
-	if (charIndex < len(message))
-	{
-		if ((mid(message, charIndex, 1) == "|") && (mid(message, charIndex, 2) == "|n"))
-		{
-			winText.AppendText("|n");
-			winTextShadow.AppendText("|n");
-			charIndex += 2;
-		}
-		else
-		{
-			winText.AppendText(mid(message, charIndex, 1));
-			winTextShadow.AppendText(mid(message, charIndex, 1));
-			charIndex++;
-		}
-	}
-	else
-	{
-		// Now more characters to print, so pause and then go away
-		bSpewingText = False;
-	}
+    if (charIndex < len(message))
+    {
+        if ((mid(message, charIndex, 1) == "|") && (mid(message, charIndex, 2) == "|n"))
+        {
+            winText.AppendText("|n");
+            winTextShadow.AppendText("|n");
+            charIndex += 2;
+        }
+        else
+        {
+            winText.AppendText(mid(message, charIndex, 1));
+            winTextShadow.AppendText(mid(message, charIndex, 1));
+            charIndex++;
+        }
+    }
+    else
+    {
+        // Now more characters to print, so pause and then go away
+        bSpewingText = False;
+    }
 }
 
 // ----------------------------------------------------------------------

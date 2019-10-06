@@ -12,7 +12,7 @@ class MenuChoice_MultiHelp extends MenuChoice_OnOff;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetActionButtonWidth(153);
 
@@ -25,23 +25,23 @@ event InitWindow()
 
 function LoadSetting()
 {
-	local String SettingString;
-	local int enumIndex;
-	local int SettingChoice;
+    local String SettingString;
+    local int enumIndex;
+    local int SettingChoice;
 
-	SettingString = player.ConsoleCommand("get " $ configSetting);
-	SettingChoice = 0;
+    SettingString = player.ConsoleCommand("get " $ configSetting);
+    SettingChoice = 0;
 
-	for (enumIndex=0; enumIndex<arrayCount(FalseTrue); enumIndex++)
-	{
-		if (FalseTrue[enumIndex] == SettingString)
-		{
-			SettingChoice = enumIndex;
-			break;
-		}	
-	}
+    for (enumIndex=0; enumIndex<arrayCount(FalseTrue); enumIndex++)
+    {
+        if (FalseTrue[enumIndex] == SettingString)
+        {
+            SettingChoice = enumIndex;
+            break;
+        }
+    }
 
-	SetValue(SettingChoice);
+    SetValue(SettingChoice);
 }
 
 // ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.ConsoleCommand("set " $ configSetting $ " " $ FalseTrue[GetValue()]);
+    player.ConsoleCommand("set " $ configSetting $ " " $ FalseTrue[GetValue()]);
 }
 
 // ----------------------------------------------------------------------

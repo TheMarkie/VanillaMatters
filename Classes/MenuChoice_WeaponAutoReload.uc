@@ -10,7 +10,7 @@ class MenuChoice_WeaponAutoReload extends MenuChoice_EnabledDisabled;
 
 function LoadSetting()
 {
-	SetValue(int(!player.bAutoReload));
+    SetValue(int(!player.bAutoReload));
 }
 
 // ----------------------------------------------------------------------
@@ -19,9 +19,9 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.bAutoReload = !bool(GetValue());
-	if ( player.Level.NetMode != NM_Standalone )
-		player.ServerSetAutoReload( player.bAutoReload );
+    player.bAutoReload = !bool(GetValue());
+    if ( player.Level.NetMode != NM_Standalone )
+        player.ServerSetAutoReload( player.bAutoReload );
 }
 
 // ----------------------------------------------------------------------
@@ -29,9 +29,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	SetValue(int(!player.bAutoReload));
-	if ( player.Level.NetMode != NM_Standalone )
-		player.ServerSetAutoReload( player.bAutoReload );
+    SetValue(int(!player.bAutoReload));
+    if ( player.Level.NetMode != NM_Standalone )
+        player.ServerSetAutoReload( player.bAutoReload );
 }
 
 // ----------------------------------------------------------------------

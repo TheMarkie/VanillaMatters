@@ -5,26 +5,26 @@ class VialCrack extends DeusExPickup;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			player.drugEffectTimer += 60.0;
-			player.HealPlayer(-10, False);
-		}
+        Super.BeginState();
 
-		UseOnce();
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            player.drugEffectTimer += 60.0;
+            player.HealPlayer(-10, False);
+        }
+
+        UseOnce();
+    }
 Begin:
 }
 

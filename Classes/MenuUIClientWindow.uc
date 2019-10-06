@@ -27,12 +27,12 @@ var Color colBackground;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    Super.InitWindow();
 
-	StyleChanged();
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
+
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -40,18 +40,18 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Draw window background
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
+{
+    // Draw window background
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
 
-	for(textureIndex=0; textureIndex<textureCount; textureIndex++)
-	{
-		gc.DrawIcon(
-			texturePosX[textureIndex], 
-			texturePosY[textureIndex], 
-			clientTextures[textureIndex]);		
-	}
+    for(textureIndex=0; textureIndex<textureCount; textureIndex++)
+    {
+        gc.DrawIcon(
+            texturePosX[textureIndex],
+            texturePosY[textureIndex],
+            clientTextures[textureIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -60,8 +60,8 @@ event DrawWindow(GC gc)
 
 function SetClientTexture(int textureIndex, Texture newTexture)
 {
-	if ((textureIndex >= 0) && (textureIndex < arrayCount(clientTextures)))
-		clientTextures[textureIndex] = newTexture;
+    if ((textureIndex >= 0) && (textureIndex < arrayCount(clientTextures)))
+        clientTextures[textureIndex] = newTexture;
 }
 
 // ----------------------------------------------------------------------
@@ -70,35 +70,35 @@ function SetClientTexture(int textureIndex, Texture newTexture)
 
 function SetTextureLayout(int newTextureCols, int newTextureRows)
 {
-	textureCols = newTextureCols;
-	textureRows = newTextureRows;
+    textureCols = newTextureCols;
+    textureRows = newTextureRows;
 
-	CalculateTexturePositions();
+    CalculateTexturePositions();
 }
 
 // ----------------------------------------------------------------------
 // CalculateTexturePositions()
 //
-// Do this once so we don't have to do it every time in the 
+// Do this once so we don't have to do it every time in the
 // DrawWindow() event
 // ----------------------------------------------------------------------
 
 function CalculateTexturePositions()
 {
-	local int rowIndex;
-	local int colIndex;
+    local int rowIndex;
+    local int colIndex;
 
-	textureCount = 0;
+    textureCount = 0;
 
-	for(rowIndex=0; rowIndex<textureRows; rowIndex++)
-	{
-		for(colIndex=0; colIndex<textureCols; colIndex++)
-		{
-			texturePosX[textureCount] = colIndex * 256;
-			texturePosY[textureCount] = rowIndex * 256;
-			textureCount++;
-		}
-	}
+    for(rowIndex=0; rowIndex<textureRows; rowIndex++)
+    {
+        for(colIndex=0; colIndex<textureCols; colIndex++)
+        {
+            texturePosX[textureCount] = colIndex * 256;
+            texturePosY[textureCount] = rowIndex * 256;
+            textureCount++;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -107,18 +107,18 @@ function CalculateTexturePositions()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	// Translucency
-	if (player.GetMenuTranslucency())
-		backgroundDrawStyle = DSTY_Translucent;
-	else
-		backgroundDrawStyle = DSTY_Masked;
+    // Translucency
+    if (player.GetMenuTranslucency())
+        backgroundDrawStyle = DSTY_Translucent;
+    else
+        backgroundDrawStyle = DSTY_Masked;
 
-	// Background color
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    // Background color
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	colBackground = theme.GetColorFromName('MenuColor_Background');
+    colBackground = theme.GetColorFromName('MenuColor_Background');
 }
 
 // ----------------------------------------------------------------------

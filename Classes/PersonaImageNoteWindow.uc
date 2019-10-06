@@ -17,17 +17,17 @@ var Color colBackground;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetTextMargins(2, 2);
-	SetMaxSize(200);				// maybe increase this later, probably not.
-	SetNormalColors();
-	SetSelectedAreaTexture(Texture'Solid', colEditHighlight);
-	SetSelectedAreaTextColor(colEditTextHighlight);
+    SetTextMargins(2, 2);
+    SetMaxSize(200);                // maybe increase this later, probably not.
+    SetNormalColors();
+    SetSelectedAreaTexture(Texture'Solid', colEditHighlight);
+    SetSelectedAreaTextColor(colEditTextHighlight);
 
-	SetBackgroundStyle(DSTY_Modulated);
-	SetTileColor(colBackground);
-	SetBackground(Texture'NoteEditBackground');
+    SetBackgroundStyle(DSTY_Modulated);
+    SetTileColor(colBackground);
+    SetBackground(Texture'NoteEditBackground');
 }
 
 // ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ event InitWindow()
 
 function SetFocusColors()
 {
-	SetTextColor(colEditTextFocus);
+    SetTextColor(colEditTextFocus);
 }
 
 // ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ function SetFocusColors()
 
 function SetNormalColors()
 {
-	SetTextColor(colEditTextNormal);
+    SetTextColor(colEditTextNormal);
 }
 
 // ----------------------------------------------------------------------
@@ -54,9 +54,9 @@ function SetNormalColors()
 
 function SetNote(DataVaultImageNote newNote)
 {
-	SetPos(newNote.posX, newNote.posY);
-	SetText(newNote.noteText);
-	SetClientObject(newNote);
+    SetPos(newNote.posX, newNote.posY);
+    SetText(newNote.noteText);
+    SetClientObject(newNote);
 }
 
 // ----------------------------------------------------------------------
@@ -65,7 +65,7 @@ function SetNote(DataVaultImageNote newNote)
 
 function DataVaultImageNote GetNote()
 {
-	return DataVaultImageNote(GetClientObject());
+    return DataVaultImageNote(GetClientObject());
 }
 
 // ----------------------------------------------------------------------
@@ -74,11 +74,11 @@ function DataVaultImageNote GetNote()
 
 function SetTextColors(Color colTextNormal, Color colTextFocus, Color colBack)
 {
-	colEditTextNormal    = colTextNormal;
-	colEditTextFocus     = colTextFocus;
-	colEditTextHighlight = colBack;
-	colEditHighlight     = colTextFocus;
-	colBackground        = colBack;
+    colEditTextNormal    = colTextNormal;
+    colEditTextFocus     = colTextFocus;
+    colEditTextHighlight = colBack;
+    colEditHighlight     = colTextFocus;
+    colBackground        = colBack;
 }
 
 // ----------------------------------------------------------------------

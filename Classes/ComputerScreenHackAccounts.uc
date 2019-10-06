@@ -7,7 +7,7 @@ var PersonaActionButtonWindow btnChangeAccount;
 var PersonaHeaderTextWindow   winCurrentUser;
 var PersonaListWindow         lstAccounts;
 var NetworkTerminal           winTerm;
-var Computers                 compOwner;		// what computer owns this window?
+var Computers                 compOwner;        // what computer owns this window?
 
 // Defaults
 var Texture texBackground;
@@ -25,11 +25,11 @@ var localized String CurrentAccountHeader;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(206, 232);
+    SetSize(206, 232);
 
-	CreateControls();	
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -38,10 +38,10 @@ event InitWindow()
 
 function CreateControls()
 {
-	CreateChangeAccountButton();
-	CreateCurrentUserWindow();
-	CreateAccountsList();
-	CreateHeaders();
+    CreateChangeAccountButton();
+    CreateCurrentUserWindow();
+    CreateAccountsList();
+    CreateHeaders();
 }
 
 // ----------------------------------------------------------------------
@@ -50,15 +50,15 @@ function CreateControls()
 
 function CreateChangeAccountButton()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(12, 169);
-	winActionButtons.SetWidth(174);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(12, 169);
+    winActionButtons.SetWidth(174);
+    winActionButtons.FillAllSpace(False);
 
-	btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnChangeAccount.SetButtonText(ChangeAccountButtonLabel);
+    btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnChangeAccount.SetButtonText(ChangeAccountButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -67,9 +67,9 @@ function CreateChangeAccountButton()
 
 function CreateCurrentUserWindow()
 {
-	winCurrentUser = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winCurrentUser.SetPos(16, 29);
-	winCurrentUser.SetSize(170, 12);
+    winCurrentUser = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winCurrentUser.SetPos(16, 29);
+    winCurrentUser.SetSize(170, 12);
 }
 
 // ----------------------------------------------------------------------
@@ -78,18 +78,18 @@ function CreateCurrentUserWindow()
 
 function CreateAccountsList()
 {
-	local PersonaScrollAreaWindow winScroll;
+    local PersonaScrollAreaWindow winScroll;
 
-	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
-	winScroll.SetPos(14, 69);
-	winScroll.SetSize(170, 97);
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
+    winScroll.SetPos(14, 69);
+    winScroll.SetSize(170, 97);
 
-	lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
-	lstAccounts.EnableMultiSelect(False);
-	lstAccounts.EnableAutoExpandColumns(False);
-	lstAccounts.EnableHotKeys(False);
-	lstAccounts.SetNumColumns(1);
-	lstAccounts.SetColumnWidth(0, 170);
+    lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
+    lstAccounts.EnableMultiSelect(False);
+    lstAccounts.EnableAutoExpandColumns(False);
+    lstAccounts.EnableHotKeys(False);
+    lstAccounts.SetNumColumns(1);
+    lstAccounts.SetColumnWidth(0, 170);
 }
 
 // ----------------------------------------------------------------------
@@ -98,15 +98,15 @@ function CreateAccountsList()
 
 function CreateHeaders()
 {
-	local MenuUIHeaderWindow winHeader;
+    local MenuUIHeaderWindow winHeader;
 
-	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 12);
-	winHeader.SetText(CurrentAccountHeader);
+    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    winHeader.SetPos(12, 12);
+    winHeader.SetText(CurrentAccountHeader);
 
-	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 53);
-	winHeader.SetText(AllAccountsHeader);
+    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    winHeader.SetPos(12, 53);
+    winHeader.SetText(AllAccountsHeader);
 }
 
 // ----------------------------------------------------------------------
@@ -115,12 +115,12 @@ function CreateHeaders()
 
 function DrawBackground(GC gc)
 {
-	gc.SetStyle(backgroundDrawStyle);
-	gc.SetTileColor(colBackground);
-	gc.DrawTexture(
-		backgroundPosX, backgroundPosY, 
-		backgroundWidth, backgroundHeight, 
-		0, 0, texBackground);
+    gc.SetStyle(backgroundDrawStyle);
+    gc.SetTileColor(colBackground);
+    gc.DrawTexture(
+        backgroundPosX, backgroundPosY,
+        backgroundWidth, backgroundHeight,
+        0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -129,12 +129,12 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		gc.SetStyle(borderDrawStyle);
-		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 206, 232, 0, 0, texBorder);
-	}
+    if (bDrawBorder)
+    {
+        gc.SetStyle(borderDrawStyle);
+        gc.SetTileColor(colBorder);
+        gc.DrawTexture(0, 0, 206, 232, 0, 0, texBorder);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -143,8 +143,8 @@ function DrawBorder(GC gc)
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	winTerm = newTerm;
-	UpdateCurrentUser();
+    winTerm = newTerm;
+    UpdateCurrentUser();
 }
 
 // ----------------------------------------------------------------------
@@ -153,24 +153,24 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local int compIndex;
-	local int rowId;
-	local int userRowIndex;
+    local int compIndex;
+    local int rowId;
+    local int userRowIndex;
 
-	compOwner = Computers(newCompOwner);
+    compOwner = Computers(newCompOwner);
 
-	// Loop through the names and add them to our listbox
-	for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
-	{
-		lstAccounts.AddRow(Caps(compOwner.GetUserName(compIndex)));
+    // Loop through the names and add them to our listbox
+    for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
+    {
+        lstAccounts.AddRow(Caps(compOwner.GetUserName(compIndex)));
 
-		if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
-			userRowIndex = compIndex;
-	}
+        if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
+            userRowIndex = compIndex;
+    }
 
-	// Select the row that matches the current user
-	rowId = lstAccounts.IndexToRowId(userRowIndex);
-	lstAccounts.SetRow(rowId, True);
+    // Select the row that matches the current user
+    rowId = lstAccounts.IndexToRowId(userRowIndex);
+    lstAccounts.SetRow(rowId, True);
 }
 
 // ----------------------------------------------------------------------
@@ -179,8 +179,8 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function UpdateCurrentUser()
 {
-	if (winTerm != None)
-		winCurrentUser.SetText(winTerm.GetUserName());
+    if (winTerm != None)
+        winCurrentUser.SetText(winTerm.GetUserName());
 }
 
 // ----------------------------------------------------------------------
@@ -189,17 +189,17 @@ function UpdateCurrentUser()
 
 function ChangeSelectedAccount()
 {
-	local int userIndex;
+    local int userIndex;
 
-	// Vanilla Matters
-	local int previousUserIndex;
-	// VM: Gets the previous userIndex for comparison.
-	previousUserIndex = winTerm.userIndex;
+    // Vanilla Matters
+    local int previousUserIndex;
+    // VM: Gets the previous userIndex for comparison.
+    previousUserIndex = winTerm.userIndex;
 
-	userIndex = lstAccounts.RowIdToIndex(lstAccounts.GetSelectedRow());
+    userIndex = lstAccounts.RowIdToIndex(lstAccounts.GetSelectedRow());
 
-	if (winTerm != None)
-		winTerm.ChangeAccount(userIndex);
+    if (winTerm != None)
+        winTerm.ChangeAccount(userIndex);
 }
 
 // ----------------------------------------------------------------------
@@ -208,25 +208,25 @@ function ChangeSelectedAccount()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnChangeAccount:
-			ChangeSelectedAccount();
-			break;
+    switch( buttonPressed )
+    {
+        case btnChangeAccount:
+            ChangeSelectedAccount();
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -237,23 +237,23 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = True;
+    local bool bKeyHandled;
+    bKeyHandled = True;
 
-	switch( key ) 
-	{	
-		case IK_Escape:
-			winTerm.ForceCloseScreen();	
-			break;
+    switch( key )
+    {
+        case IK_Escape:
+            winTerm.ForceCloseScreen();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	if (bKeyHandled)
-		return True;
-	else
-		return Super.VirtualKeyPressed(key, bRepeat);
+    if (bKeyHandled)
+        return True;
+    else
+        return Super.VirtualKeyPressed(key, bRepeat);
 }
 
 // ----------------------------------------------------------------------
@@ -262,8 +262,8 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 event bool ListRowActivated(window list, int rowId)
 {
-	ChangeSelectedAccount();
-	return TRUE;
+    ChangeSelectedAccount();
+    return TRUE;
 }
 
 // ----------------------------------------------------------------------

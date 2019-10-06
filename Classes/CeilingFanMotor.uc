@@ -5,27 +5,27 @@ class CeilingFanMotor extends DeusExDecoration;
 
 enum ESkinColor
 {
-	SC_WoodBrass,
-	SC_DarkWoodIron,
-	SC_White,
-	SC_WoodBrassFancy,
-	SC_WoodPlastic
+    SC_WoodBrass,
+    SC_DarkWoodIron,
+    SC_White,
+    SC_WoodBrassFancy,
+    SC_WoodPlastic
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_WoodBrass:		Skin = Texture'CeilingFanTex1'; break;
-		case SC_DarkWoodIron:	Skin = Texture'CeilingFanTex2'; break;
-		case SC_White:			Skin = Texture'CeilingFanTex3'; break;
-		case SC_WoodBrassFancy:	Skin = Texture'CeilingFanTex4'; break;
-		case SC_WoodPlastic:	Skin = Texture'CeilingFanTex5'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_WoodBrass:      Skin = Texture'CeilingFanTex1'; break;
+        case SC_DarkWoodIron:   Skin = Texture'CeilingFanTex2'; break;
+        case SC_White:          Skin = Texture'CeilingFanTex3'; break;
+        case SC_WoodBrassFancy: Skin = Texture'CeilingFanTex4'; break;
+        case SC_WoodPlastic:    Skin = Texture'CeilingFanTex5'; break;
+    }
 }
 
 defaultproperties

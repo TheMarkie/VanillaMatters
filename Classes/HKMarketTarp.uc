@@ -8,35 +8,35 @@ var bool bBlowing;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	if (!bRandomize)
-		LoopAnim('Blowing');
+    if (!bRandomize)
+        LoopAnim('Blowing');
 }
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (!bRandomize)
-		return;
+    if (!bRandomize)
+        return;
 
-	if (!bBlowing)
-	{
-		if (FRand() < 0.001)
-		{
-			LoopAnim('Blowing');
-			bBlowing = True;
-		}
-	}
-	else
-	{
-		if (FRand() < 0.001)
-		{
-			TweenAnim('Still', 0.1);
-			bBlowing = False;
-		}
-	}
+    if (!bBlowing)
+    {
+        if (FRand() < 0.001)
+        {
+            LoopAnim('Blowing');
+            bBlowing = True;
+        }
+    }
+    else
+    {
+        if (FRand() < 0.001)
+        {
+            TweenAnim('Still', 0.1);
+            bBlowing = False;
+        }
+    }
 }
 
 defaultproperties

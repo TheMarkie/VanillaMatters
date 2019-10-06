@@ -5,10 +5,10 @@ class AmmoShuriken extends DeusExAmmo;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
       AmmoAmount = 7;
 }
 

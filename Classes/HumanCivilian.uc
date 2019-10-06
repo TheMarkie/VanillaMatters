@@ -2,39 +2,39 @@
 // HumanCivilian.
 //=============================================================================
 class HumanCivilian extends ScriptedPawn
-	abstract;
+    abstract;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// Eventually, these will all be unique sounds per NPC specified in
-	// the defaultproperties
+    // Eventually, these will all be unique sounds per NPC specified in
+    // the defaultproperties
 
-	// change the sounds for chicks
-	if (bIsFemale)
-	{
-		HitSound1 = Sound'FemalePainMedium';
-		HitSound2 = Sound'FemalePainLarge';
-		Die = Sound'FemaleDeath';
-	}
+    // change the sounds for chicks
+    if (bIsFemale)
+    {
+        HitSound1 = Sound'FemalePainMedium';
+        HitSound2 = Sound'FemalePainLarge';
+        Die = Sound'FemaleDeath';
+    }
 
-	// change the sounds for kids
-	if (IsA('ChildMale') || IsA('ChildMale2'))
-	{
-		HitSound1 = Sound'ChildPainMedium';
-		HitSound2 = Sound'ChildPainLarge';
-		Die = Sound'ChildDeath';
-	}
+    // change the sounds for kids
+    if (IsA('ChildMale') || IsA('ChildMale2'))
+    {
+        HitSound1 = Sound'ChildPainMedium';
+        HitSound2 = Sound'ChildPainLarge';
+        Die = Sound'ChildDeath';
+    }
 }
 
 function bool WillTakeStompDamage(actor stomper)
 {
-	// This blows chunks!
-	if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
-		return false;
-	else
-		return true;
+    // This blows chunks!
+    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
+        return false;
+    else
+        return true;
 }
 
 defaultproperties

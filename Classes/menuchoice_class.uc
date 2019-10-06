@@ -3,7 +3,7 @@
 //=============================================================================
 
 class MenuChoice_Class extends MenuUIChoiceEnum
-	config;
+    config;
 
 var globalconfig string  ClassClasses[24]; //Actual classes of classes (sigh)
 var localized String     ClassNames[24]; //Human readable class names.
@@ -22,10 +22,10 @@ var int PortraitIndex;
 
 event InitWindow()
 {
-	PopulateClassChoices();
+    PopulateClassChoices();
    CreatePortraitButton();
 
-	Super.InitWindow();
+    Super.InitWindow();
 
    SetInitialClass();
 
@@ -41,7 +41,7 @@ event InitWindow()
 
 function PopulateClassChoices()
 {
-	local int typeIndex;
+    local int typeIndex;
 
    for (typeIndex = 0; typeIndex < arrayCount(ClassNames); typeIndex++)
    {
@@ -58,9 +58,9 @@ function SetInitialClass()
    local string TypeString;
    local int typeIndex;
 
-   
+
    TypeString = player.GetDefaultURL("Class");
-  
+
    for (typeIndex = 0; typeIndex < arrayCount(ClassNames); typeIndex++)
    {
       if (TypeString==GetModuleName(typeIndex))
@@ -96,7 +96,7 @@ function LoadSetting()
 {
    local string TypeString;
    local int typeIndex;
-   
+
    TypeString = player.GetDefaultURL("Class");
 
    for (typeIndex = 0; typeIndex < arrayCount(ClassNames); typeIndex++)
@@ -112,7 +112,7 @@ function LoadSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{   
+{
    player.UpdateURL("Class", GetModuleName(defaultValue), true);
    player.SaveConfig();
    LoadSetting();
@@ -134,12 +134,12 @@ function string GetModuleName(int ClassIndex)
 
 function CreatePortraitButton()
 {
-	btnPortrait = ButtonWindow(NewChild(Class'ButtonWindow'));
+    btnPortrait = ButtonWindow(NewChild(Class'ButtonWindow'));
 
-	btnPortrait.SetSize(116, 163);
-	btnPortrait.SetPos(19, 27);
+    btnPortrait.SetSize(116, 163);
+    btnPortrait.SetPos(19, 27);
 
-	btnPortrait.SetBackgroundStyle(DSTY_Masked);
+    btnPortrait.SetBackgroundStyle(DSTY_Masked);
 }
 
 // ----------------------------------------------------------------------

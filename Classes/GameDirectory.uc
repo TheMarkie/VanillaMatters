@@ -2,8 +2,8 @@
 // GameDirectory
 //=============================================================================
 class GameDirectory expands Object
-	native
-	noexport;
+    native
+    noexport;
 
 // ----------------------------------------------------------------------
 // EGameDirectoryType - Game Directory Types
@@ -12,18 +12,18 @@ class GameDirectory expands Object
 // TEMP_224
 struct DynamicArray
 {
-	var int foo1, foo2, foo3;
+    var int foo1, foo2, foo3;
 };
 */
 
 
 enum EGameDirectoryTypes
 {
-	GD_Maps,
-	GD_SaveGames
+    GD_Maps,
+    GD_SaveGames
 };
 
-var const native EGameDirectoryTypes gameDirectoryType;		// Game Directory Type
+var const native EGameDirectoryTypes gameDirectoryType;     // Game Directory Type
 var const native String currentFilter;
 var const native array<String> directoryList;
 var const native array<DeusExSaveInfo> loadedSaveInfoPointers;

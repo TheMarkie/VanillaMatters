@@ -10,7 +10,7 @@ class MenuChoice_MaxLogLines extends MenuUIChoiceSlider;
 
 function LoadSetting()
 {
-	SetValue(player.GetMaxLogLines());
+    SetValue(player.GetMaxLogLines());
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.SetMaxLogLines(GetValue());
+    player.SetMaxLogLines(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	player.UpdateSensitivity(defaultValue);
+    player.UpdateSensitivity(defaultValue);
 }
 
 // ----------------------------------------------------------------------
@@ -36,10 +36,10 @@ function ResetToDefault()
 
 function SetEnumerators()
 {
-	local int enumIndex;
+    local int enumIndex;
 
-	for(enumIndex=1;enumIndex<11;enumIndex++)
-		SetEnumeration(enumIndex-1, enumIndex);
+    for(enumIndex=1;enumIndex<11;enumIndex++)
+        SetEnumeration(enumIndex-1, enumIndex);
 }
 
 // ----------------------------------------------------------------------

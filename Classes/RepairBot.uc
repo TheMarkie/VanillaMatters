@@ -14,10 +14,10 @@ var Float lastchargeTime;
 // ----------------------------------------------------------------------
 replication
 {
-	// MBCODE: Replicate the last time charged to the server
+    // MBCODE: Replicate the last time charged to the server
    // DEUS_EX AMSD Changed to replicate to client.
-	reliable if ( Role == ROLE_Authority )
-		lastchargeTime, chargeRefreshTime;
+    reliable if ( Role == ROLE_Authority )
+        lastchargeTime, chargeRefreshTime;
 
 }
 
@@ -27,14 +27,14 @@ replication
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
    if (Level.NetMode != NM_Standalone)
    {
       chargeRefreshTime = mpChargeRefreshTime;
       chargeAmount = mpChargeAmount;
    }
-   
+
    if (IsImmobile())
       bAlwaysRelevant = True;
 
@@ -47,24 +47,24 @@ function PostBeginPlay()
 
 function StandStill()
 {
-	GotoState('Idle', 'Idle');
-	Acceleration=Vect(0, 0, 0);
+    GotoState('Idle', 'Idle');
+    Acceleration=Vect(0, 0, 0);
 }
 
 // ----------------------------------------------------------------------
 // Frob()
 //
-// Invoke the Augmentation Upgrade 
+// Invoke the Augmentation Upgrade
 // ----------------------------------------------------------------------
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
    if (DeusExPlayer(Frobber) == None)
       return;
-   
+
    // DEUS_EX AMSD  In multiplayer, don't pop up the window, just use them
-   // In singleplayer, do the old thing.  
+   // In singleplayer, do the old thing.
    if (Level.NetMode == NM_Standalone)
    {
       ActivateRepairBotScreens(DeusExPlayer(Frobber));
@@ -73,7 +73,7 @@ function Frob(Actor Frobber, Inventory frobWith)
    {
       if (CanCharge())
       {
-			PlaySound(sound'PlasmaRifleReload', SLOT_None,,, 256);
+            PlaySound(sound'PlasmaRifleReload', SLOT_None,,, 256);
          ChargePlayer(DeusExPlayer(Frobber));
          Pawn(Frobber).ClientMessage("Received Recharge");
       }
@@ -90,9 +90,9 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 simulated function ActivateRepairBotScreens(DeusExPlayer PlayerToDisplay)
 {
-	local DeusExRootWindow root;
-	local HUDRechargeWindow winCharge;
-			
+    local DeusExRootWindow root;
+    local HUDRechargeWindow winCharge;
+
    root = DeusExRootWindow(PlayerToDisplay.rootWindow);
    if (root != None)
    {
@@ -104,29 +104,29 @@ simulated function ActivateRepairBotScreens(DeusExPlayer PlayerToDisplay)
 
 // ----------------------------------------------------------------------
 // ChargePlayer()
-// DEUS_EX AMSD Moved back over here 
+// DEUS_EX AMSD Moved back over here
 // ----------------------------------------------------------------------
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {
-	local int chargedPoints;
+    local int chargedPoints;
 
-	if ( CanCharge() )
-	{
-		chargedPoints = PlayerToCharge.ChargePlayer( chargeAmount );
-		lastChargeTime = Level.TimeSeconds;
-	}
+    if ( CanCharge() )
+    {
+        chargedPoints = PlayerToCharge.ChargePlayer( chargeAmount );
+        lastChargeTime = Level.TimeSeconds;
+    }
    return chargedPoints;
 }
 
 // ----------------------------------------------------------------------
 // CanCharge()
-// 
+//
 // Returns whether or not the bot can charge the player
 // ----------------------------------------------------------------------
 
 simulated function bool CanCharge()
-{	
-	return ( (Level.TimeSeconds - int(lastChargeTime)) > chargeRefreshTime);
+{
+    return ( (Level.TimeSeconds - int(lastChargeTime)) > chargeRefreshTime);
 }
 
 // ----------------------------------------------------------------------
@@ -135,7 +135,7 @@ simulated function bool CanCharge()
 
 simulated function Float GetRefreshTimeRemaining()
 {
-	return chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
+    return chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
 }
 
 // ----------------------------------------------------------------------
@@ -144,10 +144,10 @@ simulated function Float GetRefreshTimeRemaining()
 
 simulated function Int GetAvailableCharge()
 {
-	if (CanCharge())
-		return chargeAmount; 
-	else
-		return 0;
+    if (CanCharge())
+        return chargeAmount;
+    else
+        return 0;
 }
 
 // ----------------------------------------------------------------------

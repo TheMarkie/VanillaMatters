@@ -12,56 +12,56 @@ var bool bIsOn;
 
 function Timer()
 {
-	if (!bIsOn)
-	{
-		SetTimer(0.1, False);
-		return;
-	}
+    if (!bIsOn)
+    {
+        SetTimer(0.1, False);
+        return;
+    }
 
-	if (damagee != None)
-		damagee.TakeDamage(damageAmount, None, Location, vect(0,0,0), damageType);
+    if (damagee != None)
+        damagee.TakeDamage(damageAmount, None, Location, vect(0,0,0), damageType);
 }
 
 function Touch(Actor Other)
 {
-	if (!bIsOn)
-		return;
+    if (!bIsOn)
+        return;
 
-	// should we even pay attention to this actor?
-	if (!IsRelevant(Other))
-		return;
+    // should we even pay attention to this actor?
+    if (!IsRelevant(Other))
+        return;
 
-	damagee = Other;
-	SetTimer(damageInterval, bConstantDamage);
+    damagee = Other;
+    SetTimer(damageInterval, bConstantDamage);
 
-	Super.Touch(Other);
+    Super.Touch(Other);
 }
 
 function UnTouch(Actor Other)
 {
-	if (!bIsOn)
-		return;
+    if (!bIsOn)
+        return;
 
-	damagee = None;
-	SetTimer(0.1, False);
+    damagee = None;
+    SetTimer(0.1, False);
 }
 
 // if we are triggered, turn us on
 function Trigger(Actor Other, Pawn Instigator)
 {
-	if (!bIsOn)
-		bIsOn = True;
+    if (!bIsOn)
+        bIsOn = True;
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 }
 
 // if we are untriggered, turn us off
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-	if (bIsOn)
-		bIsOn = False;
+    if (bIsOn)
+        bIsOn = False;
 
-	Super.UnTrigger(Other, Instigator);
+    Super.UnTrigger(Other, Instigator);
 }
 
 defaultproperties

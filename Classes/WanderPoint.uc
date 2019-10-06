@@ -10,15 +10,15 @@ var() float  gazeDuration;
 
 function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	if (gazeTag != 'None')
-	{
-		foreach AllActors(Class'Actor', gazeItem, gazeTag)
-			break;
-	}
+    if (gazeTag != 'None')
+    {
+        foreach AllActors(Class'Actor', gazeItem, gazeTag)
+            break;
+    }
 
-	gazeDirection = 200 * vector(Rotation);
+    gazeDirection = 200 * vector(Rotation);
 }
 
 defaultproperties

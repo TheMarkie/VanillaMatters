@@ -5,17 +5,17 @@ class WeaponEMPGrenade extends DeusExWeapon;
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+    }
 }
 
 function PostBeginPlay()
@@ -26,38 +26,38 @@ function PostBeginPlay()
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the EMPGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
+    // if facing a wall, affix the EMPGrenade to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
 
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // otherwise, throw as usual
+    Super.Fire(Value);
 }
 
 function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
 {
-	local Projectile proj;
+    local Projectile proj;
 
-	proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
+    proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
 
-	if (proj != None)
-		proj.PlayAnim('Open');
+    if (proj != None)
+        proj.PlayAnim('Open');
 }
 
 // Become a pickup
 // Weapons that carry their ammo with them don't vanish when dropped
 function BecomePickup()
 {
-	Super.BecomePickup();
+    Super.BecomePickup();
    if (Level.NetMode != NM_Standalone)
       if (bTossedOut)
          Lifespan = 0.0;

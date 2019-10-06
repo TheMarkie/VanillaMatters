@@ -15,10 +15,10 @@ var int buttonLightWidth;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Load the menu font from the DXFonts package
-	fontButtonText = Font(DynamicLoadObject("DXFonts.MainMenuTrueType", Class'Font'));
+    // Load the menu font from the DXFonts package
+    fontButtonText = Font(DynamicLoadObject("DXFonts.MainMenuTrueType", Class'Font'));
 }
 
 // ----------------------------------------------------------------------
@@ -26,12 +26,12 @@ event InitWindow()
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	// Allow the parent to draw the bulk of the button and the text
-	Super.DrawWindow(gc);
+{
+    // Allow the parent to draw the bulk of the button and the text
+    Super.DrawWindow(gc);
 
-	// Now draw the pretty light to the left of the button
-	gc.DrawTexture(0, 0, buttonLightWidth, buttonHeight, 0, 0, buttonLights[textColorIndex]);
+    // Now draw the pretty light to the left of the button
+    gc.DrawTexture(0, 0, buttonLightWidth, buttonHeight, 0, 0, buttonLights[textColorIndex]);
 }
 
 // ----------------------------------------------------------------------

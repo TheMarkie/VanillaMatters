@@ -12,7 +12,7 @@ class MenuUIChoiceWindow extends Window;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 

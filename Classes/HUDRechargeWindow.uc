@@ -60,19 +60,19 @@ var Localized String RepairBotYouAreHealed;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	// Get a pointer to the player
-	player = DeusExPlayer(GetRootWindow().parentPawn);
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	SetSize(265, 153);
+    SetSize(265, 153);
 
-	CreateControls();
-	EnableButtons();
+    CreateControls();
+    EnableButtons();
 
-	bTickEnabled = TRUE;
+    bTickEnabled = TRUE;
 
-	StyleChanged();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -83,14 +83,14 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	if (repairBot != None)
-	{
-		repairBot.PlayAnim('Stop');
-		repairBot.PlaySound(sound'RepairBotLowerArm', SLOT_None);
-		repairBot.FollowOrders();
-	}
+    if (repairBot != None)
+    {
+        repairBot.PlayAnim('Stop');
+        repairBot.PlaySound(sound'RepairBotLowerArm', SLOT_None);
+        repairBot.FollowOrders();
+    }
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -99,13 +99,13 @@ event DestroyWindow()
 
 event DrawWindow(GC gc)
 {
-	// First draw the background then the border
-	DrawBackground(gc);
+    // First draw the background then the border
+    DrawBackground(gc);
 
-	// Don't call the DrawBorder routines if 
-	// they are disabled
-	if (bDrawBorder)
-		DrawBorder(gc);
+    // Don't call the DrawBorder routines if
+    // they are disabled
+    if (bDrawBorder)
+        DrawBorder(gc);
 }
 
 // ----------------------------------------------------------------------
@@ -114,15 +114,15 @@ event DrawWindow(GC gc)
 
 function DrawBackground(GC gc)
 {
-	if (bBackgroundTranslucent)
-		gc.SetStyle(DSTY_Translucent);
-	else
-		gc.SetStyle(DSTY_Masked);
-	
-	gc.SetTileColor(colBackground);
+    if (bBackgroundTranslucent)
+        gc.SetStyle(DSTY_Translucent);
+    else
+        gc.SetStyle(DSTY_Masked);
 
-	gc.DrawTexture(0,   0, 256, height, 0, 0, texBackground[0]);
-	gc.DrawTexture(256, 0, 9,   height, 0, 0, texBackground[1]);
+    gc.SetTileColor(colBackground);
+
+    gc.DrawTexture(0,   0, 256, height, 0, 0, texBackground[0]);
+    gc.DrawTexture(256, 0, 9,   height, 0, 0, texBackground[1]);
 }
 
 // ----------------------------------------------------------------------
@@ -131,18 +131,18 @@ function DrawBackground(GC gc)
 
 function DrawBorder(GC gc)
 {
-	if (bDrawBorder)
-	{
-		if (bBorderTranslucent)
-			gc.SetStyle(DSTY_Translucent);
-		else
-			gc.SetStyle(DSTY_Masked);
-		
-		gc.SetTileColor(colBorder);
+    if (bDrawBorder)
+    {
+        if (bBorderTranslucent)
+            gc.SetStyle(DSTY_Translucent);
+        else
+            gc.SetStyle(DSTY_Masked);
 
-		gc.DrawTexture(0,   0, 256, height, 0, 0, texBorder[0]);
-		gc.DrawTexture(256, 0, 9,   height, 0, 0, texBorder[1]);
-	}
+        gc.SetTileColor(colBorder);
+
+        gc.DrawTexture(0,   0, 256, height, 0, 0, texBorder[0]);
+        gc.DrawTexture(256, 0, 9,   height, 0, 0, texBorder[1]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -151,20 +151,20 @@ function DrawBorder(GC gc)
 
 event Tick(float deltaSeconds)
 {
-	if (lastRefresh >= refreshInterval)
-	{
-		lastRefresh = 0.0;
-		UpdateRepairBotWindows();
-		UpdateInfoText();
-		EnableButtons();
+    if (lastRefresh >= refreshInterval)
+    {
+        lastRefresh = 0.0;
+        UpdateRepairBotWindows();
+        UpdateInfoText();
+        EnableButtons();
 
-		// Vanilla Matters: Fix the bot not updating your energy properly.
-		UpdateBioWindows();
-	}
-	else
-	{
-		lastRefresh += deltaSeconds;
-	}
+        // Vanilla Matters: Fix the bot not updating your energy properly.
+        UpdateBioWindows();
+    }
+    else
+    {
+        lastRefresh += deltaSeconds;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -173,11 +173,11 @@ event Tick(float deltaSeconds)
 
 function CreateControls()
 {
-	CreateTitleWindow();
-	CreateInfoWindow();
-	CreateBioWindows();
-	CreateRepairbotWindows();
-	CreateButtons();
+    CreateTitleWindow();
+    CreateInfoWindow();
+    CreateBioWindows();
+    CreateRepairbotWindows();
+    CreateButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -186,11 +186,11 @@ function CreateControls()
 
 function CreateTitleWindow()
 {
-	winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winTitle.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winTitle.SetText(RechargeTitle);
-	winTitle.SetPos(20, 20);
-	winTitle.SetSize(233, 14);
+    winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+    winTitle.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winTitle.SetText(RechargeTitle);
+    winTitle.SetPos(20, 20);
+    winTitle.SetSize(233, 14);
 }
 
 // ----------------------------------------------------------------------
@@ -199,10 +199,10 @@ function CreateTitleWindow()
 
 function CreateInfoWindow()
 {
-	winInfo = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winInfo.SetPos(20, 39);
-	winInfo.SetSize(233, 44);
+    winInfo = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winInfo.SetPos(20, 39);
+    winInfo.SetSize(233, 44);
 }
 
 // ----------------------------------------------------------------------
@@ -211,30 +211,30 @@ function CreateInfoWindow()
 
 function CreateBioWindows()
 {
-	winBioBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
+    winBioBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
 
-	winBioBar.SetPos(114, 91);
-	winBioBar.SetSize(140, 12);
-	winBioBar.SetValues(0, 100);
-	winBioBar.UseScaledColor(True);
-	winBioBar.SetVertical(False);
-	winBioBar.SetScaleColorModifier(0.5);
-	winBioBar.SetDrawBackground(False);
+    winBioBar.SetPos(114, 91);
+    winBioBar.SetSize(140, 12);
+    winBioBar.SetValues(0, 100);
+    winBioBar.UseScaledColor(True);
+    winBioBar.SetVertical(False);
+    winBioBar.SetScaleColorModifier(0.5);
+    winBioBar.SetDrawBackground(False);
 
-	winBioBarText = TextWindow(NewChild(Class'TextWindow'));
-	winBioBarText.SetPos(114, 93);
-	winBioBarText.SetSize(140, 12);
-	winBioBarText.SetTextMargins(0, 0);
-	winBioBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winBioBarText.SetFont(Font'FontMenuSmall_DS');
-	winBioBarText.SetTextColorRGB(255, 255, 255);
+    winBioBarText = TextWindow(NewChild(Class'TextWindow'));
+    winBioBarText.SetPos(114, 93);
+    winBioBarText.SetSize(140, 12);
+    winBioBarText.SetTextMargins(0, 0);
+    winBioBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winBioBarText.SetFont(Font'FontMenuSmall_DS');
+    winBioBarText.SetTextColorRGB(255, 255, 255);
 
-	winBioInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winBioInfoText.SetPos(20, 92);
-	winBioInfoText.SetSize(90, 12);
-	winBioInfoText.SetTextMargins(0, 0);
+    winBioInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winBioInfoText.SetPos(20, 92);
+    winBioInfoText.SetSize(90, 12);
+    winBioInfoText.SetTextMargins(0, 0);
 
-	UpdateBioWindows();
+    UpdateBioWindows();
 }
 
 // ----------------------------------------------------------------------
@@ -243,28 +243,28 @@ function CreateBioWindows()
 
 function CreateRepairbotWindows()
 {
-	winRepairBotBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
+    winRepairBotBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
 
-	winRepairBotBar.SetPos(114, 111);
-	winRepairBotBar.SetSize(140, 12);
-	winRepairBotBar.SetValues(0, 100);
-	winRepairBotBar.UseScaledColor(True);
-	winRepairBotBar.SetVertical(False);
-	winRepairBotBar.SetScaleColorModifier(0.5);
-	winRepairBotBar.SetDrawBackground(False);
+    winRepairBotBar.SetPos(114, 111);
+    winRepairBotBar.SetSize(140, 12);
+    winRepairBotBar.SetValues(0, 100);
+    winRepairBotBar.UseScaledColor(True);
+    winRepairBotBar.SetVertical(False);
+    winRepairBotBar.SetScaleColorModifier(0.5);
+    winRepairBotBar.SetDrawBackground(False);
 
-	winRepairBotBarText = TextWindow(NewChild(Class'TextWindow'));
-	winRepairBotBarText.SetPos(114, 113);
-	winRepairBotBarText.SetSize(140, 12);
-	winRepairBotBarText.SetTextMargins(0, 0);
-	winRepairBotBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-	winRepairBotBarText.SetFont(Font'FontMenuSmall_DS');
-	winRepairBotBarText.SetTextColorRGB(255, 255, 255);
+    winRepairBotBarText = TextWindow(NewChild(Class'TextWindow'));
+    winRepairBotBarText.SetPos(114, 113);
+    winRepairBotBarText.SetSize(140, 12);
+    winRepairBotBarText.SetTextMargins(0, 0);
+    winRepairBotBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winRepairBotBarText.SetFont(Font'FontMenuSmall_DS');
+    winRepairBotBarText.SetTextColorRGB(255, 255, 255);
 
-	winRepairBotInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winRepairBotInfoText.SetPos(20, 112);
-	winRepairBotInfoText.SetSize(90, 12);
-	winRepairBotInfoText.SetTextMargins(0, 0);
+    winRepairBotInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    winRepairBotInfoText.SetPos(20, 112);
+    winRepairBotInfoText.SetSize(90, 12);
+    winRepairBotInfoText.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -273,21 +273,21 @@ function CreateRepairbotWindows()
 
 function UpdateInfoText()
 {
-	local String infoText;
+    local String infoText;
 
-	if (repairBot != None)
-	{
-		infoText = Sprintf(RepairBotInfoText, repairBot.chargeAmount, repairBot.chargeRefreshTime);
+    if (repairBot != None)
+    {
+        infoText = Sprintf(RepairBotInfoText, repairBot.chargeAmount, repairBot.chargeRefreshTime);
 
-		if (player.Energy >= player.EnergyMax)
-			infoText = infoText $ RepairBotYouAreHealed;
-		else if (repairBot.CanCharge())
-			infoText = infoText $ RepairBotReadyLabel;
-		else
-			infoText = infoText $ RepairBotRechargingLabel;
+        if (player.Energy >= player.EnergyMax)
+            infoText = infoText $ RepairBotYouAreHealed;
+        else if (repairBot.CanCharge())
+            infoText = infoText $ RepairBotReadyLabel;
+        else
+            infoText = infoText $ RepairBotRechargingLabel;
 
-		winInfo.SetText(infoText);
-	}
+        winInfo.SetText(infoText);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -296,14 +296,14 @@ function UpdateInfoText()
 
 function UpdateBioWindows()
 {
-	local float energyPercent;
+    local float energyPercent;
 
-	energyPercent = 100.0 * (player.Energy / player.EnergyMax);
-	winBioBar.SetCurrentValue(energyPercent);
+    energyPercent = 100.0 * (player.Energy / player.EnergyMax);
+    winBioBar.SetCurrentValue(energyPercent);
 
-	winBioBarText.SetText(String(Int(energyPercent)) $ "%");
+    winBioBarText.SetText(String(Int(energyPercent)) $ "%");
 
-	winBioInfoText.SetText(BioStatusLabel);
+    winBioInfoText.SetText(BioStatusLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -312,34 +312,34 @@ function UpdateBioWindows()
 
 function UpdateRepairBotWindows()
 {
-	local float barPercent;
-	local String infoText;
-	local float secondsRemaining;
+    local float barPercent;
+    local String infoText;
+    local float secondsRemaining;
 
-	if (repairBot != None)
-	{
-		// Update the bar
-		if (repairBot.CanCharge())
-		{		
-			winRepairBotBar.SetCurrentValue(100);
-			winRepairBotBarText.SetText(ReadyLabel);
-		}
-		else
-		{
-			secondsRemaining = repairBot.GetRefreshTimeRemaining();
+    if (repairBot != None)
+    {
+        // Update the bar
+        if (repairBot.CanCharge())
+        {
+            winRepairBotBar.SetCurrentValue(100);
+            winRepairBotBarText.SetText(ReadyLabel);
+        }
+        else
+        {
+            secondsRemaining = repairBot.GetRefreshTimeRemaining();
 
-			barPercent = 100 * (1.0 - (secondsRemaining / Float(repairBot.chargeRefreshTime)));
+            barPercent = 100 * (1.0 - (secondsRemaining / Float(repairBot.chargeRefreshTime)));
 
-			winRepairBotBar.SetCurrentValue(barPercent);
+            winRepairBotBar.SetCurrentValue(barPercent);
 
-			if (secondsRemaining == 1)
-				winRepairBotBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
-			else
-				winRepairBotBarText.SetText(Sprintf(SecondsPluralLabel, Int(secondsRemaining)));
-		}
+            if (secondsRemaining == 1)
+                winRepairBotBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
+            else
+                winRepairBotBarText.SetText(Sprintf(SecondsPluralLabel, Int(secondsRemaining)));
+        }
 
-		winRepairBotInfoText.SetText(RepairBotStatusLabel);
-	}
+        winRepairBotInfoText.SetText(RepairBotStatusLabel);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -348,18 +348,18 @@ function UpdateRepairBotWindows()
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(15, 126);
-	winActionButtons.SetSize(191, 16);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(15, 126);
+    winActionButtons.SetSize(191, 16);
+    winActionButtons.FillAllSpace(False);
 
-	btnClose = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnClose.SetButtonText(CloseButtonLabel);
+    btnClose = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnClose.SetButtonText(CloseButtonLabel);
 
-	btnRecharge = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnRecharge.SetButtonText(RechargeButtonLabel);
+    btnRecharge = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnRecharge.SetButtonText(RechargeButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -368,36 +368,36 @@ function CreateButtons()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnClose:
-			root.PopWindow();
-			break;
+    switch( buttonPressed )
+    {
+        case btnClose:
+            root.PopWindow();
+            break;
 
-		case btnRecharge:
-			if (repairBot != None)
-			{
-				repairBot.ChargePlayer(player);	
+        case btnRecharge:
+            if (repairBot != None)
+            {
+                repairBot.ChargePlayer(player);
 
-				// play a cool animation
-				repairBot.PlayAnim('Clamp');
+                // play a cool animation
+                repairBot.PlayAnim('Clamp');
 
-				UpdateBioWindows();
-				UpdateRepairBotWindows();
-				UpdateInfoText();
-				EnableButtons();
-			}
-			break;
-	}
+                UpdateBioWindows();
+                UpdateRepairBotWindows();
+                UpdateInfoText();
+                EnableButtons();
+            }
+            break;
+    }
 
-	if (!bHandled)
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if (!bHandled)
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -406,13 +406,13 @@ function bool ButtonActivated( Window buttonPressed )
 
 function EnableButtons()
 {
-	if (repairBot != None)
-	{
-		if (player.Energy >= player.EnergyMax)
-			btnRecharge.EnableWindow(False);
-		else
-			btnRecharge.EnableWindow(repairBot.CanCharge());
-	}
+    if (repairBot != None)
+    {
+        if (player.Energy >= player.EnergyMax)
+            btnRecharge.EnableWindow(False);
+        else
+            btnRecharge.EnableWindow(repairBot.CanCharge());
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -421,18 +421,18 @@ function EnableButtons()
 
 function SetRepairBot(RepairBot newBot)
 {
-	repairBot = newBot;
+    repairBot = newBot;
 
-	if (repairBot != None)
-	{
-		repairBot.StandStill();
-		repairBot.PlayAnim('Start');
-		repairBot.PlaySound(sound'RepairBotRaiseArm', SLOT_None);
+    if (repairBot != None)
+    {
+        repairBot.StandStill();
+        repairBot.PlayAnim('Start');
+        repairBot.PlaySound(sound'RepairBotRaiseArm', SLOT_None);
 
-		UpdateInfoText();
-		UpdateRepairBotWindows();
-		EnableButtons();
-	}
+        UpdateInfoText();
+        UpdateRepairBotWindows();
+        EnableButtons();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -441,18 +441,18 @@ function SetRepairBot(RepairBot newBot)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	colBackground = theme.GetColorFromName('HUDColor_Background');
-	colBorder     = theme.GetColorFromName('HUDColor_Borders');
-	colText       = theme.GetColorFromName('HUDColor_NormalText');
-	colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
+    colBackground = theme.GetColorFromName('HUDColor_Background');
+    colBorder     = theme.GetColorFromName('HUDColor_Borders');
+    colText       = theme.GetColorFromName('HUDColor_NormalText');
+    colHeaderText = theme.GetColorFromName('HUDColor_HeaderText');
 
-	bBorderTranslucent     = player.GetHUDBorderTranslucency();
-	bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
-	bDrawBorder            = player.GetHUDBordersVisible();
+    bBorderTranslucent     = player.GetHUDBorderTranslucency();
+    bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();
+    bDrawBorder            = player.GetHUDBordersVisible();
 }
 
 // ----------------------------------------------------------------------

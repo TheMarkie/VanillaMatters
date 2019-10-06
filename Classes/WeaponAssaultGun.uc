@@ -4,41 +4,41 @@
 class WeaponAssaultGun extends DeusExWeapon;
 
 // Vanilla Matters: Import custom fire sound to accomodate 3-round burst.
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire1.wav"		NAME="AssaultGunFire1"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire2.wav"		NAME="AssaultGunFire2"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire3.wav"		NAME="AssaultGunFire3"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire4.wav"		NAME="AssaultGunFire4"		GROUP="VMSounds"
-#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire5.wav"		NAME="AssaultGunFire5"		GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire1.wav"       NAME="AssaultGunFire1"      GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire2.wav"       NAME="AssaultGunFire2"      GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire3.wav"       NAME="AssaultGunFire3"      GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire4.wav"       NAME="AssaultGunFire4"      GROUP="VMSounds"
+#exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire5.wav"       NAME="AssaultGunFire5"      GROUP="VMSounds"
 
-var float	mpRecoilStrength;
+var float   mpRecoilStrength;
 
 // Vanilla Matters
 var Sound VM_fireSounds[5];
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-		ReloadCount = mpReloadCount;
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        HitDamage = mpHitDamage;
+        BaseAccuracy = mpBaseAccuracy;
+        ReloadTime = mpReloadTime;
+        AccurateRange = mpAccurateRange;
+        MaxRange = mpMaxRange;
+        ReloadCount = mpReloadCount;
 
-		// Tuned for advanced -> master skill system (Monte & Ricardo's number) client-side
-		recoilStrength = 0.75;
-	}
+        // Tuned for advanced -> master skill system (Monte & Ricardo's number) client-side
+        recoilStrength = 0.75;
+    }
 }
 
 // Vanilla Matters: Randomize between all the firing sounds.
 simulated function PlayFiringSound() {
-	FireSound = VM_fireSounds[Rand( 4 )];
+    FireSound = VM_fireSounds[Rand( 4 )];
 
-	super.PlayFiringSound();
+    super.PlayFiringSound();
 }
 
 defaultproperties

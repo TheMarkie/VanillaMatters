@@ -19,14 +19,14 @@ var localized string helpMessage;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	ShowHelp(helpMessage);
+    ShowHelp(helpMessage);
 
-	// Don't mask this window, we want the user to see the 
-	// 3D Scene unmolested to assist when setting the 
-	// brightness.
-	root.HideSnapshot();
+    // Don't mask this window, we want the user to see the
+    // 3D Scene unmolested to assist when setting the
+    // brightness.
+    root.HideSnapshot();
 }
 
 // ----------------------------------------------------------------------
@@ -35,9 +35,9 @@ event InitWindow()
 
 event DestroyWindow()
 {
-	root.ShowSnapshot(True);
+    root.ShowSnapshot(True);
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -46,16 +46,16 @@ event DestroyWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	// Create scale textures
-	CreateScaleWindow(14, colRed);
-	CreateScaleWindow(144, colGreen);
-	CreateScaleWindow(274, colBlue);
-	CreateScaleWindow(404, colWhite);
+    // Create scale textures
+    CreateScaleWindow(14, colRed);
+    CreateScaleWindow(144, colGreen);
+    CreateScaleWindow(274, colBlue);
+    CreateScaleWindow(404, colWhite);
 
-	// Create line
-//	CreateScaleLine();
+    // Create line
+//  CreateScaleLine();
 }
 
 // ----------------------------------------------------------------------
@@ -64,14 +64,14 @@ function CreateControls()
 
 function CreateScaleLine()
 {
-	local Window winLine;
+    local Window winLine;
 
-	winLine = winClient.NewChild(Class'Window');
-	winLine.SetPos(14, 178);
-	winLine.SetSize(520, 1);
-	winLine.SetBackground(Texture'Solid');
-	winLine.SetBackgroundStyle(DSTY_Normal);
-	winLine.SetTileColor(colWhite);
+    winLine = winClient.NewChild(Class'Window');
+    winLine.SetPos(14, 178);
+    winLine.SetSize(520, 1);
+    winLine.SetBackground(Texture'Solid');
+    winLine.SetBackgroundStyle(DSTY_Normal);
+    winLine.SetTileColor(colWhite);
 }
 
 // ----------------------------------------------------------------------
@@ -80,14 +80,14 @@ function CreateScaleLine()
 
 function CreateScaleWindow(int posX, Color colScale)
 {
-	local Window winScale;
+    local Window winScale;
 
-	winScale = winClient.NewChild(Class'Window');
-	winScale.SetPos(posX, 67);
-	winScale.SetSize(130, 137);
-	winScale.SetBackground(Texture'MenuBrightnessGradient');
-	winScale.SetTileColor(colScale);
-	winScale.SetBackgroundStyle(DSTY_Normal);
+    winScale = winClient.NewChild(Class'Window');
+    winScale.SetPos(posX, 67);
+    winScale.SetSize(130, 137);
+    winScale.SetBackground(Texture'MenuBrightnessGradient');
+    winScale.SetTileColor(colScale);
+    winScale.SetBackgroundStyle(DSTY_Normal);
 }
 
 // ----------------------------------------------------------------------

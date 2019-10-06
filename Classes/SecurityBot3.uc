@@ -5,21 +5,21 @@ class SecurityBot3 extends Robot;
 
 enum ESkinColor
 {
-	SC_UNATCO,
-	SC_Chinese
+    SC_UNATCO,
+    SC_Chinese
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_UNATCO:		Skin = Texture'SecurityBot3Tex1'; break;
-		case SC_Chinese:	Skin = Texture'SecurityBot3Tex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_UNATCO:     Skin = Texture'SecurityBot3Tex1'; break;
+        case SC_Chinese:    Skin = Texture'SecurityBot3Tex2'; break;
+    }
 }
 
 defaultproperties

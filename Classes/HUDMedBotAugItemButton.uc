@@ -19,28 +19,28 @@ var Color colIconNormal;
 
 event DrawWindow(GC gc)
 {
-	// if ((bSlotFull) || (bHasIt))	
-	// 	colIcon = colIconDisabled;
-	// else
-	// 	colIcon = colIconNormal;
+    // if ((bSlotFull) || (bHasIt))
+    //  colIcon = colIconDisabled;
+    // else
+    //  colIcon = colIconNormal;
 
-	// Vanilla Matters: We can reinstall the same aug again to upgrade it so it shouldn't be grayed out.
-	if ( ( bSlotFull && !bHasIt ) || ( !Augmentation( GetClientObject() ).CanBeUpgraded() && Augmentation( GetClientObject() ).MaxLevel > 1 ) ) {
-		colIcon = colIconDisabled;
-	}
-	else {
-		colIcon = colIconNormal;
-	}
+    // Vanilla Matters: We can reinstall the same aug again to upgrade it so it shouldn't be grayed out.
+    if ( ( bSlotFull && !bHasIt ) || ( !Augmentation( GetClientObject() ).CanBeUpgraded() && Augmentation( GetClientObject() ).MaxLevel > 1 ) ) {
+        colIcon = colIconDisabled;
+    }
+    else {
+        colIcon = colIconNormal;
+    }
 
-	Super.DrawWindow(gc);
+    Super.DrawWindow(gc);
 
-	// Draw selection border
-	if (!bSelected)
-	{
-		gc.SetTileColor(colBorder);
-		gc.SetStyle(DSTY_Masked);
-		gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
-	}
+    // Draw selection border
+    if (!bSelected)
+    {
+        gc.SetTileColor(colBorder);
+        gc.SetStyle(DSTY_Masked);
+        gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -49,14 +49,14 @@ event DrawWindow(GC gc)
 
 function SetAugmentation(Augmentation newAug)
 {
-	SetClientObject(newAug);
-	SetIcon(newAug.smallIcon);
+    SetClientObject(newAug);
+    SetIcon(newAug.smallIcon);
 
-	// First check to see if the player already has this augmentation
-	bHasIt = newAug.bHasIt;
+    // First check to see if the player already has this augmentation
+    bHasIt = newAug.bHasIt;
 
-	// Now check to see if this augmentation slot is full
-	bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
+    // Now check to see if this augmentation slot is full
+    bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
 }
 
 // ----------------------------------------------------------------------
@@ -65,7 +65,7 @@ function SetAugmentation(Augmentation newAug)
 
 function SetAugCan(AugmentationCannister newAugCan)
 {
-	augCan = newAugCan;
+    augCan = newAugCan;
 }
 
 // ----------------------------------------------------------------------
@@ -74,7 +74,7 @@ function SetAugCan(AugmentationCannister newAugCan)
 
 function AugmentationCannister GetAugCan()
 {
-	return augCan;
+    return augCan;
 }
 
 // ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ function AugmentationCannister GetAugCan()
 
 function Augmentation GetAugmentation()
 {
-	return Augmentation(GetClientObject());
+    return Augmentation(GetClientObject());
 }
 
 // ----------------------------------------------------------------------
@@ -92,10 +92,10 @@ function Augmentation GetAugmentation()
 
 function String GetAugDesc()
 {
-	if (GetClientObject() != None)
-		return Augmentation(GetClientObject()).augmentationName;
-	else
-		return "";
+    if (GetClientObject() != None)
+        return Augmentation(GetClientObject()).augmentationName;
+    else
+        return "";
 }
 
 // ----------------------------------------------------------------------
@@ -104,13 +104,13 @@ function String GetAugDesc()
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	colBorder.r = Int(Float(colBackground.r) * 0.75);
-	colBorder.g = Int(Float(colBackground.g) * 0.75);
-	colBorder.b = Int(Float(colBackground.b) * 0.75);
+    colBorder.r = Int(Float(colBackground.r) * 0.75);
+    colBorder.g = Int(Float(colBackground.g) * 0.75);
+    colBorder.b = Int(Float(colBackground.b) * 0.75);
 }
 
 // ----------------------------------------------------------------------

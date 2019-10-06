@@ -11,97 +11,97 @@ class MIB extends HumanMilitary;
 
 function Carcass SpawnCarcass()
 {
-	if (bStunned)
-		return Super.SpawnCarcass();
+    if (bStunned)
+        return Super.SpawnCarcass();
 
-	Explode();
+    Explode();
 
-	return None;
+    return None;
 }
 
 function Explode()
 {
-	local SphereEffect sphere;
-	local ScorchMark s;
-	local ExplosionLight light;
-	local int i;
-	local float explosionDamage;
-	local float explosionRadius;
+    local SphereEffect sphere;
+    local ScorchMark s;
+    local ExplosionLight light;
+    local int i;
+    local float explosionDamage;
+    local float explosionRadius;
 
-	explosionDamage = 100;
-	explosionRadius = 256;
+    explosionDamage = 100;
+    explosionRadius = 256;
 
-	// alert NPCs that I'm exploding
-	AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
-	PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+    // alert NPCs that I'm exploding
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
 
-	// draw a pretty explosion
-	light = Spawn(class'ExplosionLight',,, Location);
-	if (light != None)
-		light.size = 4;
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, Location);
+    if (light != None)
+        light.size = 4;
 
-	Spawn(class'ExplosionSmall',,, Location + 2*VRand()*CollisionRadius);
-	Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
-	Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
-	Spawn(class'ExplosionLarge',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionSmall',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionLarge',,, Location + 2*VRand()*CollisionRadius);
 
-	sphere = Spawn(class'SphereEffect',,, Location);
-	if (sphere != None)
-		sphere.size = explosionRadius / 32.0;
+    sphere = Spawn(class'SphereEffect',,, Location);
+    if (sphere != None)
+        sphere.size = explosionRadius / 32.0;
 
-	// spawn a mark
-	s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
-	if (s != None)
-	{
-		s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
-		s.ReattachDecal();
-	}
+    // spawn a mark
+    s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
+    if (s != None)
+    {
+        s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
+        s.ReattachDecal();
+    }
 
-	// spawn some rocks and flesh fragments
-	for (i=0; i<explosionDamage/6; i++)
-	{
-		if (FRand() < 0.3)
-			spawn(class'Rockchip',,,Location);
-		else
-			spawn(class'FleshFragment',,,Location);
-	}
+    // spawn some rocks and flesh fragments
+    for (i=0; i<explosionDamage/6; i++)
+    {
+        if (FRand() < 0.3)
+            spawn(class'Rockchip',,,Location);
+        else
+            spawn(class'FleshFragment',,,Location);
+    }
 
-	HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, Location);
+    HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, Location);
 }
 
 // Vanilla Matters: MIBs shouldn't be vulnerable to gas.
 function float ShieldDamage( name damageType ) {
-	if ( damageType == 'PoisonGas' || damageType == 'HalonGas' || damageType == 'Poison' || damageType == 'PoisonEffect' ) {
-		return 0;
-	}
-	else if ( damageType == 'Stunned' || damageType == 'KnockedOut' ) {
-		return 0.5;
-	}
-	else {
-		return super.ShieldDamage( damageType );
-	}
+    if ( damageType == 'PoisonGas' || damageType == 'HalonGas' || damageType == 'Poison' || damageType == 'PoisonEffect' ) {
+        return 0;
+    }
+    else if ( damageType == 'Stunned' || damageType == 'KnockedOut' ) {
+        return 0.5;
+    }
+    else {
+        return super.ShieldDamage( damageType );
+    }
 }
 
 // Vanilla Matters: Make EMP stun MIBs.
 function float ModifyDamage( int Damage, Pawn instigatedBy, Vector hitLocation, Vector offset, Name damageType ) {
-	if ( damageType == 'EMP' ) {
-		damageType = 'Stunned';
-	}
+    if ( damageType == 'EMP' ) {
+        damageType = 'Stunned';
+    }
 
-	return super.ModifyDamage( Damage, instigatedBy, hitLocation, offset, damageType );
+    return super.ModifyDamage( Damage, instigatedBy, hitLocation, offset, damageType );
 }
 
 function GotoDisabledState( name damageType, EHitLocation hitPos ) {
-	if ( damageType == 'EMP' ) {
-		VM_damageTaken = VM_damageTaken / 2;
-		damageType = 'Stunned';
-	}
-	else if ( damageType == 'TearGas' ) {
-		VM_damageTaken = 0;
-		damageType = 'PoisonGas';
-	}
+    if ( damageType == 'EMP' ) {
+        VM_damageTaken = VM_damageTaken / 2;
+        damageType = 'Stunned';
+    }
+    else if ( damageType == 'TearGas' ) {
+        VM_damageTaken = 0;
+        damageType = 'PoisonGas';
+    }
 
-	super.GotoDisabledState( damageType, hitPos );
+    super.GotoDisabledState( damageType, hitPos );
 }
 
 defaultproperties

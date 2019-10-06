@@ -7,66 +7,66 @@ var float mpAugValue;
 var float mpEnergyDrain;
 
 // Vanilla Matters
-var float standingTimer;		// How much time the player has been standing still.
+var float standingTimer;        // How much time the player has been standing still.
 
 state Active
 {
-	// Vanilla Matters: Make the aug heals every second AFTER you've been standing still for at least 2 seconds.
-	function Tick( float deltaTime ) {
-		if ( VSize( Player.Velocity ) < 10 ) {
-			standingTimer = standingTimer + deltaTime;
-		}
-		else {
-			standingTimer = 0;
-		}
+    // Vanilla Matters: Make the aug heals every second AFTER you've been standing still for at least 2 seconds.
+    function Tick( float deltaTime ) {
+        if ( VSize( Player.Velocity ) < 10 ) {
+            standingTimer = standingTimer + deltaTime;
+        }
+        else {
+            standingTimer = 0;
+        }
 
-		if ( standingTimer >= 2.0 ) {
-			if ( Player.Health < 100 ) {
-				AddImmediateEnergyRate( float( Player.HealPlayer( int( LevelValues[CurrentLevel] ), false ) ) / 5 );
-			}
-			else {
-				Deactivate();
-				return;
-			}
+        if ( standingTimer >= 2.0 ) {
+            if ( Player.Health < 100 ) {
+                AddImmediateEnergyRate( float( Player.HealPlayer( int( LevelValues[CurrentLevel] ), false ) ) / 5 );
+            }
+            else {
+                Deactivate();
+                return;
+            }
 
-			Player.ClientFlash( 0.5, vect( 0, 0, 500 ) );
+            Player.ClientFlash( 0.5, vect( 0, 0, 500 ) );
 
-			standingTimer = standingTimer - 1.0;
-		}
-	}
+            standingTimer = standingTimer - 1.0;
+        }
+    }
 
 Begin:
 // Loop:
-// 	Sleep(1.0);
+//  Sleep(1.0);
 
-// 	if ( VSize( Player.Velocity ) >= 10 ) {
-// 		Goto( 'Loop' );
-// 	}
+//  if ( VSize( Player.Velocity ) >= 10 ) {
+//      Goto( 'Loop' );
+//  }
 
-// 	if (Player.Health < 100)
-// 		Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
-// 	else
-// 		Deactivate();
+//  if (Player.Health < 100)
+//      Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
+//  else
+//      Deactivate();
 
-// 	Player.ClientFlash(0.5, vect(0, 0, 500));
-// 	Goto('Loop');
+//  Player.ClientFlash(0.5, vect(0, 0, 500));
+//  Goto('Loop');
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 }
 
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		LevelValues[3] = mpAugValue;
-		EnergyRate = mpEnergyDrain;
-	}
+    // If this is a netgame, then override defaults
+    if ( Level.NetMode != NM_StandAlone )
+    {
+        LevelValues[3] = mpAugValue;
+        EnergyRate = mpEnergyDrain;
+    }
 }
 
 defaultproperties

@@ -23,8 +23,8 @@ var localized String InvalidLoginMessage;
 
 event InitWindow()
 {
-	Super.InitWindow();
-	EnableButtons();
+    Super.InitWindow();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -33,19 +33,19 @@ event InitWindow()
 
 function CreateControls()
 {
-	Super.CreateControls();
+    Super.CreateControls();
 
-	btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
-	btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
+    btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
+    btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
 
-	CreateMenuLabel(10, 22, UserNameLabel, winClient);
-	CreateMenuLabel(10, 55, PasswordLabel, winClient);
+    CreateMenuLabel(10, 22, UserNameLabel, winClient);
+    CreateMenuLabel(10, 55, PasswordLabel, winClient);
 
-	editUserName = CreateMenuEditWindow(105, 20, 143, 20, winClient);
-	editPassword = CreateMenuEditWindow(105, 54, 143, 20, winClient);
+    editUserName = CreateMenuEditWindow(105, 20, 143, 20, winClient);
+    editPassword = CreateMenuEditWindow(105, 54, 143, 20, winClient);
 
-	CreateLogo();
-	CreateLoginInfoWindow();
+    CreateLogo();
+    CreateLoginInfoWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -54,11 +54,11 @@ function CreateControls()
 
 function CreateLogo()
 {
-	winLogo = winClient.NewChild(Class'Window');
+    winLogo = winClient.NewChild(Class'Window');
 
-	winLogo.SetPos(276, 5);
-	winLogo.SetSize(61, 61);
-	winLogo.SetBackgroundStyle(DSTY_Masked);
+    winLogo.SetPos(276, 5);
+    winLogo.SetSize(61, 61);
+    winLogo.SetBackgroundStyle(DSTY_Masked);
 }
 
 // ----------------------------------------------------------------------
@@ -67,12 +67,12 @@ function CreateLogo()
 
 function CreateLoginInfoWindow()
 {
-	winLoginInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
+    winLoginInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winLoginInfo.SetPos(10, 97);
-	winLoginInfo.SetSize(320, 25);
-	winLoginInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winLoginInfo.SetTextMargins(0, 0);
+    winLoginInfo.SetPos(10, 97);
+    winLoginInfo.SetSize(320, 25);
+    winLoginInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winLoginInfo.SetTextMargins(0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -81,8 +81,8 @@ function CreateLoginInfoWindow()
 
 function SetLogo(Texture newLogo)
 {
-	if (winLogo != None)
-		winLogo.SetBackground(newLogo);
+    if (winLogo != None)
+        winLogo.SetBackground(newLogo);
 }
 
 // ----------------------------------------------------------------------
@@ -91,15 +91,15 @@ function SetLogo(Texture newLogo)
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	Super.SetCompOwner(newCompOwner);
+    Super.SetCompOwner(newCompOwner);
 
-	// Update the title, texture and description
-	winTitle.SetTitle(Sprintf(Title, Computers(compOwner).GetNodeName()));
-	winLoginInfo.SetText(Computers(compOwner).GetNodeDesc());
+    // Update the title, texture and description
+    winTitle.SetTitle(Sprintf(Title, Computers(compOwner).GetNodeName()));
+    winLoginInfo.SetText(Computers(compOwner).GetNodeDesc());
 
-	SetFocusWindow(editUserName);
+    SetFocusWindow(editUserName);
 
-	SetLogo(Computers(compOwner).GetNodeTexture());
+    SetLogo(Computers(compOwner).GetNodeTexture());
 }
 
 // ----------------------------------------------------------------------
@@ -108,12 +108,12 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	Super.SetNetworkTerminal(newTerm);
+    Super.SetNetworkTerminal(newTerm);
 
-	// If the user already hacked this computer, then set the 
-	// "Hack" button to "Return"
-	if (winTerm != None)
-		winTerm.SetHackButtonToReturn();
+    // If the user already hacked this computer, then set the
+    // "Hack" button to "Return"
+    if (winTerm != None)
+        winTerm.SetHackButtonToReturn();
 }
 
 // ----------------------------------------------------------------------
@@ -122,29 +122,29 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch( buttonPressed )
-	{
-		case btnLogin:
-			ProcessLogin();
-			break;
+    switch( buttonPressed )
+    {
+        case btnLogin:
+            ProcessLogin();
+            break;
 
-		case btnCancel:
-			CloseScreen("EXIT");
-			break;
+        case btnCancel:
+            CloseScreen("EXIT");
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return True;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -155,15 +155,15 @@ function bool ButtonActivated( Window buttonPressed )
 
 event bool EditActivated(window edit, bool bModified)
 {
-	if (btnLogin.IsSensitive())
-	{
-		ProcessLogin();
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+    if (btnLogin.IsSensitive())
+    {
+        ProcessLogin();
+        return True;
+    }
+    else
+    {
+        return False;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -172,69 +172,69 @@ event bool EditActivated(window edit, bool bModified)
 
 function ProcessLogin()
 {
-	local string userName;
-	local int userIndex;
-	local int compIndex;
-	local int userSkillLevel;
-	local bool bSuccessfulLogin;
+    local string userName;
+    local int userIndex;
+    local int compIndex;
+    local int userSkillLevel;
+    local bool bSuccessfulLogin;
 
-	bSuccessfulLogin = False;
-	userIndex        = -1;
+    bSuccessfulLogin = False;
+    userIndex        = -1;
 
-	// Verify that this is a valid userid/password combination
+    // Verify that this is a valid userid/password combination
 
-	// First check the name
-	for (compIndex=0; compIndex<Computers(compOwner).NumUsers(); compIndex++)
-	{
-		if (Caps(editUsername.GetText()) == Caps(Computers(compOwner).GetUserName(compIndex)))
-		{
-			userName  = Caps(Computers(compOwner).GetUserName(compIndex));
-			userIndex = compIndex;
-			break;
-		}
-	}
+    // First check the name
+    for (compIndex=0; compIndex<Computers(compOwner).NumUsers(); compIndex++)
+    {
+        if (Caps(editUsername.GetText()) == Caps(Computers(compOwner).GetUserName(compIndex)))
+        {
+            userName  = Caps(Computers(compOwner).GetUserName(compIndex));
+            userIndex = compIndex;
+            break;
+        }
+    }
 
-	if (userIndex != -1)
-	{
-		if (Caps(editPassword.GetText()) == Caps(Computers(compOwner).GetPassword(userIndex)))
-		{
-			bSuccessfulLogin = True;
-		}
-	}
+    if (userIndex != -1)
+    {
+        if (Caps(editPassword.GetText()) == Caps(Computers(compOwner).GetPassword(userIndex)))
+        {
+            bSuccessfulLogin = True;
+        }
+    }
 
-	if (bSuccessfulLogin)
-	{
-		winTerm.SetLoginInfo(userName, userIndex);
+    if (bSuccessfulLogin)
+    {
+        winTerm.SetLoginInfo(userName, userIndex);
 
-		// set the user's access level if it's higher than the player's
-		userSkillLevel = Computers(compOwner).GetAccessLevel(userIndex);
+        // set the user's access level if it's higher than the player's
+        userSkillLevel = Computers(compOwner).GetAccessLevel(userIndex);
 
-		if (winTerm.GetSkillLevel() < userSkillLevel)
-			winTerm.SetSkillLevel(userSkillLevel);
+        if (winTerm.GetSkillLevel() < userSkillLevel)
+            winTerm.SetSkillLevel(userSkillLevel);
 
-		CloseScreen("LOGIN");
-	}
-	else
-	{
-		// Print a message about invalid login
-		winLoginInfo.SetText(InvalidLoginMessage);
+        CloseScreen("LOGIN");
+    }
+    else
+    {
+        // Print a message about invalid login
+        winLoginInfo.SetText(InvalidLoginMessage);
 
-		// Clear text fields and reset focus
-		editUserName.SetText("");
-		editPassword.SetText("");
-		SetFocusWindow(editUserName);
-	}
+        // Clear text fields and reset focus
+        editUserName.SetText("");
+        editPassword.SetText("");
+        SetFocusWindow(editUserName);
+    }
 }
 
 // ----------------------------------------------------------------------
-// TextChanged() 
+// TextChanged()
 // ----------------------------------------------------------------------
 
 event bool TextChanged(window edit, bool bModified)
 {
-	EnableButtons();
+    EnableButtons();
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -243,10 +243,10 @@ event bool TextChanged(window edit, bool bModified)
 
 function EnableButtons()
 {
-	// Text must be entered in the two fields for the login button to be
-	// enabled
+    // Text must be entered in the two fields for the login button to be
+    // enabled
 
-	btnLogin.SetSensitivity((editUsername.GetText() != "") && (editPassword.GetText() != ""));
+    btnLogin.SetSensitivity((editUsername.GetText() != "") && (editPassword.GetText() != ""));
 }
 
 // ----------------------------------------------------------------------

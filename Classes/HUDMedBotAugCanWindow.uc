@@ -24,11 +24,11 @@ var localized String AugContainsText;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(226, 38);
+    SetSize(226, 38);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -37,22 +37,22 @@ event InitWindow()
 
 function CreateControls()
 {
-	winCanIcon = NewChild(Class'Window');
-	winCanIcon.SetBackgroundStyle(DSTY_Masked);
-	winCanIcon.SetPos(-7, 1);
-	winCanIcon.SetSize(42, 37);
+    winCanIcon = NewChild(Class'Window');
+    winCanIcon.SetBackgroundStyle(DSTY_Masked);
+    winCanIcon.SetPos(-7, 1);
+    winCanIcon.SetSize(42, 37);
 
-	txtAugDesc = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	txtAugDesc.SetPos(29, 2);
-	txtAugDesc.SetSize(133, 34);
-	txtAugDesc.SetTextMargins(0, 0);
-	txtAugDesc.SetWordWrap(False);
+    txtAugDesc = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
+    txtAugDesc.SetPos(29, 2);
+    txtAugDesc.SetSize(133, 34);
+    txtAugDesc.SetTextMargins(0, 0);
+    txtAugDesc.SetWordWrap(False);
 
-	btnAug1 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
-	btnAug1.SetPos(155, 2);
+    btnAug1 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
+    btnAug1.SetPos(155, 2);
 
-	btnAug2 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
-	btnAug2.SetPos(190, 2);
+    btnAug2 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
+    btnAug2.SetPos(190, 2);
 }
 
 // ----------------------------------------------------------------------
@@ -61,9 +61,9 @@ function CreateControls()
 
 event DrawWindow(GC gc)
 {
-	gc.SetTileColor(colBorder);
-	gc.SetStyle(DSTY_Translucent);
-	gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);
+    gc.SetTileColor(colBorder);
+    gc.SetStyle(DSTY_Translucent);
+    gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);
 }
 
 // ----------------------------------------------------------------------
@@ -72,19 +72,19 @@ event DrawWindow(GC gc)
 
 function SetCannister(AugmentationCannister newAugCan)
 {
-	local String augDesc;
+    local String augDesc;
 
-	augCan = newAugCan;
+    augCan = newAugCan;
 
-	winCanIcon.SetBackground(augCan.Icon);
-	btnAug1.SetAugmentation(augCan.GetAugmentation(0));
-	btnAug1.SetAugCan(augCan);
-	btnAug2.SetAugmentation(augCan.GetAugmentation(1));
-	btnAug2.SetAugCan(augCan);
+    winCanIcon.SetBackground(augCan.Icon);
+    btnAug1.SetAugmentation(augCan.GetAugmentation(0));
+    btnAug1.SetAugCan(augCan);
+    btnAug2.SetAugmentation(augCan.GetAugmentation(1));
+    btnAug2.SetAugCan(augCan);
 
-	augDesc = AugContainsText $ " " $ btnAug1.GetAugDesc() $ "|n" $ " " $ btnAug2.GetAugDesc();
+    augDesc = AugContainsText $ " " $ btnAug1.GetAugDesc() $ "|n" $ " " $ btnAug2.GetAugDesc();
 
-	txtAugDesc.SetText(augDesc);
+    txtAugDesc.SetText(augDesc);
 }
 
 // ----------------------------------------------------------------------
@@ -93,7 +93,7 @@ function SetCannister(AugmentationCannister newAugCan)
 
 function AugmentationCannister GetCannister()
 {
-	return augCan;
+    return augCan;
 }
 
 // ----------------------------------------------------------------------
@@ -102,11 +102,11 @@ function AugmentationCannister GetCannister()
 
 event StyleChanged()
 {
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	colBorder.r = Int(Float(colBackground.r) / 2);
-	colBorder.g = Int(Float(colBackground.g) / 2);
-	colBorder.b = Int(Float(colBackground.b) / 2);
+    colBorder.r = Int(Float(colBackground.r) / 2);
+    colBorder.g = Int(Float(colBackground.g) / 2);
+    colBorder.b = Int(Float(colBackground.b) / 2);
 }
 
 // ----------------------------------------------------------------------

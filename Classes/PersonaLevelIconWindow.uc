@@ -19,9 +19,9 @@ var int iconSizeY;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetSize(23, 5);
+    SetSize(23, 5);
 }
 
 // ----------------------------------------------------------------------
@@ -30,8 +30,8 @@ event InitWindow()
 
 function SetSelected(bool bNewSelected)
 {
-	bSelected = bNewSelected;
-	StyleChanged();
+    bSelected = bNewSelected;
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -39,17 +39,17 @@ function SetSelected(bool bNewSelected)
 // ----------------------------------------------------------------------
 
 event DrawWindow(GC gc)
-{	
-	local int levelCount;
+{
+    local int levelCount;
 
-	gc.SetTileColor(colText);
-	gc.SetStyle(DSTY_Masked);
+    gc.SetTileColor(colText);
+    gc.SetStyle(DSTY_Masked);
 
-	for(levelCount=0; levelCount<=currentLevel; levelCount++)
-	{
-		gc.DrawTexture(levelCount * (iconSizeX + 1), 0, iconSizeX, iconSizeY, 
-			0, 0, texLevel);
-	}
+    for(levelCount=0; levelCount<=currentLevel; levelCount++)
+    {
+        gc.DrawTexture(levelCount * (iconSizeX + 1), 0, iconSizeX, iconSizeY,
+            0, 0, texLevel);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ event DrawWindow(GC gc)
 
 function SetLevel(int newLevel)
 {
-	currentLevel = newLevel;
+    currentLevel = newLevel;
 }
 
 // ----------------------------------------------------------------------
@@ -67,14 +67,14 @@ function SetLevel(int newLevel)
 
 event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 
-	if (bSelected)
-		colText = theme.GetColorFromName('HUDColor_ButtonTextFocus');
-	else
-		colText = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+    if (bSelected)
+        colText = theme.GetColorFromName('HUDColor_ButtonTextFocus');
+    else
+        colText = theme.GetColorFromName('HUDColor_ButtonTextNormal');
 }
 
 // ----------------------------------------------------------------------

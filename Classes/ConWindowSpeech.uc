@@ -20,11 +20,11 @@ var Color colConTextName;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetChildVAlignment(VALIGN_Top);
+    SetChildVAlignment(VALIGN_Top);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -33,14 +33,14 @@ event InitWindow()
 
 function CreateControls()
 {
-	txtName = TextWindow(NewChild(Class'TextWindow', False));
-	txtName.SetTextColor(colConTextName);
-	txtName.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	txtName.Hide();
+    txtName = TextWindow(NewChild(Class'TextWindow', False));
+    txtName.SetTextColor(colConTextName);
+    txtName.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    txtName.Hide();
 
-	txtSpeech = TextWindow(NewChild(Class'TextWindow', False));
-	txtSpeech.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-	txtSpeech.Hide();
+    txtSpeech = TextWindow(NewChild(Class'TextWindow', False));
+    txtSpeech.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    txtSpeech.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -49,8 +49,8 @@ function CreateControls()
 
 function SetSpeechFont(Font newSpeechFont)
 {
-	if (txtSpeech != None)
-		txtSpeech.SetFont(newSpeechFont);
+    if (txtSpeech != None)
+        txtSpeech.SetFont(newSpeechFont);
 }
 
 // ----------------------------------------------------------------------
@@ -59,8 +59,8 @@ function SetSpeechFont(Font newSpeechFont)
 
 function SetNameFont(Font newNameFont)
 {
-	if (txtName != None)
-		txtName.SetFont(newNameFont);
+    if (txtName != None)
+        txtName.SetFont(newNameFont);
 }
 
 // ----------------------------------------------------------------------
@@ -69,16 +69,16 @@ function SetNameFont(Font newNameFont)
 
 function SetName(String newName)
 {
-	if (newName == "")
-	{
-		txtName.SetText("");
-		txtName.Show(False);
-	}
-	else
-	{
-		txtName.SetText(newName $ ": ");
-		txtName.Show(True);
-	}
+    if (newName == "")
+    {
+        txtName.SetText("");
+        txtName.Show(False);
+    }
+    else
+    {
+        txtName.SetText(newName $ ": ");
+        txtName.Show(True);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -87,23 +87,23 @@ function SetName(String newName)
 
 function SetSpeech(String newSpeech, optional Actor speakingActor)
 {
-	if (newSpeech == "")
-	{
-		txtSpeech.SetText("");
-		txtSpeech.Show(False);
-	}
-	else
-	{
-		txtSpeech.SetText(newSpeech);
+    if (newSpeech == "")
+    {
+        txtSpeech.SetText("");
+        txtSpeech.Show(False);
+    }
+    else
+    {
+        txtSpeech.SetText(newSpeech);
 
-		// Use a different color for the player's text
-		if ((speakingActor != None) && (DeusExPlayer(speakingActor) != None))
-			txtSpeech.SetTextColor(colConTextPlayer);
-		else	
-			txtSpeech.SetTextColor(colConTextNormal);
+        // Use a different color for the player's text
+        if ((speakingActor != None) && (DeusExPlayer(speakingActor) != None))
+            txtSpeech.SetTextColor(colConTextPlayer);
+        else
+            txtSpeech.SetTextColor(colConTextNormal);
 
-		txtSpeech.Show(True);
-	}
+        txtSpeech.Show(True);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -112,7 +112,7 @@ function SetSpeech(String newSpeech, optional Actor speakingActor)
 
 function AppendSpeech(String newSpeech)
 {
-	txtSpeech.AppendText(CR() $ CR() $ newSpeech);
+    txtSpeech.AppendText(CR() $ CR() $ newSpeech);
 }
 
 // ----------------------------------------------------------------------
@@ -121,10 +121,10 @@ function AppendSpeech(String newSpeech)
 
 function SetForcePlay(bool bNewForcePlay)
 {
-	bForcePlay = bNewForcePlay;
+    bForcePlay = bNewForcePlay;
 
-	if (bForcePlay)
-		txtSpeech.SetTextAlignments(HALIGN_Center, VALIGN_Top);
+    if (bForcePlay)
+        txtSpeech.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 }
 
 // ----------------------------------------------------------------------

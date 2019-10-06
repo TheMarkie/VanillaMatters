@@ -9,7 +9,7 @@ class MenuChoice_CombatDifficulty extends MenuUIChoiceSlider;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-	SetValue( FClamp( player.CombatDifficulty, startValue, endValue ) );
+    SetValue( FClamp( player.CombatDifficulty, startValue, endValue ) );
 }
 
 // ----------------------------------------------------------------------
@@ -17,7 +17,7 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-	player.CombatDifficulty = GetValue();
+    player.CombatDifficulty = GetValue();
 }
 
 // ----------------------------------------------------------------------
@@ -25,7 +25,7 @@ function SaveSetting() {
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-	SetValue( player.CombatDifficulty );
+    SetValue( player.CombatDifficulty );
 }
 
 // ----------------------------------------------------------------------
@@ -33,13 +33,13 @@ function ResetToDefault() {
 // ----------------------------------------------------------------------
 
 function SetEnumerators() {
-	local float difficulty;
-	local int enumIndex;
+    local float difficulty;
+    local int enumIndex;
 
-	enumIndex = 0;
-	for( difficulty = 1.0; difficulty <= 5.0; difficulty = difficulty + 0.5 ) {
-		SetEnumeration( enumIndex++, Left( String( difficulty ), Instr( String( difficulty ), "." ) + 2 ) );
-	}
+    enumIndex = 0;
+    for( difficulty = 1.0; difficulty <= 5.0; difficulty = difficulty + 0.5 ) {
+        SetEnumeration( enumIndex++, Left( String( difficulty ), Instr( String( difficulty ), "." ) + 2 ) );
+    }
 }
 
 // ----------------------------------------------------------------------

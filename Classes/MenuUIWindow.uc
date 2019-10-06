@@ -5,63 +5,63 @@
 //=============================================================================
 
 class MenuUIWindow extends DeusExBaseWindow
-	abstract;
+    abstract;
 
 enum EMenuActions
 {
-	MA_Menu, 
-	MA_MenuScreen,
-	MA_Previous, 
-	MA_NewGame,
-	MA_Training,
-	MA_Intro,
-	MA_Quit,
-	MA_Custom
+    MA_Menu,
+    MA_MenuScreen,
+    MA_Previous,
+    MA_NewGame,
+    MA_Training,
+    MA_Intro,
+    MA_Quit,
+    MA_Custom
 };
 
 enum EActionButtonEvents
 {
-	AB_None,
-	AB_OK,
-	AB_Cancel,
-	AB_Reset,
-	AB_Previous,
-	AB_Other
+    AB_None,
+    AB_OK,
+    AB_Cancel,
+    AB_Reset,
+    AB_Previous,
+    AB_Other
 };
 
 enum EMessageBoxModes
 {
-	MB_Exit,
-	MB_AskToTrain,
-	MB_Training,
-	MB_Intro,
-	MB_JoinGameWarning,
+    MB_Exit,
+    MB_AskToTrain,
+    MB_Training,
+    MB_Intro,
+    MB_JoinGameWarning,
 };
 
 struct S_ActionButtonDefault
 {
-	var EHALIGN align;
-	var EActionButtonEvents action;
-	var localized String text;
-	var String key;
-	var MenuUIActionButtonWindow btn;
+    var EHALIGN align;
+    var EActionButtonEvents action;
+    var localized String text;
+    var String key;
+    var MenuUIActionButtonWindow btn;
 };
 
 var localized S_ActionButtonDefault actionButtons[5];
 var EMessageBoxModes      messageBoxMode;
 
-var MenuUITitleWindow			winTitle;			// Title bar, outside client
-var MenuUIClientWindow			winClient;			// Window that contains all controls
-var MenuUIActionButtonBarWindow winButtonBar;		// Button Bar Window
+var MenuUITitleWindow           winTitle;           // Title bar, outside client
+var MenuUIClientWindow          winClient;          // Window that contains all controls
+var MenuUIActionButtonBarWindow winButtonBar;       // Button Bar Window
 var MenuUILeftEdgeWindow        winLeftEdge;
 var MenuUIRightEdgeWindow       winRightEdge;
 var MenuUIHelpWindow            winHelp;
 
 // Dragging stuff
-var Bool	bWindowBeingDragged;
-var Bool	bAllowWindowDragging;
-var float	windowStartDragX;
-var float	windowStartDragY;
+var Bool    bWindowBeingDragged;
+var Bool    bAllowWindowDragging;
+var float   windowStartDragX;
+var float   windowStartDragY;
 
 // Defaults
 var localized String title;
@@ -109,15 +109,15 @@ var localized string AskToTrainMessage;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	bSizeParentToChildren = False;   // god damnit
+    bSizeParentToChildren = False;   // god damnit
 
-	CreateControls();	
-	StyleChanged();
+    CreateControls();
+    StyleChanged();
 
-	// Play Menu Activated Sound
-	PlaySound(Sound'Menu_Activate', 0.25); 
+    // Play Menu Activated Sound
+    PlaySound(Sound'Menu_Activate', 0.25);
 }
 
 // ----------------------------------------------------------------------
@@ -128,12 +128,12 @@ event InitWindow()
 
 function DestroyWindow()
 {
-	local int texIndex;
+    local int texIndex;
 
-	for(texIndex=0; texIndex<arrayCount(clientTextures); texIndex++)
-		player.UnloadTexture(clientTextures[texIndex]);
+    for(texIndex=0; texIndex<arrayCount(clientTextures); texIndex++)
+        player.UnloadTexture(clientTextures[texIndex]);
 
-	Super.DestroyWindow();
+    Super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -142,14 +142,14 @@ function DestroyWindow()
 
 function CreateControls()
 {
-	CreateShadowWindow();
-	CreateTitleWindow();
-	CreateClientWindow();
-	CreateActionButtonBar();
-	CreateActionButtons();
-	CreateLeftEdgeWindow();
-	CreateRightEdgeWindow();
-	CreateHelpWindow();
+    CreateShadowWindow();
+    CreateTitleWindow();
+    CreateClientWindow();
+    CreateActionButtonBar();
+    CreateActionButtons();
+    CreateLeftEdgeWindow();
+    CreateRightEdgeWindow();
+    CreateHelpWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -159,34 +159,34 @@ function CreateControls()
 event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
                                    bool bHeightSpecified, out float preferredHeight)
 {
-	local float clientWidth, clientHeight;
-	local float titleWidth, titleHeight;
-	local float buttonBarWidth, buttonBarHeight;
-	local float rightEdgeWidth;
+    local float clientWidth, clientHeight;
+    local float titleWidth, titleHeight;
+    local float buttonBarWidth, buttonBarHeight;
+    local float rightEdgeWidth;
 
-	if (winClient != None)
-		winClient.QueryPreferredSize(clientWidth, clientHeight);
+    if (winClient != None)
+        winClient.QueryPreferredSize(clientWidth, clientHeight);
 
-	if (winTitle != None)
-	{
-		titleWidth  = winTitle.leftBottomWidth;
-		titleHeight = winTitle.titleHeight;
-	}
+    if (winTitle != None)
+    {
+        titleWidth  = winTitle.leftBottomWidth;
+        titleHeight = winTitle.titleHeight;
+    }
 
-	if (winRightEdge != None)
-		rightEdgeWidth = winRightEdge.rightWidth;
+    if (winRightEdge != None)
+        rightEdgeWidth = winRightEdge.rightWidth;
 
-	if (winButtonBar != None)
-		winButtonBar.QueryPreferredSize(buttonBarWidth, buttonBarHeight);
+    if (winButtonBar != None)
+        winButtonBar.QueryPreferredSize(buttonBarWidth, buttonBarHeight);
 
-	preferredWidth  = clientWidth  + titleWidth  + rightEdgeWidth;
-	preferredHeight = clientHeight + titleHeight + buttonBarHeight + verticalOffset;
+    preferredWidth  = clientWidth  + titleWidth  + rightEdgeWidth;
+    preferredHeight = clientHeight + titleHeight + buttonBarHeight + verticalOffset;
 
-	// Take into account shadow crap
-	if (preferredWidth < shadowWidth)
-		preferredWidth = shadowWidth;
-	if (preferredHeight < shadowHeight)
-		preferredHeight = shadowHeight;
+    // Take into account shadow crap
+    if (preferredWidth < shadowWidth)
+        preferredWidth = shadowWidth;
+    if (preferredHeight < shadowHeight)
+        preferredHeight = shadowHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -195,85 +195,85 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 
 function ConfigurationChanged()
 {
-	local float clientWidth, clientHeight;
-	local float titleWidth, titleHeight, titleTopHeight, titleBarWidth;
-	local float leftEdgeWidth, leftEdgeHeight;
-	local float rightEdgeWidth, rightEdgeHeight;
-	local float buttonBarWidth, buttonBarHeight;
-	local float rightEdgeX, rightEdgeY;
-	local float winLeftEdgeGap;
-	local float rightEdgeGap;
-	local int titleOffsetX, titleOffsetY;
+    local float clientWidth, clientHeight;
+    local float titleWidth, titleHeight, titleTopHeight, titleBarWidth;
+    local float leftEdgeWidth, leftEdgeHeight;
+    local float rightEdgeWidth, rightEdgeHeight;
+    local float buttonBarWidth, buttonBarHeight;
+    local float rightEdgeX, rightEdgeY;
+    local float winLeftEdgeGap;
+    local float rightEdgeGap;
+    local int titleOffsetX, titleOffsetY;
 
-	if (winTitle != None)
-		winTitle.GetOffsetWidths(titleOffsetX, titleOffsetY);
+    if (winTitle != None)
+        winTitle.GetOffsetWidths(titleOffsetX, titleOffsetY);
 
-	// Client Window
-	if (winClient != None)
-	{
-		winClient.QueryPreferredSize(clientWidth, clientHeight);
-		winClient.ConfigureChild(
-			titleOffsetX + shadowOffsetX, titleOffsetY + shadowOffsetY,
-			clientWidth, clientHeight);
-	}
+    // Client Window
+    if (winClient != None)
+    {
+        winClient.QueryPreferredSize(clientWidth, clientHeight);
+        winClient.ConfigureChild(
+            titleOffsetX + shadowOffsetX, titleOffsetY + shadowOffsetY,
+            clientWidth, clientHeight);
+    }
 
-	// Title Bar
-	if (winTitle != None)
-	{
-		winTitle.QueryPreferredSize(titleBarWidth, titleHeight);
-		winTitle.ConfigureChild(
-			shadowOffsetX, shadowOffsetY,
-			titleBarWidth, titleHeight);
+    // Title Bar
+    if (winTitle != None)
+    {
+        winTitle.QueryPreferredSize(titleBarWidth, titleHeight);
+        winTitle.ConfigureChild(
+            shadowOffsetX, shadowOffsetY,
+            titleBarWidth, titleHeight);
 
-		titleWidth     = winTitle.leftBottomWidth;
-		titleTopHeight = winTitle.titleHeight;
-	}
+        titleWidth     = winTitle.leftBottomWidth;
+        titleTopHeight = winTitle.titleHeight;
+    }
 
-	// Button Bar
-	if (winButtonBar != None)
-	{
-		// If Right edge active, need to make button bar wider
-		if (winRightEdge != None)
-		{
-			winRightEdge.QueryPreferredSize(rightEdgeWidth, rightEdgeHeight);
-			rightEdgeWidth = winRightEdge.rightWidth;
-			rightEdgeGap   = 2;
-		}
+    // Button Bar
+    if (winButtonBar != None)
+    {
+        // If Right edge active, need to make button bar wider
+        if (winRightEdge != None)
+        {
+            winRightEdge.QueryPreferredSize(rightEdgeWidth, rightEdgeHeight);
+            rightEdgeWidth = winRightEdge.rightWidth;
+            rightEdgeGap   = 2;
+        }
 
-		if (winLeftEdge != None)
-			winLeftEdgeGap = 1;
+        if (winLeftEdge != None)
+            winLeftEdgeGap = 1;
 
-		winButtonBar.QueryPreferredSize(buttonBarWidth, buttonBarHeight);
-		winButtonBar.ConfigureChild(
-			titleWidth + winLeftEdgeGap + shadowOffsetX, titleTopHeight + clientHeight + shadowOffsetY, 
-			clientWidth - 1 - rightEdgeGap, buttonBarHeight);
-	}
+        winButtonBar.QueryPreferredSize(buttonBarWidth, buttonBarHeight);
+        winButtonBar.ConfigureChild(
+            titleWidth + winLeftEdgeGap + shadowOffsetX, titleTopHeight + clientHeight + shadowOffsetY,
+            clientWidth - 1 - rightEdgeGap, buttonBarHeight);
+    }
 
-	// Left Edge
-	if (winLeftEdge != None)
-	{
-		winLeftEdge.QueryPreferredSize(LeftEdgeWidth, LeftEdgeHeight);
-		winLeftEdge.ConfigureChild(
-			titleWidth - LeftEdgeWidth + shadowOffsetX, titleHeight + shadowOffsetY, 
-			LeftEdgeWidth, clientHeight + buttonBarHeight - (titleHeight - titleTopHeight) - 1);
-	}
+    // Left Edge
+    if (winLeftEdge != None)
+    {
+        winLeftEdge.QueryPreferredSize(LeftEdgeWidth, LeftEdgeHeight);
+        winLeftEdge.ConfigureChild(
+            titleWidth - LeftEdgeWidth + shadowOffsetX, titleHeight + shadowOffsetY,
+            LeftEdgeWidth, clientHeight + buttonBarHeight - (titleHeight - titleTopHeight) - 1);
+    }
 
-	// Right Edge
-	if (winRightEdge != None)
-	{
-		winRightEdge.ConfigureChild(
-			titleBarWidth + 1 + shadowOffsetX, titleTopHeight - 4 + shadowOffsetY, 
-			clientWidth - (titleBarWidth - titleWidth) - 1 + winRightEdge.rightWidth, 
-			clientHeight + 4 + 14);
-	}
+    // Right Edge
+    if (winRightEdge != None)
+    {
+        winRightEdge.ConfigureChild(
+            titleBarWidth + 1 + shadowOffsetX, titleTopHeight - 4 + shadowOffsetY,
+            clientWidth - (titleBarWidth - titleWidth) - 1 + winRightEdge.rightWidth,
+            clientHeight + 4 + 14);
+    }
 
-	// Configure Help Window
-	if (winHelp != None)
-	{
-		winHelp.ConfigureChild(
-			titleWidth + defaultHelpLeftOffset + shadowOffsetX, titleTopHeight + helpPosY + shadowOffsetY,
-			clientWidth - defaultHelpClientDiffY, defaultHelpHeight);
-	}
+    // Configure Help Window
+    if (winHelp != None)
+    {
+        winHelp.ConfigureChild(
+            titleWidth + defaultHelpLeftOffset + shadowOffsetX, titleTopHeight + helpPosY + shadowOffsetY,
+            clientWidth - defaultHelpClientDiffY, defaultHelpHeight);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -282,7 +282,7 @@ function ConfigurationChanged()
 
 function bool ChildRequestedReconfiguration(window child)
 {
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -293,41 +293,41 @@ function bool ChildRequestedReconfiguration(window child)
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	local bool bKeyHandled;
-	bKeyHandled = True;
+    local bool bKeyHandled;
+    bKeyHandled = True;
 
-	Super.VirtualKeyPressed(key, bRepeat);
+    Super.VirtualKeyPressed(key, bRepeat);
 
-	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
-		return False;
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl ))
+        return False;
 
-	switch( key ) 
-	{	
-		// Hide the screen if the Escape key is pressed
-		// Temp: Also if the Return key is pressed
-		case IK_Escape:
-			if (bEscapeSavesSettings)
-			{
-				SaveSettings();
-				root.PopWindow();
-			}
-			else
-			{
-				CancelScreen();
-			}
-			break;
+    switch( key )
+    {
+        // Hide the screen if the Escape key is pressed
+        // Temp: Also if the Return key is pressed
+        case IK_Escape:
+            if (bEscapeSavesSettings)
+            {
+                SaveSettings();
+                root.PopWindow();
+            }
+            else
+            {
+                CancelScreen();
+            }
+            break;
 
-		// Enter is the same as clicking OK
-		case IK_Enter:
-			SaveSettings();
-			root.PopWindow();
-			break;
+        // Enter is the same as clicking OK
+        case IK_Enter:
+            SaveSettings();
+            root.PopWindow();
+            break;
 
-		default:
-			bKeyHandled = False;
-	}
+        default:
+            bKeyHandled = False;
+    }
 
-	return bKeyHandled;
+    return bKeyHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -336,20 +336,20 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = False;
+    bHandled = False;
 
-	// Check to see if this was an action button!
-	if (buttonPressed.IsA('MenuUIActionButtonWindow'))
-	{
-		bHandled = ProcessActionButton(MenuUIActionButtonWindow(buttonPressed));
-	}
+    // Check to see if this was an action button!
+    if (buttonPressed.IsA('MenuUIActionButtonWindow'))
+    {
+        bHandled = ProcessActionButton(MenuUIActionButtonWindow(buttonPressed));
+    }
 
-	if (bHandled)
-		return bHandled;
-	else
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return bHandled;
+    else
+        return Super.ButtonActivated(buttonPressed);
 }
 
 // ----------------------------------------------------------------------
@@ -360,12 +360,12 @@ function bool ButtonActivated( Window buttonPressed )
 
 event MouseMoved(float newX, float newY)
 {
-	if ( bWindowBeingDragged )
-		SetPos( x + (newX - windowStartDragX), y + (newY - windowStartDragY) );
+    if ( bWindowBeingDragged )
+        SetPos( x + (newX - windowStartDragX), y + (newY - windowStartDragY) );
 }
 
 // ----------------------------------------------------------------------
-// MouseButtonPressed() 
+// MouseButtonPressed()
 //
 // If the user presses the mouse button while over the title bar,
 // initiate window dragging.
@@ -374,28 +374,28 @@ event MouseMoved(float newX, float newY)
 event bool MouseButtonPressed(float pointX, float pointY, EInputKey button,
                               int numClicks)
 {
-	local float relativeX;
-	local float relativeY;
+    local float relativeX;
+    local float relativeY;
 
-	if ( ( button == IK_LeftMouse ) && ( numClicks == 1 ) && 
-		( ( FindWindow(pointX, pointY, relativeX, relativeY) == winTitle ) || ( bAllowWindowDragging )))
-	{
-		bWindowBeingDragged = True;
-		windowStartDragX = pointX;
-		windowStartDragY = pointY;
+    if ( ( button == IK_LeftMouse ) && ( numClicks == 1 ) &&
+        ( ( FindWindow(pointX, pointY, relativeX, relativeY) == winTitle ) || ( bAllowWindowDragging )))
+    {
+        bWindowBeingDragged = True;
+        windowStartDragX = pointX;
+        windowStartDragY = pointY;
 
-		GrabMouse();
-	}
-	else
-	{
-		bWindowBeingDragged = False;
-	}
+        GrabMouse();
+    }
+    else
+    {
+        bWindowBeingDragged = False;
+    }
 
-	return bWindowBeingDragged;  
+    return bWindowBeingDragged;
 }
 
 // ----------------------------------------------------------------------
-// MouseButtonReleased() 
+// MouseButtonReleased()
 //
 // First check to see if we're dragging the window.  If so, then
 // end the drag event.
@@ -404,13 +404,13 @@ event bool MouseButtonPressed(float pointX, float pointY, EInputKey button,
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
                                int numClicks)
 {
-	local float relativeX;
-	local float relativeY;
+    local float relativeX;
+    local float relativeY;
 
-	if ((button == IK_LeftMouse ) && (bWindowBeingDragged))
-		bWindowBeingDragged = False;			
+    if ((button == IK_LeftMouse ) && (bWindowBeingDragged))
+        bWindowBeingDragged = False;
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -419,16 +419,16 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
 
 function CreateShadowWindow()
 {
-	if (winShadowClass != None)
-	{
-		winShadow = MenuUIShadowWindow(NewChild(winShadowClass));
+    if (winShadowClass != None)
+    {
+        winShadow = MenuUIShadowWindow(NewChild(winShadowClass));
 
-		// Store these away so we can properly calculate window sizes/positions
-		shadowOffsetX = winShadow.shadowOffsetX;
-		shadowOffsetY = winShadow.shadowOffsetY;
-		shadowWidth   = winShadow.shadowWidth;
-		shadowHeight  = winShadow.shadowHeight;
-	}
+        // Store these away so we can properly calculate window sizes/positions
+        shadowOffsetX = winShadow.shadowOffsetX;
+        shadowOffsetY = winShadow.shadowOffsetY;
+        shadowWidth   = winShadow.shadowWidth;
+        shadowHeight  = winShadow.shadowHeight;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -437,8 +437,8 @@ function CreateShadowWindow()
 
 function CreateTitleWindow()
 {
-	winTitle = MenuUITitleWindow(NewChild(Class'MenuUITitleWindow'));
-	SetTitle(title);
+    winTitle = MenuUITitleWindow(NewChild(Class'MenuUITitleWindow'));
+    SetTitle(title);
 }
 
 // ----------------------------------------------------------------------
@@ -447,7 +447,7 @@ function CreateTitleWindow()
 
 function SetTitle(String newTitle)
 {
-	winTitle.SetTitle(newTitle);
+    winTitle.SetTitle(newTitle);
 }
 
 // ----------------------------------------------------------------------
@@ -456,21 +456,21 @@ function SetTitle(String newTitle)
 
 function CreateClientWindow()
 {
-	local int clientIndex;
-	local int titleOffsetX, titleOffsetY;
+    local int clientIndex;
+    local int titleOffsetX, titleOffsetY;
 
-	winClient = MenuUIClientWindow(NewChild(class'MenuUIClientWindow'));
+    winClient = MenuUIClientWindow(NewChild(class'MenuUIClientWindow'));
 
-	winTitle.GetOffsetWidths(titleOffsetX, titleOffsetY);
+    winTitle.GetOffsetWidths(titleOffsetX, titleOffsetY);
 
-	winClient.SetSize(clientWidth, clientHeight);
-	winClient.SetTextureLayout(textureCols, textureRows);
+    winClient.SetSize(clientWidth, clientHeight);
+    winClient.SetTextureLayout(textureCols, textureRows);
 
-	// Set background textures
-	for(clientIndex=0; clientIndex<arrayCount(clientTextures); clientIndex++)
-	{
-		winClient.SetClientTexture(clientIndex, clientTextures[clientIndex]);
-	}
+    // Set background textures
+    for(clientIndex=0; clientIndex<arrayCount(clientTextures); clientIndex++)
+    {
+        winClient.SetClientTexture(clientIndex, clientTextures[clientIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -479,9 +479,9 @@ function CreateClientWindow()
 
 function MenuUIActionButtonBarWindow CreateActionButtonBar()
 {
-	// Only create if we're supposed to create it
-	if (bActionButtonBarActive)
-		winButtonBar = MenuUIActionButtonBarWindow(NewChild(Class'MenuUIActionButtonBarWindow'));
+    // Only create if we're supposed to create it
+    if (bActionButtonBarActive)
+        winButtonBar = MenuUIActionButtonBarWindow(NewChild(Class'MenuUIActionButtonBarWindow'));
 }
 
 // ----------------------------------------------------------------------
@@ -490,48 +490,48 @@ function MenuUIActionButtonBarWindow CreateActionButtonBar()
 
 function CreateActionButtons()
 {
-	local int    buttonIndex;
-	local string buttonText;
+    local int    buttonIndex;
+    local string buttonText;
 
-	if (winButtonBar == None)
-		return;
+    if (winButtonBar == None)
+        return;
 
-	for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
-	{
-		if (actionButtons[buttonIndex].action != AB_None)
-		{
-			// First get the string
-			switch(actionButtons[buttonIndex].action)
-			{
-				case AB_OK:
-					buttonText = btnLabelOK;
-					break;
+    for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+    {
+        if (actionButtons[buttonIndex].action != AB_None)
+        {
+            // First get the string
+            switch(actionButtons[buttonIndex].action)
+            {
+                case AB_OK:
+                    buttonText = btnLabelOK;
+                    break;
 
-				case AB_Cancel:
-					buttonText = btnLabelCancel;
-					break;
+                case AB_Cancel:
+                    buttonText = btnLabelCancel;
+                    break;
 
-				case AB_Reset:
-					buttonText = btnLabelResetToDefaults;
-					break;
+                case AB_Reset:
+                    buttonText = btnLabelResetToDefaults;
+                    break;
 
-				case AB_Previous:
-					buttonText = btnLabelPrevious;
-					break;
+                case AB_Previous:
+                    buttonText = btnLabelPrevious;
+                    break;
 
-				case AB_Other:
-					buttonText = actionButtons[buttonIndex].text;
-					break;
-			}
+                case AB_Other:
+                    buttonText = actionButtons[buttonIndex].text;
+                    break;
+            }
 
-			actionButtons[buttonIndex].btn = 
-				winButtonBar.AddButton(buttonText, actionButtons[buttonIndex].align);
-		}
-		else
-		{
-			break;
-		}
-	}
+            actionButtons[buttonIndex].btn =
+                winButtonBar.AddButton(buttonText, actionButtons[buttonIndex].align);
+        }
+        else
+        {
+            break;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -540,8 +540,8 @@ function CreateActionButtons()
 
 function CreateLeftEdgeWindow()
 {
-	if (bLeftEdgeActive)
-		winLeftEdge = MenuUILeftEdgeWindow(NewChild(Class'MenuUILeftEdgeWindow'));
+    if (bLeftEdgeActive)
+        winLeftEdge = MenuUILeftEdgeWindow(NewChild(Class'MenuUILeftEdgeWindow'));
 }
 
 // ----------------------------------------------------------------------
@@ -550,11 +550,11 @@ function CreateLeftEdgeWindow()
 
 function CreateRightEdgeWindow()
 {
-	if (bRightEdgeActive)
-	{
-		winRightEdge = MenuUIRightEdgeWindow(NewChild(Class'MenuUIRightEdgeWindow'));
-		winRightEdge.Lower();
-	}
+    if (bRightEdgeActive)
+    {
+        winRightEdge = MenuUIRightEdgeWindow(NewChild(Class'MenuUIRightEdgeWindow'));
+        winRightEdge.Lower();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -563,32 +563,32 @@ function CreateRightEdgeWindow()
 
 function MenuUITabButtonWindow CreateMenuUITab(int posX, int posY, String buttonText)
 {
-	local MenuUITabButtonWindow newButton;
+    local MenuUITabButtonWindow newButton;
 
-	newButton = MenuUITabButtonWindow(winClient.NewChild(Class'MenuUITabButtonWindow'));
-	newButton.SetPos(posX, posY);
-	newButton.SetButtonText(buttonText);
+    newButton = MenuUITabButtonWindow(winClient.NewChild(Class'MenuUITabButtonWindow'));
+    newButton.SetPos(posX, posY);
+    newButton.SetButtonText(buttonText);
 
-	return newButton;
+    return newButton;
 }
 
 // ----------------------------------------------------------------------
 // CreateHelpWindow()
 //
-// Optionally creates the help window, which is displayed at the 
+// Optionally creates the help window, which is displayed at the
 // bottom of the screen when various choice controls are given
 // focus.  Can also be forced on/off programmatically
 // ----------------------------------------------------------------------
 
 function CreateHelpWindow()
 {
-	if (bUsesHelpWindow)
-	{
-		winHelp = MenuUIHelpWindow(NewChild(Class'MenuUIHelpWindow'));
+    if (bUsesHelpWindow)
+    {
+        winHelp = MenuUIHelpWindow(NewChild(Class'MenuUIHelpWindow'));
 
-		if (!bHelpAlwaysOn)
-			winHelp.Hide();
-	}
+        if (!bHelpAlwaysOn)
+            winHelp.Hide();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -597,11 +597,11 @@ function CreateHelpWindow()
 
 function ShowHelp(String helpMessage)
 {
-	if (winHelp != None)
-	{
-		winHelp.Show();
-		winHelp.SetText(helpMessage);
-	}
+    if (winHelp != None)
+    {
+        winHelp.Show();
+        winHelp.SetText(helpMessage);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -610,8 +610,8 @@ function ShowHelp(String helpMessage)
 
 function HideHelp()
 {
-	if (winHelp != None)
-		winHelp.Hide();
+    if (winHelp != None)
+        winHelp.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -620,42 +620,42 @@ function HideHelp()
 
 function ProcessMenuAction(EMenuActions action, Class menuActionClass, optional String key)
 {
-	switch(action)
-	{
-		case MA_Menu:
-			root.InvokeMenu(Class<DeusExBaseWindow>(menuActionClass));
-			break;
+    switch(action)
+    {
+        case MA_Menu:
+            root.InvokeMenu(Class<DeusExBaseWindow>(menuActionClass));
+            break;
 
-		case MA_MenuScreen:
-			root.InvokeMenuScreen(Class<DeusExBaseWindow>(menuActionClass));
-			break;
+        case MA_MenuScreen:
+            root.InvokeMenuScreen(Class<DeusExBaseWindow>(menuActionClass));
+            break;
 
-		case MA_Previous:
-			root.PopWindow();
-			break;
+        case MA_Previous:
+            root.PopWindow();
+            break;
 
-		case MA_Quit:
-			messageBoxMode = MB_Exit;
-			root.MessageBox(MessageBoxTitle, ExitMessage, 0, False, Self);
-			break;
+        case MA_Quit:
+            messageBoxMode = MB_Exit;
+            root.MessageBox(MessageBoxTitle, ExitMessage, 0, False, Self);
+            break;
 
-		case MA_Intro:
-			ConfirmIntro();
-			break;
+        case MA_Intro:
+            ConfirmIntro();
+            break;
 
-		case MA_NewGame:
-			StartNewGame();
-			break;
+        case MA_NewGame:
+            StartNewGame();
+            break;
 
-		case MA_Training:
-			ConfirmTraining();
-			break;
+        case MA_Training:
+            ConfirmTraining();
+            break;
 
-		case MA_Custom:
-			ProcessCustomMenuButton(key);
-			break;
+        case MA_Custom:
+            ProcessCustomMenuButton(key);
+            break;
 
-	}
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -672,19 +672,19 @@ function ProcessCustomMenuButton(string key)
 
 function StartNewGame()
 {
-	// Check to see if the player has already ran the training mission
-	// or been prompted
-	if (player.bAskedToTrain == False)
-	{
-		messageBoxMode = MB_AskToTrain;
-		player.bAskedToTrain = True;		// Only prompt ONCE!
-		player.SaveConfig();
-		root.MessageBox(AskToTrainTitle, AskToTrainMessage, 0, False, Self);
-	}
-	else
-	{
-		root.InvokeMenuScreen(Class'MenuSelectDifficulty');
-	}
+    // Check to see if the player has already ran the training mission
+    // or been prompted
+    if (player.bAskedToTrain == False)
+    {
+        messageBoxMode = MB_AskToTrain;
+        player.bAskedToTrain = True;        // Only prompt ONCE!
+        player.SaveConfig();
+        root.MessageBox(AskToTrainTitle, AskToTrainMessage, 0, False, Self);
+    }
+    else
+    {
+        root.InvokeMenuScreen(Class'MenuSelectDifficulty');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -693,23 +693,23 @@ function StartNewGame()
 
 function ConfirmIntro()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	info = player.GetLevelInfo();
+    info = player.GetLevelInfo();
 
-	// If the game is running, first *PROMPT* the user, becauase
-	// otherwise the current game will be lost
+    // If the game is running, first *PROMPT* the user, becauase
+    // otherwise the current game will be lost
 
-	if (((info != None) && (info.MissionNumber >= 0)) &&
-	   !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
-	{
-		messageBoxMode = MB_Intro;
-		root.MessageBox(MessageBoxTitle, IntroWarningMessage, 0, False, Self);
-	}
-	else
-	{
-		player.ShowIntro();
-	}
+    if (((info != None) && (info.MissionNumber >= 0)) &&
+       !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
+    {
+        messageBoxMode = MB_Intro;
+        root.MessageBox(MessageBoxTitle, IntroWarningMessage, 0, False, Self);
+    }
+    else
+    {
+        player.ShowIntro();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -718,23 +718,23 @@ function ConfirmIntro()
 
 function ConfirmTraining()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	info = player.GetLevelInfo();
+    info = player.GetLevelInfo();
 
-	// If the game is running, first *PROMPT* the user, becauase
-	// otherwise the current game will be lost
+    // If the game is running, first *PROMPT* the user, becauase
+    // otherwise the current game will be lost
 
-	if (((info != None) && (info.MissionNumber >= 0)) &&
-	   !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
-	{
-		messageBoxMode = MB_Training;
-		root.MessageBox(MessageBoxTitle, TrainingWarningMessage, 0, False, Self);
-	}
-	else
-	{
-		player.StartTrainingMission();
-	}
+    if (((info != None) && (info.MissionNumber >= 0)) &&
+       !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
+    {
+        messageBoxMode = MB_Training;
+        root.MessageBox(MessageBoxTitle, TrainingWarningMessage, 0, False, Self);
+    }
+    else
+    {
+        player.StartTrainingMission();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -743,48 +743,48 @@ function ConfirmTraining()
 
 function bool ProcessActionButton(MenuUIActionButtonWindow btnAction)
 {
-	local int  buttonIndex;
-	local bool bHandled;
+    local int  buttonIndex;
+    local bool bHandled;
 
-	bHandled = False;
+    bHandled = False;
 
-	// Find out which button this is in our array
+    // Find out which button this is in our array
 
-	for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
-	{
-		if (actionButtons[buttonIndex].btn == btnAction)
-		{
-			switch(actionButtons[buttonIndex].action)
-			{
-				case AB_OK:
-					SaveSettings();
-					root.PopWindow();
-					break;
+    for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+    {
+        if (actionButtons[buttonIndex].btn == btnAction)
+        {
+            switch(actionButtons[buttonIndex].action)
+            {
+                case AB_OK:
+                    SaveSettings();
+                    root.PopWindow();
+                    break;
 
-				case AB_Cancel:
-					CancelScreen();
-					break;
+                case AB_Cancel:
+                    CancelScreen();
+                    break;
 
-				case AB_Reset:
-					ResetToDefaults();
-					break;
+                case AB_Reset:
+                    ResetToDefaults();
+                    break;
 
-				case AB_Previous:
-					SaveSettings();
-					root.PopWindow();
-					break;
+                case AB_Previous:
+                    SaveSettings();
+                    root.PopWindow();
+                    break;
 
-				case AB_Other:
-					ProcessAction(actionButtons[buttonIndex].key);
-					break;		
-			}
+                case AB_Other:
+                    ProcessAction(actionButtons[buttonIndex].key);
+                    break;
+            }
 
-			bHandled = True;
-			break;
-		}
-	}
+            bHandled = True;
+            break;
+        }
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -805,8 +805,8 @@ function ProcessAction(String actionKey)
 
 function SaveSettings()
 {
-	// Play OK Sound
-	PlaySound(Sound'Menu_OK', 0.25); 
+    // Play OK Sound
+    PlaySound(Sound'Menu_OK', 0.25);
 }
 
 // ----------------------------------------------------------------------
@@ -815,10 +815,10 @@ function SaveSettings()
 
 function CancelScreen()
 {
-	// Play Cancel Sound
-	PlaySound(Sound'Menu_Cancel', 0.25); 
+    // Play Cancel Sound
+    PlaySound(Sound'Menu_Cancel', 0.25);
 
-	root.PopWindow();
+    root.PopWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -837,51 +837,51 @@ function ResetToDefaults()
 
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	root.PopWindow();
+    // Destroy the msgbox!
+    root.PopWindow();
 
-	switch(messageBoxMode)
-	{
-		case MB_Exit:
-			if ( buttonNumber == 0 ) 
-			{
-				/* TODO: This is what Unreal Does,
-				player.SaveConfig();
-				if ( Level.Game != None )
-					Level.Game.SaveConfig();
-				*/
+    switch(messageBoxMode)
+    {
+        case MB_Exit:
+            if ( buttonNumber == 0 )
+            {
+                /* TODO: This is what Unreal Does,
+                player.SaveConfig();
+                if ( Level.Game != None )
+                    Level.Game.SaveConfig();
+                */
 
-				root.ExitGame();
-			}
-			break;
+                root.ExitGame();
+            }
+            break;
 
-		case MB_AskToTrain:
-			if (buttonNumber == 0)
-				player.StartTrainingMission();
-			else
-				root.InvokeMenuScreen(Class'MenuSelectDifficulty');
-			break;
+        case MB_AskToTrain:
+            if (buttonNumber == 0)
+                player.StartTrainingMission();
+            else
+                root.InvokeMenuScreen(Class'MenuSelectDifficulty');
+            break;
 
-		case MB_Training:
-			if (buttonNumber == 0)
-				player.StartTrainingMission();
-			break;
+        case MB_Training:
+            if (buttonNumber == 0)
+                player.StartTrainingMission();
+            break;
 
-		case MB_Intro:
-			if (buttonNumber == 0)
-				player.ShowIntro();
-			break;
+        case MB_Intro:
+            if (buttonNumber == 0)
+                player.ShowIntro();
+            break;
 
-		case MB_JoinGameWarning:
-			if (buttonNumber == 0)
-			{
-				if (Self.IsA('MenuScreenJoinGame'))
-					MenuScreenJoinGame(Self).RefreshServerList();
-			}
-			break;
-	}
+        case MB_JoinGameWarning:
+            if (buttonNumber == 0)
+            {
+                if (Self.IsA('MenuScreenJoinGame'))
+                    MenuScreenJoinGame(Self).RefreshServerList();
+            }
+            break;
+    }
 
-	return true;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -890,14 +890,14 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 function MenuUILabelWindow CreateMenuLabel(int posX, int posY, String strLabel, Window winParent)
 {
-	local MenuUILabelWindow newLabel;
+    local MenuUILabelWindow newLabel;
 
-	newLabel = MenuUILabelWindow(winParent.NewChild(Class'MenuUILabelWindow'));
+    newLabel = MenuUILabelWindow(winParent.NewChild(Class'MenuUILabelWindow'));
 
-	newLabel.SetPos(posX, posY);
-	newLabel.SetText(strLabel);
+    newLabel.SetPos(posX, posY);
+    newLabel.SetText(strLabel);
 
-	return newLabel;
+    return newLabel;
 }
 
 // ----------------------------------------------------------------------
@@ -906,14 +906,14 @@ function MenuUILabelWindow CreateMenuLabel(int posX, int posY, String strLabel, 
 
 function MenuUIHeaderWindow CreateMenuHeader(int posX, int posY, String strLabel, Window winParent)
 {
-	local MenuUIHeaderWindow newLabel;
+    local MenuUIHeaderWindow newLabel;
 
-	newLabel = MenuUIHeaderWindow(winParent.NewChild(Class'MenuUIHeaderWindow'));
+    newLabel = MenuUIHeaderWindow(winParent.NewChild(Class'MenuUIHeaderWindow'));
 
-	newLabel.SetPos(posX, posY);
-	newLabel.SetText(strLabel);
+    newLabel.SetPos(posX, posY);
+    newLabel.SetText(strLabel);
 
-	return newLabel;
+    return newLabel;
 }
 
 // ----------------------------------------------------------------------
@@ -922,25 +922,25 @@ function MenuUIHeaderWindow CreateMenuHeader(int posX, int posY, String strLabel
 
 function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth, int maxChars, Window winParent)
 {
-	local MenuUIInfoButtonWindow btnInfo;
-	local ClipWindow             clipName;
-	local MenuUIEditWindow       newEdit;
+    local MenuUIInfoButtonWindow btnInfo;
+    local ClipWindow             clipName;
+    local MenuUIEditWindow       newEdit;
 
-	// Create an info button behind this sucker
-	btnInfo = MenuUIInfoButtonWindow(winParent.NewChild(Class'MenuUIInfoButtonWindow'));
-	btnInfo.SetPos(posX, posY);
-	btnInfo.SetWidth(editWidth);
-	btnInfo.SetSensitivity(False);
+    // Create an info button behind this sucker
+    btnInfo = MenuUIInfoButtonWindow(winParent.NewChild(Class'MenuUIInfoButtonWindow'));
+    btnInfo.SetPos(posX, posY);
+    btnInfo.SetWidth(editWidth);
+    btnInfo.SetSensitivity(False);
 
-	clipName = ClipWindow(winClient.newChild(Class'ClipWindow'));
-	clipName.SetWidth(editWidth - 8);
-	clipName.ForceChildSize(False, True);
-	clipName.SetPos(posX + 4, posY + 5);
+    clipName = ClipWindow(winClient.newChild(Class'ClipWindow'));
+    clipName.SetWidth(editWidth - 8);
+    clipName.ForceChildSize(False, True);
+    clipName.SetPos(posX + 4, posY + 5);
 
-	newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
-	newEdit.SetMaxSize(maxChars);
+    newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
+    newEdit.SetMaxSize(maxChars);
 
-	return newEdit;
+    return newEdit;
 }
 
 // ----------------------------------------------------------------------
@@ -948,21 +948,21 @@ function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth
 // ----------------------------------------------------------------------
 
 function MenuUIListHeaderButtonWindow CreateHeaderButton(
-	int posX, 
-	int posY, 
-	int buttonWidth, 
-	String strLabel, 
-	Window winParent)
+    int posX,
+    int posY,
+    int buttonWidth,
+    String strLabel,
+    Window winParent)
 {
-	local MenuUIListHeaderButtonWindow newButton;
+    local MenuUIListHeaderButtonWindow newButton;
 
-	newButton = MenuUIListHeaderButtonWindow(winParent.NewChild(Class'MenuUIListHeaderButtonWindow'));
+    newButton = MenuUIListHeaderButtonWindow(winParent.NewChild(Class'MenuUIListHeaderButtonWindow'));
 
-	newButton.SetPos(posX, posY);
-	newButton.SetWidth(buttonWidth);
-	newButton.SetButtonText(strLabel);
+    newButton.SetPos(posX, posY);
+    newButton.SetWidth(buttonWidth);
+    newButton.SetButtonText(strLabel);
 
-	return newButton;
+    return newButton;
 }
 
 // ----------------------------------------------------------------------
@@ -971,7 +971,7 @@ function MenuUIListHeaderButtonWindow CreateHeaderButton(
 
 function MenuUIScrollAreaWindow CreateScrollAreaWindow(Window winParent)
 {
-	return MenuUIScrollAreaWindow(winParent.NewChild(Class'MenuUIScrollAreaWindow'));
+    return MenuUIScrollAreaWindow(winParent.NewChild(Class'MenuUIScrollAreaWindow'));
 }
 
 // ----------------------------------------------------------------------
@@ -982,28 +982,28 @@ function MenuUIScrollAreaWindow CreateScrollAreaWindow(Window winParent)
 // ----------------------------------------------------------------------
 
 function EnableActionButton(
-	EActionButtonEvents action, 
-	bool bEnable, 
-	optional String key)
+    EActionButtonEvents action,
+    bool bEnable,
+    optional String key)
 {
-	local S_ActionButtonDefault enableButton;
-	local int buttonIndex;
+    local S_ActionButtonDefault enableButton;
+    local int buttonIndex;
 
-	// First find our button to make sure it exists
-	for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
-	{
-		if (actionButtons[buttonIndex].action == action)
-		{
-			if ((action != AB_Other) || ((action == AB_Other) && (actionButtons[buttonIndex].key == key)))
-			{
-				if (actionButtons[buttonIndex].btn != None)
-				{
-					actionButtons[buttonIndex].btn.SetSensitivity(bEnable);
-				}
-				break;
-			}
-		}
-	}
+    // First find our button to make sure it exists
+    for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+    {
+        if (actionButtons[buttonIndex].action == action)
+        {
+            if ((action != AB_Other) || ((action == AB_Other) && (actionButtons[buttonIndex].key == key)))
+            {
+                if (actionButtons[buttonIndex].btn != None)
+                {
+                    actionButtons[buttonIndex].btn.SetSensitivity(bEnable);
+                }
+                break;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1011,32 +1011,32 @@ function EnableActionButton(
 // ----------------------------------------------------------------------
 
 function bool IsActionButtonEnabled(
-	EActionButtonEvents action, 
-	optional String key)
+    EActionButtonEvents action,
+    optional String key)
 {
-	local S_ActionButtonDefault enableButton;
-	local int buttonIndex;
-	local bool bButtonEnabled;
+    local S_ActionButtonDefault enableButton;
+    local int buttonIndex;
+    local bool bButtonEnabled;
 
-	bButtonEnabled = False;
+    bButtonEnabled = False;
 
-	// First find our button to make sure it exists
-	for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
-	{
-		if (actionButtons[buttonIndex].action == action)
-		{
-			if ((action != AB_Other) || ((action == AB_Other) && (actionButtons[buttonIndex].key == key)))
-			{
-				if (actionButtons[buttonIndex].btn != None)
-				{
-					bButtonEnabled = actionButtons[buttonIndex].btn.IsSensitive();
-					break;
-				}
-			}
-		}
-	}
+    // First find our button to make sure it exists
+    for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+    {
+        if (actionButtons[buttonIndex].action == action)
+        {
+            if ((action != AB_Other) || ((action == AB_Other) && (actionButtons[buttonIndex].key == key)))
+            {
+                if (actionButtons[buttonIndex].btn != None)
+                {
+                    bButtonEnabled = actionButtons[buttonIndex].btn.IsSensitive();
+                    break;
+                }
+            }
+        }
+    }
 
-	return bButtonEnabled;
+    return bButtonEnabled;
 }
 
 // ======================================================================
@@ -1051,14 +1051,14 @@ function bool IsActionButtonEnabled(
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colCursor;
+    local ColorTheme theme;
+    local Color colCursor;
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
-	colCursor = theme.GetColorFromName('MenuColor_Cursor');
+    colCursor = theme.GetColorFromName('MenuColor_Cursor');
 
-	SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 32, 32, colCursor);
+    SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 32, 32, colCursor);
 }
 
 // ----------------------------------------------------------------------

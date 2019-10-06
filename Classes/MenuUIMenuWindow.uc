@@ -9,10 +9,10 @@ class MenuUIMenuWindow extends MenuUIWindow;
 
 struct S_MenuButton
 {
-	var int y;
-	var EMenuActions action;
-	var class invoke;
-	var string key;
+    var int y;
+    var EMenuActions action;
+    var class invoke;
+    var string key;
 };
 
 // Array of buttons
@@ -34,9 +34,9 @@ var S_MenuButton buttonDefaults[10];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	CreateMenuButtons();
+    CreateMenuButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -45,27 +45,27 @@ event InitWindow()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
-	local int  buttonIndex;
+    local bool bHandled;
+    local int  buttonIndex;
 
-	bHandled = False;
+    bHandled = False;
 
-	Super.ButtonActivated(buttonPressed);
+    Super.ButtonActivated(buttonPressed);
 
-	// Figure out which button was pressed
-	for (buttonIndex=0; buttonIndex<arrayCount(winButtons); buttonIndex++)
-	{
-		if (buttonPressed == winButtons[buttonIndex])
-		{
-			// Check to see if there's somewhere to go
-			ProcessMenuAction(buttonDefaults[buttonIndex].action, buttonDefaults[buttonIndex].invoke, buttonDefaults[buttonIndex].key);
+    // Figure out which button was pressed
+    for (buttonIndex=0; buttonIndex<arrayCount(winButtons); buttonIndex++)
+    {
+        if (buttonPressed == winButtons[buttonIndex])
+        {
+            // Check to see if there's somewhere to go
+            ProcessMenuAction(buttonDefaults[buttonIndex].action, buttonDefaults[buttonIndex].invoke, buttonDefaults[buttonIndex].key);
 
-			bHandled = True;
-			break;
-		}
-	}
+            bHandled = True;
+            break;
+        }
+    }
 
-	return bHandled;
+    return bHandled;
 }
 
 // ----------------------------------------------------------------------
@@ -77,23 +77,23 @@ function bool ButtonActivated( Window buttonPressed )
 
 function CreateMenuButtons()
 {
-	local int buttonIndex;
+    local int buttonIndex;
 
-	for(buttonIndex=0; buttonIndex<arrayCount(buttonDefaults); buttonIndex++)
-	{
-		if (ButtonNames[buttonIndex] != "")
-		{
-			winButtons[buttonIndex] = MenuUIMenuButtonWindow(winClient.NewChild(Class'MenuUIMenuButtonWindow'));
+    for(buttonIndex=0; buttonIndex<arrayCount(buttonDefaults); buttonIndex++)
+    {
+        if (ButtonNames[buttonIndex] != "")
+        {
+            winButtons[buttonIndex] = MenuUIMenuButtonWindow(winClient.NewChild(Class'MenuUIMenuButtonWindow'));
 
-			winButtons[buttonIndex].SetButtonText(ButtonNames[buttonIndex]);
-			winButtons[buttonIndex].SetPos(buttonXPos, buttonDefaults[buttonIndex].y);
-			winButtons[buttonIndex].SetWidth(buttonWidth);
-		}
-		else
-		{
-			break;
-		}
-	}
+            winButtons[buttonIndex].SetButtonText(ButtonNames[buttonIndex]);
+            winButtons[buttonIndex].SetPos(buttonXPos, buttonDefaults[buttonIndex].y);
+            winButtons[buttonIndex].SetWidth(buttonWidth);
+        }
+        else
+        {
+            break;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -23,11 +23,11 @@ var Localized String NotAvailableLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetWidth(302);
+    SetWidth(302);
 
-	CreateControls();
+    CreateControls();
 }
 
 // ----------------------------------------------------------------------
@@ -36,27 +36,27 @@ event InitWindow()
 
 function CreateControls()
 {
-	winIcon = NewChild(Class'Window');
-	winIcon.SetBackgroundStyle(DSTY_Masked);
-	winIcon.SetPos(1, 1);
-	winIcon.SetSize(24, 24);
+    winIcon = NewChild(Class'Window');
+    winIcon.SetBackgroundStyle(DSTY_Masked);
+    winIcon.SetPos(1, 1);
+    winIcon.SetSize(24, 24);
 
-	winName = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winName.SetPos(28, 0);
-	winName.SetSize(138, 27);
-	winName.SetFont(Font'FontMenuHeaders');
+    winName = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
+    winName.SetPos(28, 0);
+    winName.SetSize(138, 27);
+    winName.SetFont(Font'FontMenuHeaders');
 
-	winLevel = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winLevel.SetPos(165, 0);
-	winLevel.SetSize(54, 27);
+    winLevel = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
+    winLevel.SetPos(165, 0);
+    winLevel.SetSize(54, 27);
 
-	winLevelIcons = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
-	winLevelIcons.SetPos(229, 11);
+    winLevelIcons = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
+    winLevelIcons.SetPos(229, 11);
 
-	winPointsNeeded = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winPointsNeeded.SetPos(264, 0);
-	winPointsNeeded.SetSize(30, 27);
-	winPointsNeeded.SetTextAlignments(HALIGN_Right, VALIGN_Center);
+    winPointsNeeded = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
+    winPointsNeeded.SetPos(264, 0);
+    winPointsNeeded.SetSize(30, 27);
+    winPointsNeeded.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 
 // ----------------------------------------------------------------------
@@ -65,43 +65,43 @@ function CreateControls()
 
 function SelectButton(Bool bNewSelected)
 {
-	bSelected = bNewSelected;
+    bSelected = bNewSelected;
 
-	// Update text colors 
-	winName.SetSelected(bSelected);
-	winLevel.SetSelected(bSelected);
-	winPointsNeeded.SetSelected(bSelected);
-	winLevelIcons.SetSelected(bSelected);
+    // Update text colors
+    winName.SetSelected(bSelected);
+    winLevel.SetSelected(bSelected);
+    winPointsNeeded.SetSelected(bSelected);
+    winLevelIcons.SetSelected(bSelected);
 }
 
 // ----------------------------------------------------------------------
 // SetButtonMetrics()
 //
-// Calculates which set of textures we're going to use as well as 
+// Calculates which set of textures we're going to use as well as
 // any text offset (used if the button is pressed in)
 // ----------------------------------------------------------------------
 
 function SetButtonMetrics()
 {
-	if (bIsSensitive)
-	{
-		if (bSelected)				
-		{
-			textureIndex = 1;
-			textColorIndex = 2;
-		}
-		else
-		{
-			textureIndex = 0;
-			textColorIndex = 0;
-		}
-	}
-	else								// disabled
-	{
-		textureIndex = 0;
-		textColorIndex = 3;
-	}
-}	
+    if (bIsSensitive)
+    {
+        if (bSelected)
+        {
+            textureIndex = 1;
+            textColorIndex = 2;
+        }
+        else
+        {
+            textureIndex = 0;
+            textColorIndex = 0;
+        }
+    }
+    else                                // disabled
+    {
+        textureIndex = 0;
+        textColorIndex = 3;
+    }
+}
 
 // ----------------------------------------------------------------------
 // SetSkill()
@@ -109,9 +109,9 @@ function SetButtonMetrics()
 
 function SetSkill(Skill newSkill)
 {
-	skill = newSkill;
+    skill = newSkill;
 
-	RefreshSkillInfo();
+    RefreshSkillInfo();
 }
 
 // ----------------------------------------------------------------------
@@ -120,7 +120,7 @@ function SetSkill(Skill newSkill)
 
 function Skill GetSkill()
 {
-	return skill;
+    return skill;
 }
 
 // ----------------------------------------------------------------------
@@ -129,18 +129,18 @@ function Skill GetSkill()
 
 function RefreshSkillInfo()
 {
-	if (skill != None)
-	{
-		winIcon.SetBackground(skill.SkillIcon);
-		winName.SetText(skill.SkillName);
-		winLevel.SetText(skill.GetCurrentLevelString());
-		winLevelIcons.SetLevel(skill.GetCurrentLevel());
+    if (skill != None)
+    {
+        winIcon.SetBackground(skill.SkillIcon);
+        winName.SetText(skill.SkillName);
+        winLevel.SetText(skill.GetCurrentLevelString());
+        winLevelIcons.SetLevel(skill.GetCurrentLevel());
 
-		if (skill.GetCurrentLevel() == 3)
-			winPointsNeeded.SetText(NotAvailableLabel);
-		else
-			winPointsNeeded.SetText(String(skill.GetCost()));
-	}
+        if (skill.GetCurrentLevel() == 3)
+            winPointsNeeded.SetText(NotAvailableLabel);
+        else
+            winPointsNeeded.SetText(String(skill.GetCost()));
+    }
 }
 
 // ----------------------------------------------------------------------

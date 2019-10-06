@@ -7,13 +7,13 @@ class MovingWindow extends Window;
 var Window winToShow;
 var Int startPosX;
 var Int startPosY;
-var Int endPosX;							// Final position
-var Int endPosY;	
+var Int endPosX;                            // Final position
+var Int endPosY;
 var Int curPosX;
-var Int curPosY;					
+var Int curPosY;
 var Float lastMoveX;
 var Float lastMoveY;
-var Int moveRate;							// Pixel move rate / sec.
+var Int moveRate;                           // Pixel move rate / sec.
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -23,11 +23,11 @@ var Int moveRate;							// Pixel move rate / sec.
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	SetBackgroundStyle(DSTY_Masked);
+    SetBackgroundStyle(DSTY_Masked);
 
-	Hide();
+    Hide();
 }
 
 
@@ -38,37 +38,37 @@ event InitWindow()
 function Tick(float deltaTime)
 {
 /*
-	log("Tick()-----------------------------------------------");
-	log("  lastMoveX = " $ lastMoveX);
-	log("  lastMoveY = " $ lastMoveY);
-	log("  curPosX   = " $ curPosX);
-	log("  curPosY   = " $ curPosY);
-	log("  startPosX = " $ startPosX);
-	log("  startPosY = " $ startPosY);
-	log("  endPosX   = " $ endPosX);
-	log("  endPosY   = " $ endPosY);
-	log("  deltaTime = " $ deltaTime);
+    log("Tick()-----------------------------------------------");
+    log("  lastMoveX = " $ lastMoveX);
+    log("  lastMoveY = " $ lastMoveY);
+    log("  curPosX   = " $ curPosX);
+    log("  curPosY   = " $ curPosY);
+    log("  startPosX = " $ startPosX);
+    log("  startPosY = " $ startPosY);
+    log("  endPosX   = " $ endPosX);
+    log("  endPosY   = " $ endPosY);
+    log("  deltaTime = " $ deltaTime);
 */
-	lastMoveX += deltaTime;
-	lastMoveY += deltaTime;
+    lastMoveX += deltaTime;
+    lastMoveY += deltaTime;
 
-	// Look at the current location, end location and
-	// move rate and calculate what the new position should be.
+    // Look at the current location, end location and
+    // move rate and calculate what the new position should be.
 
-	CalculateMovement(curPosX, lastMoveX, startPosX, endPosX);
-	CalculateMovement(curPosY, lastMoveY, startPosY, endPosY);
+    CalculateMovement(curPosX, lastMoveX, startPosX, endPosX);
+    CalculateMovement(curPosY, lastMoveY, startPosY, endPosY);
 
-	SetPos(curPosX, curPosY);
+    SetPos(curPosX, curPosY);
 /*
-	log(" ---");
-	log("  lastMoveX = " $ lastMoveX);
-	log("  lastMoveY = " $ lastMoveY);
-	log("  curPosX   = " $ curPosX);
-	log("  curPosY   = " $ curPosY);
+    log(" ---");
+    log("  lastMoveX = " $ lastMoveX);
+    log("  lastMoveY = " $ lastMoveY);
+    log("  curPosX   = " $ curPosX);
+    log("  curPosY   = " $ curPosY);
 */
-	// If we're at the final resting place, end this.
-	if ((curPosX == endPosX) && (curPosY == endPosY))
-		MoveFinished();
+    // If we're at the final resting place, end this.
+    if ((curPosX == endPosX) && (curPosY == endPosY))
+        MoveFinished();
 
 }
 
@@ -78,20 +78,20 @@ function Tick(float deltaTime)
 
 function CalculateMovement(out Int curPos, out Float lastMoveTime, Int StartPos, Int endPos)
 {
-	local Float pixelsToMove;
+    local Float pixelsToMove;
 
-	pixelsToMove = moveRate * lastMoveTime;
+    pixelsToMove = moveRate * lastMoveTime;
 
-	if (pixelsToMove > 1)
-	{
-		if (endPos < startPos)
-			curPos = Max(curPos - Int(pixelsToMove), endPos);
-		else
-			curPos = Min(curPos + Int(pixelsToMove), endPos);
+    if (pixelsToMove > 1)
+    {
+        if (endPos < startPos)
+            curPos = Max(curPos - Int(pixelsToMove), endPos);
+        else
+            curPos = Min(curPos + Int(pixelsToMove), endPos);
 
-//		lastMoveTime = (pixelsToMove - Int(PixelsToMove)) * moveRate;
-		lastMoveTime = 0;
-	}
+//      lastMoveTime = (pixelsToMove - Int(PixelsToMove)) * moveRate;
+        lastMoveTime = 0;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -100,10 +100,10 @@ function CalculateMovement(out Int curPos, out Float lastMoveTime, Int StartPos,
 
 function MoveFinished()
 {
-	if (winToShow != None)
-		winToShow.Show();
+    if (winToShow != None)
+        winToShow.Show();
 
-	Destroy();
+    Destroy();
 }
 
 // ----------------------------------------------------------------------
@@ -111,15 +111,15 @@ function MoveFinished()
 // ----------------------------------------------------------------------
 
 function SetCoordinates(
-	int newStartPosX, 
-	int newStartPosY, 
-	int newEndPosX, 
-	int newEndPosY)
+    int newStartPosX,
+    int newStartPosY,
+    int newEndPosX,
+    int newEndPosY)
 {
-	startPosX	= newStartPosX;
-	startPosY	= newStartPosY;
-	endPosX		= newEndPosX;
-	endPosY		= newEndPosY;	
+    startPosX   = newStartPosX;
+    startPosY   = newStartPosY;
+    endPosX     = newEndPosX;
+    endPosY     = newEndPosY;
 }
 
 // ----------------------------------------------------------------------
@@ -128,8 +128,8 @@ function SetCoordinates(
 
 function SetImage(Texture anImage, int imageSizeX, int imageSizeY)
 {
-	SetBackground(anImage);
-	SetSize(imageSizeX, imageSizeY);
+    SetBackground(anImage);
+    SetSize(imageSizeX, imageSizeY);
 }
 
 // ----------------------------------------------------------------------
@@ -138,14 +138,14 @@ function SetImage(Texture anImage, int imageSizeX, int imageSizeY)
 
 function StartMove()
 {
-	bTickEnabled = True;
+    bTickEnabled = True;
 
-	curPosX = startPosX;
-	curPosY = startPosY;
+    curPosX = startPosX;
+    curPosY = startPosY;
 
-	SetPos(curPosX, curPosY);
+    SetPos(curPosX, curPosY);
 
-	Show();
+    Show();
 }
 
 // ----------------------------------------------------------------------
@@ -154,10 +154,10 @@ function StartMove()
 
 function SetWindowToShow(window aNewWindowToShow)
 {
-	winToShow = aNewWindowToShow;
+    winToShow = aNewWindowToShow;
 
-	if (winToShow != None)
-		winToShow.Hide();
+    if (winToShow != None)
+        winToShow.Hide();
 }
 
 // ----------------------------------------------------------------------
@@ -166,7 +166,7 @@ function SetWindowToShow(window aNewWindowToShow)
 
 function SetMoveRate(Int newMoveRate)
 {
-	moveRate = newMoveRate;
+    moveRate = newMoveRate;
 }
 
 // ----------------------------------------------------------------------

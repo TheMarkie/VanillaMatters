@@ -24,7 +24,7 @@ simulated function Tick(float deltaTime)
       TimeSinceStrong = 0;
 
    // DEUS_EX AMSD Won't work right on listen server yet, but this will be low bandwidth for
-   // the moment for dedicated server.      
+   // the moment for dedicated server.
    ScaleGlow = 0.5 * (TimeSinceStrong / 1.0);
 
    SetLocation(AttachedPlayer.Location);

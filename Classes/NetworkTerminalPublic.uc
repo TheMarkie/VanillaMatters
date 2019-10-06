@@ -9,11 +9,11 @@ class NetworkTerminalPublic extends NetworkTerminal;
 
 function CloseScreen(String action)
 {
-	Super.CloseScreen(action);
+    Super.CloseScreen(action);
 
-	// Based on the action, proceed!
-	if (action == "LOGOUT")
-		Super.CloseScreen("EXIT");
+    // Based on the action, proceed!
+    if (action == "LOGOUT")
+        Super.CloseScreen("EXIT");
 }
 
 // ----------------------------------------------------------------------

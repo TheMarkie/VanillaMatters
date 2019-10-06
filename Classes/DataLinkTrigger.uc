@@ -24,7 +24,7 @@ var bool  bCheckFlagTimer;
 var float checkFlagTimer;
 
 var DeusExPlayer player;
-var Actor		 triggerOther;
+var Actor        triggerOther;
 var Pawn         triggerInstigator;
 
 // ----------------------------------------------------------------------
@@ -33,8 +33,8 @@ var Pawn         triggerInstigator;
 
 function Timer()
 {
-	if ((bCheckFlagTimer) && (EvaluateFlag()) && (player != None))
-		player.StartDataLinkTransmission(String(datalinkTag), Self);
+    if ((bCheckFlagTimer) && (EvaluateFlag()) && (player != None))
+        player.StartDataLinkTransmission(String(datalinkTag), Self);
 }
 
 // ----------------------------------------------------------------------
@@ -43,30 +43,30 @@ function Timer()
 
 singular function Trigger(Actor Other, Pawn Instigator)
 {
-	// Only set the player if the player isn't already set and 
-	// the "bCheckFlagTimer" variable is false
-	if ((player == None) || ((player != None) && (bCheckFlagTimer == False)))
-		player = DeusExPlayer(Instigator);
+    // Only set the player if the player isn't already set and
+    // the "bCheckFlagTimer" variable is false
+    if ((player == None) || ((player != None) && (bCheckFlagTimer == False)))
+        player = DeusExPlayer(Instigator);
 
-	// only works for DeusExPlayers
-	if (player == None)
-		return;
+    // only works for DeusExPlayers
+    if (player == None)
+        return;
 
-	if (EvaluateFlag())
-	{
-		if (player.StartDataLinkTransmission(String(datalinkTag), Self) == True)
-		{
-			bStartedViaTrigger = True;
-			triggerOther       = Other;
-			triggerInstigator  = Instigator;
-		}
-	}
-	else if (checkFlag != '')
-	{
-		bStartedViaTrigger = True;
-		triggerOther       = Other;
-		triggerInstigator  = Instigator;
-	}
+    if (EvaluateFlag())
+    {
+        if (player.StartDataLinkTransmission(String(datalinkTag), Self) == True)
+        {
+            bStartedViaTrigger = True;
+            triggerOther       = Other;
+            triggerInstigator  = Instigator;
+        }
+    }
+    else if (checkFlag != '')
+    {
+        bStartedViaTrigger = True;
+        triggerOther       = Other;
+        triggerInstigator  = Instigator;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -75,33 +75,33 @@ singular function Trigger(Actor Other, Pawn Instigator)
 
 singular function Touch(Actor Other)
 {
-	// Only set the player if the player isn't already set and 
-	// the "bCheckFlagTimer" variable is false
-	if ((player == None) || ((player != None) && (bCheckFlagTimer == False)))
-		player = DeusExPlayer(Other);
+    // Only set the player if the player isn't already set and
+    // the "bCheckFlagTimer" variable is false
+    if ((player == None) || ((player != None) && (bCheckFlagTimer == False)))
+        player = DeusExPlayer(Other);
 
-	// only works for DeusExPlayers
-	if (player == None)
-		return;
+    // only works for DeusExPlayers
+    if (player == None)
+        return;
 
-	if (EvaluateFlag())
-	{
-		if (player.StartDataLinkTransmission(String(datalinkTag), Self) == True)
-		{
-			bStartedViaTouch = True;
-			triggerOther     = Other;
-		}
-	}
-	else if (checkFlag != '')
-	{
-		bStartedViaTouch   = True;
-		triggerOther       = Other;
-	}
+    if (EvaluateFlag())
+    {
+        if (player.StartDataLinkTransmission(String(datalinkTag), Self) == True)
+        {
+            bStartedViaTouch = True;
+            triggerOther     = Other;
+        }
+    }
+    else if (checkFlag != '')
+    {
+        bStartedViaTouch   = True;
+        triggerOther       = Other;
+    }
 }
 
 // ----------------------------------------------------------------------
 // UnTouch()
-// 
+//
 // Used to monitor the state of the "checkFlag" variable if it's set.
 // This is so a player can be sitting inside the radius of a trigger
 // and if the "checkFlag" suddenly is valid, the trigger will play.
@@ -109,8 +109,8 @@ singular function Touch(Actor Other)
 
 function UnTouch( actor Other )
 {
-	bCheckFlagTimer = False;
-	Super.UnTouch(Other);
+    bCheckFlagTimer = False;
+    Super.UnTouch(Other);
 }
 
 // ----------------------------------------------------------------------
@@ -119,38 +119,38 @@ function UnTouch( actor Other )
 
 function bool EvaluateFlag()
 {
-	local bool bSuccess;
+    local bool bSuccess;
 
-	if (checkFlag != '')
-	{
-		if ((player != None) && (player.flagBase != None))
-		{
-			if (!player.flagBase.GetBool(checkFlag))
-				bSuccess = bCheckFalse;
-			else
-				bSuccess = !bCheckFalse;
+    if (checkFlag != '')
+    {
+        if ((player != None) && (player.flagBase != None))
+        {
+            if (!player.flagBase.GetBool(checkFlag))
+                bSuccess = bCheckFalse;
+            else
+                bSuccess = !bCheckFalse;
 
-			// If the flag check fails, then make sure the Tick() event 
-			// is active so we can continue to check the flag while 
-			// the player is inside the radius of the trigger.
+            // If the flag check fails, then make sure the Tick() event
+            // is active so we can continue to check the flag while
+            // the player is inside the radius of the trigger.
 
-			if (!bSuccess)
-			{
-				bCheckFlagTimer = True;
-				SetTimer(checkFlagTimer, False);
-			}
-		}
-		else
-		{
-			bSuccess = False;
-		}
-	}
-	else
-	{
-		bSuccess = True;
-	}
+            if (!bSuccess)
+            {
+                bCheckFlagTimer = True;
+                SetTimer(checkFlagTimer, False);
+            }
+        }
+        else
+        {
+            bSuccess = False;
+        }
+    }
+    else
+    {
+        bSuccess = True;
+    }
 
-	return bSuccess;
+    return bSuccess;
 }
 
 // ----------------------------------------------------------------------
@@ -159,10 +159,10 @@ function bool EvaluateFlag()
 
 function DatalinkFinished()
 {
-	if (bStartedViaTrigger)
-		Super.Trigger(triggerOther, triggerInstigator);
-	else if (bStartedViaTouch)
-		Super.Touch(triggerOther);
+    if (bStartedViaTrigger)
+        Super.Trigger(triggerOther, triggerInstigator);
+    else if (bStartedViaTouch)
+        Super.Touch(triggerOther);
 }
 
 // ----------------------------------------------------------------------

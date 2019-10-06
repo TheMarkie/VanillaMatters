@@ -7,56 +7,56 @@ var float time;
 
 function bool ShouldBeStartled(Pawn startler)
 {
-	local float speed;
-	local float time;
-	local float dist;
-	local float dist2;
-	local bool  bPh33r;
+    local float speed;
+    local float time;
+    local float dist;
+    local float dist2;
+    local bool  bPh33r;
 
-	bPh33r = false;
-	if (startler != None)
-	{
-		speed = VSize(startler.Velocity);
-		if (speed >= 20)
-		{
-			dist = VSize(Location - startler.Location);
-			time = dist/speed;
-			if (time <= 3.0)
-			{
-				dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
-				if (dist2 < speed*1.5)
-					bPh33r = true;
-			}
-		}
-	}
+    bPh33r = false;
+    if (startler != None)
+    {
+        speed = VSize(startler.Velocity);
+        if (speed >= 20)
+        {
+            dist = VSize(Location - startler.Location);
+            time = dist/speed;
+            if (time <= 3.0)
+            {
+                dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
+                if (dist2 < speed*1.5)
+                    bPh33r = true;
+            }
+        }
+    }
 
-	return bPh33r;
+    return bPh33r;
 }
 
 
 function Tick(float deltaTime)
 {
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	time += deltaTime;
+    time += deltaTime;
 
-	// check for random noises
-	if (time > 1.0)
-	{
-		time = 0;
-		if (FRand() < 0.05)
-			PlaySound(sound'CatPurr', SLOT_None,,, 128);
-	}
+    // check for random noises
+    if (time > 1.0)
+    {
+        time = 0;
+        if (FRand() < 0.05)
+            PlaySound(sound'CatPurr', SLOT_None,,, 128);
+    }
 }
 
 state Attacking
 {
-	function Tick(float deltaSeconds)
-	{
-		Super.Tick(deltaSeconds);
-		if (Enemy != None)
-			GotoState('Fleeing');
-	}
+    function Tick(float deltaSeconds)
+    {
+        Super.Tick(deltaSeconds);
+        if (Enemy != None)
+            GotoState('Fleeing');
+    }
 }
 
 defaultproperties

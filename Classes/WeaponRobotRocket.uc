@@ -6,8 +6,8 @@ class WeaponRobotRocket extends WeaponNPCRanged;
 // fire weapons out of alternating sides
 function Fire(float Value)
 {
-	PlayerViewOffset.Y = -PlayerViewOffset.Y;
-	Super.Fire(Value);
+    PlayerViewOffset.Y = -PlayerViewOffset.Y;
+    Super.Fire(Value);
 }
 
 defaultproperties

@@ -16,14 +16,14 @@ var Localized String RestartMessage;
 
 function LoadSetting()
 {
-	local int detailChoice;
+    local int detailChoice;
 
-	detailChoice = int(player.ConsoleCommand("get " $ configSetting));
+    detailChoice = int(player.ConsoleCommand("get " $ configSetting));
 
-	if (detailChoice == 16)
-		SetValue(0);
-	else
-		SetValue(1);
+    if (detailChoice == 16)
+        SetValue(0);
+    else
+        SetValue(1);
 }
 
 // ----------------------------------------------------------------------
@@ -32,16 +32,16 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	if (GetValue() == 0)
-	{
-		player.ConsoleCommand("set " $ configSetting $ " 16");
-		player.ConsoleCommand("set " $ configSetting2 $ " 16");
-	}
-	else
-	{
-		player.ConsoleCommand("set " $ configSetting $ " 32");
-		player.ConsoleCommand("set " $ configSetting2 $ " 32");
-	}
+    if (GetValue() == 0)
+    {
+        player.ConsoleCommand("set " $ configSetting $ " 16");
+        player.ConsoleCommand("set " $ configSetting2 $ " 16");
+    }
+    else
+    {
+        player.ConsoleCommand("set " $ configSetting $ " 32");
+        player.ConsoleCommand("set " $ configSetting2 $ " 32");
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -50,13 +50,13 @@ function SaveSetting()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
+    Super.CycleNextValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -65,13 +65,13 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
+    Super.CyclePreviousValue();
 
-	if (!bMessageDisplayed)
-	{
-		DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
-		bMessageDisplayed = True;
-	}
+    if (!bMessageDisplayed)
+    {
+        DeusExRootWindow(GetRootWindow()).MessageBox(RestartTitle, RestartMessage, 1, False, Self);
+        bMessageDisplayed = True;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -80,10 +80,10 @@ function CyclePreviousValue()
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	DeusExRootWindow(GetRootWindow()).PopWindow();
+    // Destroy the msgbox!
+    DeusExRootWindow(GetRootWindow()).PopWindow();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -92,7 +92,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
 function ResetToDefault()
 {
-	LoadSetting();
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------

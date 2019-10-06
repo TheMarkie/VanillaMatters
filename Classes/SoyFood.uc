@@ -5,23 +5,23 @@ class SoyFood extends DeusExPickup;
 
 state Activated
 {
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.HealPlayer(5, False);
-		
-		UseOnce();
-	}
+        Super.BeginState();
+
+        player = DeusExPlayer(Owner);
+        if (player != None)
+            player.HealPlayer(5, False);
+
+        UseOnce();
+    }
 Begin:
 }
 
