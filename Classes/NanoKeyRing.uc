@@ -291,8 +291,8 @@ Begin:
 
 defaultproperties
 {
-     NoKeys="No Nano Keys Available!"
-     KeysAvailableLabel="Nano Keys Available:"
+     NoKeys="No Nano-Keys Available!"
+     KeysAvailableLabel="Nano-Keys Available:"
      UseSound=Sound'DeusExSounds.Generic.KeysRattling'
      VM_handsTexPos(0)=0
      bDisplayableInv=False

@@ -48,7 +48,7 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconAquaLung_Small'
      bAlwaysActive=True
      AugmentationName="Aqualung"
-     Description="Soda lime exostructures imbedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater.|n|nTECH ONE: Lung capacity is extended by 15 seconds.|n|nTECH TWO: Lung capacity is extended by 30 seconds.|n|nTECH THREE: Lung capacity is extended by 60 seconds.|n|nTECH FOUR: An agent can stay underwater indefinitely."
+     Description="Soda lime exostructures embedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater.|n|nTECH ONE: Lung capacity is extended by 15 seconds.|n|nTECH TWO: Lung capacity is extended by 30 seconds.|n|nTECH THREE: Lung capacity is extended by 60 seconds.|n|nTECH FOUR: An agent can stay underwater indefinitely."
      MPInfo="When active, you can stay underwater 12 times as long.  Energy Drain: None"
      LevelValues(0)=15.000000
      LevelValues(1)=30.000000

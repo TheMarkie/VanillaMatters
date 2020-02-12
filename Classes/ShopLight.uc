@@ -7,7 +7,7 @@ defaultproperties
 {
      FragType=Class'DeusEx.GlassFragment'
      bHighlight=False
-     ItemName="Flourescent Light"
+     ItemName="Fluorescent Light"
      bPushable=False
      Physics=PHYS_None
      Mesh=LodMesh'DeusExDeco.ShopLight'

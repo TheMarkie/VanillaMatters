@@ -95,7 +95,7 @@ defaultproperties
      largeIconWidth=205
      largeIconHeight=46
      invSlotsX=4
-     Description="The true weapon of a modern warrior, the Dragon's Tooth is not a sword in the traditional sense, but a nanotechnologically constructed blade that is dynamically 'forged' on command into a non-eutactic solid. Nanoscale whetting devices insure that the blade is both unbreakable and lethally sharp."
+     Description="The true weapon of a modern warrior, the Dragon's Tooth is not a sword in the traditional sense, but a nanotechnologically constructed blade that is dynamically 'forged' on command into a non-eutectic solid. Nanoscale whetting devices insure that the blade is both unbreakable and lethally sharp."
      beltDescription="DRAGON"
      Mesh=LodMesh'DeusExItems.NanoSwordPickup'
      CollisionRadius=32.000000

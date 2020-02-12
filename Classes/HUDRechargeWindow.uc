@@ -468,14 +468,14 @@ defaultproperties
      RechargeButtonLabel="  |&Recharge  "
      CloseButtonLabel="  |&Close  "
      RechargeTitle="REPAIRBOT INTERFACE"
-     RepairBotInfoText="The RepairBot can restore up to %d points of Bio Electric Energy every %d seconds."
+     RepairBotInfoText="The RepairBot can restore up to %d points of Bio-Electric Energy every %d seconds."
      RepairBotStatusLabel="RepairBot Status:"
      ReadyLabel="Ready!"
      SecondsPluralLabel="Recharging: %d seconds"
      SecondsSingularLabel="Recharging: %d second"
-     BioStatusLabel="Bio Energy:"
+     BioStatusLabel="Bio-Energy:"
      RepairBotRechargingLabel="|n|nThe RepairBot is currently Recharging.  Please Wait."
      RepairBotReadyLabel="|n|nThe RepairBot is Ready, you may now Recharge."
-     RepairBotYouAreHealed="|n|nYour BioElectric Energy is at Maximum."
+     RepairBotYouAreHealed="|n|nYour Bio-Electric Energy is at Maximum."
      ScreenType=ST_Popup
 }

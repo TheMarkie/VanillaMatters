@@ -2200,7 +2200,7 @@ defaultproperties
      UseButtonLabel="|&Use"
      DropButtonLabel="|&Drop"
      ChangeAmmoButtonLabel="Change Amm|&o"
-     NanoKeyRingInfoText="Click icon to see a list of Nano Keys."
+     NanoKeyRingInfoText="Click icon to see a list of Nano-Keys."
      NanoKeyRingLabel="Keys: %s"
      DroppedLabel="%s dropped"
      AmmoLoadedLabel="%s loaded"

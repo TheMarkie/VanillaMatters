@@ -8,7 +8,7 @@ defaultproperties
      bNoPitch=True
      bInvincible=True
      FragType=Class'DeusEx.GlassFragment'
-     ItemName="Flourescent Light"
+     ItemName="Fluorescent Light"
      Mesh=LodMesh'DeusExDeco.HangingShopLight'
      PrePivot=(Z=39.450001)
      CollisionRadius=42.500000
