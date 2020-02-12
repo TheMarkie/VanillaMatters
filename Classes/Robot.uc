@@ -259,13 +259,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
     // Vanilla Matters: Add in FP rate for damage dealth, based on health loss.
     if ( player != None ) {
-        if ( player.FPSystem != none ) {
-            if ( damageType == 'EMP' ) {
-                player.FPSystem.AddForwardPressure( FMax( oldEMPHitPoints - EMPHitPoints, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
-            else {
-                player.FPSystem.AddForwardPressure( FMax( origHealth - Health, 0 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
+        if ( damageType == 'EMP' ) {
+            player.AddForwardPressure( oldEMPHitPoints - EMPHitPoints, 'Damage' );
+        }
+        else {
+            player.AddForwardPressure( origHealth - Health, 'Damage' );
         }
     }
 

@@ -486,9 +486,7 @@ function PerformSave()
     localRoot     = root;
 
     // Vanilla Matters: Reset the forward pressure.
-    if ( player.FPSystem != none ) {
-        player.FPSystem.ResetForwardPressure();
-    }
+    player.ResetForwardPressure();
 
     localRoot.ClearWindowStack();
     localPlayer.SaveGame(gameIndex, saveName);

@@ -712,7 +712,7 @@ simulated function float CalculateAccuracy() {
             }
 
             // VM: Add flinching penalty.
-            accuracy = accuracy + ( player.VM_flinchPenalty * div );
+            accuracy = accuracy + ( player.GetFlinchPenalty() * div );
         }
 
         accuracy = accuracy + ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.5 * div );

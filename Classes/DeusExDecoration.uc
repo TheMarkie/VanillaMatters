@@ -905,9 +905,7 @@ auto state Active
         // Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
         c = Containers( self );
         if ( c != none && c.VM_isSupply && player != None ) {
-            if ( player.FPSystem != none ) {
-                player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
+                player.AddForwardPressure( FMin( origHP - HitPoints, default.HitPoints ), 'Damage' );
         }
     }
 }
@@ -1002,9 +1000,7 @@ state Burning
         // Vanilla Matters: Add FP rate for damage dealt, based on HitPoints lost, caps at max HitPoints.
         c = Containers( self );
         if ( c != none && c.VM_isSupply && player != None ) {
-            if ( player.FPSystem != none ) {
-                player.FPSystem.AddForwardPressure( FClamp( origHP - HitPoints, 0, Default.HitPoints ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
+            player.AddForwardPressure( FMin( origHP - HitPoints, default.HitPoints ), 'Damage' );
         }
     }
 

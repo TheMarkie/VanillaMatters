@@ -378,9 +378,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
             // VM: Add FP rate for damage dealt. Caps at max doorStrength.
             if ( player != None ) {
-                if ( player.FPSystem != none ) {
-                    player.FPSystem.AddForwardPressure( FClamp( Damage, 0, default.doorStrength * 100 ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-                }
+                player.AddForwardPressure( FMin( Damage, default.doorStrength * 100 ), 'Damage' );
             }
         }
 
@@ -419,9 +417,7 @@ function Timer()
          lockStrength = FClamp(lockStrength, 0.0, 1.0);
 
         // Vanilla Matters: Add in FP for lockpicking.
-        if ( pickPlayer.FPSystem != none ) {
-            pickPlayer.FPSystem.AddForwardPressure( pickPlayer.FPSystem.VM_fpUtility + pickPlayer.FPSystem.fpUtilityLBS );
-        }
+        pickPlayer.AddForwardPressure( 1, 'Unlocking' );
       }
 
         // pick all like-tagged movers at once (for double doors and such)

@@ -1,7 +1,7 @@
 //=============================================================================
 // Human.
 //=============================================================================
-class Human extends DeusExPlayer
+class Human extends VMPlayer
     abstract;
 
 var float mpGroundSpeed;

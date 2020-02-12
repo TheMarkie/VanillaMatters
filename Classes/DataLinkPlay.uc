@@ -160,9 +160,7 @@ function TerminateConversation(optional bool bContinueSpeech, optional bool bNoP
     bEndTransmission = True;
 
     // Vanilla Matters: Give FP after a datalink.
-    if ( player.FPSystem != none ) {
-        player.FPSystem.AddForwardPressure( player.FPSystem.VM_fpConversation );
-    }
+    player.AddForwardPressure( 1, 'Conversation' );
 
     // Notify the trigger that we've finished
     NotifyDatalinkTrigger();

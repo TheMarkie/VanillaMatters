@@ -516,9 +516,7 @@ function Tick(float deltaTime)
                 }
 
                 // Vanilla Matters: Add FP rate for hacking.
-                if ( player.FPSystem != none ) {
-                    player.FPSystem.AddForwardPressure( timeCost * ( player.FPSystem.VM_fpUtility + player.FPSystem.fpUtilityHS ) );
-                }
+                player.AddForwardPressure( timeCost, 'Hacking' );
             }
             else {
                 detectionTime = detectionTime - ( deltaTime * 0.1 );

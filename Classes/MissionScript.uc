@@ -18,7 +18,7 @@ var string localURL;
 var DeusExLevelInfo dxInfo;
 
 // Vanilla Matters
-var float VM_autosaveDelay;
+var() float VM_AutoSaveDelay;
 
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
@@ -129,6 +129,11 @@ function FirstFrame()
         // Set this flag so we only get in here once per mission.
         flags.SetBool(flagName, True);
     }
+
+    // Vanilla Matters: Request an autosave if enabled.
+    if ( player.IsFeatureEnabled( 'AutoSave' ) ) {
+        player.RequestAutoSave( VM_AutoSaveDelay );
+    };
 }
 
 // ----------------------------------------------------------------------
@@ -207,19 +212,9 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
     return aPoint;
 }
 
-// Vanilla Matters: Try autosaving at the start of every mission map, exclude tutorial, intro and endgame.
-function Tick( float deltaTime ) {
-    if ( flags != none && player != none && player.VM_bEnableAS && !player.VM_autosaved && player.dataLinkPlay == none && !player.IsInState( 'Conversation' ) ) {
-        VM_autosaveDelay = VM_autosaveDelay - deltaTime;
-        if ( VM_autosaveDelay <= 0 && Mission00( self ) == none && MissionIntro( self ) == none && MissionEndgame( self ) == none ) {
-            player.AutoSave();
-        }
-    }
-}
-
 defaultproperties
 {
      checkTime=1.000000
      localURL="NOTHING"
-     VM_autosaveDelay=1.200000
+     VM_AutoSaveDelay=1.200000
 }

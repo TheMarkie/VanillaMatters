@@ -98,7 +98,7 @@ state Activated
                 player.DeleteInventory( self );
 
                 if ( player.IsHolding( self ) ) {
-                    player.VM_HeldInHand = none;
+                    player.ClearHold();
                 }
             }
         }

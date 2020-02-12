@@ -720,9 +720,7 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
         // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
         player = DeusExPlayer( Enemy );
         if ( newEnemy == None && player != None ) {
-            if ( player.FPSystem != none ) {
-                player.FPSystem.AddForwardPressure( player.FPSystem.VM_fpStealth * 10 );
-            }
+            player.AddForwardPressure( 10, 'Stealth' );
         }
 
         if (newEnemy != Enemy)
@@ -3383,13 +3381,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
     // Vanilla Matters: Add FP rate for damage dealt, based on health loss.
     if ( player != None ) {
-        if ( player.FPSystem != none ) {
-            if ( Animal( self ) != none ) {
-                player.FPSystem.AddForwardPressure( FClamp( origHealth - Health, 0, Default.Health ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
-            else {
-                player.FPSystem.AddForwardPressure( FClamp( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0, Default.Health ) * ( player.FPSystem.VM_fpDamage + player.FPSystem.fpDamageS ) );
-            }
+        if ( Animal( self ) != none ) {
+            player.AddForwardPressure( FMin( origHealth - Health, default.Health ), 'Damage' );
+        }
+        else {
+            player.AddForwardPressure( FMin( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), default.Health ), 'Damage' );
         }
     }
 

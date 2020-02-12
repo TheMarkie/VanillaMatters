@@ -378,7 +378,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     local Pawn P;
     local DeusExWeapon W;
     local bool bFoundSomething;
-    local DeusExPlayer player;
     local ammo AmmoType;
     local bool bPickedItemUp;
     //local POVCorpse corpse;
@@ -386,6 +385,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     local int itemCount;
 
     // Vanilla Matters
+    local VMPlayer player;
     local bool bHeldAlready;        // Just something to make sure no two pickups are taken held in the same search.
     local DeusExWeapon tempW;
     local bool ammoPicked;
@@ -393,7 +393,8 @@ function Frob(Actor Frobber, Inventory frobWith)
 //log("DeusExCarcass::Frob()--------------------------------");
 
     // Can we assume only the *PLAYER* would actually be frobbing carci?
-    player = DeusExPlayer(Frobber);
+    // Vanilla Matters
+    player = VMPlayer( Frobber );
 
     // No doublefrobbing in multiplayer.
     if (bQueuedDestroy)
@@ -553,14 +554,14 @@ function Frob(Actor Frobber, Inventory frobWith)
                                     if ( AmmoType != none ) {
                                         if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
                                             if ( W != None ) {
-                                                P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, item.itemName ) );
+                                                P.ClientMessage( Sprintf( player.MsgTooMuchAmmo, item.itemName ) );
                                             }
                                             else {
                                                 P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
                                             }
                                         }
                                         else {
-                                            P.ClientMessage( Sprintf( player.VM_msgTooMuchAmmo, AmmoType.itemName ) );
+                                            P.ClientMessage( Sprintf( player.MsgTooMuchAmmo, AmmoType.itemName ) );
                                         }
                                     }
                                     else {
@@ -647,8 +648,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 
                                         AddReceivedItem( player, item, itemCount );
 
-                                        P.ClientMessage( Sprintf( player.VM_msgTakeHoldInstead, item.itemName ) );
-
                                         bHeldAlready = true;
                                     }
                                     else if ( VM_bSearchedOnce ) {
@@ -697,8 +696,6 @@ function Frob(Actor Frobber, Inventory frobWith)
                                     DeleteInventory( item );
 
                                     AddReceivedItem( player, item, 1 );
-
-                                    P.ClientMessage( Sprintf( player.VM_msgTakeHoldInstead, item.itemName ) );
 
                                     bHeldAlready = true;
                                 }

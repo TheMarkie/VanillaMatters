@@ -9,7 +9,7 @@ class MenuChoice_AutoSave extends MenuChoice_EnabledDisabled;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-    SetValue( int( !player.VM_bEnableAS ) );
+    SetValue( int( !player.IsFeatureEnabled( 'AutoSave' ) ) );
 }
 
 // ----------------------------------------------------------------------
@@ -17,14 +17,14 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-    player.VM_bEnableAS = !bool( GetValue() );
+    player.SetFeatureEnabled( 'AutoSave', !bool( GetValue() ) );
 }
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 function ResetToDefault() {
-    SetValue( int( !player.Default.VM_bEnableAS ) );
+    SetValue( int( !player.IsFeatureEnabledByDefault( 'AutoSave' ) ) );
 }
 
 // ----------------------------------------------------------------------

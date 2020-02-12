@@ -112,14 +112,19 @@ event InitWindow()
     damageFlash = 0.4;  // seconds
     healFlash   = 1.0;  // seconds
 
-    // Vanilla Matters: Create bar for forward pressure.
-    VM_winFP = ProgressBarWindow( NewChild( Class'ProgressBarWindow' ) );
-    VM_winFP.UseScaledColor( true );
-    VM_winFP.SetSize( 50, 5 );
-    VM_winFP.SetPos( 9, 90 );
-    VM_winFP.SetValues( 0, 100 );
-    VM_winFP.SetCurrentValue( 0 );
-    VM_winFP.SetVertical( false );
+    // Vanilla Matters: Create bar for forward pressure if it's enabled.
+    if ( player.IsFeatureEnabled( 'ForwardPressure' ) ) {
+        VM_winFP = ProgressBarWindow( NewChild( Class'ProgressBarWindow' ) );
+        VM_winFP.UseScaledColor( true );
+        VM_winFP.SetSize( 50, 5 );
+        VM_winFP.SetPos( 9, 90 );
+        VM_winFP.SetValues( 0, 100 );
+        VM_winFP.SetCurrentValue( 0 );
+        VM_winFP.SetVertical( false );
+    }
+    else {
+        VM_winFP = none;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -271,8 +276,8 @@ event DrawWindow(GC gc)
         gc.DrawText(61, 74, 8, 8, O2Text);
     }
 
-    // Vanilla Matters: Draw the FP text only if the player enables FP.
-    if ( player.VM_bEnableFP ) {
+    // Vanilla Matters: Draw the FP text.
+    if ( VM_winFP != none ) {
         gc.SetFont( Font'FontTiny' );
         gc.SetTextColor( VM_winFP.GetBarColor() );
         //gc.DrawText( 1, 87, 8, 8, VM_ForwardPressureText );
@@ -307,7 +312,7 @@ function DrawBorder(GC gc)
         //gc.DrawTexture(0, 0, 84, 106, 0, 0, texBorder);
 
         // Vanilla Matters: Pick the appropriate border for FP.
-        if ( player.VM_bEnableFP ) {
+        if ( VM_winFP != none ) {
             gc.DrawTexture( 0, 0, 84, 106, 0, 0, Texture'DeusEx.VMUI.HUDHitDisplayBorder_1' );
         }
         else {
@@ -385,16 +390,9 @@ event Tick(float deltaSeconds)
         // VM_winShield.SetCurrentValue( ( player.VM_Shield / player.VM_CurrentMaxShield ) * 100 );
         // VM_winShield.SetColors( VM_winShield.colBackground, VM_colShield );
 
-        // Vanilla Matters: Update FP value only if it's enabled, otherwise hide the bar.
-        if ( player.VM_bEnableFP && player.FPSystem != none ) {
-            if ( !VM_winFP.IsVisible() ) {
-                VM_winFP.Show();
-            }
-
-            VM_winFP.SetCurrentValue( player.FPSystem.GetForwardPressure() );
-        }
-        else if ( VM_winFP.IsVisible() ) {
-            VM_winFP.Hide();
+        // Vanilla Matters: Update FP value.
+        if ( VM_winFP != none ) {
+            VM_winFP.SetCurrentValue( player.GetForwardPressure() );
         }
 
         Show();

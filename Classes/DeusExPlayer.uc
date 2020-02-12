@@ -6,17 +6,6 @@ class DeusExPlayer extends PlayerPawnExt
 
 #exec OBJ LOAD FILE=Effects
 
-// Vanilla Matters
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"       NAME="WeaponHandsTex1a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"       NAME="WeaponHandsTex2a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"       NAME="WeaponHandsTex3a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"       NAME="WeaponHandsTex4a"     GROUP="VM" MIPS=On
-
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"       NAME="WeaponHandsTex1b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"       NAME="WeaponHandsTex2b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"       NAME="WeaponHandsTex3b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"       NAME="WeaponHandsTex4b"     GROUP="VM" MIPS=On
-
 // Name and skin assigned to PC by player on the Character Generation screen
 var travel String   TruePlayerName;
 var travel int      PlayerSkin;
@@ -367,53 +356,6 @@ const           NintendoDelay = 6.0;
 // For closing comptuers if the server quits
 var Computers ActiveComputer;
 
-// Vanilla Matters
-var globalconfig bool VM_bEnableAS;
-var globalconfig bool VM_bEnableFP;
-var globalconfig bool VM_bCheatsEnabled;
-
-var travel int VM_currentQSIndex;
-var travel int VM_currentASIndex;
-
-var bool VM_autosaved;                          // Check if we've done autosaving this level.
-var bool VM_autosaving;
-var float VM_autosaveTimer;
-var float VM_lastASTime;
-const VM_autosaveDelay = 180;
-
-var travel ForwardPressure FPSystem;            // Forward Pressure system.
-
-var travel float VM_visibilityNormal;
-var travel float VM_visibilityRobot;
-
-var travel Inventory VM_lastInHand;             // Last item in hand before PutInHand( None ).
-var travel Inventory VM_HeldInHand;             // Item being held.
-var travel Inventory VM_lastHeldInHand;         // Some temporary place to keep track of HeldInHand.
-
-// var travel float VM_Shield;                      // Current shield health.
-// var travel float VM_CurrentMaxShield;            // Just here to make things easier to fetch for the HUD.
-
-var travel int VM_lastMission;                  // Keep track of the last mission number in case the player transitions to a new mission.
-var travel bool VM_mapTravel;                   // Denote if a travel is a normal map travel or game load.
-
-var float VM_flinchPenalty;                     // Accuracy penalty when the player takes damage.
-var() float VM_flinchDecay;                     // Penalty decay rate.
-
-var byte VM_cpStatus[5];
-var byte VM_cpStatusSet[5];
-
-var localized string VM_msgFullHealth;
-var localized string VM_msgFullEnergy;
-var localized String VM_msgTakeHold;
-var localized String VM_msgTakeHoldInstead;
-var localized String VM_msgTakeHoldCharged;
-var localized String VM_msgDroneCost;
-var localized String VM_msgTooMuchAmmo;
-var localized String VM_msgMuscleCost;
-var localized String VM_msgChargedPickupAlready;
-// var localized String VM_msgShieldBroken;
-// var localized String VM_msgShieldRegen;
-
 // native Functions
 native(1099) final function string GetDeusExVersion();
 native(2100) final function ConBindEvents();
@@ -601,17 +543,6 @@ function InitializeSubSystems()
         SkillSystem.SetPlayer(Self);
     }
 
-    // Vanilla Matters: Initiate the FP system if not found, doesn't matter if FP is enabled or not.
-    if ( FPSystem == none ) {
-        FPSystem = Spawn( class'ForwardPressure', self );
-        FPSystem.InitializeFP( self );
-        FPSystem.SetOwner( self );
-    }
-    else {
-        FPSystem.SetPlayer( self );
-        FPSystem.SetOwner( self );
-    }
-
    if ((Level.Netmode == NM_Standalone) || (!bBeltIsMPInventory))
    {
       // Give the player a keyring
@@ -645,9 +576,6 @@ function PostPostBeginPlay()
 
 function PreTravel()
 {
-    // Vanilla Matters
-    local DeusExLevelInfo info;
-
     // Set a flag designating that we're traveling,
     // so MissionScript can check and not call FirstFrame() for this map.
 
@@ -662,22 +590,6 @@ function PreTravel()
     // before the map transition.  This is done to fix stuff
     // that's fucked up.
     ExtinguishFire();
-
-    // Vanilla Matters: Gotta do this to keep the held item from being added to the inventory.
-    if ( VM_HeldInHand != None ) {
-        VM_HeldInHand.SetOwner( None );
-    }
-
-    // Vanilla Matters: Save current mission number and marks this as a normal map transition.
-    info = GetLevelInfo();
-    if ( info != None ) {
-        VM_lastMission = info.MissionNumber;
-    }
-    else {
-        VM_lastMission = -3;
-    }
-
-    VM_mapTravel = true;
 }
 
 // ----------------------------------------------------------------------
@@ -759,9 +671,6 @@ event TravelPostAccept()
         // set the player correctly
         AugmentationSystem.SetPlayer(Self);
         AugmentationSystem.RefreshAugDisplay();
-
-        // Vanilla Matters: Should ensure all augs work fine through patches.
-        AugmentationSystem.RefreshesAugs();
     }
 
     // Nuke any existing conversation
@@ -802,98 +711,6 @@ event TravelPostAccept()
 
     // make sure the player's eye height is correct
     BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
-
-    // Vanilla Matters: Clear any change to underwatertime since we don't directly modify it anymore.
-    UnderWaterTime = default.UnderWaterTime;
-
-    // Vanilla Matters: Repair the held item since it's fucked up by vanilla coding.
-    if ( VM_HeldInHand != None ) {
-        VM_lastHeldInHand = VM_HeldInHand;
-
-        // VM: Gotta do all this to make sure the item is removed properly.
-        RemoveItemFromSlot( VM_HeldInHand );
-        VM_HeldInHand.DropFrom( Location );
-        VM_HeldInHand = None;
-
-        if ( TakeHold( VM_lastHeldInHand ) ) {
-            VM_lastHeldInHand = None;
-        }
-        // VM: Gotta destroy it if it can't be held again for whatever reason.
-        else {
-            VM_lastHeldInHand.Destroy();
-            VM_lastHeldInHand = None;
-        }
-    }
-
-    // VM: Set the player for any existing FP system and also notify that the vectors are supposed to be reset.
-    if ( FPSystem != none ) {
-        FPSystem.SetPlayer( self );
-        FPSystem.ResetFPZoneInfo();
-    }
-
-    // Vanilla Matters: If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
-    if ( info != None ) {
-        // VM: Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
-        if ( VM_lastMission != -3 && info.MissionNumber > VM_lastMission ) {
-            if ( FPSystem != none ) {
-                FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
-            }
-        }
-    }
-
-    // VM: If a save was loaded, reset forward pressure if the FP system exists, otherwise initialize it because probably a save from pre-FPSystem update was loaded.
-    if ( !VM_mapTravel ) {
-        if ( FPSystem != none ) {
-            FPSystem.ResetForwardPressure();
-        }
-        else {
-            FPSystem = Spawn( class'ForwardPressure', self );
-            FPSystem.InitializeFP( self );
-            FPSystem.SetOwner( self );
-        }
-    }
-    else {
-        // Vanilla Matters: Trigger an auto save.
-        VM_autosaved = false;
-    }
-
-    // VM: Always set this back to false in case the player saves while it's true.
-    VM_mapTravel = false;
-
-    // Vanilla Matters: Apply cheating status.
-    if ( Level.NetMode == NM_Standalone ) {
-        bCheatsEnabled = VM_bCheatsEnabled;
-    }
-}
-
-// Vanilla Matters: We handle updating our own stuff here.
-function VMTick( float deltaTime ) {
-    UpdateCPStatus();
-
-    // Vanilla Matters: Calculate visibility values for this frame.
-    UpdateVisibility();
-
-    // Vanilla Matters: Decay flinch penalty.
-    ProcessFlinch( deltaTime );
-
-    // Vanilla Matters: Build forward pressure as you move.
-    if ( FPSystem != none && !IsInState( 'Conversation' ) ) {
-        FPSystem.BuildForwardPressure( deltaTime );
-    }
-
-    if ( VM_bEnableAS && VM_autosaving ) {
-        if ( dataLinkPlay == none && !IsInState( 'Conversation' ) ) {
-            VM_autosaveTimer = VM_autosaveTimer - deltaTime;
-            if ( VM_autosaveTimer <= 0 ) {
-                VM_autosaving = false;
-                VM_autosaveTimer = 0;
-
-                if ( ( VM_lastASTime + VM_autosaveDelay ) <= Level.TimeSeconds ) {
-                    AutoSave();
-                }
-            }
-        }
-    }
 }
 
 // ----------------------------------------------------------------------
@@ -999,24 +816,19 @@ function DeusExLevelInfo GetLevelInfo()
     return info;
 }
 
-// Vanilla Matters: Rewrite aug activativation functions to be clearer.
-exec function AugSlot1() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 0 ); } }
-exec function AugSlot2() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 1 ); } }
-exec function AugSlot3() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 2 ); } }
-exec function AugSlot4() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 3 ); } }
-exec function AugSlot5() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 4 ); } }
-exec function AugSlot6() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 5 ); } }
-exec function AugSlot7() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 6 ); } }
-exec function AugSlot8() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 7 ); } }
-exec function AugSlot9() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 8 ); } }
-exec function AugSlot10() { if ( AugmentationSystem != none ) { AugmentationSystem.ActivateAugByKey( 9 ); } }
-
-// Vanilla Matters: Flash light now has its own key and function.
-exec function ToggleFlashlight() {
-    if ( AugmentationSystem != none ) {
-        AugmentationSystem.ActivateAugByKey( 10 );
-    }
-}
+//
+// If player chose to dual map the F keys
+//
+exec function DualmapF3() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(0); }
+exec function DualmapF4() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(1); }
+exec function DualmapF5() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(2); }
+exec function DualmapF6() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(3); }
+exec function DualmapF7() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(4); }
+exec function DualmapF8() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(5); }
+exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(6); }
+exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
+exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
+exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
 
 //
 // Team Say
@@ -1095,51 +907,7 @@ exec function QuickSave()
        return;
     }
 
-    // Vanilla Matters: Disable quicksaving depending on Forward Pressure.
-    if ( FPSystem != none ) {
-        if ( VM_bEnableFP ) {
-            if ( !FPSystem.EnoughPressure( 100 ) ) {
-                return;
-            }
-        }
-
-        // Vanilla Matters: Reset the forward pressure.
-        FPSystem.ResetForwardPressure();
-    }
-
-    // Vanilla Matters: Allow two quick save slots.
-    // VM: We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
-    if ( VM_currentQSIndex != -3 ) {
-        VM_currentQSIndex = -3;
-    }
-    else if ( VM_currentQSIndex != -4 ) {
-        VM_currentQSIndex = -4;
-    }
-
-    SaveGame( VM_currentQSIndex, QuickSaveGameTitle @ "-" @ info.MissionLocation );
-}
-
-// Vanilla Matters: Handle auto save.
-function AutoSave() {
-    local DeusExLevelInfo info;
-
-    info = GetLevelInfo();
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) ) || Level.NetMode != NM_Standalone || VM_bEnableFP ) {
-        return;
-    }
-
-    // Vanilla Matters: We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
-    if ( VM_currentASIndex != -5 ) {
-        VM_currentASIndex = -5;
-    }
-    else if ( VM_currentASIndex != -6 ) {
-        VM_currentASIndex = -6;
-    }
-
-    VM_autosaved = true;
-    VM_lastASTime = Level.TimeSeconds;
-
-    SaveGame( VM_currentASIndex, "Auto Save -" @ info.MissionLocation );
+    SaveGame(-1, QuickSaveGameTitle);
 }
 
 // ----------------------------------------------------------------------
@@ -1165,9 +933,7 @@ function QuickLoadConfirmed()
 {
    if (Level.Netmode != NM_Standalone)
       return;
-
-    // Vanilla Matters
-    LoadGame( VM_currentQSIndex );
+    LoadGame(-1);
 }
 
 // ----------------------------------------------------------------------
@@ -1794,9 +1560,7 @@ function MaintainEnergy(float deltaTime)
          Energy -= EnergyUse;
 
         // Vanilla Matters: Add in FP rate for energy used.
-        if ( FPSystem != none ) {
-            FPSystem.AddForwardPressure( FMin( energyUse, 0 ) * ( FPSystem.VM_fpEnergy + FPSystem.fpEnergyS ) );
-        }
+        AddForwardPressure( energyUse, 'Energy' );
 
          // Calculate the energy drain due to EMP attacks
          if (EnergyDrain > 0)
@@ -1811,9 +1575,7 @@ function MaintainEnergy(float deltaTime)
             }
 
             // Vanilla Matters: Adds FP rate for EMP damage received.
-            if ( FPSystem != none ) {
-                FPSystem.AddForwardPressure( FMin( energyUse, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
-            }
+            AddForwardPressure( energyUse, 'Damage' );
          }
       }
 
@@ -1850,38 +1612,6 @@ function MaintainEnergy(float deltaTime)
       }
     }
 }
-
-function bool CanDrain( float drainAmount ) {
-    if ( AugmentationSystem != None ) {
-        return ( Energy >= ( drainAmount * AugmentationSystem.VM_energyMult ) );
-    }
-    else {
-        return ( Energy >= ( drainAmount * class'AugmentationManager'.default.VM_energyMult ) );
-    }
-}
-
-// Vanilla Matters: Just something to drain energy then return the amount that doesn't get drained properly if energy is depleted.
-function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) {
-    if ( efficiency > 0.0 ) {
-        // VM: How much energy should be drained per unit of drainAmount.
-        drainAmount = drainAmount / efficiency;
-    }
-
-    // VM: We're just gonna pass the drainAmount right now since after this it's gonna be modified.
-    augDraining.AddImmediateEnergyRate( drainAmount );
-
-    if ( !CanDrain( drainAmount ) ) {
-        drainAmount = drainAmount - Energy;
-    }
-
-    // VM: Return the actualAmount to normal.
-    if ( efficiency > 0.0 ) {
-        drainAmount = drainAmount * efficiency;
-    }
-
-    return drainAmount;
-}
-
 // ----------------------------------------------------------------------
 // RefreshSystems()
 // DEUS_EX AMSD For keeping multiplayer working in better shape
@@ -2434,10 +2164,10 @@ exec function DeactivateAllAugs()
 
 exec function SwitchAmmo()
 {
-    //if (inHand.IsA('DeusExWeapon'))
-  // Vanilla Matters: Fix some accessed none.
-  if ( DeusExWeapon ( inHand ) != None )
+    // Vanilla Matters: Fix some accessed none.
+    if ( DeusExWeapon ( inHand ) != None ) {
         DeusExWeapon(inHand).CycleAmmo();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -2480,7 +2210,10 @@ function RemoveAugmentationDisplay(Augmentation aug)
 
 function ClearAugmentationDisplay()
 {
-    DeusExRootWindow(rootWindow).hud.activeItems.ClearAugmentationDisplay();
+    // Vanilla Matters: Null check.
+    if ( DeusExRootWindow(rootWindow) != none && DeusExRootWindow(rootWindow).hud != none ) {
+        DeusExRootWindow(rootWindow).hud.activeItems.ClearAugmentationDisplay();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -3125,35 +2858,21 @@ function Landed(vector HitNormal)
                 augReduce = 0;
                 if (AugmentationSystem != None)
                 {
-                    // Vanilla Matters: Make AugStealth also reduce a smaller amount of fall damage, while scaling up AugSpeed reduction.
-                    augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
-                    if ( augLevel >= 0 ) {
-                        augReduce = 20 * ( augLevel + 1 );
-                    }
-                    else {
-                        augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
-
-                        if ( augLevel >= 0 ) {
-                            augReduce = 4 + ( 4 * ( augLevel + 1 ) );
-                        }
-                    }
+                    augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
+                    if (augLevel >= 0)
+                        augReduce = 15 * (augLevel+1);
                 }
 
-                // Vanilla Matters: Don't actually take any damage if it's fully reduced.
-                dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
-                if ( dmg > 0 ) {
-                    legLocation = Location + vect( -1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                legLocation = Location + vect(-1,0,-1);         // damage left leg
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
-                    legLocation = Location + vect( 1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
-                }
+                legLocation = Location + vect(1,0,-1);          // damage right leg
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
-                dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
-                if ( dmg > 0 ) {
-                    legLocation = Location + vect( 0, 0, 1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
-                }
+                dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                legLocation = Location + vect(0,0,1);           // damage torso
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
     }
     else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
@@ -3354,9 +3073,7 @@ function int ChargePlayer(int baseChargePoints)
     Energy += chargedPoints;
 
     // Vanilla Matters: Add in FP rate for energy recharged.
-    if ( FPSystem != none ) {
-        FPSystem.AddForwardPressure( FMax( chargedPoints, 0 ) * ( FPSystem.VM_fpRecharge + FPSystem.fpRechargeS ) );
-    }
+    AddForwardPressure( chargedPoints, 'Recharge' );
 
     return chargedPoints;
 }
@@ -3398,9 +3115,7 @@ function HealPart(out int points, out int amt)
         spill = 0;
 
     // Vanilla Matters: Add in FP rate for health restored.
-    if ( FPSystem != none ) {
-        FPSystem.AddForwardPressure( FMax( amt - spill, 0 ) * ( FPSystem.VM_fpHeal + FPSystem.fpHealS ) );
-    }
+    AddForwardPressure( amt - spill, 'Heal' );
 
     amt = spill;
 }
@@ -4008,9 +3723,6 @@ state PlayerWalking
 
     event PlayerTick(float deltaTime)
     {
-        // Vanilla Matters: Update our stuff first.
-        VMTick( deltaTime );
-
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
         //every freaking tick.
@@ -4023,10 +3735,10 @@ state PlayerWalking
 
         UpdateDynamicMusic(deltaTime);
         UpdateWarrenEMPField(deltaTime);
-        // DEUS_EX AMSD Move these funcions to a multiplayer tick
-        // so that only that call gets propagated to the server.
-        MultiplayerTick(deltaTime);
-        // DEUS_EX AMSD For multiplayer...
+      // DEUS_EX AMSD Move these funcions to a multiplayer tick
+      // so that only that call gets propagated to the server.
+      MultiplayerTick(deltaTime);
+      // DEUS_EX AMSD For multiplayer...
         FrobTime += deltaTime;
 
         // save some texture info
@@ -4041,7 +3753,7 @@ state PlayerWalking
         CheckActorDistances();
 
         // handle poison
-        //DEUS_EX AMSD Now handled in multiplayertick
+      //DEUS_EX AMSD Now handled in multiplayertick
         //UpdatePoison(deltaTime);
 
         // Update Time Played
@@ -4068,8 +3780,6 @@ state PlayerFlying
 
     event PlayerTick(float deltaTime)
     {
-        // Vanilla Matters: Update our stuff first.
-        VMTick( deltaTime );
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4111,7 +3821,7 @@ event HeadZoneChange(ZoneInfo newHeadZone)
     if (HeadRegion.Zone.AmbientSound != None)
         HeadRegion.Zone.SoundRadius = 0;
 
-    // VM: Move out of check so we can use it more times.
+    // Vanilla Matters
     if ( AugmentationSystem != None ) {
         augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
     }
@@ -4167,9 +3877,6 @@ state PlayerSwimming
     event PlayerTick(float deltaTime)
     {
         local vector loc;
-
-        // Vanilla Matters: Update our stuff first.
-        VMTick( deltaTime );
 
         //DEUS_EX AMSD Additional updates
         //Because of replication delay, aug icons end up being a step behind generally.  So refresh them
@@ -4249,8 +3956,6 @@ state PlayerSwimming
 
         // get our skill info
         mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-
-        // swimDuration = UnderWaterTime * mult;
 
         // Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
         swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
@@ -4647,22 +4352,12 @@ function DroneExplode()
 
     if (aDrone != None)
     {
-        // Vanilla Matters: Make drone detonation cost energy.
-        anAug = AugDrone( AugmentationSystem.FindAugmentation( class'AugDrone' ) );
-
-        if ( anAug != None ) {
-            if ( !CanDrain( anAug.GetEnergyRate() ) ) {
-                ClientMessage( VM_msgDroneCost );
-
-                return;
-            }
-
-            anAug.Deactivate();
-
-            aDrone.Explode( aDrone.Location, vect( 0, 0, 1 ) );
-
-            DrainEnergy( anAug, anAug.GetEnergyRate() );
-        }
+        aDrone.Explode(aDrone.Location, vect(0,0,1));
+      //DEUS_EX AMSD Don't blow up OTHER player drones...
+      anAug = AugDrone(AugmentationSystem.FindAugmentation(class'AugDrone'));
+        //foreach AllActors(class'AugDrone', anAug)
+      if (anAug != None)
+         anAug.Deactivate();
     }
 }
 
@@ -4728,11 +4423,6 @@ exec function ParseLeftClick()
     // - Use inHand
     //
 
-    // Vanilla Matters
-    local Inventory item;
-    local Augmentation aug;
-    local ChargedPickup cpickup;
-
     if (RestrictInput())
         return;
 
@@ -4745,51 +4435,8 @@ exec function ParseLeftClick()
 
     if ((inHand != None) && !bInHandTransition)
     {
-        // Vanilla Matters: Prevent the player from activating two charged pickups of the same type at the same time.
-        if ( inHand.bActivatable ) {
-            cpickup = ChargedPickup( inHand );
-            if ( cpickup != none ) {
-                if ( UsingChargedPickup( cpickup.class ) ) {
-                    // VM: The player is already using a charged pickup, only let them "activate" it if it's the charged pickup being used, which turns it off.
-                    if ( cpickup.IsActive() ) {
-                        cpickup.Activate();
-                    }
-                    else {
-                        ClientMessage( VM_msgChargedPickupAlready );
-                    }
-                }
-                // VM: If the charged pickup is being held, tries to put it in the inventory then activate it.
-                else if ( IsHolding( inHand ) ) {
-                    if ( FindInventorySlot( inHand, true ) ) {
-                        // VM: Save inHand since it's gonna be wiped. We're also activating it AFTER it's been picked up, just to be safe.
-                        item = inHand;
-                        ParseRightClick();
-                        item.Activate();
-                    }
-                    else {
-                        ClientMessage( VM_msgTakeHoldCharged );
-                    }
-                }
-                else {
-                    inHand.Activate();
-                }
-            }
-            else {
-                // Vanilla Matters: Prevent using these consumables if we're at full something.
-                if ( MedKit( inHand ) != none && Health >= default.Health ) {
-                    ClientMessage( VM_msgFullHealth );
-
-                    return;
-                }
-                else if ( BioelectricCell( inHand ) != none && Energy >= EnergyMax ) {
-                    ClientMessage( VM_msgFullEnergy );
-
-                    return;
-                }
-
-                inHand.Activate();
-            }
-        }
+        if (inHand.bActivatable)
+            inHand.Activate();
         else if (FrobTarget != None)
         {
             // special case for using keys or lockpicks on doors
@@ -4813,85 +4460,6 @@ exec function ParseLeftClick()
             }
         }
     }
-    // Vanilla Matters: Allow holding pickups in hands or doing powerthrows.
-    else if ( inHand == None ) {
-        if ( FrobTarget != None ) {
-            if ( TakeHold( Inventory( FrobTarget ), true ) ) {
-                ClientMessage( Sprintf( VM_msgTakeHold, Inventory( FrobTarget ).itemName ) );
-            }
-        }
-        else if ( CarriedDecoration != None && AugmentationSystem != None ) {
-            aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
-
-            if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-                if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
-                    ClientMessage( VM_msgMuscleCost );
-                }
-                else if ( DeusExDecoration( CarriedDecoration ) != None ) {
-                    DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = true;
-                    DeusExDecoration( CarriedDecoration ).VM_powerThrower = self;
-
-                    PlaySound( JumpSound, SLOT_None );
-                    PlaySound( aug.ActivateSound, SLOT_None );
-
-                    DropDecoration();
-                }
-            }
-        }
-        else if ( VM_lastInHand != None ) {
-            PutInHand( VM_lastInHand );
-        }
-    }
-}
-
-// Vanilla Matters: Check if the player is holding this item.
-function bool IsHolding( Inventory item ) {
-    return ( VM_HeldInHand != None && item == VM_HeldInHand );
-}
-
-// Vanilla Matters: Check if the player was holding this item.
-function bool WasHolding( Inventory item ) {
-    return ( VM_lastHeldInHand != None && item == VM_lastHeldInHand );
-}
-
-// Vanilla Matters: Check if the conditions are suitable for taking hold of an item.
-function bool CanBeHeld( Inventory item ) {
-    local DeusExPickup pickup;
-
-    pickup = DeusExPickup( item );
-
-    if ( pickup != None && VM_HeldInHand == None && inHand == None && CarriedDecoration == None ) {
-        return true;
-    }
-
-    return false;
-}
-
-// Vanilla Matters: Function to transform the item and put it in holding.
-function bool TakeHold( Inventory item, optional bool frobOnFail, optional bool ignoresActive ) {
-    local DeusExPickup pickup;
-
-    if ( CanBeHeld( item ) ) {
-        pickup = DeusExPickup( item );
-
-        if ( !pickup.bActive || ignoresActive ) {
-            // VM: Simulate the process of picking up through frobbing.
-            pickup.BecomeItem();
-            pickup.SetOwner( self );
-            pickup.SetBase( self );
-
-            PutInHand( pickup );
-
-            VM_HeldInHand = pickup;
-
-            return true;
-        }
-        else if ( frobOnFail ) {
-            DoFrob( self, inHand );
-        }
-    }
-
-    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -4918,28 +4486,12 @@ exec function ParseRightClick()
     local Decoration oldCarriedDecoration;
     local Vector loc;
 
-    // Vanilla Matters
-    local bool needsKey;
-    local Inventory item;
-    local DeusExMover m;
-    local HackableDevices h;
-
     if (RestrictInput())
         return;
 
    oldFirstItem = Inventory;
     oldInHand = inHand;
     oldCarriedDecoration = CarriedDecoration;
-
-    // Vanilla Matters: Queue the held item so that it can be picked up.
-    if ( IsHolding( inHand ) && FrobTarget == None ) {
-        FrobTarget = VM_HeldInHand;
-
-        // VM: Gotta do this so that the item can be frobbed properly, since item state and pickup state are different.
-        VM_lastHeldInHand = VM_HeldInHand;
-        VM_HeldInHand.DropFrom( Location );
-        VM_HeldInHand = None;
-    }
 
     if (FrobTarget != None)
         loc = FrobTarget.Location;
@@ -4950,19 +4502,11 @@ exec function ParseRightClick()
         // want to add it to the NanoKeyRing without disrupting
         // what the player is holding
 
-        // Vanilla Matters
-        m = DeusExMover( FrobTarget );
-        h = HackableDevices( FrobTarget );
-
         if (FrobTarget.IsA('NanoKey'))
         {
             PickupNanoKey(NanoKey(FrobTarget));
             FrobTarget.Destroy();
             FrobTarget = None;
-
-            // Vanilla Matters: Clean up temp stuff just for sure.
-            VM_lastHeldInHand = None;
-
             return;
         }
         else if (FrobTarget.IsA('Inventory'))
@@ -4974,82 +4518,27 @@ exec function ParseRightClick()
             // TODO: This logic may have to get more involved if/when
             // we start allowing other types of objects to get stacked.
 
-            // Vanilla Matters: Allow taking hold of an item if the player can't pick it up.
-            if ( !HandleItemPickup( FrobTarget, true ) ) {
-                if ( TakeHold( Inventory( FrobTarget ) ) ) {
-                    if ( WasHolding( Inventory( FrobTarget ) ) ) {
-                        // VM: Cleans this up since we don't need it anymore.
-                        VM_lastHeldInHand = None;
-                    }
-                    else {
-                        ClientMessage( Sprintf( VM_msgTakeHoldInstead, Inventory( FrobTarget ).ItemName ) );
-                    }
-                }
-
+            if (HandleItemPickup(FrobTarget, True) == False)
                 return;
-            }
 
             // if the frob succeeded, put it in the player's inventory
          //DEUS_EX AMSD ARGH! Because of the way respawning works, the item I pick up
          //is NOT the same as the frobtarget if I do a pickup.  So how do I tell that
          //I've successfully picked it up?  Well, if the first item in my inventory
          //changed, I picked up a new item.
-
-            // Vanilla Matters: Fix some dumb accessed none due to the fact some inventory items just self-destruct on frob, haha very funny Ion Storm. Also the vanilla code looks ugly so.
-            if ( FrobTarget != None && ( ( Level.NetMode == NM_Standalone && FrobTarget.Owner == Self ) || ( Level.NetMode != NM_Standalone && oldFirstItem != Inventory ) ) ) {
-                if ( Level.NetMode == NM_Standalone ) {
-                    FindInventorySlot(Inventory(FrobTarget));
-                }
-                else {
-                    FindInventorySlot(Inventory);
-                }
-
+            if ( ((Level.NetMode == NM_Standalone) && (Inventory(FrobTarget).Owner == Self)) ||
+              ((Level.NetMode != NM_Standalone) && (oldFirstItem != Inventory)) )
+            {
+            if (Level.NetMode == NM_Standalone)
+               FindInventorySlot(Inventory(FrobTarget));
+            else
+               FindInventorySlot(Inventory);
                 FrobTarget = None;
             }
-
-            // Vanilla Matters: Clean up temp stuff just for sure.
-            VM_lastHeldInHand = None;
         }
         else if (FrobTarget.IsA('Decoration') && Decoration(FrobTarget).bPushable)
         {
             GrabDecoration();
-        }
-        // Vanilla Matters: If we frob a locked mover, bring up the lockpick, if it can't be picked, then bring up the keyring if it's unlockable that way.
-        else if ( inHand == none && m != none && m.bHighlight && m.bLocked && ( ( m.bPickable && m.lockStrength > 0 ) || m.KeyIDNeeded != '' ) ) {
-            needsKey = ( m.KeyIDNeeded != '' && !m.bPickable );
-
-            item = Inventory;
-            while ( item != none ) {
-                if ( needsKey ) {
-                    if ( NanoKeyRing( item ) != none ) {
-                        PutInHand( item );
-
-                        break;
-                    }
-                }
-                else {
-                    if ( Lockpick( item ) != none ) {
-                        PutInHand( item );
-
-                        break;
-                    }
-                }
-
-                item = item.Inventory;
-            }
-        }
-        // Vanilla Matters: Do the same for multitool-able devices, but not keypads.
-        else if ( inHand == none && h != none && h.bHighlight && Keypad( FrobTarget ) == none && h.hackStrength > 0 && h.bHackable ) {
-            item = Inventory;
-            while ( item != none ) {
-                if ( Multitool( item ) != none ) {
-                    PutInHand( item );
-
-                    break;
-                }
-
-                item = item.Inventory;
-            }
         }
         else
         {
@@ -5135,10 +4624,6 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local bool bSlotSearchNeeded;
     local Inventory foundItem;
 
-    // Vanilla Matters
-    local Ammo a;
-    local DeusExWeapon w;
-
     bSlotSearchNeeded = True;
     bCanPickup = True;
 
@@ -5173,48 +4658,47 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         {
             bSlotSearchNeeded = False;
 
-            w = DeusExWeapon( foundItem );
-            a = Ammo( foundItem );
-
             // if this is an ammo, and we're full of it, abort the pickup
-            // Vanilla Matters: Rewrite all of this because it's messy!
-            if ( a != none ) {
-                if ( AmmoNone( a ) == none && a.AmmoAmount >= a.MaxAmmo ) {
-                    // Vanilla Matters: Use a clearer message.
-                    ClientMessage( Sprintf( VM_msgTooMuchAmmo, a.itemName ) );
-
-                    bCanPickup = false;
+            if (foundItem.IsA('Ammo'))
+            {
+                if (Ammo(foundItem).AmmoAmount >= Ammo(foundItem).MaxAmmo)
+                {
+                    ClientMessage(TooMuchAmmo);
+                    bCanPickup = False;
                 }
             }
+
             // If this is a grenade or LAM (what a pain in the ass) then also check
             // to make sure we don't have too many grenades already
-            else if ( w != none && w.VM_isGrenade ) {
-                if ( w.AmmoType.AmmoAmount >= w.AmmoType.MaxAmmo) {
-                    ClientMessage( Sprintf( VM_msgTooMuchAmmo, w.itemName ) );
-
-                    bCanPickup = false;
+            else if ((foundItem.IsA('WeaponEMPGrenade')) ||
+                (foundItem.IsA('WeaponGasGrenade')) ||
+                (foundItem.IsA('WeaponNanoVirusGrenade')) ||
+                (foundItem.IsA('WeaponLAM')))
+            {
+                if (DeusExWeapon(foundItem).AmmoType.AmmoAmount >= DeusExWeapon(foundItem).AmmoType.MaxAmmo)
+                {
+                    ClientMessage(TooMuchAmmo);
+                    bCanPickup = False;
                 }
             }
+
+
             // Otherwise, if this is a single-use weapon, prevent the player
             // from picking up
-            else if ( w != none ) {
+
+            else if (foundItem.IsA('Weapon'))
+            {
                 // If these fields are set as checked, then this is a
                 // single use weapon, and if we already have one in our
                 // inventory another cannot be picked up (puke).
 
-                bCanPickup = !( ( w.ReloadCount == 0 && w.PickupAmmoCount == 0 && w.AmmoName != none ) || ( w.AmmoName == none || w.AmmoName == class'AmmoNone' ) );
+                bCanPickup = ! ( (Weapon(foundItem).ReloadCount == 0) &&
+                                 (Weapon(foundItem).PickupAmmoCount == 0) &&
+                                 (Weapon(foundItem).AmmoName != None) );
 
-                if ( !bCanPickup ) {
-                    ClientMessage( Sprintf( CanCarryOnlyOne, w.itemName ) );
-                }
-                else {
-                    // Vanilla Matters: Fix the bug where you can pick up a weapon whose ammo you're full of.
-                    if ( w.AmmoType != none && w.AmmoType.AmmoAmount >= w.AmmoType.MaxAmmo ) {
-                        ClientMessage( Sprintf( VM_msgTooMuchAmmo, w.AmmoType.itemName ) );
+                if (!bCanPickup)
+                    ClientMessage(Sprintf(CanCarryOnlyOne, foundItem.itemName));
 
-                        bCanPickup = false;
-                    }
-                }
             }
         }
     }
@@ -5374,18 +4858,6 @@ exec function PutInHand(optional Inventory inv)
     if ((inHand != None) && inHand.IsA('POVCorpse'))
         return;
 
-    // Vanilla Matters: Can't put away pickups that are active like fire extinguishers.
-    if ( IsHolding( inHand ) ) {
-        if ( inHand.bActive ) {
-            return;
-        }
-
-        // VM: If it's being held, meaning it can disappear forever if switched away, then drop it. If that fails, denies putting in hand.
-        if ( !DropItem() ) {
-            return;
-        }
-    }
-
     if (inv != None)
     {
         // can't put ammo in hand
@@ -5393,22 +4865,9 @@ exec function PutInHand(optional Inventory inv)
             return;
 
         // Can't put an active charged item in hand
-
-        // Vanilla Matters: Only non-toggleable charged pickups get the vanilla behaviors. Defined by the bOneUseOnly property.
-        if ( inv.IsA('ChargedPickup') && ChargedPickup( inv ).IsActive() && ChargedPickup( inv ).bOneUseOnly ) {
+        if ((inv.IsA('ChargedPickup')) && (ChargedPickup(inv).IsActive()))
             return;
-        }
-
-        // VM: Toggle the laser on automatically.
-        if ( DeusExWeapon( inv ) != None && DeusExWeapon( inv ).bHasLaser ) {
-            DeusExWeapon( inv ).LaserOn();
-        }
     }
-    // Vanilla Matters: If putting None in hand then saves the previous inHand item.
-    else if ( inHand != None ) {
-        VM_lastInHand = inHand;
-    }
-
 
     if (CarriedDecoration != None)
         DropDecoration();
@@ -6148,7 +5607,7 @@ function bool CanBeLifted(Decoration deco)
     maxLift = 50;
 
     // Vanilla Matters: Check if energy is depleted before using the aug, since it's always active.
-    if ( AugmentationSystem != None && !IsEnergyDepleted() )
+    if ( AugmentationSystem != None && Energy > 0 )
     {
         augLevel = AugmentationSystem.GetClassLevel(class'AugMuscle');
         augMult = 1;
@@ -6169,15 +5628,6 @@ function bool CanBeLifted(Decoration deco)
     }
 
     return True;
-}
-
-// Vanilla Matters: Function to independently check for energy being depleted.
-function bool IsEnergyDepleted() {
-  if ( Energy == 0 ) {
-    return true;
-  }
-
-  return false;
 }
 
 // ----------------------------------------------------------------------
@@ -6700,13 +6150,12 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 
     // Vanilla Matters: If you drop a lastInHand item, clear lastInHand.
     if ( bDropped ) {
-        if ( item == VM_lastInHand ) {
-            VM_lastInHand = None;
+        if ( WasLastPutAway( item ) ) {
+            ClearLastPutAway();
         }
 
-        // VM: If dropped correctly, clear TakeHold.
         if ( IsHolding( item ) ) {
-            VM_HeldInHand = None;
+            ClearHold();
         }
     }
 
@@ -7973,11 +7422,6 @@ function bool DeleteInventory(inventory item)
     local DeusExRootWindow root;
     local PersonaScreenInventory winInv;
 
-    // Vanilla Matters: Make sure VM_lastInHand is deleted properly.
-    if ( item == VM_lastInHand ) {
-        VM_lastInHand = None;
-    }
-
     // If the item was inHand, clear the inHand
     if (inHand == item)
     {
@@ -8108,9 +7552,6 @@ ignores SeePlayer, HearNoise, Bump;
     {
         local rotator tempRot;
         local float   yawDelta;
-
-        // Vanilla Matters: Update our stuff first.
-        VMTick( deltaTime );
 
         UpdateInHand();
         UpdateDynamicMusic(deltaTime);
@@ -9069,9 +8510,7 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     }
 
     // Vanilla Matters: Add FP points for receiving notes.
-    if ( FPSystem != none ) {
-        FPSystem.AddForwardPressure( FPSystem.VM_fpNoteAdded );
-    }
+    AddForwardPressure( 1, 'NoteAdded' );
 
     return newNote;
 }
@@ -9212,9 +8651,7 @@ function DeusExGoal AddGoal( Name goalName, bool bPrimaryGoal )
         DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 
         // Vanilla Matters: Add FP rate for objectives received.
-        if ( FPSystem != none ) {
-            FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
-        }
+        AddForwardPressure( 1, 'Critical' );
     }
 
     return newGoal;
@@ -9306,13 +8743,10 @@ function GoalCompleted( Name goalName )
                 ClientMessage(SecondaryGoalCompleted);
 
             // Vanilla Matters: Add FP rate for objective completion.
-            if ( FPSystem != none ) {
-                FPSystem.AddForwardPressure( FPSystem.VM_fpCritical );
-            }
+            AddForwardPressure( 1, 'Critical' );
 
             // Vanilla Matters: Queue an autosave.
-            VM_autosaving = true;
-            VM_autosaveTimer = 1.0;
+            RequestAutoSave( 1.0 );
         }
     }
 }
@@ -10206,7 +9640,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
                 HealthHead -= actualDamage * 2;
 
                 // Vanilla Matters: Taking damage makes accuracy flinch.
-                VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.02 );
+                AddFlinchPenalty( actualDamage * 0.02 );
 
                 if (bPlayAnim)
                     PlayAnim('HitHead', , 0.1);
@@ -10228,7 +9662,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             }
 
             // Vanilla Matters: Taking damage makes accuracy flinch.
-            VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.01 );
+            AddFlinchPenalty( actualDamage * 0.01 );
 
             // if this part is already dead, damage the adjacent part
             if ((HealthLegRight < 0) && (HealthLegLeft > 0))
@@ -10277,7 +9711,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             }
 
             // Vanilla Matters: Taking damage makes accuracy flinch.
-            VM_flinchPenalty = VM_flinchPenalty + ( actualDamage * 0.02 );
+            AddFlinchPenalty( actualDamage * 0.02 );
 
             // if this part is already dead, damage the adjacent part
             if (HealthArmLeft < 0)
@@ -10362,9 +9796,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     MakeNoise(1.0);
 
     // Vanilla Matters: Add in FP rate for damage received, based on health loss.
-    if ( FPSystem != none ) {
-        FPSystem.AddForwardPressure( FMax( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
-    }
+    AddForwardPressure( origHT - ( HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight ), 'Damage' );
 
     if ((DamageType == 'Flamed') && !bOnFire)
     {
@@ -10373,14 +9805,9 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             ServerConditionalNotifyMsg( MPMSG_FirstBurn );
 
         // Vanilla Matters: Burning damage now scales with initial damage.
-        CatchFire( instigatedBy, actualDamage );
+        StartBurning( instigatedBy, actualDamage );
     }
     myProjKiller = None;
-}
-
-// Vanilla Matters: Handle flinching penalty decay.
-function ProcessFlinch( float dt ) {
-    VM_flinchPenalty = FClamp( VM_flinchPenalty - ( VM_flinchDecay * dt ), 0, 0.8 );
 }
 
 // ----------------------------------------------------------------------
@@ -10446,23 +9873,6 @@ simulated function int GetMPHitLocation(Vector HitLocation)
     return 0;
 }
 
-// Vanilla Matters: Drain shield and return the undrained amount properly.
-// function float DrainShield( float amount ) {
-//  local float remaining;
-
-//  remaining = 0;
-
-//  remaining = FMax( amount - VM_Shield, 0 );
-//  VM_Shield = FMax( VM_Shield - amount, 0 );
-
-//  // Vanilla Matters: Add in FP rate for damage absorbed by shield.
-//  if ( FPSystem != none ) {
-//      FPSystem.AddForwardPressure( FMax( amount - remaining, 0 ) * ( FPSystem.VM_fpDamage + FPSystem.fpDamageS ) );
-//  }
-
-//  return remaining;
-// }
-
 // ----------------------------------------------------------------------
 // DXReduceDamage()
 //
@@ -10477,10 +9887,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local HazMatSuit suit;
     local BallisticArmor armor;
     local bool bReduced;
-
-    // Vanilla Matters
-    local Augmentation aug;
-    local ChargedPickup cpickup;
 
     bReduced = False;
     newDamage = Float(Damage);
@@ -10502,33 +9908,29 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             if (drugEffectTimer < 0)
                 drugEffectTimer = 0;
         }
-    }
 
-    // Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
-    if ( UsingChargedPickup( class'Rebreather' ) && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' ) ) {
-        newDamage = 0.0;
+        // go through the actor list looking for owned HazMatSuits
+        // since they aren't in the inventory anymore after they are used
+
+
+      //foreach AllActors(class'HazMatSuit', suit)
+//          if ((suit.Owner == Self) && suit.bActive)
+      if (UsingChargedPickup(class'HazMatSuit'))
+            {
+                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+                newDamage *= 0.75 * skillLevel;
+            }
     }
 
     if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
     {
-        // Vanilla Matters: Make Ballistic Armor absorbs the damage properly and deals with spillovers.
-        cpickup = GetActiveChargedPickup( class'BallisticArmor' );
-
-        if ( cpickup != None ) {
-            newDamage = newDamage - cpickup.DrainCharge( newDamage - ( newDamage * cpickup.VM_DamageResistance * SkillSystem.GetSkillLevelValue( class'SkillEnviro' ) ) );
-        }
-    }
-
-    // Vanilla Matters: Make HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
-    if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas'
-        || damageType == 'PoisonEffect' || damageType == 'Flamed' || damageType == 'Burned'
-            || damageType == 'Shocked' || damageType == 'EMP' ) {
-
-        cpickup = GetActiveChargedPickup( class'HazMatSuit' );
-
-        if ( cpickup != None ) {
-            newDamage = newDamage * cpickup.VM_DamageResistance * SkillSystem.GetSkillLevelValue( class'SkillEnviro' );
-        }
+        // go through the actor list looking for owned BallisticArmor
+        // since they aren't in the inventory anymore after they are used
+      if (UsingChargedPickup(class'BallisticArmor'))
+            {
+                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+                newDamage *= 0.5 * skillLevel;
+            }
     }
 
     if (damageType == 'HalonGas')
@@ -10537,21 +9939,26 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             ExtinguishFire();
     }
 
-    // Vanilla Matters: Add sabot to augballistic.
-    if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' )
+    if ((damageType == 'Shot') || (damageType == 'AutoShot'))
     {
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
 
         if (augLevel >= 0.0)
-            //newDamage *= augLevel;
-            // Vanilla Matters: AugBallistic now adds a flat damage reduction.
-            newDamage = newDamage - augLevel;
+            newDamage *= augLevel;
     }
 
-    // Vanilla Matters: Add EMP to augshield.
-    if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
-        damageType == 'Exploded' || damageType == 'Shocked' )
+    if (damageType == 'EMP')
+    {
+        if (AugmentationSystem != None)
+            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
+
+        if (augLevel >= 0.0)
+            newDamage *= augLevel;
+    }
+
+    if ((damageType == 'Burned') || (damageType == 'Flamed') ||
+        (damageType == 'Exploded') || (damageType == 'Shocked'))
     {
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
@@ -10560,32 +9967,33 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             newDamage *= augLevel;
     }
 
-    // Vanilla Matters: Rewrite to add more damage types. Also allow full damage resistance.
-    if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
-        newDamage = newDamage * CombatDifficulty;
-        Damage = Damage * CombatDifficulty;
-    }
-    // VM: Make environmental damage scale with difficulty, emphasizing utility resistances.
-    else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation' || damageType == 'PoisonGas' || damageType == 'PoisonEffect' ) {
-        newDamage = newDamage * ( ( CombatDifficulty / 2 ) + 0.5 );
-        Damage = Damage * ( ( CombatDifficulty / 2 ) + 0.5 );
-    }
-
-    // Vanilla Matters: Move this all the way to the bottom to be be most accurate.
-    if ( newDamage < Damage ) {
-        if ( !bCheckOnly ) {
-            pct = 1.0 - ( newDamage / Damage );
-
-            SetDamagePercent( pct );
-            ClientFlash( 0.01, vect( 0, 0, 50 ) );
+    if (newDamage < Damage)
+    {
+        if (!bCheckOnly)
+        {
+            pct = 1.0 - (newDamage / Float(Damage));
+            SetDamagePercent(pct);
+            ClientFlash(0.01, vect(0, 0, 50));
         }
-
-        bReduced = true;
+        bReduced = True;
     }
-    else {
-        if ( !bCheckOnly ) {
-            SetDamagePercent( 0.0 );
-        }
+    else
+    {
+        if (!bCheckOnly)
+            SetDamagePercent(0.0);
+    }
+
+
+    //
+    // Reduce or increase the damage based on the combat difficulty setting
+    //
+    if ((damageType == 'Shot') || (damageType == 'AutoShot'))
+    {
+        newDamage *= CombatDifficulty;
+
+        // always take at least one point of damage
+        if ((newDamage <= 1) && (Damage > 0))
+            newDamage = 1;
     }
 
     adjustedDamage = Int(newDamage);
@@ -10685,30 +10093,22 @@ function ClientDeath()
 // continually burn and do damage
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: Rewrite to tweak burn damage.
-function Timer() {
-    if ( !InConversation() && bOnFire ) {
-        UpdateFire();
-    }
-}
+function Timer()
+{
+    local int damage;
 
-// Vanilla Matters: Copied from ScriptedPawn to handle buring damage.
-function UpdateFire() {
-    HealthTorso = HealthTorso - 2;
-    HealthArmLeft = HealthArmLeft - 2;
-    HealthArmRight = HealthArmRight - 2;
-    HealthLegLeft = HealthLegLeft - 2;
-    HealthLegRight = HealthLegLeft - 2;
+    if (!InConversation() && bOnFire)
+    {
+        if ( Level.NetMode != NM_Standalone )
+            damage = Class'WeaponFlamethrower'.Default.mpBurnDamage;
+        else
+            damage = Class'WeaponFlamethrower'.Default.BurnDamage;
+        TakeDamage(damage, myBurner, Location, vect(0,0,0), 'Burned');
 
-    GenerateTotalHealth();
-
-    burnTimer = burnTimer - 10;
-
-    if ( Health <= 0 || burnTimer <= 0 ) {
-        ExtinguishFire();
-
-        if ( Health <= 0 ) {
-            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
+        if (HealthTorso <= 0)
+        {
+            TakeDamage(10, myBurner, Location, vect(0,0,0), 'Burned');
+            ExtinguishFire();
         }
     }
 }
@@ -10717,61 +10117,62 @@ function UpdateFire() {
 // CatchFire()
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: Rewrite to have burn damage depend on initial damage taken.
-function CatchFire( Pawn burner, float burnDamage ) {
+function CatchFire( Pawn burner )
+{
     local Fire f;
     local int i;
     local vector loc;
 
     myBurner = burner;
 
-    burnTimer = burnTimer + ( burnDamage * 2 );
+    burnTimer = 0;
 
-    if ( bOnFire || Region.Zone.bWaterZone ) {
+   if (bOnFire || Region.Zone.bWaterZone)
         return;
-    }
 
-    bOnFire = true;
+    bOnFire = True;
+    burnTimer = 0;
 
-    for ( i = 0; i < 8; i++ ) {
-        loc.X = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
-        loc.Y = 0.5 * CollisionRadius * ( 1.0 - 2.0 * FRand() );
-        loc.Z = 0.6 * CollisionHeight * ( 1.0 - 2.0 * FRand() );
-        loc = loc + Location;
+    for (i=0; i<8; i++)
+    {
+        loc.X = 0.5*CollisionRadius * (1.0-2.0*FRand());
+        loc.Y = 0.5*CollisionRadius * (1.0-2.0*FRand());
+        loc.Z = 0.6*CollisionHeight * (1.0-2.0*FRand());
+        loc += Location;
 
-        // DEUS_EX AMSD reduce the number of smoke particles in multiplayer
-        // by creating smokeless fire (better for server propagation).
-        if ( Level.NetMode == NM_Standalone || i <= 0 ) {
-            f = Spawn( class'Fire', Self,, loc );
-        }
-        else {
-            f = Spawn( class'SmokelessFire', Self,, loc );
-        }
+      // DEUS_EX AMSD reduce the number of smoke particles in multiplayer
+      // by creating smokeless fire (better for server propagation).
+      if ((Level.NetMode == NM_Standalone) || (i <= 0))
+         f = Spawn(class'Fire', Self,, loc);
+      else
+         f = Spawn(class'SmokelessFire', Self,, loc);
 
-        if ( f != none ) {
-            f.DrawScale = 0.5 * FRand() + 1.0;
+        if (f != None)
+        {
+            f.DrawScale = 0.5*FRand() + 1.0;
 
-            if ( Level.NetMode != NM_Standalone ) {
-                f.DrawScale = f.DrawScale * 0.5;
-            }
+         //DEUS_EX AMSD Reduce the penalty in multiplayer
+         if (Level.NetMode != NM_Standalone)
+            f.DrawScale = f.DrawScale * 0.5;
 
             // turn off the sound and lights for all but the first one
-            if ( i > 0 ) {
+            if (i > 0)
+            {
                 f.AmbientSound = None;
                 f.LightType = LT_None;
             }
 
             // turn on/off extra fire and smoke
-            // MP already only generates a little.
-            if ( FRand() < 0.5 && Level.NetMode == NM_Standalone ) {
+         // MP already only generates a little.
+            if ((FRand() < 0.5) && (Level.NetMode == NM_Standalone))
                 f.smokeGen.Destroy();
+            if ((FRand() < 0.5) && (Level.NetMode == NM_Standalone))
                 f.AddFire();
-            }
         }
     }
 
     // set the burn timer
-    SetTimer( 1.0, true );
+    SetTimer(1.0, True);
 }
 
 // ----------------------------------------------------------------------
@@ -10901,9 +10302,7 @@ function SkillPointsAdd(int numPoints)
         }
 
         // Vanilla Matters: Add FP rate per skill point added.
-        if ( FPSystem != none ) {
-            FPSystem.AddForwardPressure( numPoints * FPSystem.VM_fpSPAwarded );
-        }
+        AddForwardPressure( numPoints, 'SPAwarded' );
     }
 }
 
@@ -10922,35 +10321,37 @@ function MakePlayerIgnored(bool bNewIgnore)
 // CalculatePlayerVisibility()
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: Update visibility values.
-function UpdateVisibility() {
-    local bool adaptiveOn;
+function float CalculatePlayerVisibility(ScriptedPawn P)
+{
+    local float vis;
+    local AdaptiveArmor armor;
 
-    adaptiveOn = UsingChargedPickup( class'AdaptiveArmor' );
+    vis = 1.0;
+    if ((P != None) && (AugmentationSystem != None))
+    {
+        if (P.IsA('Robot'))
+        {
+            // if the aug is on, give the player full invisibility
+            if (AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
+                vis = 0.0;
+        }
+        else
+        {
+            // if the aug is on, give the player full invisibility
+            if (AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0)
+                vis = 0.0;
+        }
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 || adaptiveOn ) {
-        VM_visibilityRobot = 0;
-    }
-    else {
-        VM_visibilityRobot = AIVisibility();
+        // go through the actor list looking for owned AdaptiveArmor
+        // since they aren't in the inventory anymore after they are used
+
+      if (UsingChargedPickup(class'AdaptiveArmor'))
+            {
+                vis = 0.0;
+            }
     }
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugCloak' ) != -1.0 || adaptiveOn ) {
-        VM_visibilityNormal = 0;
-    }
-    else {
-        VM_visibilityNormal = AIVisibility();
-    }
-}
-
-// Vanilla Matters
-function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
-    if ( Robot( P ) != none ) {
-        return VM_visibilityRobot;
-    }
-    else {
-        return VM_visibilityNormal;
-    }
+    return vis;
 }
 
 // ----------------------------------------------------------------------
@@ -10973,7 +10374,7 @@ function IncreaseClientFlashLength(float NewFlashTime)
 }
 
 // ----------------------------------------------------------------------
-// ViewFlash()VM_visibilityRobot = 0;
+// ViewFlash()
 // modified so that flash doesn't always go away in exactly half a second.
 // ---------------------------------------------------------------------
 function ViewFlash(float DeltaTime)
@@ -11826,17 +11227,6 @@ exec function DXDumpInfo()
     ClientMessage("Info dumped for user "$userName);
 }
 
-// Vanilla Matters: Simple command to turn on cheats.
-exec function sv_cheats( bool enabled ) {
-    bCheatsEnabled = enabled;
-
-    if ( enabled ) {
-        ClientMessage( "Cheats enabled" );
-    }
-    else {
-        ClientMessage( "Cheats disabled" );
-    }
-}
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
@@ -12216,86 +11606,20 @@ exec function IAmWarren()
 // UsingChargedPickup
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: We don't have to keep going through the entire inventory every call.
-function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
-    local int i;
+function bool UsingChargedPickup(class<ChargedPickup> itemclass)
+{
+   local inventory CurrentItem;
+   local bool bFound;
 
-    if ( itemClass == class'AdaptiveArmor' ) {
-        i = 0;
-    }
-    else if ( itemClass == class'BallisticArmor' ) {
-        i = 1;
-    }
-    else if ( itemClass == class'HazMatSuit' ) {
-        i = 2;
-    }
-    else if ( itemClass == class'Rebreather' ) {
-        i = 3;
-    }
-    else if ( itemClass == class'TechGoggles' ) {
-        i = 4;
-    }
-    else {
-        return false;
-    }
+   bFound = false;
 
-    return ( VM_cpStatus[i] > 0 && VM_cpStatusSet[i] > 0 );
-}
+   for (CurrentItem = Inventory; ((CurrentItem != None) && (!bFound)); CurrentItem = CurrentItem.inventory)
+   {
+      if ((CurrentItem.class == itemclass) && (CurrentItem.bActive))
+         bFound = true;
+   }
 
-// Vanilla Matters: Update the activation status of every type of charged pickups.
-function UpdateCPStatus() {
-    local int i;
-    local Inventory item;
-
-    for ( i = 0; i < 5; i++ ) {
-        VM_cpStatus[i] = 0;
-        VM_cpStatusSet[i] = 0;
-    }
-
-    item = Inventory;
-    while ( item != none ) {
-        if ( item.bActive ) {
-            if ( VM_cpStatusSet[0] <= 0 && AdaptiveArmor( item ) != none ) {
-                VM_cpStatus[0] = 1;
-                VM_cpStatusSet[0] = 1;
-            }
-            else if ( VM_cpStatusSet[1] <= 0 && BallisticArmor( item ) != none ) {
-                VM_cpStatus[1] = 1;
-                VM_cpStatusSet[1] = 1;
-            }
-            else if ( VM_cpStatusSet[2] <= 0 && HazMatSuit( item ) != none ) {
-                VM_cpStatus[2] = 1;
-                VM_cpStatusSet[2] = 1;
-            }
-            else if ( VM_cpStatusSet[3] <= 0 && Rebreather( item ) != none ) {
-                VM_cpStatus[3] = 1;
-                VM_cpStatusSet[3] = 1;
-            }
-            else if ( VM_cpStatusSet[4] <= 0 && TechGoggles( item ) != none ) {
-                VM_cpStatus[4] = 1;
-                VM_cpStatusSet[4] = 1;
-            }
-        }
-
-        item = item.Inventory;
-    }
-
-    for ( i = 0; i < 5; i++ ) {
-        VM_cpStatusSet[i] = 1;
-    }
-}
-
-// Vanilla Matters: Fetch the currently active charged pickup from the inventory, there can be only one so we're good.
-function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) {
-    local inventory item;
-
-    for ( item = Inventory; item != None; item = item.inventory ) {
-        if ( item.class == itemclass && item.bActive ) {
-            return ChargedPickup( item );
-        }
-    }
-
-    return None;
+   return bFound;
 }
 
 // ----------------------------------------------------------------------
@@ -12809,123 +12133,6 @@ simulated function CreateShadow()
    }
 }
 
-// Vanilla Matters: Copied from ScriptedPawn, used currently for cloaking.
-function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow ) {
-    local int i;
-    local texture curSkin;
-
-    if ( newScaleGlow == 0 ) {
-        newScaleGlow = ScaleGlow;
-    }
-
-    for ( i = 0; i < 8; i++ ) {
-        curSkin = GetMeshTexture( i );
-        MultiSkins[i] = GetStyleTexture( newStyle, curSkin, newTex );
-    }
-
-    Skin = GetStyleTexture( newStyle, Skin, newTex );
-    ScaleGlow = newScaleGlow;
-    Style = newStyle;
-}
-
-function ResetSkinStyle() {
-    local int i;
-
-    for ( i = 0; i < 8; i++ ) {
-        MultiSkins[i] = Default.MultiSkins[i];
-    }
-
-    // VM: Copied from JCDentonMale to deal with skin colors. Pretty much a hack.
-    switch( PlayerSkin ) {
-        case 0:
-            MultiSkins[0] = Texture'JCDentonTex0';
-            break;
-        case 1:
-            MultiSkins[0] = Texture'JCDentonTex4';
-            break;
-        case 2:
-            MultiSkins[0] = Texture'JCDentonTex5';
-            break;
-        case 3:
-            MultiSkins[0] = Texture'JCDentonTex6';
-            break;
-        case 4:
-            MultiSkins[0] = Texture'JCDentonTex7';
-            break;
-    }
-
-    Skin = Default.Skin;
-    ScaleGlow = Default.ScaleGlow;
-    Style = Default.Style;
-}
-
-function Texture GetStyleTexture( ERenderStyle newStyle, texture oldTex, optional texture newTex ) {
-    local texture defaultTex;
-
-    if ( newStyle == STY_Translucent ) {
-        defaultTex = Texture'BlackMaskTex';
-    }
-    else if ( newStyle == STY_Modulated ) {
-        defaultTex = Texture'GrayMaskTex';
-    }
-    else if ( newStyle == STY_Masked ) {
-        defaultTex = Texture'PinkMaskTex';
-    }
-    else {
-        defaultTex = Texture'BlackMaskTex';
-    }
-
-    if ( oldTex == None ) {
-        return defaultTex;
-    }
-    else if ( oldTex == Texture'BlackMaskTex' ) {
-        return Texture'BlackMaskTex';
-    }
-    else if ( oldTex == Texture'GrayMaskTex' ) {
-        return defaultTex;
-    }
-    else if ( oldTex == Texture'PinkMaskTex' ) {
-        return defaultTex;
-    }
-    else if ( newTex != None ) {
-        return newTex;
-    }
-    else {
-        return oldTex;
-    }
-}
-
-// Vanilla Matters: Return the appropriate colored skin.
-function Texture GetHandsSkin() {
-    switch( PlayerSkin ) {
-        case 1:
-            return Texture'DeusEx.VM.WeaponHandsTex1a';
-        case 2:
-            return Texture'DeusEx.VM.WeaponHandsTex2a';
-        case 3:
-            return Texture'DeusEx.VM.WeaponHandsTex3a';
-        case 4:
-            return Texture'DeusEx.VM.WeaponHandsTex4a';
-        default:
-            return Texture'DeusEx.VM.WeaponHandsTex3a';
-    }
-}
-
-function Texture GetCrossbowHandsSkin() {
-    switch( PlayerSkin ) {
-        case 1:
-            return Texture'DeusEx.VM.WeaponHandsTex1b';
-        case 2:
-            return Texture'DeusEx.VM.WeaponHandsTex2b';
-        case 3:
-            return Texture'DeusEx.VM.WeaponHandsTex3b';
-        case 4:
-            return Texture'DeusEx.VM.WeaponHandsTex4b';
-        default:
-            return Texture'DeusEx.VM.WeaponHandsTex3b';
-    }
-}
-
 // ----------------------------------------------------------------------
 // LocalLog
 // ----------------------------------------------------------------------
@@ -13037,6 +12244,54 @@ function ForceDisconnect(string Message)
     DisconnectPlayer();
 }
 
+//============================================================================================
+// Vanilla Matters
+//============================================================================================
+
+//==============================================
+// General interface
+//==============================================
+function SetFeatureEnabled( name featureName, bool enabled );
+function bool IsFeatureEnabled( name featureName ) { return false; }
+function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
+
+function RequestAutoSave( optional float delay );
+
+function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
+function ResetSkinStyle();
+function Texture GetStyleTexture( ERenderStyle newStyle, texture oldTex, optional texture newTex ) { return oldTex; }
+function Texture GetHandsSkin() { return Texture'DeusEx.VM.WeaponHandsTex3a'; }
+function Texture GetCrossbowHandsSkin() { return Texture'DeusEx.VM.WeaponHandsTex3b'; }
+
+//==============================================
+// Player interface
+//==============================================
+function bool WasLastPutAway( Inventory item ) { return false; }
+function ClearLastPutAway();
+function bool IsHolding( Inventory item ) { return false; }
+function ClearHold();
+
+function bool CanDrain( float drainAmount );
+function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) { return 0; }
+
+function AddFlinchPenalty( float amount );
+function float GetFlinchPenalty() { return 0; }
+
+//==============================================
+// ForwardPressure interface
+//==============================================
+function AddForwardPressure( float value, name type );
+function ResetForwardPressure();
+function float GetForwardPressure() { return 0; }
+function bool HasFullForwardPressure() { return true; }
+
+//==============================================
+// Misc interface
+//==============================================
+function StartBurning( Pawn burner, float burnDamage );
+
+// Simple command to turn on cheats.
+exec function sv_cheats( bool enabled );
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -13080,7 +12335,6 @@ defaultproperties
      bShowAmmoDescriptions=True
      bConfirmSaveDeletes=True
      bConfirmNoteDeletes=True
-     bAskedToTrain=True
      AugPrefs(0)=AugVision
      AugPrefs(1)=AugHealing
      AugPrefs(2)=AugSpeed
@@ -13125,20 +12379,6 @@ defaultproperties
      BurnString=" with excessive burning"
      NoneString="None"
      MPDamageMult=1.000000
-     VM_bEnableAS=True
-     VM_bCheatsEnabled=True
-     VM_currentQSIndex=-3
-     VM_currentASIndex=-5
-     VM_flinchDecay=0.600000
-     VM_msgFullHealth="You already have full health"
-     VM_msgFullEnergy="You already have full energy"
-     VM_msgTakeHold="You took hold of the %s"
-     VM_msgTakeHoldInstead="You took hold of the %s instead"
-     VM_msgTakeHoldCharged="You need to have the item in your inventory to activate it"
-     VM_msgDroneCost="You don't have enough energy to detonate a drone"
-     VM_msgTooMuchAmmo="You already have enough %s"
-     VM_msgMuscleCost="You don't have enough energy to do a powerthrow"
-     VM_msgChargedPickupAlready="You are already using that type of equipment"
      bCanStrafe=True
      MeleeRange=50.000000
      AccelRate=2048.000000

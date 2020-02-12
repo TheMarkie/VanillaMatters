@@ -94,10 +94,6 @@ function bool HandlePickupQuery( inventory Item )
                 DeusExPickup( Item ).NumCopies = FMin( NumCopies - MaxCopies, DeusExPickup( Item ).NumCopies );
                 NumCopies = MaxCopies;
 
-                if ( player.TakeHold( Item ) && !player.WasHolding( Item ) ) {
-                    player.ClientMessage( Sprintf( player.VM_msgTakeHoldInstead, Item.ItemName ) );
-                }
-
                 UpdateBeltText();
 
                 return true;
@@ -155,7 +151,7 @@ function UseOnce()
     {
         // Vanilla Matters: Clear HeldInHand then makes the pickup destroy itself.
         if ( player.IsHolding( self ) ) {
-            player.VM_HeldInHand = None;
+            player.ClearHold();
         }
 
         Destroy();

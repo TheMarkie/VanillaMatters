@@ -63,11 +63,7 @@ function UpdateButtonStatus()
         winButtons[1].SetSensitivity(False);
 
     // Vanilla Matters: Disallow saving if not enough forward pressure.
-    if ( Player.VM_bEnableFP && Player.FPSystem != none ) {
-        if ( !Player.FPSystem.EnoughPressure( 100 ) ) {
-            winButtons[1].SetSensitivity( false );
-        }
-    }
+    winButtons[1].SetSensitivity( Player.HasFullForwardPressure() );
 
     // Vanilla Matters: Disable multiplayer for now.
     winButtons[8].SetSensitivity( false );

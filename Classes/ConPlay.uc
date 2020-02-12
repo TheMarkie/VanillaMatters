@@ -191,9 +191,7 @@ function PostTerminateConversation()
 
     // Vanilla Matters: If this is a third-person conversation, give FP.
     if ( !con.bFirstPerson ) {
-        if ( player.FPSystem != none ) {
-            player.FPSystem.AddForwardPressure( player.FPSystem.VM_fpConversation * 2 );
-        }
+        player.AddForwardPressure( 2, 'Conversation' );
     }
 
     Super.TerminateConversation(bSaveContinueSpeech, bSaveNoPlayedFlag);

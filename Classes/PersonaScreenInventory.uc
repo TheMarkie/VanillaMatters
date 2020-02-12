@@ -830,7 +830,7 @@ function UseSelectedItem()
                     cpickup.Activate();
                 }
                 else {
-                    player.ClientMessage( player.VM_msgChargedPickupAlready );
+                    player.ClientMessage( VMPlayer( player ).MsgChargedPickupAlready );
                 }
             }
             else {
