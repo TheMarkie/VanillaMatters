@@ -43,10 +43,8 @@ var globalconfig bool EnableCheats;
 var travel int CurrentQSIndex;
 var travel int CurrentASIndex;
 
-var bool IsAutoSaved;
 var bool IsAutoSaving;
 var float AutoSaveTimer;
-var float LastASTime;
 
 //==============================================
 // Properties
@@ -82,12 +80,11 @@ function InitializeSubSystems() {
     if ( FPSystem == none ) {
         FPSystem = Spawn( class'ForwardPressure', self );
         FPSystem.Initialize( self );
-        FPSystem.SetOwner( self );
     }
     else {
         FPSystem.SetPlayer( self );
-        FPSystem.SetOwner( self );
     }
+    FPSystem.SetOwner( self );
 }
 
 // Override
@@ -169,10 +166,6 @@ event TravelPostAccept() {
             FPSystem.SetOwner( self );
         }
     }
-    else {
-        // Trigger an auto save.
-        IsAutoSaved = false;
-    }
 
     // Always set this back to false in case the player saves while it's true.
     IsMapTravel = false;
@@ -187,7 +180,7 @@ event TravelPostAccept() {
 // Updating
 //==============================================
 // We handle updating our own stuff here.
-function VMTick( float deltaTime ) {
+function VMPlayerTick( float deltaTime ) {
     UpdateChargedPickupStatus();
 
     // Calculate visibility values for this frame.
@@ -197,20 +190,15 @@ function VMTick( float deltaTime ) {
     ProcessFlinch( deltaTime );
 
     // Build forward pressure as you move.
-    if ( FPSystem != none && !IsInState( 'Conversation' ) ) {
+    if ( FPSystem != none ) {
         FPSystem.BuildForwardPressure( deltaTime );
     }
 
     if ( EnableAutoSave && IsAutoSaving ) {
-        if ( dataLinkPlay == none && !IsInState( 'Conversation' ) ) {
+        if ( dataLinkPlay == none ) {
             AutoSaveTimer = AutoSaveTimer - deltaTime;
             if ( AutoSaveTimer <= 0 ) {
-                IsAutoSaving = false;
-                AutoSaveTimer = 0;
-
-                if ( ( LastASTime + AutoSaveDelay ) <= Level.TimeSeconds ) {
-                    AutoSave();
-                }
+                AutoSave();
             }
         }
     }
@@ -294,16 +282,23 @@ function UpdateFire() {
 // Override
 event PlayerTick( float deltaTime ) {
     // Update our stuff first.
-    VMTick( deltaTime );
+    VMPlayerTick( deltaTime );
 
     super.PlayerTick( deltaTime );
+}
+
+state PlayerWalking {
+    event PlayerTick( float deltaTime ) {
+        VMPlayerTick( deltaTime );
+
+        super.PlayerTick( deltaTime );
+    }
 }
 
 state PlayerFlying {
     // Override
     event PlayerTick( float deltaTime ) {
-        // Update our stuff first.
-        VMTick( deltaTime );
+        VMPlayerTick( deltaTime );
 
         super.PlayerTick( deltaTime );
     }
@@ -312,18 +307,7 @@ state PlayerFlying {
 state PlayerSwimming {
     // Override
     event PlayerTick( float deltaTime ) {
-        // Update our stuff first.
-        VMTick( deltaTime );
-
-        super.PlayerTick( deltaTime );
-    }
-}
-
-state Conversation {
-    // Override
-    event PlayerTick( float deltaTime ) {
-        // Update our stuff first.
-        VMTick( deltaTime );
+        VMPlayerTick( deltaTime );
 
         super.PlayerTick( deltaTime );
     }
@@ -333,11 +317,8 @@ state Conversation {
 // Saving and Loading
 //==============================================
 // Override
-exec function QuickSave()
-{
+exec function QuickSave() {
     local DeusExLevelInfo info;
-
-    info = GetLevelInfo();
 
     // Don't allow saving if:
     // 1) The player is dead
@@ -346,11 +327,9 @@ exec function QuickSave()
     // 3) A datalink is playing
     // 4) We're in a multiplayer game
 
-    if ( ( ( info != none ) && ( info.MissionNumber < 0 ) )
-        || ( ( IsInState( 'Dying' ) ) || ( IsInState( 'Paralyzed' ) ) || ( IsInState( 'Interpolating' ) ) )
-        || ( dataLinkPlay != none ) || ( Level.Netmode != NM_Standalone )
-    ) {
-       return;
+    info = GetLevelInfo();
+    if ( !ShouldSave( info ) ) {
+        return;
     }
 
     // Disable quicksaving depending on Forward Pressure.
@@ -366,11 +345,11 @@ exec function QuickSave()
 
     // Allow two quick save slots.
     // We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
-    if ( CurrentQSIndex != -3 ) {
-        CurrentQSIndex = -3;
+    if ( CurrentQSIndex != 9996 ) {
+        CurrentQSIndex = 9996;
     }
-    else if ( CurrentQSIndex != -4 ) {
-        CurrentQSIndex = -4;
+    else if ( CurrentQSIndex != 9997 ) {
+        CurrentQSIndex = 9997;
     }
 
     SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ info.MissionLocation );
@@ -378,15 +357,6 @@ exec function QuickSave()
 
 // Override
 function RequestAutoSave( optional float delay ) {
-    local DeusExLevelInfo info;
-
-    info = GetLevelInfo();
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
-        || Level.NetMode != NM_Standalone
-    ) {
-        return;
-    }
-
     IsAutoSaving = true;
     AutoSaveTimer = delay;
 }
@@ -395,29 +365,38 @@ function AutoSave() {
     local DeusExLevelInfo info;
 
     info = GetLevelInfo();
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
-        || Level.NetMode != NM_Standalone || EnableForwardPressure
-    ) {
+    if ( !ShouldSave( info ) ) {
         return;
     }
 
-    // We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
-    if ( CurrentASIndex != -5 ) {
-        CurrentASIndex = -5;
+    if ( CurrentASIndex != 9998 ) {
+        CurrentASIndex = 9998;
     }
-    else if ( CurrentASIndex != -6 ) {
-        CurrentASIndex = -6;
+    else if ( CurrentASIndex != 9999 ) {
+        CurrentASIndex = 9999;
     }
 
-    IsAutoSaved = true;
-    LastASTime = Level.TimeSeconds;
+    IsAutoSaving = false;
+    AutoSaveTimer = 0;
 
     SaveGame( CurrentASIndex, "Auto Save -" @ info.MissionLocation );
 }
 
+function bool ShouldSave( DeusExLevelInfo info ) {
+    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
+        || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
+        || dataLinkPlay != none
+        || Level.NetMode != NM_Standalone
+    ) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 // Override
-function QuickLoadConfirmed()
-{
+function QuickLoadConfirmed() {
     if ( Level.Netmode != NM_Standalone ) {
         return;
     }

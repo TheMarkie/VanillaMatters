@@ -359,7 +359,8 @@ function CreateHackWindow()
     if ((skillLevel > 0) && (bUsesHackWindow))
     {
         // Base the detection and hack time on the skill level
-        hackTime       = detectionTime / (skillLevelValue * 1.5);
+        // Vanilla Matters: Change hack time formula
+        hackTime = detectionTime / skillLevelValue;
         detectionTime *= skillLevelValue;
 
         // First create the shadow window
