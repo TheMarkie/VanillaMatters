@@ -15,7 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Table.cpp" />
-    <ClCompile Include="Src\Utilities.cpp" />
     <ClCompile Include="Src\VanillaMatters.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -32,8 +32,5 @@
     <ClCompile Include="Src\VanillaMatters.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utilities.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
