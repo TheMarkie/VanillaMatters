@@ -27,8 +27,6 @@ var localized string MsgTooMuchAmmo;
 var localized string MsgMuscleCost;
 var localized string MsgChargedPickupAlready;
 var localized string MsgUseChargedPickup;
-// var localized string MsgShieldBroken;
-// var localized string MsgShieldRegen;
 
 //==============================================
 // Configs
@@ -57,9 +55,6 @@ var travel float VisibilityRobot;
 var travel Inventory LastPutAway;               // Last item in hand before PutInHand( None ).
 var travel Inventory HeldInHand;                // Item being held.
 var travel Inventory LastHeldInHand;            // Some temporary place to keep track of HeldInHand.
-
-// var travel float CurrentShield;              // Current shield health.
-// var travel float CurrentMaxShield;           // Just here to make things easier to fetch for the HUD.
 
 var travel int LastMissionNumber;               // Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
@@ -1449,21 +1444,6 @@ function DroneExplode()
         }
     }
 }
-
-// Drain shield and return the undrained amount properly.
-// function float DrainShield( float amount ) {
-//     local float remaining;
-
-//     remaining = 0;
-
-//     remaining = FMax( amount - CurrentShield, 0 );
-//     CurrentShield = FMax( CurrentShield - amount, 0 );
-
-//     // Vanilla Matters: Add in FP rate for damage absorbed by shield.
-//     AddForwardPressure( amount - remaining, 'Damage' );
-
-//     return remaining;
-// }
 
 //==============================================
 // Config
