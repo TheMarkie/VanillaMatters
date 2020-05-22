@@ -14,6 +14,5 @@ var private transient const int _intPad5;
 var private transient const int _intPad6;
 var private transient const int _intPad7;
 var private transient const int _intPad8;
-
-native function Remove( string key );
-native function Clear();
+var private transient const int _intPad9;
+var private transient const int _intPad10;

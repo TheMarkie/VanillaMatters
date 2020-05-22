@@ -1,9 +1,13 @@
 #pragma once
 
-// Convert FString to std::string
-string FStringToString( FString fstr ) {
-    return string( TCHAR_TO_ANSI( *fstr ) );
+// Convert FString to std::wstring and back
+wstring FStringToWString( FString fstr ) {
+    return wstring( *fstr );
 }
-FString StringToFString( string str ) {
-    return FString( ANSI_TO_TCHAR( str.c_str() ) );
+FString WStringToFString( wstring wstr ) {
+    return FString( wstr.c_str() );
+}
+
+void ToLowerWString( wstring* wstr ) {
+    std::transform( wstr->begin(), wstr->end(), wstr->begin(), towlower );
 }

@@ -1,5 +1,3 @@
-#pragma warning( disable : 4595 )
-
-#include "Core.h"
+#include "VanillaMattersPrivate.h"
 
 IMPLEMENT_PACKAGE( VanillaMatters )
