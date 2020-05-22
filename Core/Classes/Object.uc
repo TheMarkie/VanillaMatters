@@ -27,9 +27,6 @@ const RF_NotForClient   = 0x00100000; // Don't load for game client.
 const RF_NotForServer   = 0x00200000; // Don't load for game server.
 const RF_NotForEdit     = 0x00400000; // Don't load for editor.
 
-// Vanilla Matters: Common struct container to simplify struct typing.
-struct VMStruct {};
-
 // A globally unique identifier.
 struct Guid
 {
@@ -420,7 +417,6 @@ native(3200) static final function int FloatArrayCount( array<float> A );
 native(3200) static final function int StringArrayCount( array<string> A );
 native(3200) static final function int NameArrayCount( array<name> A );
 native(3200) static final function int ObjectArrayCount( array<Object> A );
-native(3200) static final function int VMStructArrayCount( array<VMStruct> A );
 native(3200) static final function int VectorArrayCount( array<Vector> A );
 
 // Shorthand to get array count
@@ -430,7 +426,6 @@ static final preoperator int #( out array<float> A ) { return FloatArrayCount( A
 static final preoperator int #( out array<string> A ) { return StringArrayCount( A ); }
 static final preoperator int #( out array<name> A ) { return NameArrayCount( A ); }
 static final preoperator int #( out array<Object> A ) { return ObjectArrayCount( A ); }
-static final preoperator int #( out array<VMStruct> A ) { return VMStructArrayCount( A ); }
 static final preoperator int #( out array<Vector> A ) { return VectorArrayCount( A ); }
 
 // Shorthand to check if array is empty
@@ -440,7 +435,6 @@ static final preoperator bool !( out array<float> A ) { return FloatArrayCount( 
 static final preoperator bool !( out array<string> A ) { return StringArrayCount( A ) <= 0; }
 static final preoperator bool !( out array<name> A ) { return NameArrayCount( A ) <= 0; }
 static final preoperator bool !( out array<Object> A ) { return ObjectArrayCount( A ) <= 0; }
-static final preoperator bool !( out array<VMStruct> A ) { return VMStructArrayCount( A ) <= 0; }
 static final preoperator bool !( out array<Vector> A ) { return VectorArrayCount( A ) <= 0; }
 
 defaultproperties
