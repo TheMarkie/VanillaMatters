@@ -45,10 +45,16 @@ var bool IsAutoSaving;
 var float AutoSaveTimer;
 
 //==============================================
-// Properties
+// Systems
 //==============================================
 var travel ForwardPressure FPSystem;
 
+var travel VMSkillManager VMSkillSystem;
+var() array< class<VMSKill> > StartingSkills;
+
+//==============================================
+// Properties
+//==============================================
 var travel float VisibilityNormal;
 var travel float VisibilityRobot;
 
@@ -67,21 +73,6 @@ var byte ChargedPickupStatus[5];
 //==============================================
 // Initializing and Startup
 //==============================================
-// Override
-function InitializeSubSystems() {
-    super.InitializeSubSystems();
-
-    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
-    if ( FPSystem == none ) {
-        FPSystem = Spawn( class'ForwardPressure', self );
-        FPSystem.Initialize( self );
-    }
-    else {
-        FPSystem.SetPlayer( self );
-    }
-    FPSystem.SetOwner( self );
-}
-
 // Override
 function PreTravel() {
     local DeusExLevelInfo info;
@@ -108,8 +99,17 @@ function PreTravel() {
 // Override
 event TravelPostAccept() {
     local DeusExLevelInfo info;
+    local int missionNumber;
 
     super.TravelPostAccept();
+
+    info = GetLevelInfo();
+    if ( info != none ) {
+        missionNumber = info.MissionNumber;
+    }
+    else {
+        missionNumber = -3;
+    }
 
     if (AugmentationSystem != none) {
         // Should ensure all augs work fine through patches.
@@ -142,12 +142,9 @@ event TravelPostAccept() {
     }
 
     // If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
-    info = GetLevelInfo();
-    if ( info != None ) {
-        // Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
-        if ( LastMissionNumber != -3 && info.MissionNumber > LastMissionNumber ) {
-            AddForwardPressure( 1, 'Critical' );
-        }
+    // Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
+    if ( LastMissionNumber != -3 && info.MissionNumber > LastMissionNumber ) {
+        AddForwardPressure( 1, 'Critical' );
     }
 
     // If a save was loaded, reset forward pressure if the FP system exists, otherwise initialize it because probably a save from pre-FPSystem update was loaded.
@@ -161,6 +158,14 @@ event TravelPostAccept() {
             FPSystem.SetOwner( self );
         }
     }
+    else {
+        if ( VMSkillSystem == none ) {
+            InitializeSkillSystem();
+        }
+        else {
+            VMSkillSystem.RefreshValues();
+        }
+    }
 
     // Always set this back to false in case the player saves while it's true.
     IsMapTravel = false;
@@ -168,6 +173,33 @@ event TravelPostAccept() {
     // Apply cheating status.
     if ( Level.NetMode == NM_Standalone ) {
         bCheatsEnabled = EnableCheats;
+    }
+}
+
+// Override
+function InitializeSubSystems() {
+    super.InitializeSubSystems();
+
+    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
+    if ( FPSystem == none ) {
+        FPSystem = Spawn( class'ForwardPressure', self );
+        FPSystem.Initialize( self );
+    }
+    else {
+        FPSystem.SetPlayer( self );
+    }
+    FPSystem.SetOwner( self );
+}
+
+function InitializeSkillSystem() {
+    local int i, count;
+
+    VMSkillSystem = Spawn( class'VMSkillManager', self );
+    VMSkillSystem.Initialize();
+
+    count = #StartingSkills;
+    for ( i = 0; i < count; i++ ) {
+        VMSkillSystem.AddSkill( StartingSkills[i] );
     }
 }
 
@@ -1357,6 +1389,61 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     adjustedDamage = int( newDamage );
 
     return reduced;
+}
+
+//==============================================
+// Skill Management
+//==============================================
+// Override
+function bool IncreaseSkillLevel( VMSkill skill ) {
+    if ( skill.CanUpgrade( SkillPointsAvail ) ) {
+        if ( VMSkillSystem.IncreaseLevel( skill ) ) {
+            SkillPointsAvail -= skill.GetNextLevelCost();
+
+            return true;
+        }
+    }
+
+    return false;
+}
+// Override
+function bool IncreaseSkillLevelWithName( name skillName ) {
+    if ( VMSkillSystem != none ) {
+        return VMSkillSystem.IncreaseLevelWithName( skillName );
+    }
+
+    return false;
+}
+// Override
+function bool DecreaseSkillLevel( VMSkill skill ) {
+    if ( VMSkillSystem.DecreaseLevel( skill ) ) {
+        SkillPointsAvail += skill.GetNextLevelCost();
+
+        return true;
+    }
+
+    return false;
+}
+// Override
+function float GetSkillValue( string name, optional float defaultValue ) {
+    if ( VMSkillSystem != none ) {
+        return VMSkillSystem.GetValue( name, defaultValue );
+    }
+    else {
+        return defaultValue;
+    }
+}
+// Override
+function int GetSkillLevel( name skillName ) {
+    if ( VMSkillSystem != none ) {
+        return VMSkillSystem.GetLevel( skillName );
+    }
+
+    return -1;
+}
+// Override
+function VMSkillManager GetSkillSystem() {
+    return VMSkillSystem;
 }
 
 //==============================================

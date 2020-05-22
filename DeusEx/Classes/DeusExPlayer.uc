@@ -12278,6 +12278,28 @@ function AddFlinchPenalty( float amount );
 function float GetFlinchPenalty() { return 0; }
 
 //==============================================
+// Skill interface
+//==============================================
+function bool IncreaseSkillLevel( VMSkill skill ) {
+    return false;
+}
+function bool IncreaseSkillLevelWithName( name skillName ) {
+    return false;
+}
+function bool DecreaseSkillLevel( VMSkill skill ) {
+    return false;
+}
+function float GetSkillValue( string name, optional float defaultValue ) {
+    return defaultValue;
+}
+function int GetSkillLevel( name skillName ) {
+    return -1;
+}
+function VMSkillManager GetSkillSystem() {
+    return none;
+}
+
+//==============================================
 // ForwardPressure interface
 //==============================================
 function AddForwardPressure( float value, name type );
