@@ -1395,10 +1395,10 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 // Skill Management
 //==============================================
 // Override
-function bool IncreaseSkillLevel( VMSkill skill ) {
-    if ( skill.CanUpgrade( SkillPointsAvail ) ) {
-        if ( VMSkillSystem.IncreaseLevel( skill ) ) {
-            SkillPointsAvail -= skill.GetNextLevelCost();
+function bool IncreaseSkillLevel( VMSkillInfo info ) {
+    if ( info.CanUpgrade( SkillPointsAvail ) ) {
+        if ( VMSkillSystem.IncreaseLevel( info ) ) {
+            SkillPointsAvail -= info.GetNextLevelCost();
 
             return true;
         }
@@ -1407,17 +1407,17 @@ function bool IncreaseSkillLevel( VMSkill skill ) {
     return false;
 }
 // Override
-function bool IncreaseSkillLevelWithName( name skillName ) {
+function bool IncreaseSkillLevelWithName( name name ) {
     if ( VMSkillSystem != none ) {
-        return VMSkillSystem.IncreaseLevelWithName( skillName );
+        return VMSkillSystem.IncreaseLevelWithName( name );
     }
 
     return false;
 }
 // Override
-function bool DecreaseSkillLevel( VMSkill skill ) {
-    if ( VMSkillSystem.DecreaseLevel( skill ) ) {
-        SkillPointsAvail += skill.GetNextLevelCost();
+function bool DecreaseSkillLevel( VMSkillInfo info ) {
+    if ( VMSkillSystem.DecreaseLevel( info ) ) {
+        SkillPointsAvail += info.GetNextLevelCost();
 
         return true;
     }
@@ -1434,9 +1434,9 @@ function float GetSkillValue( string name, optional float defaultValue ) {
     }
 }
 // Override
-function int GetSkillLevel( name skillName ) {
+function int GetSkillLevel( name name ) {
     if ( VMSkillSystem != none ) {
-        return VMSkillSystem.GetLevel( skillName );
+        return VMSkillSystem.GetLevel( name );
     }
 
     return -1;

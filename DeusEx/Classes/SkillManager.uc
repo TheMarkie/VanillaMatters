@@ -260,15 +260,6 @@ function ResetSkills()
 
 defaultproperties
 {
-     skillClasses(0)=Class'DeusEx.SkillWeaponPistol'
-     skillClasses(1)=Class'DeusEx.SkillWeaponRifle'
-     skillClasses(2)=Class'DeusEx.SkillWeaponHeavy'
-     skillClasses(3)=Class'DeusEx.SkillWeaponLowTech'
-     skillClasses(4)=Class'DeusEx.SkillEnviro'
-     skillClasses(5)=Class'DeusEx.SkillMedicine'
-     skillClasses(6)=Class'DeusEx.SkillTech'
-     skillClasses(7)=Class'DeusEx.SkillLockpicking'
-     skillClasses(8)=Class'DeusEx.SkillComputer'
      NoToolMessage="You need the %s"
      NoSkillMessage="%s skill level insufficient to use the %s"
      SuccessMessage="Success!"

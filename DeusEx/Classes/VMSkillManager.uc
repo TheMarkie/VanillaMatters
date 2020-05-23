@@ -8,7 +8,7 @@ var() localized string SkillLevelNames[4];
 //==============================================
 // Data
 //==============================================
-var travel VMSkill FirstSkill;
+var travel VMSkillInfo FirstSkillInfo;
 var travel TableFloat SkillValues;
 
 //==============================================
@@ -19,76 +19,78 @@ function Initialize() {
 }
 
 function RefreshValues() {
-    local VMSkill skill;
+    local VMSkillInfo info;
 
     if ( SkillValues == none ) {
-        Initialize();
+        return;
     }
 
-    skill = FirstSkill;
-    while ( skill != none ) {
-        Log( "Refreshing skill:" @ skill.Class.Name );
-        skill.RefreshValues( SkillValues );
+    SkillValues.Clear();
 
-        skill = skill.Next;
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        info.RefreshValues( SkillValues );
+
+        info = info.Next;
     }
+}
+
+function bool AddSkill( class<VMSkill> class, optional int startingLevel ) {
+    local VMSkillInfo info;
+
+    if ( startingLevel < 0 || GetSkillInfo( class.Name ) != none ) {
+        return false;
+    }
+
+    info = new class'VMSkillInfo';
+    info.SkillClassName = class.Name;
+    info.Level = startingLevel;
+    info.Next = FirstSkillInfo;
+    FirstSkillInfo = info;
+
+    info.RefreshValues( SkillValues );
+
+    return true;
 }
 
 //==============================================
 // Skill Management
 //==============================================
-function VMSkill GetSkill( name skillName ) {
-    local VMSkill skill;
+function VMSkillInfo GetSkillInfo( name name ) {
+    local VMSkillInfo info;
 
-    skill = FirstSkill;
-    while ( skill != none ) {
-        if ( skill.Class.Name == skillName ) {
-            return skill;
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        if ( info.SkillClassName == name ) {
+            break;
         }
 
-        skill = skill.Next;
+        info = info.Next;
     }
 
-    return none;
+    return info;
 }
 
-function bool AddSkill( class<VMSkill> skillClass, optional int startingLevel ) {
-    local VMSkill skill;
-
-    if ( startingLevel < 0 || GetSkill( skillClass.Name ) != none ) {
-        return false;
-    }
-
-    skill = new skillClass;
-    skill.Level = startingLevel;
-    skill.Next = FirstSkill;
-    FirstSkill = skill;
-
-    skill.RefreshValues( SkillValues );
-
-    return true;
-}
-
-function bool IncreaseLevel( VMSkill skill ) {
-    if ( skill != none ) {
-        return skill.IncreaseLevel( SkillValues );
+function bool IncreaseLevel( VMSkillInfo info ) {
+    if ( info != none ) {
+        return info.IncreaseLevel( SkillValues );
     }
 
     return false;
 }
-function bool IncreaseLevelWithName( name skillName ) {
-    return IncreaseLevel( GetSkill( skillName ) );
+function bool IncreaseLevelWithName( name name ) {
+    return IncreaseLevel( GetSkillInfo( name ) );
 }
 
-function bool DecreaseLevel( VMSkill skill ) {
-    if ( skill != none ) {
-        return skill.DecreaseLevel( SkillValues );
+function bool DecreaseLevel( VMSkillInfo info ) {
+    if ( info != none ) {
+        return info.DecreaseLevel( SkillValues );
     }
 
     return false;
 }
-function bool DecreaseLevelWithName( name skillName ) {
-    return DecreaseLevel( GetSkill( skillName ) );
+function bool DecreaseLevelWithName( name name ) {
+    return DecreaseLevel( GetSkillInfo( name ) );
 }
 
 //==============================================
@@ -106,11 +108,11 @@ function float GetValue( string name, optional float defaultValue ) {
 }
 
 function int GetLevel( name skillName ) {
-    local VMSkill skill;
+    local VMSkillInfo info;
 
-    skill = GetSkill( skillName );
-    if ( skill != none ) {
-        return skill.Level;
+    info = GetSkill( skillName );
+    if ( info != none ) {
+        return info.Level;
     }
 
     return -1;
