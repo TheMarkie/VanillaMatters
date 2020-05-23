@@ -62,3 +62,13 @@ function bool DecreaseLevel( TableFloat table ) {
 
     return false;
 }
+
+function IncreaseToMax( TableFloat table ) {
+    local int maxLevel;
+
+    maxLevel = GetMaxLevel();
+    if ( Level < maxLevel ) {
+        GetSkillClass().static.UpdateValues( table, Level, maxLevel );
+        Level = maxLevel;
+    }
+}

@@ -191,6 +191,7 @@ function InitializeSubSystems() {
     FPSystem.SetOwner( self );
 }
 
+// Override
 function InitializeSkillSystem() {
     local int i, count;
 
@@ -1402,14 +1403,6 @@ function bool IncreaseSkillLevel( VMSkillInfo info ) {
 
             return true;
         }
-    }
-
-    return false;
-}
-// Override
-function bool IncreaseSkillLevelWithName( name name ) {
-    if ( VMSkillSystem != none ) {
-        return VMSkillSystem.IncreaseLevelWithName( name );
     }
 
     return false;

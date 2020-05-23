@@ -12280,23 +12280,23 @@ function float GetFlinchPenalty() { return 0; }
 //==============================================
 // Skill interface
 //==============================================
-function bool IncreaseSkillLevel( VMSkillInfo info ) {
-    return false;
+function InitializeSkillSystem();
+function VMSkillManager GetSkillSystem() {
+    return none;
 }
-function bool IncreaseSkillLevelWithName( name name ) {
+
+function bool IncreaseSkillLevel( VMSkillInfo info ) {
     return false;
 }
 function bool DecreaseSkillLevel( VMSkillInfo info ) {
     return false;
 }
+
 function float GetSkillValue( string name, optional float defaultValue ) {
     return defaultValue;
 }
 function int GetSkillLevel( name name ) {
     return -1;
-}
-function VMSkillManager GetSkillSystem() {
-    return none;
 }
 
 //==============================================

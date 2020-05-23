@@ -18,23 +18,6 @@ function Initialize() {
     SkillValues = new class'TableFloat';
 }
 
-function RefreshValues() {
-    local VMSkillInfo info;
-
-    if ( SkillValues == none ) {
-        return;
-    }
-
-    SkillValues.Clear();
-
-    info = FirstSkillInfo;
-    while ( info != none ) {
-        info.RefreshValues( SkillValues );
-
-        info = info.Next;
-    }
-}
-
 function bool AddSkill( class<VMSkill> class, optional int startingLevel ) {
     local VMSkillInfo info;
 
@@ -51,6 +34,33 @@ function bool AddSkill( class<VMSkill> class, optional int startingLevel ) {
     info.RefreshValues( SkillValues );
 
     return true;
+}
+
+function Reset() {
+    local VMSkillInfo info;
+
+    SkillValues.Clear();
+
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        info.Level = 0;
+        info.RefreshValues( SkillValues );
+
+        info = info.Next;
+    }
+}
+
+function RefreshValues() {
+    local VMSkillInfo info;
+
+    SkillValues.Clear();
+
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        info.RefreshValues( SkillValues );
+
+        info = info.Next;
+    }
 }
 
 //==============================================
@@ -72,25 +82,27 @@ function VMSkillInfo GetSkillInfo( name name ) {
 }
 
 function bool IncreaseLevel( VMSkillInfo info ) {
-    if ( info != none ) {
-        return info.IncreaseLevel( SkillValues );
-    }
-
-    return false;
+    return info.IncreaseLevel( SkillValues );
 }
-function bool IncreaseLevelWithName( name name ) {
-    return IncreaseLevel( GetSkillInfo( name ) );
-}
-
 function bool DecreaseLevel( VMSkillInfo info ) {
-    if ( info != none ) {
-        return info.DecreaseLevel( SkillValues );
-    }
-
-    return false;
+    return info.DecreaseLevel( SkillValues );
 }
-function bool DecreaseLevelWithName( name name ) {
-    return DecreaseLevel( GetSkillInfo( name ) );
+
+function IncreaseToMax( VMSkillInfo info ) {
+    info.IncreaseToMax( SkillValues );
+}
+function IncreaseAllToMax() {
+    local VMSkillInfo info;
+
+    SkillValues.Clear();
+
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        info.Level = info.GetMaxLevel();
+        info.RefreshValues( SkillValues );
+
+        info = info.Next;
+    }
 }
 
 //==============================================
