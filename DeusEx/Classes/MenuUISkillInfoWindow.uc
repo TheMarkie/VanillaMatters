@@ -6,8 +6,6 @@ class MenuUISkillInfoWindow expands Window;
 
 var DeusExPlayer player;
 
-var Skill skill;
-
 var Window                 winSkillIcon;
 var TextWindow             winSkillName;
 var MenuUIScrollAreaWindow winScroll;
@@ -15,6 +13,9 @@ var LargeTextWindow        winSkillDescription;
 
 var Color colSkillName;
 var Color colSkillDesc;
+
+// Vanilla Matters
+var class<VMSkill> skill;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -68,14 +69,13 @@ function CreateControls()
 // ----------------------------------------------------------------------
 // SetSkill()
 // ----------------------------------------------------------------------
-
-function SetSkill(skill newSkill)
-{
+// Vanilla Matters
+function SetSkill( class<VMSkill> newSkill ) {
     skill = newSkill;
 
-    winSkillIcon.SetBackground(skill.SkillIcon);
-    winSkillName.SetText(skill.SkillName);
-    winSkillDescription.SetText(skill.Description);
+    winSkillIcon.SetBackground( skill.default.SkillIcon );
+    winSkillName.SetText( skill.default.SkillName );
+    winSkillDescription.SetText( skill.default.Description );
 }
 
 // ----------------------------------------------------------------------

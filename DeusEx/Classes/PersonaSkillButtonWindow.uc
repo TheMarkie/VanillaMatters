@@ -10,10 +10,12 @@ var PersonaSkillTextWindow  winLevel;
 var PersonaSkillTextWindow  winPointsNeeded;
 var PersonaLevelIconWindow  winLevelIcons;
 
-var Skill skill;
 var Bool bSelected;
 
 var Localized String NotAvailableLabel;
+
+// Vanilla Matters
+var VMSkillInfo skill;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -106,9 +108,8 @@ function SetButtonMetrics()
 // ----------------------------------------------------------------------
 // SetSkill()
 // ----------------------------------------------------------------------
-
-function SetSkill(Skill newSkill)
-{
+// Vanilla Matters
+function SetSkill( VMSkillInfo newSkill ) {
     skill = newSkill;
 
     RefreshSkillInfo();
@@ -118,7 +119,7 @@ function SetSkill(Skill newSkill)
 // GetSkill()
 // ----------------------------------------------------------------------
 
-function Skill GetSkill()
+function VMSkillInfo GetSkill()
 {
     return skill;
 }
@@ -126,20 +127,20 @@ function Skill GetSkill()
 // ----------------------------------------------------------------------
 // RefreshSkillInfo()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function RefreshSkillInfo() {
+    if ( skill != none ) {
+        winIcon.SetBackground( skill.GetSkillIcon() );
+        winName.SetText( skill.GetSkillName() );
+        winLevel.SetText( class'VMSkillManager'.default.SkillLevelNames[skill.Level] );
+        winLevelIcons.SetLevel( skill.Level );
 
-function RefreshSkillInfo()
-{
-    if (skill != None)
-    {
-        winIcon.SetBackground(skill.SkillIcon);
-        winName.SetText(skill.SkillName);
-        winLevel.SetText(skill.GetCurrentLevelString());
-        winLevelIcons.SetLevel(skill.GetCurrentLevel());
-
-        if (skill.GetCurrentLevel() == 3)
-            winPointsNeeded.SetText(NotAvailableLabel);
-        else
-            winPointsNeeded.SetText(String(skill.GetCost()));
+        if ( skill.Level == skill.GetMaxLevel() ) {
+            winPointsNeeded.SetText( NotAvailableLabel );
+        }
+        else {
+            winPointsNeeded.SetText( skill.GetNextLevelCost() );
+        }
     }
 }
 

@@ -19,19 +19,12 @@ var ButtonWindow             btnPortrait;
 
 var Texture texPortraits[5];
 var int     portraitIndex;
-var Skill   selectedSkill;
 var int     selectedRowId;
 var int     saveSkillPointsAvail;
 var int     saveSkillPointsTotal;
 var float   combatDifficulty;
 
 var String filterString;
-
-// An array of local skills that we can use to manipulate without
-// actually changing the skills in the game.  This is important so the
-// player can back out of this screen and return to the game in progress.
-
-var Skill           localSkills[32];
 
 var localized string ButtonUpgradeLabel;
 var localized string ButtonDowngradeLabel;
@@ -44,6 +37,10 @@ var localized string HeaderSkillLevelLabel;
 var localized string HeaderPointsNeededLabel;
 var localized string NameBlankTitle;
 var localized string NameBlankPrompt;
+
+// Vanilla Matters
+var array<VMSkillInfo> localSkills;
+var VMSkillInfo selectedSkill;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -259,43 +256,42 @@ function CreateSkillPointsButton()
 // ----------------------------------------------------------------------
 // PopulateSkillsList()
 // ----------------------------------------------------------------------
-
-function PopulateSkillsList()
-{
-    local int skillIndex;
+// Vanilla Matters
+function PopulateSkillsList() {
+    local int i, count;
     local int rowIndex;
 
     lstSkills.DeleteAllRows();
-    skillIndex = 0;
 
     // Iterate through the skills, adding them to our list
-    while(localSkills[skillIndex] != None)
-    {
-        rowIndex = lstSkills.AddRow(BuildSkillString(localSkills[skillIndex]));
-        lstSkills.SetRowClientObject(rowIndex, localSkills[skillIndex]);
-
-        skillIndex++;
+    count = #localSkills;
+    for ( i = 0; i < count; i++ ) {
+        rowIndex = lstSkills.AddRow( BuildSkillString( localSkills[i] ) );
+        lstSkills.SetRowClientObject( rowIndex, localSkills[i] );
     }
+
     lstSkills.Sort();
-    lstSkills.SetRow(lstSkills.IndexToRowId(0), False);
+    lstSkills.SetRow( lstSkills.IndexToRowId( 0 ), false );
 }
 
 // ----------------------------------------------------------------------
 // BuildSkillsString()
 // ----------------------------------------------------------------------
-
-function String BuildSkillString( Skill aSkill )
+// Vanilla Matters
+function String BuildSkillString( VMSkillInfo info )
 {
     local String skillString;
     local String levelCost;
 
-    if ( aSkill.GetCurrentLevel() == 3 )
+    if ( info.Level == info.GetMaxLevel() ) {
         levelCost = "--";
-    else
-        levelCost = String(aSkill.GetCost());
+    }
+    else {
+        levelCost = string( info.GetNextLevelCost() );
+    }
 
-    skillString = aSkill.skillName $ ";" $
-                  aSkill.GetCurrentLevelString() $ ";" $
+    skillString = info.GetSkillName() $ ";" $
+                  class'VMSkillManager'.default.SkillLevelNames[info.Level] $ ";" $
                   levelCost;
 
     return skillString;
@@ -369,12 +365,11 @@ event bool ListRowActivated(window list, int rowId)
 
 event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 {
-    local Skill aSkill;
-
-    selectedSkill = Skill(ListWindow(list).GetRowClientObject(focusRowId));
+    // Vanilla Matters
+    selectedSkill = VMSkillInfo( ListWindow( list ).GetRowClientObject( focusRowId ) );
     selectedRowId = focusRowId;
 
-    winSkillInfo.SetSkill(selectedSkill);
+    winSkillInfo.SetSkill( selectedSkill.GetSkillClass() );
 
     EnableButtons();
 
@@ -434,8 +429,9 @@ function EnableButtons()
         // the maximum -and- the user has enough skill points
         // available to upgrade the skill
 
-        btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
-        btnDowngrade.EnableWindow(selectedSkill.GetCurrentLevel() > 0);
+        // Vanilla Matters
+        btnUpgrade.EnableWindow( selectedSkill.CanUpgrade( player.SkillPointsAvail ) );
+        btnDowngrade.EnableWindow( selectedSkill.Level > 0 );
     }
 
     // Only enable the OK button if the player has entered a name
@@ -486,7 +482,10 @@ function UpgradeSkill()
     if ( selectedSkill == None )
         return;
 
-    selectedSkill.IncLevel(player);
+    // Vanilla Matters
+    player.SkillPointsAvail -= selectedSkill.GetNextLevelCost();
+    selectedSkill.Level += 1;
+
     lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
 
     UpdateSkillPoints();
@@ -503,7 +502,10 @@ function DowngradeSkill()
     if ( selectedSkill == None )
         return;
 
-    selectedSkill.DecLevel(True, Player);
+    // Vanilla Matters
+    selectedSkill.Level -= 1;
+    player.SkillPointsAvail += selectedSkill.GetNextLevelCost();
+
     lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
 
     UpdateSkillPoints();
@@ -538,26 +540,24 @@ function ResetToDefaults()
 // Makes a local copy of the skills so we can manipulate them without
 // actually making changes to the ones attached to the player.
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function CopySkills() {
+    local VMSkillInfo info;
+    local int i;
 
-function CopySkills()
-{
-    local Skill aSkill;
-    local int skillIndex;
-
-    skillIndex = 0;
-
-    aSkill = player.SkillSystem.FirstSkill;
-    while(aSkill != None)
-    {
-        localSkills[skillIndex] = player.Spawn(aSkill.Class);
+    info = player.GetFirstSkillInfo();
+    while( info != none ) {
+        i = #localSkills;
+        localSkills[i] = new class'VMSkillInfo';
+        localSkills[i].SkillClassName = info.SkillClassName;
 
         // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
-        if ( localSkills[skillIndex].class == class'SkillWeaponPistol' ) {
-            localSkills[skillIndex].IncLevel( player );
+        if ( info.SkillClassName == 'SkillWeaponPistol' ) {
+            player.SkillPointsAvail -= info.GetNextLevelCost();
+            localSkills[i].Level += 1;
         }
 
-        skillIndex++;
-        aSkill = aSkill.next;
+        info = info.Next;
     }
 }
 
@@ -566,53 +566,33 @@ function CopySkills()
 //
 // Apply our local skills to the real skills in the game.
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function ApplySkills() {
+    local VMSkillInfo info;
+    local int i;
 
-function ApplySkills()
-{
-    local Skill aSkill;
-    local int skillIndex;
+    info = player.GetFirstSkillInfo();
+    while( info != none ) {
+        info.Level = localSkills[i].Level;
 
-    skillIndex = 0;
-
-    while(localSkills[skillIndex] != None)
-    {
-        aSkill = player.SkillSystem.FirstSkill;
-        while(aSkill != None)
-        {
-            if (aSkill.SkillName == localSkills[skillIndex].SkillName)
-            {
-                // Copy the skill
-                aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
-
-                // Vanilla Matters: Apply the level to the subSkill.
-                if ( aSkill.VM_subSkill != None ) {
-                    aSkill.VM_subSkill.CurrentLevel = aSkill.CurrentLevel;
-                }
-
-                break;
-            }
-            aSkill = aSkill.next;
-        }
-        skillIndex++;
+        i += 1;
+        info = info.Next;
     }
 }
 
 // ----------------------------------------------------------------------
 // DestroyLocalSkills()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function DestroyLocalSkills() {
+    local int i, count;
 
-function DestroyLocalSkills()
-{
-    local int skillIndex;
-
-    skillIndex = 0;
-
-    while(localSkills[skillIndex] != None)
-    {
-        localSkills[skillIndex].Destroy();
-        localSkills[skillIndex] = None;
-        skillIndex++;
+    count = #localSkills;
+    for ( i = 0; i < count; i++ ) {
+        CriticalDelete( localSkills[i] );
     }
+
+    localSkills[-2] = localSkills[-2];
 }
 
 // ----------------------------------------------------------------------

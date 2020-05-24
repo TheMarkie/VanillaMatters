@@ -14,13 +14,9 @@ class PersonaScreenSkills extends PersonaScreenBaseWindow;
 
 var PersonaActionButtonWindow btnUpgrade;
 var TileWindow                winTile;
-var Skill                     selectedSkill;
 var PersonaSkillButtonWindow  selectedSkillButton;
 var PersonaHeaderTextWindow   winSkillPoints;
 var PersonaInfoWindow         winInfo;
-
-// Keep track so we can use the arrow keys to navigate
-var PersonaSkillButtonWindow  skillButtons[15];
 
 var localized String SkillsTitleText;
 var localized String UpgradeButtonLabel;
@@ -28,6 +24,10 @@ var localized String PointsNeededHeaderText;
 var localized String SkillLevelHeaderText;
 var localized String SkillPointsHeaderText;
 var localized String SkillUpgradedLevelLabel;
+
+// Vanilla Matters
+var VMSkillInfo selectedSkill;
+var array<PersonaSkillButtonWindow> skillButtons;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -113,7 +113,6 @@ function CreateButtons()
     local PersonaButtonBarWindow winActionButtons;
 
     winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-    //winActionButtons.SetPos(10, 338);
     // Vanilla Matters: Move the button up to fit the new shortened menu.
     winActionButtons.SetPos( 10, 284 );
     winActionButtons.SetWidth(149);
@@ -143,33 +142,24 @@ function CreateSkillsHeaders()
 // ----------------------------------------------------------------------
 // CreateSkillsList()
 // ----------------------------------------------------------------------
-
-function CreateSkillsList()
-{
-    local Skill aSkill;
-    local int   buttonIndex;
+// Vanilla Matters
+function CreateSkillsList() {
+    local VMSkillInfo info;
     local PersonaSkillButtonWindow skillButton;
-    local PersonaSkillButtonWindow firstButton;
 
     // Iterate through the skills, adding them to our list
-    aSkill = player.SkillSystem.FirstSkill;
-    while(aSkill != None)
-    {
-        if (aSkill.SkillName != "")
-        {
-            skillButton = PersonaSkillButtonWindow(winTile.NewChild(Class'PersonaSkillButtonWindow'));
-            skillButton.SetSkill(aSkill);
+    info = player.GetFirstSkillInfo();
+    while( info != none ) {
+        skillButton = PersonaSkillButtonWindow( winTile.NewChild( class'PersonaSkillButtonWindow' ) );
+        skillButton.SetSkill( info );
 
-            skillButtons[buttonIndex++] = skillButton;
+        skillButtons[-1] = skillButton;
 
-            if (firstButton == None)
-                firstButton = skillButton;
-        }
-        aSkill = aSkill.next;
+        info = info.Next;
     }
 
     // Select the first skill
-    SelectSkillButton(skillButton);
+    SelectSkillButton( skillButton );
 }
 
 // ----------------------------------------------------------------------
@@ -275,7 +265,8 @@ function SelectSkillButton(PersonaSkillButtonWindow buttonPressed)
         selectedSkillButton = buttonPressed;
         selectedSkill       = selectedSkillButton.GetSkill();
 
-        selectedSkill.UpdateInfo(winInfo);
+        // Vanilla Matters
+        UpdateInfo( selectedSkill );
         selectedSkillButton.SelectButton(True);
 
         EnableButtons();
@@ -293,7 +284,7 @@ function SelectPreviousSkillButton()
     skillIndex = GetCurrentSkillButtonIndex();
 
     if (--skillIndex < 0)
-        skillIndex = GetSkillButtonCount() - 1;
+        skillIndex = #skillButtons - 1;
 
     skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
 }
@@ -308,7 +299,7 @@ function SelectNextSkillButton()
 
     skillIndex = GetCurrentSkillButtonIndex();
 
-    if (++skillIndex >= GetSkillButtonCount())
+    if (++skillIndex >= #skillButtons)
         skillIndex = 0;
 
     skillButtons[skillIndex].ActivateButton(IK_LeftMouse);
@@ -317,42 +308,25 @@ function SelectNextSkillButton()
 // ----------------------------------------------------------------------
 // GetCurrentSkillButtonIndex()
 // ----------------------------------------------------------------------
-
-function int GetCurrentSkillButtonIndex()
-{
+// Vanilla Matters
+function int GetCurrentSkillButtonIndex() {
     local int buttonIndex;
-    local int returnIndex;
+    local int count;
 
-    returnIndex = -1;
-
-    for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
-    {
-        if (skillButtons[buttonIndex] == selectedSkillButton)
-        {
-            returnIndex = buttonIndex;
-            break;
+    count = #skillButtons;
+    for( buttonIndex = 0; buttonIndex < count; buttonIndex++ ) {
+        if ( skillButtons[buttonIndex] == selectedSkillButton ) {
+            return buttonIndex;
         }
     }
 
-    return returnIndex;
+    return -1;
 }
 
 // ----------------------------------------------------------------------
 // GetSkillButtonCount()
 // ----------------------------------------------------------------------
-
-function int GetSkillButtonCount()
-{
-    local int buttonIndex;
-
-    for(buttonIndex=0; buttonIndex<arrayCount(skillButtons); buttonIndex++)
-    {
-        if (skillButtons[buttonIndex] == None)
-            break;
-    }
-
-    return buttonIndex;
-}
+// Vanilla Matters: Just use #skillButtons
 
 // ----------------------------------------------------------------------
 // UpgradeSkill()
@@ -364,13 +338,15 @@ function UpgradeSkill()
     if ( selectedSkill == None )
         return;
 
-    selectedSkill.IncLevel();
-    selectedSkillButton.RefreshSkillInfo();
+    // Vanilla Matters
+    if ( player.IncreaseSkillLevel( selectedSkill ) ) {
+        selectedSkillButton.RefreshSkillInfo();
 
-    // Send status message
-    winStatus.AddText(Sprintf(SkillUpgradedLevelLabel, selectedSkill.SkillName));
+        // Send status message
+        winStatus.AddText( Sprintf( SkillUpgradedLevelLabel, selectedSkill.GetSkillName() ) );
 
-    winSkillPoints.SetText(player.SkillPointsAvail);
+        winSkillPoints.SetText( player.SkillPointsAvail );
+    }
 
     EnableButtons();
 }
@@ -392,7 +368,8 @@ function EnableButtons()
         // the maximum -and- the user has enough skill points
         // available to upgrade the skill
 
-        btnUpgrade.EnableWindow(selectedSkill.CanAffordToUpgrade(player.SkillPointsAvail));
+        // Vanilla Matters
+        btnUpgrade.EnableWindow( selectedSkill.CanUpgrade( player.SkillPointsAvail ) );
     }
 }
 
@@ -414,6 +391,13 @@ function RefreshWindow(float DeltaTime)
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+
+// Vanilla Matters: Update description window
+function UpdateInfo( VMSkillInfo info ) {
+    winInfo.Clear();
+    winInfo.SetTitle( info.GetSkillName() );
+    winInfo.SetText( info.GetDescription() );
+}
 
 defaultproperties
 {

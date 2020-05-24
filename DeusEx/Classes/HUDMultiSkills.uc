@@ -102,65 +102,58 @@ function DrawLevel( GC gc, float x, float y, int level )
 function SkillMessage( GC gc )
 {
     local bool bShowMsg, bSkillAvail;
-    local Skill askill;
     local float curx, cury, w, h, w2, t, offset;
     local String str;
+
+    // Vanilla Matters
+    local VMSkillInfo info;
 
     if ( curSkillPoints != Player.SkillPointsAvail )
         bNotifySkills = False;
 
     bSkillAvail = False;
-    if ( Player.SkillSystem != None )
-    {
-        askill = Player.SkillSystem.FirstSkill;
-
-        while ( askill != None )
-        {
-            if ( SkillEnviro(askill) == None )
-            {
-                if ( askill.CurrentLevel < 3 )
-                {
-                    if ( Player.SkillPointsAvail >= askill.cost[askill.CurrentLevel] )
-                    {
-                        bSkillAvail = True;
-                        break;
-                    }
-                }
-            }
-            askill = askill.next;
+    // Vanilla Matters
+    info = Player.GetFirstSkillInfo();
+    while ( info != none ) {
+        if ( info.CanUpgrade( Player.SkillPointsAvail ) ) {
+            bSkillAvail = True;
+            break;
         }
-        if ( bSkillAvail )
+
+        info = info.Next;
+    }
+
+    if ( bSkillAvail )
+    {
+        if ( !bNotifySkills )
         {
-            if ( !bNotifySkills )
+            RefreshKey();
+            timeToNotify = Player.Level.Timeseconds + TimeDelay;
+            curSkillPoints = Player.SkillPointsAvail;
+            Player.BuySkillSound( 3 );
+            bNotifySkills = True;
+        }
+        if ( timeToNotify > Player.Level.Timeseconds )
+        {
+            // Flash them to draw a little more attention 1.5 on .5 off
+            if ( (Player.Level.Timeseconds % 1.5) < 1 )
             {
-                RefreshKey();
-                timeToNotify = Player.Level.Timeseconds + TimeDelay;
-                curSkillPoints = Player.SkillPointsAvail;
-                Player.BuySkillSound( 3 );
-                bNotifySkills = True;
-            }
-            if ( timeToNotify > Player.Level.Timeseconds )
-            {
-                // Flash them to draw a little more attention 1.5 on .5 off
-                if ( (Player.Level.Timeseconds % 1.5) < 1 )
-                {
-                    offset = 0;
-                    gc.SetFont(Font'FontMenuSmall_DS');
-                    cury = height * skillMsgY;
-                    curx = width * skillListX;
-                    str = PressString $ curKeyName $ PressEndString;
-                    gc.GetTextExtent( 0, w, h, SkillsAvailableString );
-                    gc.GetTextExtent( 0, w2, h, str );
-                    if ( (curx + ((w-w2)*0.5)) < 0 )
-                        offset = -(curx + ((w-w2)*0.5));
-                    gc.SetTextColor( colLtGreen );
-                    gc.GetTextExtent( 0, w, h, SkillsAvailableString );
-                    gc.DrawText( curx+offset, cury, w, h, SkillsAvailableString );
-                    cury +=  h;
-                    gc.GetTextExtent( 0, w2, h, str );
-                    curx += ((w-w2)*0.5);
-                    gc.DrawText( curx+offset, cury, w2, h, str );
-                }
+                offset = 0;
+                gc.SetFont(Font'FontMenuSmall_DS');
+                cury = height * skillMsgY;
+                curx = width * skillListX;
+                str = PressString $ curKeyName $ PressEndString;
+                gc.GetTextExtent( 0, w, h, SkillsAvailableString );
+                gc.GetTextExtent( 0, w2, h, str );
+                if ( (curx + ((w-w2)*0.5)) < 0 )
+                    offset = -(curx + ((w-w2)*0.5));
+                gc.SetTextColor( colLtGreen );
+                gc.GetTextExtent( 0, w, h, SkillsAvailableString );
+                gc.DrawText( curx+offset, cury, w, h, SkillsAvailableString );
+                cury +=  h;
+                gc.GetTextExtent( 0, w2, h, str );
+                curx += ((w-w2)*0.5);
+                gc.DrawText( curx+offset, cury, w2, h, str );
             }
         }
     }
@@ -172,12 +165,14 @@ function SkillMessage( GC gc )
 
 event DrawWindow(GC gc)
 {
-    local Skill askill;
     local float curx, cury, w, h;
     local String str, costStr;
     local int index;
     local bool bHitSwimming;
     local float barLen, costx, levelx;
+
+    // Vanilla Matters
+    local VMSkillInfo info;
 
     bHitSwimming = False;
 
@@ -186,11 +181,11 @@ event DrawWindow(GC gc)
 
     if ( Player.bBuySkills )
     {
-        if (( Player != None ) && ( Player.SkillSystem != None ))
+        // Vanilla Matters
+        if ( Player != None )
         {
             gc.SetFont(Font'FontMenuSmall_DS');
             index = 1;
-            askill = Player.SkillSystem.FirstSkill;
             cury = height * skillListY;
             curx = width * skillListX;
             costx = width * skillCostX;
@@ -218,58 +213,59 @@ event DrawWindow(GC gc)
             gc.DrawBox( curx, cury, barLen, 1, 0, 0, 1, Texture'Solid');
             cury += (h*0.25);
 
-            while ( askill != None )
-            {
-                if ( SkillEnviro(askill) == None )
-                {
-                    if ( index == 10 )
-                        str = "0. " $ askill.SkillName;
-                    else
-                        str = index $ ". " $ askill.SkillName;
-
-                    gc.GetTextExtent( 0, w, h, str );
-                    if ( askill.CurrentLevel == 3)
-                    {
-                        gc.SetTileColor( colBlue );
-                        gc.SetTextColor( colBlue );
-                        costStr = NAString;
-                    }
-                    else if ( Player.SkillPointsAvail >= askill.cost[askill.CurrentLevel] )
-                    {
-                        if ( askill.CurrentLevel == 2)
-                        {
-                            gc.SetTextColor( colLtGreen );
-                            gc.SetTileColor( colLtGreen );
-                        }
-                        else
-                        {
-                            gc.SetTextColor( colGreen );
-                            gc.SetTileColor( colGreen );
-                        }
-                        costStr = "" $ askill.cost[askill.CurrentLevel];
-                    }
-                    else
-                    {
-                        if ( askill.CurrentLevel == 2)
-                        {
-                            gc.SetTileColor( colLtRed );
-                            gc.SetTextColor( colLtRed );
-                        }
-                        else
-                        {
-                            gc.SetTileColor( colRed );
-                            gc.SetTextColor( colRed );
-                        }
-                        costStr = "" $ askill.cost[askill.CurrentLevel];
-                    }
-                    gc.DrawText( curx, cury, w, h, str );
-                    DrawLevel( gc, levelx, cury, askill.CurrentLevel );
-                    gc.GetTextExtent(   0, w, h, costStr );
-                    gc.DrawText( costx, cury, w, h, costStr );
-                    cury += h;
-                    index += 1;
+            // Vanilla Matters
+            info = player.GetFirstSkillInfo();
+            while ( info != None ) {
+                if ( index == 10 ) {
+                    str = "0. " $ info.GetSkillName();
                 }
-                askill = askill.next;
+                else {
+                    str = index $ ". " $ info.GetSkillName();
+                }
+
+                gc.GetTextExtent( 0, w, h, str );
+                if ( info.Level == 3)
+                {
+                    gc.SetTileColor( colBlue );
+                    gc.SetTextColor( colBlue );
+                    costStr = NAString;
+                }
+                else if ( info.CanUpgrade( Player.SkillPointsAvail ) )
+                {
+                    if ( info.Level == 2)
+                    {
+                        gc.SetTextColor( colLtGreen );
+                        gc.SetTileColor( colLtGreen );
+                    }
+                    else
+                    {
+                        gc.SetTextColor( colGreen );
+                        gc.SetTileColor( colGreen );
+                    }
+                    costStr = "" $ info.GetNextLevelCost();
+                }
+                else
+                {
+                    if ( info.Level == 2)
+                    {
+                        gc.SetTileColor( colLtRed );
+                        gc.SetTextColor( colLtRed );
+                    }
+                    else
+                    {
+                        gc.SetTileColor( colRed );
+                        gc.SetTextColor( colRed );
+                    }
+                    costStr = "" $ info.GetNextLevelCost();
+                }
+                gc.DrawText( curx, cury, w, h, str );
+                DrawLevel( gc, levelx, cury, info.Level );
+                gc.GetTextExtent(   0, w, h, costStr );
+                gc.DrawText( costx, cury, w, h, costStr );
+                cury += h;
+                index += 1;
+
+                info = info.Next;
             }
             gc.SetTileColor( colWhite );
             if ( curKeyName ~= KeyNotBoundString )
@@ -293,59 +289,46 @@ event DrawWindow(GC gc)
 // ----------------------------------------------------------------------
 // GetSkillFromIndex()
 // ----------------------------------------------------------------------
-function Skill GetSkillFromIndex( DeusExPlayer thisPlayer, int index )
-{
-    local Skill askill;
+// Vanilla Matters
+function VMSkillInfo GetSkillFromIndex( DeusExPlayer thisPlayer, int index ) {
     local int curIndex;
+    local VMSkillInfo info;
 
     // Zero indexed, but min element is 1, 0 is 10
-    if ( index == 0 )
+    if ( index == 0 ) {
         index = 9;
-    else
-        index -= 1;
-
-    curIndex = 0;
-    askill = None;
-    if ( thisPlayer != None )
-    {
-        askill = thisPlayer.SkillSystem.FirstSkill;
-        while ( askill != None )
-        {
-            if ( SkillEnviro(askill) == None )
-            {
-                if ( curIndex == index )
-                    return( askill );
-
-                curIndex += 1;
-            }
-            askill = askill.next;
-        }
     }
-    return( askill );
+    else {
+        index -= 1;
+    }
+
+    info = thisPlayer.GetFirstSkillInfo();
+    while ( info != None )
+    {
+        if ( curIndex == index ) {
+            return info;
+        }
+
+        curIndex += 1;
+        info = info.Next;
+    }
+
+    return info;
 }
 
 // ----------------------------------------------------------------------
 // AttemptBuySkill()
 // ----------------------------------------------------------------------
-function bool AttemptBuySkill( DeusExPlayer thisPlayer, Skill askill )
-{
-    if ( askill != None )
-    {
-        // Already master
-        if ( askill.CurrentLevel == 3 )
-        {
-            thisPlayer.BuySkillSound( 1 );
-            return ( False );
-        }
-        else if ( thisPlayer.SkillPointsAvail >= askill.cost[askill.CurrentLevel] )
-        {
+// Vanilla Matters
+function bool AttemptBuySkill( DeusExPlayer thisPlayer, VMSkillInfo info ) {
+    if ( info != None ) {
+        if ( info.CanUpgrade( thisPlayer.SkillPointsAvail ) ) {
             thisPlayer.BuySkillSound( 0 );
-            return( askill.IncLevel() );
+            return thisPlayer.IncreaseSkillLevel( info );
         }
-        else
-        {
+        else {
             thisPlayer.BuySkillSound( 1 );
-            return( False );
+            return false;
         }
     }
 }
@@ -353,22 +336,25 @@ function bool AttemptBuySkill( DeusExPlayer thisPlayer, Skill askill )
 // ----------------------------------------------------------------------
 // OverrideBelt()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum ) {
+    local VMSkillInfo info;
 
-function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum )
-{
-    local Skill askill;
+    if ( !thisPlayer.bBuySkills ) {
+        return false;
+    }
 
-    if ( !thisPlayer.bBuySkills )
-        return False;
+    info = GetSkillFromIndex( thisPlayer, objectNum );
+    if ( AttemptBuySkill( thisPlayer, info ) ) {
+        thisPlayer.bBuySkills = false;      // Got our skill, exit out of menu
+    }
 
-    askill = GetSkillFromIndex( thisPlayer, objectNum );
-    if ( AttemptBuySkill( thisPlayer, askill ) )
-        thisPlayer.bBuySkills = False;      // Got our skill, exit out of menu
-
-    if ( ( objectNum >= 0 ) && ( objectNum <= 10) )
-        return True;
-    else
-        return False;
+    if ( ( objectNum >= 0 ) && ( objectNum <= 10) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 defaultproperties
