@@ -29,7 +29,13 @@ function UpdateButtonStatus()
 {
     local DeusExLevelInfo info;
 
+    // Vanilla Matters
+    local bool disableSaving;
+
     info = player.GetLevelInfo();
+
+    disableSaving = ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
+        || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' );
 
     // Disable the "Save Game" and "Back to Game" menu choices
     // if the player's dead or we're on the logo map.
@@ -38,15 +44,12 @@ function UpdateButtonStatus()
 
    // Don't disable in mp if dead.
 
-    if (((info != None) && (info.MissionNumber < 0)) ||
-       ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))))
+    // Vanilla Matters
+    if ( Player.Level.NetMode == NM_Standalone )
     {
-      if (Player.Level.NetMode == NM_Standalone)
-      {
-         winButtons[1].SetSensitivity(False);
-         winButtons[7].SetSensitivity(False);
-      }
-   }
+        winButtons[1].SetSensitivity( !disableSaving && Player.HasFullForwardPressure() );
+        winButtons[7].SetSensitivity( !disableSaving );
+    }
 
    // Disable the "Save Game", "New Game", "Intro", "Training" and "Load Game" menu choices if in multiplayer
    if (player.Level.Netmode != NM_Standalone)
@@ -61,9 +64,6 @@ function UpdateButtonStatus()
     // Don't allow saving if a datalink is playing
     if (player.dataLinkPlay != None)
         winButtons[1].SetSensitivity(False);
-
-    // Vanilla Matters: Disallow saving if not enough forward pressure.
-    winButtons[1].SetSensitivity( Player.HasFullForwardPressure() );
 
     // Vanilla Matters: Disable multiplayer for now.
     winButtons[8].SetSensitivity( false );

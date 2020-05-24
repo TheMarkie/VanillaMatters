@@ -577,7 +577,7 @@ auto simulated state Flying
 
         // Vanilla Matters: Hurt movers, containers or decos on contact with a multiplier.
         if ( !bExplodes && ( Mover( Wall ) != none || Decoration( Wall ) != none ) && DeusExPlayer( Pawn( Owner ) ) != None && VM_fromWeapon != None ) {
-            Wall.TakeDamage( Damage * VM_fromWeapon.VM_ShotBreaksStuff[VM_fromWeapon.GetWeaponSkillLevel()], Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), damageType );
+            Wall.TakeDamage( Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), damageType );
         }
 
         SpawnEffects(Location, HitNormal, Wall);

@@ -192,13 +192,13 @@ function InitializeSubSystems() {
 
 // Override
 function InitializeSkillSystem() {
-    local int i, count;
+    local int i;
 
     VMSkillSystem = Spawn( class'VMSkillManager', self );
     VMSkillSystem.Initialize();
 
-    count = #StartingSkills;
-    for ( i = 0; i < count; i++ ) {
+    // Start in reverse because we're adding to a linked list.
+    for ( i = #StartingSkills; i >= 0; i-- ) {
         VMSkillSystem.AddSkill( StartingSkills[i] );
     }
 }
