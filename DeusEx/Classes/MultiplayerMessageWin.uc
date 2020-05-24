@@ -139,14 +139,7 @@ function ShowKillerProfile( GC gc )
         gc.GetTextExtent(0,w,h,str);
         gc.DrawText( x, y, w, h, str );
         y += h;
-        str = RelevantSkillString $ kp.activeSkill;
-        gc.GetTextExtent(0,w,h,str);
-        gc.DrawText( x, y, w, h, str );
-        y += h;
-        str = LevelString $ kp.activeSkillLevel;
-        gc.GetTextExtent(0,w,h,str);
-        gc.DrawText( x, y, w, h, str );
-        y += h;
+        // Vanilla Matters: Active weapon skill is not a thing anymore so we don't print activeSkill
         str = ActiveAugsString $ kp.numActiveAugs;
         gc.GetTextExtent(0,w2,h,str);
         gc.DrawText( x, y, w2, h, str );
@@ -174,14 +167,7 @@ function ShowKillerProfile( GC gc )
         gc.GetTextExtent(0,w,h,str);
         gc.DrawText( x, y, w, h, str );
         y += h;
-        str = RelevantSkillString $ kp.myActiveSkill;
-        gc.GetTextExtent(0,w,h,str);
-        gc.DrawText( x, y, w, h, str );
-        y += h;
-        str = LevelString $ kp.myActiveSkillLevel;
-        gc.GetTextExtent(0,w,h,str);
-        gc.DrawText( x, y, w, h, str );
-        y += h;
+        // Vanilla Matters: Active weapon skill is not a thing anymore so we don't print myActiveSkill
         str = ActiveAugsString $ kp.myNumActiveAugs;
         gc.GetTextExtent(0,w2,h,str);
         gc.DrawText( x, y, w2, h, str );

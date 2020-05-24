@@ -257,7 +257,8 @@ function bool RestartPlayer( pawn aPlayer )
     //Clear Augmentations
     PlayerToRestart.AugmentationSystem.ResetAugmentations();
     //Clear Skills
-    PlayerToRestart.SkillSystem.ResetSkills();
+    // Vanilla Matters
+    PlayerToRestart.GetSkillSystem().Reset();
 
     //DEUS_EX AMSD For some reason, reset player to defaults doesn't do all of the spiffy things that it should...
     //so some of it will be doneon the side
@@ -272,7 +273,8 @@ function bool RestartPlayer( pawn aPlayer )
     //Restore Bio-Energy
     PlayerToRestart.Energy = PlayerToRestart.EnergyMax;
     //Restore Skills
-    PlayerToRestart.SkillSystem.CreateSkills(PlayerToRestart);
+    // Vanilla Matters
+    PlayerToRestart.InitializeSkillSystem();
     //Replace with skill points based on game info.
     SetupAbilities(PlayerToRestart);
 

@@ -66,6 +66,10 @@ function Timer()
     local LAM lam;
     local Skill aSkill;
 
+    // Vanilla Matters
+    local VMSkillManager skillSystem;
+    local VMSkillInfo info;
+
     Super.Timer();
 
     if (localURL == "00_TRAINING")
@@ -153,11 +157,10 @@ function Timer()
             !flags.GetBool('MS_SkillIncreased'))
         {
             // max out the rifle skill
-            if (Player.SkillSystem != None)
-            {
-                aSkill = Player.SkillSystem.GetSkillFromClass(class'SkillWeaponRifle');
-                if (aSkill != None)
-                    aSkill.CurrentLevel = 3;
+            // Vanilla Matters
+            skillSystem = Player.GetSkillSystem();
+            if ( skillSystem != none ) {
+                skillSystem.GetSkillInfo( 'SkillWeaponRifle' ).IncreaseToMax( skillSystem.SkillValues );
             }
 
             flags.SetBool('MS_SkillIncreased', True);

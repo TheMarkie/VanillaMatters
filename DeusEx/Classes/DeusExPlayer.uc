@@ -532,17 +532,6 @@ function InitializeSubSystems()
         AugmentationSystem.SetOwner(Self);
     }
 
-    // install the skill system if not found
-    if (SkillSystem == None)
-    {
-        SkillSystem = Spawn(class'SkillManager', Self);
-        SkillSystem.CreateSkills(Self);
-    }
-    else
-    {
-        SkillSystem.SetPlayer(Self);
-    }
-
    if ((Level.Netmode == NM_Standalone) || (!bBeltIsMPInventory))
    {
       // Give the player a keyring
@@ -660,11 +649,6 @@ event TravelPostAccept()
     // are properly initialized and reset.
 
     RestoreSkillPoints();
-
-    if (SkillSystem != None)
-    {
-        SkillSystem.SetPlayer(Self);
-    }
 
     if (AugmentationSystem != None)
     {
@@ -1007,7 +991,8 @@ function StartTrainingMission()
         SaveConfig();
     }
 
-   SkillSystem.ResetSkills();
+    // Vanilla Matters
+    GetSkillSystem().Reset();
     ResetPlayer(True);
     DeleteSaveGameFiles();
     bStartingNewGame = True;
@@ -9209,29 +9194,7 @@ function MultiplayerNotifyMsg( int code, optional int param, optional string str
 //
 function GetSkillInfoFromProj( DeusExPlayer killer, Actor proj )
 {
-    local class<Skill> skillClass;
-
-    if ( proj.IsA('GasGrenade') || proj.IsA('LAM') || proj.IsA('EMPGrenade') || proj.IsA('TearGas'))
-        skillClass = class'SkillDemolition';
-    else if ( proj.IsA('Rocket') || proj.IsA('RocketLAW') || proj.IsA('RocketWP') || proj.IsA('Fireball') || proj.IsA('PlasmaBolt'))
-        skillClass = class'SkillWeaponHeavy';
-    else if ( proj.IsA('Shuriken') )
-        skillClass = class'SkillWeaponLowTech';
-    else if ( proj.IsA('Dart') || proj.IsA('DartFlare') || proj.IsA('DartPoison') )
-        skillClass = class'SkillWeaponRifle';
-    else if ( proj.IsA('HECannister20mm') )
-        skillClass = class'SkillWeaponPistol';
-    else if ( proj.IsA('DeusExDecoration') )
-    {
-        killProfile.activeSkill = NoneString;
-        killProfile.activeSkillLevel = 0;
-        return;
-    }
-    if ( killer.SkillSystem != None )
-    {
-        killProfile.activeSkill = skillClass.Default.skillName;
-        killProfile.activeSkillLevel = killer.SkillSystem.GetSkillLevel(skillClass);
-    }
+    // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set activeSkill
 }
 
 function GetWeaponName( DeusExWeapon w, out String name )
@@ -9301,21 +9264,7 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
 
         // My weapon and skill
         GetWeaponName( DeusExWeapon(inHand), killProfile.myActiveWeapon );
-        if ( DeusExWeapon(inHand) != None )
-        {
-            if ( SkillSystem != None )
-            {
-                askill = SkillSystem.GetSkillFromClass(DeusExWeapon(inHand).GoverningSkill);
-                killProfile.myActiveSkill = askill.skillName;
-                killProfile.myActiveSkillLevel = askill.CurrentLevel;
-            }
-        }
-        else
-        {
-            killProfile.myActiveWeapon = NoneString;
-            killProfile.myActiveSkill = NoneString;
-            killProfile.myActiveSkillLevel = 0;
-        }
+        // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set myActiveSkill
         // Fill in my own active augs
         if ( AugmentationSystem != None )
         {
@@ -9351,21 +9300,15 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
 
     switch( damageType )
     {
+        // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set activeSkill
         case 'AutoShot':
             killProfile.methodStr = WithTheString $ AutoTurret(myTurretKiller).titleString  $ "!";
             killProfile.bTurretKilled = True;
             killProfile.killerLoc = AutoTurret(myTurretKiller).Location;
-            if ( pkiller.SkillSystem != None )
-            {
-                killProfile.activeSkill = class'SkillComputer'.Default.skillName;
-                killProfile.activeSkillLevel = pkiller.SkillSystem.GetSkillLevel(class'SkillComputer');
-            }
             break;
         case 'PoisonEffect':
             killProfile.methodStr = PoisonString $ "!";
             killProfile.bPoisonKilled = True;
-            killProfile.activeSkill = NoneString;
-            killProfile.activeSkillLevel = 0;
             break;
         case 'Burned':
         case 'Flamed':
@@ -9377,8 +9320,6 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
             {
                 killProfile.methodStr = BurnString $ "!";
                 killProfile.bBurnKilled = True;
-                killProfile.activeSkill = NoneString;
-                killProfile.activeSkillLevel = 0;
             }
             break;
     }
@@ -9393,11 +9334,7 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
             {
                 killProfile.bProximityKilled = True;
                 killProfile.killerLoc = LAM(myProjKiller).Location;
-                killProfile.myActiveSkill = class'SkillDemolition'.Default.skillName;
-                if ( SkillSystem != None )
-                    killProfile.myActiveSkillLevel = SkillSystem.GetSkillLevel(class'SkillDemolition');
-                else
-                    killProfile.myActiveSkillLevel = 0;
+                // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set myActiveSkill
             }
             else
                 killProfile.bProjKilled = True;
@@ -9414,9 +9351,7 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
         {
             GetWeaponName( w, wShortString );
             killProfile.methodStr = WithString $ w.itemArticle $ " " $ wShortString $ "!";
-            askill = pkiller.SkillSystem.GetSkillFromClass(w.GoverningSkill);
-            killProfile.activeSkill = askill.skillName;
-            killProfile.activeSkillLevel = askill.CurrentLevel;
+            // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set activeSkill
         }
         else
             log("Warning: Failed to determine killer method killer:"$killer$" damage:"$damage$" damageType:"$damageType$" " );
@@ -10872,7 +10807,7 @@ exec function AllSkills()
         return;
 
     AllSkillPoints();
-    SkillSystem.AddAllSkills();
+    GetSkillSystem().IncreaseAllToMax();
 }
 
 // ----------------------------------------------------------------------
@@ -11187,17 +11122,7 @@ exec function DXDumpInfo()
 
     log("");
     log("  Skills:");
-    if (SkillSystem != None)
-    {
-        skill = SkillSystem.FirstSkill;
-        while (skill != None)
-        {
-            if (skill.SkillName != "")
-                log("    "$skill.SkillName$" - "$skill.skillLevelStrings[skill.CurrentLevel]);
-
-            skill = skill.next;
-        }
-    }
+    // Vanilla Matters TODO: Add support for new skill system
 
     bHasAugs = False;
     log("");
@@ -12284,6 +12209,9 @@ function InitializeSkillSystem();
 function VMSkillManager GetSkillSystem() {
     return none;
 }
+function VMSkillInfo GetFirstSkillInfo() {
+    return none;
+}
 
 function bool IncreaseSkillLevel( VMSkillInfo info ) {
     return false;
@@ -12296,6 +12224,17 @@ function float GetSkillValue( string name, optional float defaultValue ) {
     return defaultValue;
 }
 function int GetSkillLevel( name name ) {
+    return -1;
+}
+
+//==============================================
+// Aug interface
+//==============================================
+function float GetAugValue( class<Augmentation> class ) {
+    return -1;
+}
+
+function int GetAugLevel( class<Augmentation> class ) {
     return -1;
 }
 

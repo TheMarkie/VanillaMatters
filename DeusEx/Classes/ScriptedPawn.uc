@@ -3170,7 +3170,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
                 // Vanilla Matters: Allow all weapons to be able to headshot equally.
                 // VM: Use custom headshot multiplier property.
                 if ( VM_hitBy != none ) {
-                    headshotMult = VM_hitBy.VM_HeadshotMult[VM_hitBy.GetWeaponSkillLevel()];
+                    headshotMult = VM_hitBy.VM_HeadshotMult;
                 }
                 else {
                     // Vanilla Matters: Reduces base headshot mult to 4 to make it consistent with the mults to other bodyparts.
