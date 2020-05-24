@@ -38,10 +38,7 @@ defaultproperties
      mpBaseAccuracy=1.000000
      mpAccurateRange=96
      mpMaxRange=96
-     VM_ShotBreaksStuff(0)=2.000000
-     VM_ShotBreaksStuff(1)=2.000000
-     VM_ShotBreaksStuff(2)=2.000000
-     VM_ShotBreaksStuff(3)=2.000000
+     VM_MoverDamageMult=2.000000
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=2
      AmmoName=Class'DeusEx.AmmoNone'

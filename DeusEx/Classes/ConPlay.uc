@@ -1192,23 +1192,8 @@ function EEventAction SetupEventChoice( ConEventChoice event, out String nextLab
 
         if ( player.CheckFlagRefs( choice.flagRef ) )
         {
-            // Now check the skills
-            if ( choice.skillNeeded != None )
-            {
-                // Does player have it?
-                if ( player.SkillSystem.IsSkilled(choice.skillNeeded, choice.skillLevelNeeded) )
-                {
-                    // Display the choice with some feedback!
-                    conWinThird.DisplaySkillChoice( choice );
-                    choiceCount++;
-                }
-            }
-            else
-            {
-                // Plain old vanilla choice
-                conWinThird.DisplayChoice(choice);
-                choiceCount++;
-            }
+            conWinThird.DisplayChoice(choice);
+            choiceCount++;
         }
 
         choice = choice.nextChoice;

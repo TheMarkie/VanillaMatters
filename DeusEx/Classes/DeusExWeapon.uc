@@ -208,11 +208,11 @@ var() bool      VM_isGrenade;                   // Internal flag to indicate tha
 
 var() bool      VM_bAlwaysAccurate;             // Accuracy does not affect this weapon if set to true.
 var() bool      VM_pumpAction;                  // Reloads one by one.
-var() int       VM_ShotCount[4];                // How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
+var() int       VM_ShotCount;                   // How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
 
-var() float     VM_ShotBreaksStuff[4];          // Make projectiles break doors/lids with a multiplier. Trace weapons already do, but use this for multiplier.
+var() float     VM_MoverDamageMult;             // Damage multiplier against movers like doors and lids.
 
-var() float     VM_HeadshotMult[4];
+var() float     VM_HeadshotMult;
 
 var() float     VM_baseStandingRate;            // Base standing bonus building rate.
 var() float     VM_standingBonus;               // Max accuracy bonus for standing still.
@@ -745,7 +745,7 @@ simulated function float CalculateAccuracy() {
     }
 
     // Vanilla Matters: Weapons with shot count higher than 1 will be capped below 100% so that all the shots don't go in one place.
-    accuracy = FClamp( accuracy, ( VM_ShotCount[GetWeaponSkillLevel()] - 1 ) * 0.05, 2 );
+    accuracy = FClamp( accuracy, ( VM_ShotCount - 1 ) * 0.05, 2 );
 
     if ( Level.NetMode != NM_Standalone ) {
         accuracy = FMax( accuracy, MinWeaponAcc );
@@ -3198,8 +3198,8 @@ simulated function bool UpdateInfo(Object winObject)
         str = str @ "=" @ FormatFloatString( dmg * mod, 0.1 );
 
         // Vanilla Matters: Display the same number of shots afterwards.
-        if ( Default.VM_ShotCount[weaponSkillLevel] > 1 ) {
-            str = str $ "x" $ Default.VM_ShotCount[weaponSkillLevel];
+        if ( Default.VM_ShotCount > 1 ) {
+            str = str $ "x" $ Default.VM_ShotCount;
         }
     }
 
@@ -3213,11 +3213,11 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     // Vanilla Matters: Display headshot multiplier.
-    str = "x" $ FormatFloatString( Default.VM_HeadshotMult[0], 0.1 );
-    mod = ( Default.VM_HeadshotMult[weaponSkillLevel] / Default.VM_HeadshotMult[0] ) - 1;
+    str = "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
+    mod = ( Default.VM_HeadshotMult / Default.VM_HeadshotMult ) - 1;
 
     if ( mod != 0 ) {
-        str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult[weaponSkillLevel], 0.1 );
+        str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
     }
 
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str, mod != 0 );
@@ -4342,18 +4342,9 @@ defaultproperties
      msgInfoRoundsPerSec="RDS/SEC"
      msgInfoSkill="Skill:"
      msgInfoWeaponStats="Weapon Stats:"
-     VM_ShotCount(0)=1
-     VM_ShotCount(1)=1
-     VM_ShotCount(2)=1
-     VM_ShotCount(3)=1
-     VM_ShotBreaksStuff(0)=1.000000
-     VM_ShotBreaksStuff(1)=1.000000
-     VM_ShotBreaksStuff(2)=1.000000
-     VM_ShotBreaksStuff(3)=1.000000
-     VM_HeadshotMult(0)=4.000000
-     VM_HeadshotMult(1)=4.000000
-     VM_HeadshotMult(2)=4.000000
-     VM_HeadshotMult(3)=4.000000
+     VM_ShotCount=1
+     VM_MoverDamageMult=1.000000
+     VM_HeadshotMult=4.000000
      VM_baseStandingRate=2.500000
      VM_standingBonus=0.200000
      VM_recoilRate=2.000000

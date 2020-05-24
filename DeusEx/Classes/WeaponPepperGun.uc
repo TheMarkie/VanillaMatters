@@ -82,10 +82,7 @@ defaultproperties
      mpBaseAccuracy=0.700000
      mpAccurateRange=100
      mpMaxRange=100
-     VM_HeadshotMult(0)=1.000000
-     VM_HeadshotMult(1)=1.000000
-     VM_HeadshotMult(2)=1.000000
-     VM_HeadshotMult(3)=1.000000
+     VM_HeadshotMult=1.000000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=4
      AmmoName=Class'DeusEx.AmmoPepper'

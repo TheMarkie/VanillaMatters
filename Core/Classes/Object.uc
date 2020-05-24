@@ -394,6 +394,9 @@ final function string Sprintf   (string fmt,
 //============================================================================================
 // Vanilla Matters
 //============================================================================================
+final function string GetStringClassName() {
+    return string( Class.Name );
+}
 
 //==============================================
 // Utilities

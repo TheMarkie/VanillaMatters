@@ -43,10 +43,7 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
-     VM_ShotCount(0)=4
-     VM_ShotCount(1)=4
-     VM_ShotCount(2)=4
-     VM_ShotCount(3)=4
+     VM_ShotCount=4
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.AmmoShell'

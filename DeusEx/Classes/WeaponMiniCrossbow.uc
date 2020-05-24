@@ -78,10 +78,7 @@ defaultproperties
      mpPickupAmmoCount=6
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadTime=True
-     VM_HeadshotMult(0)=5.000000
-     VM_HeadshotMult(1)=5.000000
-     VM_HeadshotMult(2)=5.000000
-     VM_HeadshotMult(3)=5.000000
+     VM_HeadshotMult=5.000000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoDartPoison'
      ReloadCount=4

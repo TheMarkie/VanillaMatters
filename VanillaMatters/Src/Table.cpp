@@ -41,7 +41,9 @@ void UTable##name::execRemove( FFrame& Stack, RESULT_DECL ) { \
     Count--; \
 } \
 void UTable##name::execClear( FFrame& Stack, RESULT_DECL ) { \
-    _map.empty(); \
+    P_FINISH \
+\
+    _map.clear(); \
     Count = 0; \
 } \
 \
