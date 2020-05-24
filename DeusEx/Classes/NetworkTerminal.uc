@@ -17,7 +17,6 @@ var Class<ComputerUIWindow> FirstScreen;    // First screen to push
 var float loginTime;            // time that the user logged in
 var float detectionTime;        // total time a user may be logged on
 var int   kickTimerID;          // timer ID for kicking the user off
-var int   skillLevel;           // player's computer skill level (0-3)
 var bool  bHacked;              // this computer has been hacked
 var bool  bNoHack;              // this computer has been purposely not hacked
 var bool  bUsesHackWindow;      // True if Hack Window created by default.
@@ -351,16 +350,16 @@ function CreateHackWindow()
     local Float hackTime;
     local Float skillLevelValue;
 
-    skillLevelValue = player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
-    skillLevel      = player.SkillSystem.GetSkillLevel(class'SkillComputer');
+    skillLevelValue = player.GetSkillValue( "HackingTimeMult" );
 
     // Check to see if the player is skilled in Hacking before
     // creating the window
-    if ((skillLevel > 0) && (bUsesHackWindow))
+    // Vanilla Matters: Base hackability on HackingTime instead of skill level.
+    if ( skillLevelValue > 0 && bUsesHackWindow )
     {
         // Base the detection and hack time on the skill level
         // Vanilla Matters: Change hack time formula
-        hackTime = detectionTime / skillLevelValue;
+        hackTime = FMax( 5 - skillLevelValue, 1 );
         detectionTime *= skillLevelValue;
 
         // First create the shadow window
@@ -530,20 +529,12 @@ function int GetUserIndex()
 // ----------------------------------------------------------------------
 // SetSkillLevel()
 // ----------------------------------------------------------------------
-
-function SetSkillLevel(int newSkillLevel)
-{
-    skillLevel = newSkillLevel;
-}
+// Vanilla Matters: No longer used
 
 // ----------------------------------------------------------------------
 // GetSkillLevel()
 // ----------------------------------------------------------------------
-
-function int GetSkillLevel()
-{
-    return skillLevel;
-}
+// Vanilla Matters: No longer used
 
 // ----------------------------------------------------------------------
 // ComputerHacked()
@@ -586,19 +577,15 @@ function HackDetected(optional bool bDamageOnly)
    // DEUS_EX AMSD In multiplayer, don't damage.
    if (Player.Level.NetMode == NM_Standalone)
    {
-      //player.TakeDamage(200 - 50 * skillLevel, None, vect(0,0,0), vect(0,0,0), 'EMP');
-
-      // Vanilla Matters: Change the formula for a smoother progression. Player takes 100 damage on trained, 50 on advanced, and 0 on master.
-      player.TakeDamage( 150 - ( 50 * skillLevel ), None, vect( 0,0,0 ), vect( 0,0,0 ), 'EMP' );
+      // Vanilla Matters: EMP damage no longer scales
+      player.TakeDamage( 100, None, vect( 0,0,0 ), vect( 0,0,0 ), 'EMP' );
 
       PlaySound(sound'ProdFire');
    }
    else
    {
-      //player.PunishDetection(200 - 50 * skillLevel);
-
-      // Vanilla Matters: Sync the formula with multiplayer.
-      player.PunishDetection( 150 - ( 50 * skillLevel ) );
+      // Vanilla Matters
+      player.PunishDetection( 100 );
 
       PlaySound(sound'ProdFire');
    }

@@ -45,7 +45,8 @@ function Frob(Actor Frobber, Inventory frobWith)
         if (bLockedOut)
         {
             // computer skill shortens the lockout duration
-            delay = lockoutDelay / Player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
+            // Vanilla Matters: Skill no longer affects lockout delay
+            delay = lockoutDelay;
 
             elapsed = Level.TimeSeconds - lockoutTime;
             if (elapsed < delay)

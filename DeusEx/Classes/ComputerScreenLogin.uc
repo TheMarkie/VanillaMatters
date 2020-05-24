@@ -209,9 +209,6 @@ function ProcessLogin()
         // set the user's access level if it's higher than the player's
         userSkillLevel = Computers(compOwner).GetAccessLevel(userIndex);
 
-        if (winTerm.GetSkillLevel() < userSkillLevel)
-            winTerm.SetSkillLevel(userSkillLevel);
-
         CloseScreen("LOGIN");
     }
     else

@@ -16,7 +16,6 @@ var() bool              bHighlight;             // should this door highlight wh
 var() bool              bFrobbable;             // this door can be frobbed
 
 var bool                bPicking;               // a lockpick is currently being used
-var float               pickValue;              // how much this lockpick is currently picking
 var float               pickTime;               // how much time it takes to use a single lockpick
 var int                 numPicks;               // how many times to reduce hack strength
 var float            TicksSinceLastPick; //num ticks done since last pickstrength update(includes partials)
@@ -80,7 +79,7 @@ replication
 {
    //Variables server to client
    reliable if (Role == ROLE_Authority)
-      bLocked, pickValue, lockStrength, doorStrength;
+      bLocked, lockStrength, doorStrength;
 }
 
 //
@@ -399,26 +398,21 @@ function Timer()
     {
         curPick.PlayUseAnim();
 
-      // TicksSinceLastPick += (Level.TimeSeconds - LastTickTime) * 10;
-      // LastTickTime = Level.TimeSeconds;
-      //TicksSinceLastPick = TicksSinceLastPick + 1;
+        // Vanilla Matters: Fix the infinite lockpick bug.
+        TicksSinceLastPick = TicksSinceLastPick + ( LastTickTime * 10 );
+        LastTickTime = 0;
 
-      // Vanilla Matters: Fix the infinite lockpick bug.
-      TicksSinceLastPick = TicksSinceLastPick + ( LastTickTime * 10 );
-      LastTickTime = 0;
+        // VM: It should check for remaining picks.
+        while ( TicksSinceLastPick > TicksPerPick && numPicks > 0 )
+        {
+            numPicks--;
+            lockStrength -= 0.01;
+            TicksSinceLastPick = TicksSinceLastPick - TicksPerPick;
+            lockStrength = FClamp(lockStrength, 0.0, 1.0);
 
-      //while (TicksSinceLastPick > TicksPerPick)
-      // VM: It should check for remaining picks.
-      while ( TicksSinceLastPick > TicksPerPick && numPicks > 0 )
-      {
-         numPicks--;
-         lockStrength -= 0.01;
-         TicksSinceLastPick = TicksSinceLastPick - TicksPerPick;
-         lockStrength = FClamp(lockStrength, 0.0, 1.0);
-
-        // Vanilla Matters: Add in FP for lockpicking.
-        pickPlayer.AddForwardPressure( 1, 'Unlocking' );
-      }
+            // Vanilla Matters: Add in FP for lockpicking.
+            pickPlayer.AddForwardPressure( 1, 'Unlocking' );
+        }
 
         // pick all like-tagged movers at once (for double doors and such)
         if ((Tag != '') && (Tag != 'DeusExMover'))
@@ -431,7 +425,7 @@ function Timer()
         {
             lockStrength = 0.0;
             bLocked = False;
-         TimeSinceReset = 0.0;
+            TimeSinceReset = 0.0;
 
             // unlock all like-tagged movers at once (for double doors and such)
             if ((Tag != '') && (Tag != 'DeusExMover'))
@@ -600,31 +594,26 @@ function Frob(Actor Frobber, Inventory frobWith)
         if (frobWith != None)
         {
             // check for the use of lockpicks
-            if (bPickable && frobWith.IsA('Lockpick') && (Player.SkillSystem != None))
+            if (bPickable && frobWith.IsA('Lockpick'))
             {
-                if (bLocked)
-                {
+                // Vanilla Matters
+                if ( bLocked ) {
                     // alert NPCs that I'm messing with stuff
-                    AIStartEvent('MegaFutz', EAITYPE_Visual);
+                    AIStartEvent( 'MegaFutz', EAITYPE_Visual );
 
-                    pickValue = Player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking');
                     pickPlayer = Player;
-                    curPick = LockPick(frobWith);
-                    curPick.bBeingUsed = True;
+                    curPick = Lockpick( frobWith );
+                    curPick.bBeingUsed = true;
                     curPick.PlayUseAnim();
-                    bPicking = True;
-               //DEUS_EX AMSD In multiplayer, slow it down further at low skill levels
-               numPicks = PickValue * 100;
-               if (Level.Netmode != NM_Standalone)
-                  pickTime = default.pickTime / (pickValue * pickValue);
-               TicksPerPick = (PickTime * 10.0) / numPicks;
-               //LastTickTime = Level.TimeSeconds;
+                    bPicking = true;
+                    numPicks = int( FMax( Player.GetSkillValue( "Lockpicking" ), 1 ) );
+                    TicksPerPick = ( pickTime * 10.0 ) / numPicks;
 
-               // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
-               LastTickTime = 0;
+                    // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
+                    LastTickTime = 0;
 
-               TicksSinceLastPick = 0;
-                    SetTimer(0.1, True);
+                    TicksSinceLastPick = 0;
+                    SetTimer( 0.1, true );
                     msg = msgPicking;
                 }
                 else

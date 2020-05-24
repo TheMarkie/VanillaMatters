@@ -515,11 +515,13 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 
    // DEUS_EX AMSD in multiplayer, all hackers can affect turrets
 
-   if (Player.Level.NetMode == NM_Standalone)
-   {
-      if ((winTerm.GetSkillLevel()  < 2) && (winTerm.bHacked))
-         choiceWindows[3].DisableChoice();
-   }
+    if (Player.Level.NetMode == NM_Standalone)
+    {
+        // Vanilla Matters
+        if ( player.GetSkillLevel( 'SkillComputer' ) < 2 && winTerm.bHacked ) {
+            choiceWindows[3].DisableChoice();
+        }
+    }
 }
 
 // -----------------------------------------------------------------------

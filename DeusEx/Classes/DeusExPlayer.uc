@@ -3073,13 +3073,10 @@ function int CalculateSkillHealAmount(int baseHealPoints)
     local int adjustedHealAmount;
 
     // check skill use
-    if (SkillSystem != None)
-    {
-        mult = SkillSystem.GetSkillLevelValue(class'SkillMedicine');
+    mult = GetSkillValue( "HealingBonus" );
 
-        // Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
-        adjustedHealAmount = baseHealPoints + mult;
-    }
+    // Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
+    adjustedHealAmount = baseHealPoints + mult;
 
     return adjustedHealAmount;
 }

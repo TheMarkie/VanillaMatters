@@ -291,7 +291,8 @@ function DrawWindow(GC gc)
                 // draw the absolute number of lockpicks on top of the colored bar
                 if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
                 {
-                    numTools = int((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')) + 0.99);
+                    // Vanilla Matters
+                    numTools = int( ( ( dxMover.lockStrength * 100.0 ) / FMax( Player.GetSkillValue( "Lockpicking" ), 1 ) ) + 0.99 );
                     if (numTools == 1)
                         strInfo = numTools @ msgPick;
                     else
@@ -374,7 +375,8 @@ function DrawWindow(GC gc)
                 // draw the absolute number of multitools on top of the colored bar
                 if ((device.bHackable) && (device.hackStrength != 0.0))
                 {
-                    numTools = int((device.hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')) + 0.99);
+                    // Vanilla Matters
+                    numTools = int( ( ( device.hackStrength * 100.0 ) / FMax( Player.GetSkillValue( "Multitooling" ), 1 ) ) + 0.99 );
                     if (numTools == 1)
                         strInfo = numTools @ msgTool;
                     else

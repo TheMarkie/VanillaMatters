@@ -10,7 +10,6 @@ var() float          initialhackStrength; // for multiplayer hack resets, this i
 var() name              UnTriggerEvent[4];      // event to UnTrigger when hacked
 
 var bool                   bHacking;                // a multitool is currently being used
-var float               hackValue;              // how much this multitool is currently hacking
 var float               hackTime;               // how much time it takes to use a single multitool
 var int                 numHacks;               // how many times to reduce hack strength
 var float            TicksSinceLastHack;   // num 0.1 second ticks done since last hackstrength update(includes partials)
@@ -35,7 +34,7 @@ replication
 {
    //server to client variables
    reliable if (Role == ROLE_Authority)
-      bHackable, hackStrength, hackValue;
+      bHackable, hackStrength;
 }
 
 function PostBeginPlay()
@@ -78,21 +77,21 @@ function Timer()
     {
         curTool.PlayUseAnim();
 
-      // Vanilla Matters: Fix the infinite multitool bug.
-      TicksSinceLastHack = TicksSinceLastHack + ( LastTickTime * 10 );
-      LastTickTime = 0;
+        // Vanilla Matters: Fix the infinite multitool bug.
+        TicksSinceLastHack = TicksSinceLastHack + ( LastTickTime * 10 );
+        LastTickTime = 0;
 
-      // VM: No idea why the game doesn't check for how many multitool left.
-      while ( TicksSinceLastHack > TicksPerHack && numHacks > 0 )
-      {
-         numHacks--;
-         hackStrength -= 0.01;
-         TicksSinceLastHack = TicksSinceLastHack - TicksPerHack;
-         hackStrength = FClamp(hackStrength, 0.0, 1.0);
+        // VM: No idea why the game doesn't check for how many multitool left.
+        while ( TicksSinceLastHack > TicksPerHack && numHacks > 0 )
+        {
+            numHacks--;
+            hackStrength -= 0.01;
+            TicksSinceLastHack = TicksSinceLastHack - TicksPerHack;
+            hackStrength = FClamp(hackStrength, 0.0, 1.0);
 
-        // Vanilla Matters: Add in FP rate for bypassing.
-        hackPlayer.AddForwardPressure( 1, 'Unlocking' );
-      }
+            // Vanilla Matters: Add in FP rate for bypassing.
+            hackPlayer.AddForwardPressure( 1, 'Unlocking' );
+        }
 
         // did we hack it?
         if (hackStrength ~= 0.0)
@@ -202,30 +201,27 @@ function Frob(Actor Frobber, Inventory frobWith)
         if (frobWith != None)
         {
             // check for the use of multitools
-            if (bHackable && frobWith.IsA('Multitool') && (Player.SkillSystem != None))
+            if (bHackable && frobWith.IsA('Multitool'))
             {
-                if (hackStrength > 0.0)
-                {
+                // Vanilla Matters
+                if ( hackStrength > 0 ) {
                     // alert NPCs that I'm messing with stuff
-                    AIStartEvent('MegaFutz', EAITYPE_Visual);
+                    AIStartEvent( 'MegaFutz', EAITYPE_Visual );
 
-                    hackValue = Player.SkillSystem.GetSkillLevelValue(class'SkillTech');
                     hackPlayer = Player;
-                    curTool = Multitool(frobWith);
-                    curTool.bBeingUsed = True;
+                    curTool = Multitool( frobWith );
+                    curTool.bBeingUsed = true;
                     curTool.PlayUseAnim();
-                    bHacking = True;
+                    bHacking = true;
                     //Number of percentage points to remove
-                    numHacks = hackValue * 100;
-                    if (Level.Netmode != NM_Standalone)
-                        hackTime = default.hackTime / (hackValue * hackValue);
-                    TicksPerHack = (hackTime * 10.0) / numHacks;
+                    numHacks = int( FMax( Player.GetSkillValue( "Multitooling" ), 1 ) );
+                    TicksPerHack = ( hackTime * 10.0 ) / numHacks;
 
-               // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
-               LastTickTime = 0;
+                    // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.
+                    LastTickTime = 0;
 
-               TicksSinceLastHack = 0;
-               SetTimer(0.1, True);
+                    TicksSinceLastHack = 0;
+                    SetTimer( 0.1, true );
                     msg = msgHacking;
                 }
                 else

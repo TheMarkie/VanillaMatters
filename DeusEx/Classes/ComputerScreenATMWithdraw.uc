@@ -108,7 +108,8 @@ function SetCompOwner(ElectronicDevices newCompOwner)
     Super.SetCompOwner(newCompOwner);
     atmowner = ATM(compOwner);
 
-    balanceModifier = winTerm.GetSkillLevel() * 0.5;
+    // Vanilla Matters: Hacking skill no longer affects balance
+    balanceModifier = 1;
     UpdateBalance();
 
     if (winTerm.bHacked)

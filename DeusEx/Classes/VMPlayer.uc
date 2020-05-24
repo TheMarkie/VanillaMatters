@@ -1429,6 +1429,7 @@ function bool DecreaseSkillLevel( VMSkillInfo info ) {
 
     return false;
 }
+
 // Override
 function float GetSkillValue( string name, optional float defaultValue ) {
     if ( VMSkillSystem != none ) {
