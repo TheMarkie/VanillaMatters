@@ -413,7 +413,7 @@ defaultproperties
      AccelRate=1000.000000
      JumpZ=300.000000
      BaseEyeHeight=40.000000
-     UnderWaterTime=20.000000
+     UnderWaterTime=15.000000
      CollisionRadius=20.000000
      CollisionHeight=47.500000
      Mass=150.000000

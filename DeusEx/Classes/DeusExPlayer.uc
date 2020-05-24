@@ -3795,7 +3795,7 @@ state PlayerFlying
 
 event HeadZoneChange(ZoneInfo newHeadZone)
 {
-    local float mult, augLevel;
+    local float augLevel;
 
     // hack to get the zone's ambientsound working until Tim fixes it
     if (newHeadZone.AmbientSound != None)
@@ -3818,15 +3818,11 @@ event HeadZoneChange(ZoneInfo newHeadZone)
         lastbDuck = 0;
         Velocity = vect(0,0,0);
         Acceleration = vect(0,0,0);
-        mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-
-        // Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
-        swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
-
-        swimTimer = swimDuration;
 
         // Vanilla Matters
-        WaterSpeed = Default.WaterSpeed * mult;
+        swimDuration = UnderWaterTime + GetSkillValue( "LungCapacity" ) + augLevel;
+        swimTimer = swimDuration;
+        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( "SwimmingSpeedMult" ) );
     }
 
     Super.HeadZoneChange(newHeadZone);
@@ -3931,22 +3927,16 @@ state PlayerSwimming
         // set us to be two feet high
         SetBasedPawnSize(Default.CollisionRadius, 16);
 
-        // Vanilla Matters: Move out of the if so we can use it twice.
+        // Vanilla Matters
         if ( AugmentationSystem != None ) {
             augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
         }
 
-        // get our skill info
-        mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-
-        // Vanilla Matters: SkillSwimming and AugAqualung now both add a flat bonus.
-        swimDuration = UnderWaterTime + ( SkillSystem.GetSkillLevel( class'SkillSwimming' ) * 5 ) + augLevel;
-
-        swimTimer = swimDuration;
-        swimBubbleTimer = 0;
-
         // Vanilla Matters
-        WaterSpeed = Default.WaterSpeed * mult;
+        swimDuration = UnderWaterTime + GetSkillValue( "LungCapacity" ) + augLevel;
+        swimTimer = swimDuration;
+        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( "SwimmingSpeedMult" ) );
+        swimBubbleTimer = 0;
 
         Super.BeginState();
     }
@@ -9849,8 +9839,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 //          if ((suit.Owner == Self) && suit.bActive)
       if (UsingChargedPickup(class'HazMatSuit'))
             {
-                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-                newDamage *= 0.75 * skillLevel;
+                skillLevel = GetSkillSystem().GetValue( "HazMatSuitResistance", 1 );
+                newDamage *= class'HazMatSuit'.default.VM_DamageResistance * skillLevel;
             }
     }
 
@@ -9860,8 +9850,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         // since they aren't in the inventory anymore after they are used
       if (UsingChargedPickup(class'BallisticArmor'))
             {
-                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-                newDamage *= 0.5 * skillLevel;
+                skillLevel = GetSkillSystem().GetValue( "BallisticArmorResistance", 1 );
+                newDamage *= class'BallisticArmor'.default.VM_DamageResistance * skillLevel;
             }
     }
 

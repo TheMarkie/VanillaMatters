@@ -20,11 +20,12 @@ var() float VM_DamageResistance;    // How much base resistance it provides, doe
 
 var travel int VM_actualCharge;     // To keep track of the actual charge after level scaling.
 
-var localized String VM_msgIsActive;
-var localized String VM_msgInfoToggle;
-var localized String VM_msgDamageResistance;
-var localized String VM_msgInfoYes;
-var localized String VM_msgInfoNo;
+var localized string VM_msgIsActive;
+var localized string VM_msgInfoToggle;
+var localized string VM_msgInfoSecondsLabel;
+var localized string VM_msgDamageResistance;
+var localized string VM_msgInfoYes;
+var localized string VM_msgInfoNo;
 
 // ----------------------------------------------------------------------
 // UpdateInfo()
@@ -51,18 +52,21 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.SetTitle(itemName);
         winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
 
-        outText = ChargeRemainingLabel @ Int(GetCurrentCharge()) $ "%";
+        // Vanilla Matters
+        UpdateCharge( player );
+
+        outText = ChargeRemainingLabel @ int( GetChargeInSeconds() ) @ VM_msgInfoSecondsLabel;
         winInfo.AppendText(outText);
 
         // Vanilla Matters: Add in damage resistance value if there's any.
-        if ( VM_DamageResistance != 0.0 ) {
-            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - VM_DamageResistance ) * 100, 0.1 ) $ "% " );
+        if ( default.VM_DamageResistance != 0.0 ) {
+            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - default.VM_DamageResistance ) * 100, 0.1 ) $ "% " );
 
-            skillLevelValue = player.SkillSystem.GetSkillLevelValue( class'SkillEnviro' );
+            skillLevelValue = player.GetSkillValue( GetStringClassName() $ "Resistance" );
 
-            damageResistance = ( 1 - ( VM_DamageResistance * skillLevelValue ) ) * 100.0;
+            damageResistance = ( 1 - ( default.VM_DamageResistance * skillLevelValue ) ) * 100.0;
 
-            if ( damageResistance != VM_DamageResistance ) {
+            if ( damageResistance != default.VM_DamageResistance ) {
                 winInfo.AppendText( class'DeusExWeapon'.static.BuildPercentString( 1 - skillLevelValue ) @ "=" @ class'DeusExWeapon'.static.FormatFloatString( damageResistance, 0.1 ) $ "%" );
             }
         }
@@ -90,16 +94,42 @@ simulated function bool UpdateInfo(Object winObject)
 // ----------------------------------------------------------------------
 // GetCurrentCharge()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function UpdateCharge( DeusExPlayer player ) {
+    local int newCharge;
+
+    newCharge = Default.Charge * ( 1 + Player.GetSkillValue( "EquipmentChargeMult" ) );
+    newCharge = newCharge * ( 1 + Player.GetSkillValue( GetStringClassName() $ "ChargeMult" ) );
+
+    // VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
+    if ( newCharge > VM_actualCharge ) {
+        // VM: If actualCharge is 0, it means this is the first time the player's activated the pickup, so we do some init.
+        if ( VM_actualCharge <= 0 ) {
+            VM_actualCharge = newCharge;
+            Charge = newCharge;
+        }
+        // VM: Scale up Charge proportionally.
+        else {
+            Charge = Charge * ( float( newCharge ) / VM_actualCharge );
+            VM_actualCharge = newCharge;
+        }
+    }
+}
 
 simulated function Float GetCurrentCharge()
 {
     // Vanilla Matters: Use actualCharge, since if Charge exceeds the respective default property, the displayed green bar is always full.
     if ( VM_actualCharge > 0 ) {
-        return ( float( Charge ) / float( VM_actualCharge ) ) * 100.0;
+        return ( float( Charge ) / VM_actualCharge ) * 100.0;
     }
     else {
-        return ( float( Charge ) / float( Default.Charge ) ) * 100.0;
+        return ( float( Charge ) / Default.Charge ) * 100.0;
     }
+}
+
+// Vanilla Matters
+function float GetChargeInSeconds() {
+    return Charge / 10.0;
 }
 
 // ----------------------------------------------------------------------
@@ -182,30 +212,6 @@ simulated function bool IsActive()
 
 function ChargedPickupUpdate(DeusExPlayer Player)
 {
-}
-
-// ----------------------------------------------------------------------
-// CalcChargeDrain()
-// ----------------------------------------------------------------------
-
-simulated function int CalcChargeDrain(DeusExPlayer Player)
-{
-    local float skillValue;
-    local float drain;
-
-    // Vanilla Matters: Return nothing so that no charge is deducted from the pool.
-    if ( !VM_bDraining ) {
-        return 0;
-    }
-
-    drain = 4.0;
-    skillValue = 1.0;
-
-    if (skillNeeded != None)
-        skillValue = Player.SkillSystem.GetSkillLevelValue(skillNeeded);
-    drain *= skillValue;
-
-    return Int(drain);
 }
 
 // Vanilla Matters: Drain charge and returns amount actually drained.
@@ -298,9 +304,6 @@ state Activated
     {
         local DeusExPlayer Player;
 
-        // Vanilla Matters
-        local int newCharge;
-
         Super.BeginState();
 
         Player = DeusExPlayer(Owner);
@@ -309,11 +312,6 @@ state Activated
             // remove it from our inventory, but save our owner info
             if (bOneUseOnly)
             {
-//              Player.DeleteInventory(Self);
-
-                // Remove from player's hand
-                //Player.PutInHand(None);
-
                 // Vanilla Matters: Remove the one-use item from the belt to make it less clunky when it can't be selected again.
                 if ( DeusExRootWindow(Player.rootWindow) != None ) {
                     DeusExRootWindow( Player.rootWindow ).DeleteInventory( self );
@@ -325,28 +323,8 @@ state Activated
                 SetOwner( Player );
             }
 
-            // Vanilla Matters: Since we don't do dynamic drain amount like vanilla, we're gonna have to up Charge amount properly upon leveling up.
-            if ( VM_bDraining ) {
-                newCharge = Default.Charge * ( 2.0 - Player.SkillSystem.GetSkillLevelValue( skillNeeded ) );
-            }
-            // VM: If the pick up is not draining over time, we use a different formula.
-            else {
-                newCharge = Default.Charge / Player.SkillSystem.GetSkillLevelValue( skillNeeded );
-            }
-
-            // VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
-            if ( newCharge > VM_actualCharge ) {
-                // VM: If actualCharge is 0, it means this is the first time the player's activated the pickup, so we do some init.
-                if ( VM_actualCharge <= 0 ) {
-                    VM_actualCharge = newCharge;
-                    Charge = newCharge;
-                }
-                // VM: Scale up Charge proportionally.
-                else {
-                    Charge = Charge * ( float( newCharge ) / float ( VM_actualCharge ) );
-                    VM_actualCharge = newCharge;
-                }
-            }
+            // Vanilla Matters
+            UpdateCharge( player );
 
             ChargedPickupBegin(Player);
             SetTimer(0.1, True);
@@ -388,6 +366,7 @@ defaultproperties
      VM_bDraining=True
      VM_msgIsActive="Currently active:"
      VM_msgInfoToggle="Toggleable:"
+     VM_msgInfoSecondsLabel="seconds"
      VM_msgDamageResistance="Damage resistance:"
      VM_msgInfoYes="YES"
      VM_msgInfoNo="NO"
