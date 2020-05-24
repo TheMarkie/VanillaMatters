@@ -37,7 +37,7 @@ static function UpdateValues( TableFloat table, int oldLevel, int newLevel ) {
     local SkillValue skillValue;
     local float value;
 
-    if ( oldLevel == newLevel ) {
+    if ( table == none || oldLevel == newLevel ) {
         return;
     }
 

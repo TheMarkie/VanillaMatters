@@ -119,10 +119,10 @@ function float GetValue( string name, optional float defaultValue ) {
     }
 }
 
-function int GetLevel( name skillName ) {
+function int GetLevel( name name ) {
     local VMSkillInfo info;
 
-    info = GetSkill( skillName );
+    info = GetSkillInfo( name );
     if ( info != none ) {
         return info.Level;
     }

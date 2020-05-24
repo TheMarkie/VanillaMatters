@@ -111,6 +111,13 @@ event TravelPostAccept() {
         missionNumber = -3;
     }
 
+    if ( VMSkillSystem == none ) {
+        InitializeSkillSystem();
+    }
+    else {
+        VMSkillSystem.RefreshValues();
+    }
+
     if (AugmentationSystem != none) {
         // Should ensure all augs work fine through patches.
         AugmentationSystem.RefreshesAugs();
@@ -156,14 +163,6 @@ event TravelPostAccept() {
             FPSystem = Spawn( class'ForwardPressure', self );
             FPSystem.Initialize( self );
             FPSystem.SetOwner( self );
-        }
-    }
-    else {
-        if ( VMSkillSystem == none ) {
-            InitializeSkillSystem();
-        }
-        else {
-            VMSkillSystem.RefreshValues();
         }
     }
 
@@ -1396,6 +1395,19 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 // Skill Management
 //==============================================
 // Override
+function VMSkillManager GetSkillSystem() {
+    return VMSkillSystem;
+}
+// Override
+function VMSkillInfo GetFirstSkillInfo() {
+    if ( VMSkillSystem != none ) {
+        return VMSkillSystem.FirstSkillInfo;
+    }
+
+    return none;
+}
+
+// Override
 function bool IncreaseSkillLevel( VMSkillInfo info ) {
     if ( info.CanUpgrade( SkillPointsAvail ) ) {
         if ( VMSkillSystem.IncreaseLevel( info ) ) {
@@ -1434,9 +1446,24 @@ function int GetSkillLevel( name name ) {
 
     return -1;
 }
-// Override
-function VMSkillManager GetSkillSystem() {
-    return VMSkillSystem;
+
+//==============================================
+// Aug Management
+//==============================================
+function float GetAugValue( class<Augmentation> class ) {
+    if ( AugmentationSystem != none ) {
+        return AugmentationSystem.GetAugLevelValue( class );
+    }
+
+    return -1;
+}
+
+function int GetAugLevel( class<Augmentation> class ) {
+    if ( AugmentationSystem != none ) {
+        return AugmentationSystem.GetClassLevel( class );
+    }
+
+    return -1;
 }
 
 //==============================================

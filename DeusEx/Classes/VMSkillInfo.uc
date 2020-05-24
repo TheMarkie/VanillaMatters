@@ -8,7 +8,7 @@ var travel VMSkillInfo Next;
 var private transient class<VMSkill> _skillClass;
 function class<VMSkill> GetSkillClass() {
     if ( _skillClass == none ) {
-        _skillClass = class<VMSkill>( DynamicLoadObject( string( SkillName ), class'Class' ) );
+        _skillClass = class<VMSkill>( DynamicLoadObject( "DeusEx." $ string( SkillClassName ), class'Class' ) );
     }
 
     return _skillClass;
@@ -17,6 +17,16 @@ function class<VMSkill> GetSkillClass() {
 //==============================================
 // General info
 //==============================================
+function string GetSkillName() {
+    return GetSkillClass().default.SkillName;
+}
+function string GetDescription() {
+    return GetSkillClass().default.Description;
+}
+function Texture GetSkillIcon() {
+    return GetSkillClass().default.SkillIcon;
+}
+
 function int GetMaxLevel() {
     return GetSkillClass().static.GetMaxLevel();
 }
@@ -26,7 +36,7 @@ function int GetNextLevelCost() {
 }
 
 function bool CanUpgrade( int amount ) {
-    if ( Level >= GetMaxLevel() || amount < default.Costs[Level] ) {
+    if ( Level >= GetMaxLevel() || amount < GetNextLevelCost() ) {
         return false;
     }
     else {
@@ -41,7 +51,7 @@ function RefreshValues( TableFloat table ) {
     GetSkillClass().static.UpdateValues( table, -1, Level );
 }
 
-function bool IncreaseLevel( TableFloat table ) {
+function bool IncreaseLevel( optional TableFloat table ) {
     if ( Level < GetMaxLevel() ) {
         GetSkillClass().static.UpdateValues( table, Level, Level + 1 );
         Level += 1;
@@ -52,7 +62,7 @@ function bool IncreaseLevel( TableFloat table ) {
     return false;
 }
 
-function bool DecreaseLevel( TableFloat table ) {
+function bool DecreaseLevel( optional TableFloat table ) {
     if ( Level > 0 ) {
         GetSkillClass().static.UpdateValues( table, Level, Level - 1 );
         Level -= 1;
@@ -63,7 +73,7 @@ function bool DecreaseLevel( TableFloat table ) {
     return false;
 }
 
-function IncreaseToMax( TableFloat table ) {
+function IncreaseToMax( optional TableFloat table ) {
     local int maxLevel;
 
     maxLevel = GetMaxLevel();

@@ -66,7 +66,10 @@ function PreTravel()
 {
     // restore the sound volume
     SoundVolume = savedSoundVolume;
-    Player.SetInstantSoundVolume(SoundVolume);
+    // Vanilla Matters
+    if ( Player != none ) {
+        Player.SetInstantSoundVolume( SoundVolume );
+    }
 
     Super.PreTravel();
 }
