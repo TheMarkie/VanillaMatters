@@ -569,60 +569,30 @@ function ReloadAmmo( optional bool bForce ) {
     }
 }
 
-// Vanilla Matters: Make the function take into account where it's called for accuracy or damage, and provides appropriate values.
-simulated function float GetWeaponSkill( optional bool forDamage ) {
+// Vanilla Matters: Rewrite to get only skill value.
+simulated function float GetSkillValue( string category ) {
     local DeusExPlayer player;
-    local float value;
 
-    value = 0;
-
-    if ( Owner != None ) {
-        player = DeusExPlayer( Owner );
-
-        if ( player != None ) {
-            if ( player.SkillSystem != None && player.AugmentationSystem != None ) {
-                if ( !forDamage ) {
-                    value = player.AugmentationSystem.GetAugLevelValue( class'AugTarget' );
-
-                    if ( value == -1.0 ) {
-                        value = 0;
-                    }
-                }
-                else if ( bHandToHand ) {
-                    value = player.AugmentationSystem.GetAugLevelValue( class'AugCombat' );
-
-                    if ( value == -1.0 ) {
-                        value = 0;
-                    }
-
-                    value = value * -1.0;
-                }
-
-                value = value + player.SkillSystem.GetSkillLevelValue( GoverningSkill );
-            }
-        }
+    player = DeusExPlayer( Owner );
+    if ( player != None ) {
+        return player.GetSkillValue( GetStringClassName() $ category );
     }
 
-    return value;
+    return 0;
 }
 
-// Vanilla Matters: Fetch the skill level instead of trying to use the SkillSystem which takes more typing :)
-function float GetWeaponSkillLevel() {
+// Vanilla Matters: Get aug value.
+function float GetAugValue( class<Augmentation> class ) {
     local DeusExPlayer player;
-    local float level;
 
-    level = 0;
-
-    if ( Owner != None ) {
-        player = DeusExPlayer( Owner );
-
-        if ( player != None ) {
-            level = player.SkillSystem.GetSkillLevel( GoverningSkill );
-        }
+    player = DeusExPlayer( Owner );
+    if ( player != None ) {
+        return FMax( player.GetAugValue( class'AugTarget' ), 0 );
     }
 
-    return level;
+    return 0;
 }
+
 
 // calculate the accuracy for this weapon and the owner's damage
 // Vanilla Matters: Rewrite because why not.
@@ -1181,13 +1151,8 @@ function PlaceGrenade()
         if (placeMover != None)
             gren.SetBase(placeMover);
 
-        // up the damage based on the skill
-        // returned value from GetWeaponSkill is negative, so negate it to make it positive
-        // dmgX value ranges from 1.0 to 2.4 (max demo skill and max target aug)
-        //dmgX = -2.0 * GetWeaponSkill() + 1.0;
-
-        // Vanilla Matters: Used for damage, so true is added in.
-        dmgX = -2.0 * GetWeaponSkill( true ) + 1.0;
+        // Vanilla Matters
+        dmgX = 1.0 + GetSkillValue( "Damage" );
 
         gren.Damage *= dmgX;
 
@@ -1212,8 +1177,6 @@ simulated function Tick(float deltaTime)
     // Vanilla Matters
     local float skillBonus, standingRate;
     local int yaw, pitch;
-
-    skillBonus = GetWeaponSkill();
 
     player = DeusExPlayer(Owner);
     pawn = Pawn(Owner);
@@ -1336,7 +1299,8 @@ simulated function Tick(float deltaTime)
                         // DEUS_EX AMSD Only do weaponskill check here when first checking.
                         if (LockTimer == 0)
                         {
-                            LockTime = FMax(Default.LockTime + 3.0 * GetWeaponSkill(), 0.0);
+                            // Vanilla Matters
+                            LockTime = FMax( default.LockTime * GetSkillValue( "LockTime" ), 0.0);
 
                             if ((Level.Netmode != NM_Standalone) && (LockTime < 0.25))
                             LockTime = 0.25;
@@ -1431,6 +1395,8 @@ simulated function Tick(float deltaTime)
     }
 
     // Vanilla Matters: Handle recoil and accuracy penalty.
+    skillBonus = GetSkillValue( "Stability" );
+
     if ( !bHandToHand && player != none ) {
         if ( VM_recoilRecovery.Pitch > 0 ) {
             VM_recoilRecovery.Pitch = Max( VM_recoilRecovery.Pitch - Abs( player.ViewRotation.Pitch - VM_lastPlayerRotation.Pitch ), 0 );
@@ -2580,8 +2546,11 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
         }
     }
 
-    // Vanilla Matters: Used for damage, so true is added in.
-    mult = 1.0 + ( -2.0 * GetWeaponSkill( true ) );
+    // Vanilla Matters
+    mult = 1.0 + GetSkillValue( "Damage" );
+    if ( bHandToHand ) {
+        mult += GetAugValue( class'AugCombat' );
+    }
 
     // make noise if we are not silenced
     if (!bHasSilencer && !bHandToHand)
@@ -2594,7 +2563,7 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
     }
 
     // Vanilla Matters: Set the number of projectiles properly instead of vanilla hardcoding.
-    numProj = VM_ShotCount[GetWeaponSkillLevel()];
+    numProj = VM_ShotCount;
 
     GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
     Start = ComputeProjectileStart(X, Y, Z);
@@ -2757,7 +2726,7 @@ simulated function TraceFire( float Accuracy )
     start = StartTrace;
 
     //Vanilla Matters
-    numSlugs = VM_ShotCount[GetWeaponSkillLevel()];
+    numSlugs = VM_ShotCount;
     accuracyOffset = AccurateRange / 5;
 
     // Vanilla Matters: Laser and scope accuracy moved to CalculateAccuracy() for more responsive/honest crosshair. As crosshair updates itself based on current accuracy and ignores here.
@@ -2853,8 +2822,11 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 
     if (Other != None)
     {
-        // Vanilla Matters: Used for damage, so true is added in.
-        mult = 1.0 + ( -2.0 * GetWeaponSkill( true ) );
+        // Vanilla Matters
+        mult = 1.0 + GetSkillValue( "Damage" );
+        if ( bHandToHand ) {
+            mult += GetAugValue( class'AugCombat' );
+        }
 
         // Determine damage type
         damageType = WeaponDamageType();
@@ -2872,17 +2844,17 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         {
             // Vanilla Matters: Make the mover take damage with a multiplier.
             if ( Role == ROLE_Authority ) {
-                Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+                Other.TakeDamage( HitDamage * ( mult + VM_MoverDamageMult - 1 ), Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
             }
 
             SelectiveSpawnEffects( HitLocation, HitNormal, Other, HitDamage * mult);
         }
         else if ((Other != self) && (Other != Owner))
         {
-            // Vanilla Matters: Let ShotBreaksStuff work against containers and decos.
+            // Vanilla Matters: Let VM_MoverDamageMult work against containers and decos.
             if ( Role == ROLE_Authority ) {
                 if ( Decoration( Other ) != none ) {
-                    Other.TakeDamage( HitDamage * mult * VM_ShotBreaksStuff[GetWeaponSkillLevel()], Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+                    Other.TakeDamage( HitDamage * ( mult + VM_MoverDamageMult - 1 ), Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
                 }
                 else {
                     // Vanilla Matters: Pass this in so the pawn knows what hit it.
@@ -3060,10 +3032,8 @@ simulated function bool UpdateInfo(Object winObject)
     local int  ammoAmount;
 
     // Vanilla Matters
-    local float t, weaponSkillLevel;
+    local float t;
     local name damageType;
-
-    weaponSkillLevel = GetWeaponSkillLevel();
 
     P = Pawn(Owner);
     if (P == None)
@@ -3186,11 +3156,14 @@ simulated function bool UpdateInfo(Object winObject)
     str = String(dmg);
 
     // Vanilla Matters: Display the number of shots to make it clearer how much damage can be dealt.
-    if ( Default.VM_ShotCount[weaponSkillLevel] > 1 ) {
-        str = str $ "x" $ Default.VM_ShotCount[weaponSkillLevel];
+    if ( Default.VM_ShotCount > 1 ) {
+        str = str $ "x" $ Default.VM_ShotCount;
     }
 
-    mod = 1.0 - ( 2.0 * GetWeaponSkill( true ) );
+    mod = 1.0 + GetSkillValue( "Damage" );
+    if ( bHandToHand ) {
+        mod += GetAugValue( class'AugCombat' );
+    }
 
     // Vanilla Matters
     if ( mod != 1.0 ) {
@@ -3273,7 +3246,7 @@ simulated function bool UpdateInfo(Object winObject)
             str = FormatFloatString( default.ReloadTime, 0.1 );
         }
 
-        mod = GetWeaponSkill() + ModReloadTime;
+        mod = ModReloadTime - GetSkillValue( "ReloadTime" );
 
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
@@ -3794,7 +3767,7 @@ ignores Fire, AltFire;
             // check for skill use if we are the player
 
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = GetWeaponSkill() + ModReloadTime;
+            val = ModReloadTime - GetSkillValue( "ReloadTime" );
             val = ReloadTime + ( val * ReloadTime );
         }
 
@@ -4087,12 +4060,8 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
         }
         else if (DeusExPlayer(Owner) != None)
         {
-            // check for skill use if we are the player
-            // val = GetWeaponSkill();
-            // val = ReloadTime + (val*ReloadTime);
-
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = GetWeaponSkill() + ModReloadTime;
+            val = ModReloadTime - GetSkillValue( "ReloadTime" );
             val = ReloadTime + ( val * ReloadTime );
         }
         return val;

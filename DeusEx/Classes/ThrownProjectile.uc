@@ -14,7 +14,6 @@ var bool                bFirstHit;
 var float               proxCheckTime;
 var float               beepTime;
 var float               skillTime;
-var float               skillAtSet;
 var() bool              bDisabled;
 var() bool              bHighlight;         // should this object not highlight when focused?
 var() float             AISoundLevel;       // sound level at which to alert AI (0.0 to 1.0)
@@ -26,7 +25,7 @@ var int             team;               // Keep track of team of owner
 replication
 {
     reliable if ( Role == ROLE_Authority )
-        bDoExplode, team, bDisabled, skillAtSet;
+        bDoExplode, team, bDisabled;
 }
 
 //
@@ -132,7 +131,7 @@ simulated function Tick(float deltaTime)
                                 if (VSize(dist) < proxRadius)
                                     if (skillTime == 0)
                                         // Vanilla Matters: Tweak skill time.
-                                        skillTime = FClamp( 1 - ( player.SkillSystem.GetSkillLevelValue( class'SkillDemolition' ) * 8 ), 1, 5 );
+                                        skillTime = FClamp( 2 + player.GetSkillValue( "MineTriggerDelay" ), 1, 5 );
                             }
                         }
                     }
@@ -180,12 +179,8 @@ simulated function Tick(float deltaTime)
                                         {
                                             if (skillTime == 0)
                                             {
-                                                skillDiff = -skillAtSet + Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-
-                                                if ( skillDiff >= 0.0 ) // Scale goes 1.0, 1.6, 2.8, 4.0
-                                                    skillTime = FClamp( 1.0 + skillDiff * 6.0, 1.0, 2.5 );
-                                                else    // Scale goes 1.0, 1.4, 2.2, 3.0
-                                                    skillTime = FClamp( 1.0 + (-Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 4.0), 1.0, 3.0 );
+                                                // Vanilla Matters
+                                                skillTime = FClamp( 1 + player.GetSkillValue( "MineTriggerDelay" ), 1, 3 );
                                             }
                                         }
                                     }
@@ -618,8 +613,6 @@ simulated function BeginPlay()
         aplayer = DeusExPlayer(Owner);
         if (( aplayer != None ) && ( TeamDMGame(aplayer.DXGame) != None ))
             team = aplayer.PlayerReplicationInfo.team;
-
-        skillAtSet = aplayer.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
     }
 
     // don't beep at the start of a level if we've been preplaced
