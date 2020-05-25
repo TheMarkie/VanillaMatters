@@ -434,7 +434,7 @@ function QuickLoadConfirmed() {
 //==============================================
 // Rendering
 //==============================================
-// Pverride: Add cloaking support
+// Override: Add cloaking support
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow ) {
     local int i;
     local texture curSkin;

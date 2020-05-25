@@ -3546,16 +3546,15 @@ state PlayerWalking
         {
             newSpeed -= CarriedDecoration.Mass * 2;
         }
-        // don't slow the player down if he's skilled at the corresponding weapon skill
-        // Vanilla Matters: Just changing it to detect weapon skill level instead.
-        else if ( ( DeusExWeapon( Weapon ) != None ) && ( Weapon.Mass > 30 ) && ( DeusExWeapon( Weapon ).GetWeaponSkillLevel() < 2.0 ) && ( Level.NetMode == NM_Standalone ) )
-        {
-            bIsWalking = True;
-            newSpeed = defSpeed;
-        }
         else if ((inHand != None) && inHand.IsA('POVCorpse'))
         {
             newSpeed -= inHand.Mass * 3;
+        }
+
+        // Vanilla Matters: Change heavy weapon penalty check to apply a direct penalty instead of level check
+        if ( Weapon != none && Weapon.Mass > 30 )
+        {
+            newSpeed = defSpeed * ( 0.5 + GetSkillValue( "HeavyWeaponMovementSpeedBonus" ) );
         }
 
         // Multiplayer movement adjusters
@@ -3563,13 +3562,7 @@ state PlayerWalking
         {
             if ( Weapon != None )
             {
-                weapSkill = DeusExWeapon(Weapon).GetWeaponSkill();
-                // Slow down heavy weapons in multiplayer
-                if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) )
-                {
-                    newSpeed = defSpeed;
-                    newSpeed -= ((( Weapon.Mass - 30.0 ) / (class'WeaponGEPGun'.Default.Mass - 30.0 )) * (0.70 + weapSkill) * defSpeed );
-                }
+                // Vanilla Matters: Now use the same heavy weapon movement penalty formula for both SP and MP
                 // Slow turn rate of GEP gun in multiplayer to discourage using it as the most effective close quarters weapon
                 if ((WeaponGEPGun(Weapon) != None) && (!WeaponGEPGun(Weapon).bZoomed))
                     TurnRateAdjuster = FClamp( 0.20 + -(weapSkill*0.5), 0.25, 1.0 );
@@ -3581,7 +3574,8 @@ state PlayerWalking
         }
 
         // if we are moving really slow, force us to walking
-        if ((newSpeed <= defSpeed / 3) && !bForceDuck)
+        // Vanilla Matters: Change walking to start at half running speed
+        if ( newSpeed <= ( defSpeed / 2 ) && !bForceDuck)
         {
             bIsWalking = True;
             newSpeed = defSpeed;
@@ -12168,6 +12162,9 @@ function bool IsFeatureEnabled( name featureName ) { return false; }
 function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
 
 function RequestAutoSave( optional float delay );
+function bool ShouldSave( DeusExLevelInfo info ) {
+    return false;
+}
 
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
 function ResetSkinStyle();
