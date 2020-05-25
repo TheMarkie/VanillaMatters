@@ -610,7 +610,7 @@ simulated function float CalculateAccuracy() {
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetWeaponSkill();
+    weapskill = GetAugValue( class'AugTarget' ) - GetSkillValue( "Accuracy" );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
     accuracy = accuracy - ModBaseAccuracy;
@@ -3272,7 +3272,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     // Vanilla Matters: Rewrite to be compatible with the new way to handle accuracy mods.
     str = int( ( 2 - BaseAccuracy ) * 50.0 ) $ "%";
-    mod = GetWeaponSkill() - ModBaseAccuracy;
+    mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) - GetSkillValue( "Accuracy" );
     if ( mod != 0.0 ) {
         str = str @ BuildPercentString( - ( mod / 2 ) );
         str = str @ "=" @ FormatFloatString( FMin( 100, ( ( 2 - ( BaseAccuracy + mod ) ) * 50 ) ), 0.1 ) $ "%";
