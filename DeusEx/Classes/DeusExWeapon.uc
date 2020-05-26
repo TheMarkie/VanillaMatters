@@ -604,16 +604,16 @@ simulated function float CalculateAccuracy() {
     local DeusExPlayer player;
     local ScriptedPawn sp;
 
-    // Vanilla Matters: Set accuracy to 0 (full accuracy) if the weapon is always accurate.
-    if ( VM_bAlwaysAccurate ) {
-        return 0.0;
+    // Vanilla Matters
+    if ( VM_bAlwaysAccurate || bHandToHand ) {
+        return 1.0;
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetAugValue( class'AugTarget' ) - GetSkillValue( "Accuracy" );
+    weapskill = GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
-    accuracy = accuracy - ModBaseAccuracy;
+    accuracy = accuracy + ModBaseAccuracy;
 
     player = DeusExPlayer( Owner );
     sp = ScriptedPawn( Owner );
@@ -648,7 +648,7 @@ simulated function float CalculateAccuracy() {
         checkit = True;
 
         // Vanilla Matters: If a scriptedpawn is using a rifle, give it more accuracy because the pawn doesn't scope in and lose on the scope bonus.
-        accuracy = FMax( accuracy - 0.5, sp.BaseAccuracy );
+        accuracy = FMax( accuracy + 0.2, sp.BaseAccuracy );
     }
     else {
         checkit = false;
@@ -660,7 +660,9 @@ simulated function float CalculateAccuracy() {
     }
 
     // Vanilla Matters: Apply the effectiveness of scope or laser dynamically over time.
-    accuracy = FMax( accuracy * ( ( VM_modTimerMax - VM_modTimer ) / VM_modTimerMax ), 0 );
+    if ( bLasing ) {
+        accuracy = FMax( accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / default.VM_modTimerMax ) ), 1 );
+    }
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
     if ( bHasScope && !bZoomed && !bLasing ) {
@@ -685,9 +687,9 @@ simulated function float CalculateAccuracy() {
             accuracy = accuracy + ( player.GetFlinchPenalty() * div );
         }
 
-        accuracy = accuracy + ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.5 * div );
-        accuracy = accuracy + ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.3 * div );
-        accuracy = accuracy + ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.5 );
+        accuracy = accuracy - ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.25 * div );
+        accuracy = accuracy - ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.15 * div );
+        accuracy = accuracy - ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.25 );
     }
 
     // increase accuracy (decrease value) if we haven't been moving for awhile
@@ -696,29 +698,22 @@ simulated function float CalculateAccuracy() {
     // Vanilla Matters: Handle standing bonus differently.
     if ( player != none ) {
         if ( standingTimer > 0 ) {
-            div = ( VM_baseStandingRate + ( weapskill * 2 ) ) * 10;
+            div = default.VM_baseStandingRate * 10;
             if ( player.bIsCrouching || player.bForceDuck ) {
-                tempacc = VM_standingBonus * 1.5;
+                tempacc = default.VM_standingBonus * 1.5;
             }
             else {
-                tempacc = VM_standingBonus;
+                tempacc = default.VM_standingBonus;
             }
 
-            accuracy = accuracy - ( ( standingTimer / div ) * tempacc );
+            accuracy = accuracy + ( ( standingTimer / div ) * tempacc );
         }
 
         accuracy = FMax( accuracy, 0 );
 
-        if ( !bHandToHand && VM_recoilPenalty > 0 ) {
-            accuracy = accuracy + VM_recoilPenalty;
+        if ( VM_recoilPenalty > 0 ) {
+            accuracy = accuracy - VM_recoilPenalty;
         }
-    }
-
-    // Vanilla Matters: Weapons with shot count higher than 1 will be capped below 100% so that all the shots don't go in one place.
-    accuracy = FClamp( accuracy, ( VM_ShotCount - 1 ) * 0.05, 2 );
-
-    if ( Level.NetMode != NM_Standalone ) {
-        accuracy = FMax( accuracy, MinWeaponAcc );
     }
 
     return accuracy;
@@ -1110,9 +1105,6 @@ simulated function bool NearWallCheck()
     StartTrace = Owner.Location;
     EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
 
-    //StartTrace.Z += Pawn(Owner).BaseEyeHeight;
-    //EndTrace.Z += Pawn(Owner).BaseEyeHeight;
-
     // Vanilla Matters: You can now place grenades on floor.
 
     HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
@@ -1403,7 +1395,7 @@ simulated function Tick(float deltaTime)
         }
 
         if ( VM_recoilForce > 0 ) {
-            recoil = VM_recoilRate * ( 1 + ModRecoilStrength ) * deltaTime;
+            recoil = default.VM_recoilRate * ( 1 + ModRecoilStrength ) * deltaTime;
             VM_recoilPenalty = FMin( VM_recoilPenalty + FMin( VM_recoilForce, recoil ), recoilStrength );
             VM_recoilForce = FMax( VM_recoilForce - recoil, 0 );
 
@@ -1421,7 +1413,7 @@ simulated function Tick(float deltaTime)
             VM_recoilRecovery.Pitch = VM_recoilRecovery.Pitch + pitch;
         }
         else {
-            recoil = VM_recoilRate * ( 1 - skillBonus ) * deltaTime;
+            recoil = default.VM_recoilRate * ( 1 - skillBonus ) * deltaTime;
             if ( VM_recoilPenalty > 0 ) {
                 VM_recoilPenalty = FMax( VM_recoilPenalty - ( recoil * ( 1 - FMin( ShotTime * 2, 0.8 ) ) ), 0 );
             }
@@ -1460,7 +1452,7 @@ simulated function Tick(float deltaTime)
     // if were standing still, increase the timer
 
     // Vanilla Matters: Use a new formula for standing bonus.
-    standingRate = VM_baseStandingRate + ( skillBonus * 2 );
+    standingRate = default.VM_baseStandingRate + ( skillBonus * 2 );
     beepspeed = VSize( Owner.Velocity );
     if ( beepspeed <= 10 ) {
         standingTimer = FMin( standingTimer + standingRate, standingRate * 10 );
@@ -1474,7 +1466,7 @@ simulated function Tick(float deltaTime)
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
     if ( ( bLasing && VSize( Owner.Velocity ) < 160 )  || ( bZoomed && VSize( Owner.Velocity ) < 10 ) ) {
-        VM_modTimer = FMin( VM_modTimer + deltaTime, VM_modTimerMax );
+        VM_modTimer = FMin( VM_modTimer + deltaTime, default.VM_modTimerMax );
     }
     else {
         VM_modTimer = FMax( VM_modTimer - deltaTime, 0 );
@@ -1700,7 +1692,7 @@ simulated function MuzzleFlashLight()
 function ServerHandleNotify( bool bInstantHit, class<projectile> ProjClass, float ProjSpeed, bool bWarn )
 {
     if (bInstantHit)
-        TraceFire(0.0);
+        TraceFire(1.0);
     else
         ProjectileFire(ProjectileClass, ProjectileSpeed, bWarnTarget);
 }
@@ -1731,7 +1723,7 @@ simulated function HandToHandAttack()
         ScriptedPawn(Owner).SetAttackAngle();
 
     if (bInstantHit)
-        TraceFire(0.0);
+        TraceFire(1.0);
     else
         ProjectileFire(ProjectileClass, ProjectileSpeed, bWarnTarget);
 
@@ -1773,7 +1765,7 @@ simulated function OwnerHandToHandAttack()
         ScriptedPawn(Owner).SetAttackAngle();
 
     if (bInstantHit)
-        TraceFire(0.0);
+        TraceFire(1.0);
     else
         ProjectileFire(ProjectileClass, ProjectileSpeed, bWarnTarget);
 }
@@ -2531,7 +2523,7 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
     local Pawn aPawn;
 
     // Vanilla Matters
-    local float throwBonus;
+    local float accuracy, throwBonus;
     local DeusExPlayer player;
 
     throwBonus = 1;
@@ -2552,6 +2544,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
         mult += GetAugValue( class'AugCombat' );
     }
 
+    accuracy = 1 - currentAccuracy;
+
     // make noise if we are not silenced
     if (!bHasSilencer && !bHandToHand)
     {
@@ -2570,16 +2564,11 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 
     for (i=0; i<numProj; i++)
     {
-        // If we have multiple slugs, then lower our accuracy a bit after the first slug so the slugs DON'T all go to the same place
-        if ((i > 0) && (Level.NetMode != NM_Standalone))
-            if (currentAccuracy < MinProjSpreadAcc)
-                currentAccuracy = MinProjSpreadAcc;
-
-        AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, AimError, True, bWarn);
+        AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, 0, True, bWarn);
 
         // Vanilla Matters
-        AdjustedAim.Yaw = AdjustedAim.Yaw + ( currentAccuracy * ( Rand( 1024 ) - 512 ) );
-        AdjustedAim.Pitch = AdjustedAim.Pitch + ( currentAccuracy * ( Rand( 1024 ) - 512 ) );
+        AdjustedAim.Yaw += accuracy * ( Rand( 2048 ) - 1024 );
+        AdjustedAim.Pitch += accuracy * ( Rand( 2048 ) - 1024 );
 
         if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
         {
@@ -2694,19 +2683,16 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 //
 // copied from Weapon.uc so we can add range information
 //
-simulated function TraceFire( float Accuracy )
+simulated function TraceFire( float accuracy )
 {
     local vector HitLocation, HitNormal, StartTrace, EndTrace, X, Y, Z;
     local Rotator rot;
     local actor Other;
-    local float dist, alpha, degrade;
-    local int i, numSlugs;
+    local int i;
     local float volume, radius;
 
     // Vanilla Matters
-    local vector start;
-    local LaserSpot sp;
-    local int accuracyOffset, j;
+    local float spread, range;
 
     // make noise if we are not silenced
     if (!bHasSilencer && !bHandToHand)
@@ -2720,87 +2706,30 @@ simulated function TraceFire( float Accuracy )
 
     GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
     StartTrace = ComputeProjectileStart(X, Y, Z);
-    AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 2.75*AimError, False, False);
-
-    // Vanilla Matters: Save the start of the trace.
-    start = StartTrace;
+    AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 0, False, False);
 
     //Vanilla Matters
-    numSlugs = VM_ShotCount;
-    accuracyOffset = AccurateRange / 5;
+    spread = 1 - accuracy;
+    range = MaxRange / 2;
 
-    // Vanilla Matters: Laser and scope accuracy moved to CalculateAccuracy() for more responsive/honest crosshair. As crosshair updates itself based on current accuracy and ignores here.
-
-    for (i=0; i<numSlugs; i++)
-    {
-        // If we have multiple slugs, then lower our accuracy a bit after the first slug so the slugs DON'T all go to the same place
-        if ((i > 0) && (Level.NetMode != NM_Standalone) && !(bHandToHand))
-            if (Accuracy < MinSpreadAcc)
-                Accuracy = MinSpreadAcc;
-
-        // Let handtohand weapons have a better swing
-        if ((bHandToHand) && (NumSlugs > 1) && (Level.NetMode != NM_Standalone))
-        {
-            StartTrace = ComputeProjectileStart(X,Y,Z);
-            StartTrace = StartTrace + (numSlugs/2 - i) * SwingOffset;
-        }
-
-        // Vanilla Matters: Replace the vanilla "bullet drop" simulation with a more proper trace format.
-        StartTrace = start;
-        EndTrace = StartTrace + ( Accuracy * ( FRand() - 0.5 ) * Y * accuracyOffset ) + ( Accuracy * ( FRand() - 0.5 ) * Z * accuracyOffset ) + ( AccurateRange * vector( AdjustedAim ) );
+    for ( i = 0; i < VM_ShotCount; i++) {
+        EndTrace = StartTrace;
+        EndTrace += MaxRange * vector( AdjustedAim );
+        EndTrace += spread * ( FRand() - 0.5 ) * range * Y;
+        EndTrace += spread * ( FRand() - 0.5 ) * range * Z;
 
         Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
 
-        // Vanilla Matters: Debug particles to display the initial trace.
-        // dist = VSize( EndTrace - StartTrace );
-        // rot = rotator( EndTrace - StartTrace );
-        // for ( j = 0; j < dist / 16; j++ ) {
-        //  Spawn( Class'LaserSpot',,, StartTrace + ( 16 * j * vector( rot ) ), );
-        // }
-
-        if ( Other == none && MaxRange > AccurateRange ) {
-            dist = MaxRange - AccurateRange;
-
-            HitLocation = EndTrace - StartTrace;
-            HitLocation.Z = HitLocation.Z - ( dist / 32 );
-            StartTrace = EndTrace;
-            EndTrace = EndTrace + ( Normal( HitLocation ) * dist );
-
-            Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
-
-            // Vanilla Matters: Debug particles to display the second "bullet drop" trace.
-            // dist = VSize( EndTrace - StartTrace );
-            // rot = Rotator( EndTrace - StartTrace );
-            // for ( j = 0; j < dist / 16; j++ ) {
-            //  sp = Spawn( Class'LaserSpot',,, StartTrace + ( 16 * j * Vector( rot ) ), );
-            //  if ( sp != none ) {
-            //      sp.Skin = Texture'LaserSpot2';
-            //  }
-            // }
+        rot = Rotator( EndTrace - StartTrace );
+        if ( AmmoName.Name == 'Ammo3006' ) {
+            Spawn( class'SniperTracer',,, StartTrace + 96 * Vector( rot ), rot );
         }
-
-        // randomly draw a tracer for relevant ammo types
-        // don't draw tracers if we're zoomed in with a scope - looks stupid
-        // DEUS_EX AMSD In multiplayer, draw tracers all the time.
-        if ( ((Level.NetMode == NM_Standalone) && (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))) ||
-           ((Level.NetMode != NM_Standalone) && (Role == ROLE_Authority) && (numSlugs == 1)) )
-        {
-            if ((AmmoName == Class'Ammo10mm') || (AmmoName == Class'Ammo3006') ||
-                (AmmoName == Class'Ammo762mm'))
-            {
-                if (VSize(HitLocation - StartTrace) > 250)
-                {
-                    rot = Rotator(EndTrace - StartTrace);
-               if ((Level.NetMode != NM_Standalone) && (Self.IsA('WeaponRifle')))
-                  Spawn(class'SniperTracer',,, StartTrace + 96 * Vector(rot), rot);
-               else
-                  Spawn(class'Tracer',,, StartTrace + 96 * Vector(rot), rot);
-                }
-            }
+        else {
+            Spawn( class'Tracer',,, StartTrace + 96 * Vector( rot ), rot );
         }
 
         // Vanilla Matters: Process the trace hit after firing visual tracer.
-        ProcessTraceHit( Other, HitLocation, HitNormal, vector( AdjustedAim ), Y, Z );
+        ProcessTraceHit( Other, HitLocation, HitNormal, Vector( AdjustedAim ), Y, Z );
     }
 
     // otherwise we don't hit the target at all
@@ -3185,15 +3114,15 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( VM_msgInfoStun, str, mod != 1.0 );
     }
 
-    // Vanilla Matters: Display headshot multiplier.
-    str = "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
-    mod = ( Default.VM_HeadshotMult / Default.VM_HeadshotMult ) - 1;
-
-    if ( mod != 0 ) {
-        str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
+    // Vanilla Matters: Rewrite to be compatible with the new way to handle accuracy mods.
+    str = int( BaseAccuracy * 100 ) $ "%";
+    mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+    if ( mod != 0.0 ) {
+        str = str @ BuildPercentString( mod );
+        str = str @ "=" @ FormatFloatString( FMin( ( BaseAccuracy + mod ) * 100, 100 ), 0.1 ) $ "%";
     }
 
-    winInfo.AddInfoItem( VM_msgInfoHeadshot, str, mod != 0 );
+    winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
 
     // clip size
     if ((Default.ReloadCount == 0) || bHandToHand)
@@ -3268,48 +3197,15 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddInfoItem(msgInfoRecoil, str, HasRecoilMod());
 
-    // base accuracy (2.0 = 0%, 0.0 = 100%)
+    // Vanilla Matters: Display headshot multiplier.
+    str = "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
+    mod = ( Default.VM_HeadshotMult / Default.VM_HeadshotMult ) - 1;
 
-    // Vanilla Matters: Rewrite to be compatible with the new way to handle accuracy mods.
-    str = int( ( 2 - BaseAccuracy ) * 50.0 ) $ "%";
-    mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) - GetSkillValue( "Accuracy" );
-    if ( mod != 0.0 ) {
-        str = str @ BuildPercentString( - ( mod / 2 ) );
-        str = str @ "=" @ FormatFloatString( FMin( 100, ( ( 2 - ( BaseAccuracy + mod ) ) * 50 ) ), 0.1 ) $ "%";
+    if ( mod != 0 ) {
+        str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
     }
 
-    winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
-
-    // accurate range
-
-    // Vanilla Matters: Display range of melee weapons too.
-    if ( Level.NetMode != NM_Standalone ) {
-        str = FormatFloatString( default.mpAccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
-    }
-    else {
-        str = FormatFloatString( default.AccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
-    }
-
-    if ( HasRangeMod() ) {
-        str = str @ BuildPercentString( ModAccurateRange );
-        str = str @ "=" @ FormatFloatString( AccurateRange / 16.0, 1.0 ) @ msgRangeUnit;
-    }
-
-    winInfo.AddInfoItem( msgInfoAccRange, str, HasRangeMod() );
-
-    // max range
-
-    // Vanilla Matters: Don't display max range if we're a projectile or melee weapon because it's meaningless.
-    if ( bInstantHit && !bHandToHand ) {
-        if ( Level.NetMode != NM_Standalone ) {
-            str = FormatFloatString( default.mpMaxRange / 16.0, 1.0 ) @ msgRangeUnit;
-        }
-        else {
-            str = FormatFloatString( default.MaxRange / 16.0, 1.0 ) @ msgRangeUnit;
-        }
-
-        winInfo.AddInfoItem( msgInfoMaxRange, str );
-    }
+    winInfo.AddInfoItem( VM_msgInfoHeadshot, str, mod != 0 );
 
     // mass
     winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
@@ -4315,7 +4211,7 @@ defaultproperties
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
      VM_baseStandingRate=2.500000
-     VM_standingBonus=0.200000
+     VM_standingBonus=0.100000
      VM_recoilRate=2.000000
      VM_modTimerMax=0.250000
      VM_readyFire=True

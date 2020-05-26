@@ -956,24 +956,15 @@ function DrawTargetAugmentation(GC gc)
         x = int( w * 0.5 );
         y = int( h * 0.5 );
 
-        mult = FClamp( weapon.currentAccuracy * 50.0 * ( width / 640.0 ), corner, 200 );
-
-        mult = FMax( mult, corner + 4 );
-        if ( weapon.currentAccuracy <= 0 ) {
-            mult = corner;
-        }
+        mult = FClamp( ( 1 - weapon.currentAccuracy ) * 100.0 * ( width / 640.0 ), corner - 2, 200 );
 
         gc.SetTileColorRGB( 0, 0, 0 );
         for ( i = 1; i >= 0; i-- ) {
             gc.DrawBox( x + i, y - mult + i, 1, corner, 0, 0, 1, Texture'Solid' );
             gc.DrawBox( x + i, y + mult - corner + i + 1, 1, corner, 0, 0, 1, Texture'Solid' );
-            // gc.DrawBox( x - ( corner - 1 ) / 2 + i, y - mult + i, corner, 1, 0, 0, 1, Texture'Solid' );
-            // gc.DrawBox( x - ( corner - 1 ) / 2 + i, y + mult + i, corner, 1, 0, 0, 1, Texture'Solid' );
 
             gc.DrawBox( x - mult + i, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
             gc.DrawBox( x + mult - corner + i + 1, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
-            // gc.DrawBox( x - mult + i, y - ( ( corner - 1 ) / 2 ) + i, 1, corner, 0, 0, 1, Texture'Solid' );
-            // gc.DrawBox( x + mult + i, y - ( ( corner - 1 ) / 2 ) + i , 1, corner, 0, 0, 1, Texture'Solid' );
 
             gc.DrawBox( x + i, y + i, 1, 1, 0, 0, 1, Texture'Solid' );
 
@@ -1586,7 +1577,7 @@ function int GetVisionTargetStatus(Actor Target)
 defaultproperties
 {
      margin=4.000000
-     corner=9.000000
+     corner=5.000000
      msgRange="Range"
      msgRangeUnits="ft"
      msgHigh="High"
