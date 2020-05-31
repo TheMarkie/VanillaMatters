@@ -3,21 +3,6 @@
 //=============================================================================
 class WeaponCombatKnife extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -34,10 +19,6 @@ defaultproperties
      bHasMuzzleFlash=False
      bHandToHand=True
      bFallbackWeapon=True
-     mpHitDamage=20
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=96
-     mpMaxRange=96
      VM_HeadshotMult=6.000000
      VM_handsTexPos(0)=1
      AmmoName=Class'DeusEx.AmmoNone'

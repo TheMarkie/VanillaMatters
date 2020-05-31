@@ -3,21 +3,6 @@
 //=============================================================================
 class WeaponGasGrenade extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 function PostBeginPlay()
 {
    Super.PostBeginPlay();
@@ -83,11 +68,6 @@ defaultproperties
      AITimeLimit=4.000000
      AIFireDelay=20.000000
      bNeedToSetMPPickupAmmo=False
-     mpReloadTime=0.100000
-     mpHitDamage=2
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=2400
-     mpMaxRange=2400
      VM_isGrenade=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1

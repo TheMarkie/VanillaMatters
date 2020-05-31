@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponLAW extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-    }
-}
-
 function PostBeginPlay()
 {
    Super.PostBeginPlay();
@@ -49,10 +33,6 @@ defaultproperties
      BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      recoilStrength=1.000000
-     mpHitDamage=200
-     mpBaseAccuracy=0.600000
-     mpAccurateRange=14400
-     mpMaxRange=14400
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0

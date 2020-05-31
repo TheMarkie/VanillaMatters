@@ -3,30 +3,8 @@
 //=============================================================================
 class WeaponRifle extends DeusExWeapon;
 
-var float   mpNoScopeMult;
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-      bHasMuzzleFlash = True;
-      ReloadCount = 1;
-      ReloadTime = ShotTime;
-    }
-}
-
 defaultproperties
 {
-     mpNoScopeMult=0.350000
      LowAmmoWaterMark=6
      GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=2.000000
@@ -42,11 +20,6 @@ defaultproperties
      bHasMuzzleFlash=False
      recoilStrength=1.500000
      bUseWhileCrouched=False
-     mpReloadTime=2.000000
-     mpHitDamage=25
-     mpAccurateRange=28800
-     mpMaxRange=28800
-     mpReloadCount=6
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True

@@ -3,23 +3,6 @@
 //=============================================================================
 class WeaponMiniCrossbow extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-      PickupAmmoCount = mpReloadCount;
-    }
-}
-
 // pinkmask out the arrow when we're out of ammo or the clip is empty
 state NormalFire
 {
@@ -69,13 +52,6 @@ defaultproperties
      ProjectileNames(2)=Class'DeusEx.DartFlare'
      StunDuration=10.000000
      bHasMuzzleFlash=False
-     mpReloadTime=0.500000
-     mpHitDamage=30
-     mpBaseAccuracy=0.100000
-     mpAccurateRange=2000
-     mpMaxRange=2000
-     mpReloadCount=6
-     mpPickupAmmoCount=6
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadTime=True
      VM_HeadshotMult=5.000000

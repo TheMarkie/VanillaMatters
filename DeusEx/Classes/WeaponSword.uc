@@ -3,21 +3,6 @@
 //=============================================================================
 class WeaponSword extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -33,10 +18,6 @@ defaultproperties
      bHasMuzzleFlash=False
      bHandToHand=True
      bFallbackWeapon=True
-     mpHitDamage=20
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=100
-     mpMaxRange=100
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=2
      AmmoName=Class'DeusEx.AmmoNone'

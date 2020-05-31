@@ -20,28 +20,6 @@ var Sound VM_fireSounds[13];
 
 var int BurnTime, BurnDamage;
 
-var int     mpBurnTime;
-var int     mpBurnDamage;
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-      HitDamage = mpHitDamage;
-      BaseAccuracy=mpBaseAccuracy;
-      ReloadTime = mpReloadTime;
-      AccurateRange = mpAccurateRange;
-      MaxRange = mpMaxRange;
-      ReloadCount = mpReloadCount;
-      BurnTime = mpBurnTime;
-      BurnDamage = mpBurnDamage;
-      PickupAmmoCount = mpReloadCount;
-    }
-}
-
 // Vanilla Matters: Iterate through all the firing sounds.
 simulated function PlayFiringSound() {
     FireSound = VM_fireSounds[VM_currentSoundIndex];
@@ -78,26 +56,18 @@ defaultproperties
      VM_fireSounds(7)=Sound'DeusEx.VMSounds.FlamethrowerFire8'
      burnTime=30
      burnDamage=5
-     mpBurnTime=15
-     mpBurnDamage=2
      LowAmmoWaterMark=50
      GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
      ShotTime=0.100000
-     reloadTime=5.500000
+     ReloadTime=5.000000
      HitDamage=15
      maxRange=320
      AccurateRange=320
      BaseAccuracy=0.900000
      AreaOfEffect=AOE_Cone
      bHasMuzzleFlash=False
-     mpReloadTime=0.500000
-     mpHitDamage=5
-     mpBaseAccuracy=0.900000
-     mpAccurateRange=320
-     mpMaxRange=320
-     mpReloadCount=100
      bCanHaveModReloadTime=True
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoNapalm'

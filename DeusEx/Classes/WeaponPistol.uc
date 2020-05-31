@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponPistol extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=6
@@ -33,13 +17,6 @@ defaultproperties
      BaseAccuracy=0.700000
      ScopeFOV=25
      bCanHaveLaser=True
-     recoilStrength=0.600000
-     mpReloadTime=2.000000
-     mpHitDamage=20
-     mpBaseAccuracy=0.200000
-     mpAccurateRange=1200
-     mpMaxRange=1200
-     mpReloadCount=9
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True

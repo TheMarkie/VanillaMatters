@@ -3,21 +3,6 @@
 //=============================================================================
 class WeaponNanoSword extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 state DownWeapon
 {
     function BeginState()
@@ -59,10 +44,6 @@ defaultproperties
      bHasMuzzleFlash=False
      bHandToHand=True
      SwingOffset=(X=24.000000,Z=2.000000)
-     mpHitDamage=20
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=150
-     mpMaxRange=150
      VM_ShotCount=2
      VM_HeadshotMult=2.000000
      VM_handsTexPos(0)=0

@@ -15,25 +15,6 @@ var float   mpRecoilStrength;
 // Vanilla Matters
 var Sound VM_fireSounds[5];
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-
-        // Tuned for advanced -> master skill system (Monte & Ricardo's number) client-side
-        recoilStrength = 0.75;
-    }
-}
-
 // Vanilla Matters: Randomize between all the firing sounds.
 simulated function PlayFiringSound() {
     FireSound = VM_fireSounds[Rand( 4 )];
@@ -65,12 +46,6 @@ defaultproperties
      ProjectileNames(1)=Class'DeusEx.HECannister20mm'
      recoilStrength=0.500000
      MinWeaponAcc=0.200000
-     mpReloadTime=0.500000
-     mpHitDamage=10
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=2400
-     mpMaxRange=2400
-     mpReloadCount=30
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModAccurateRange=True

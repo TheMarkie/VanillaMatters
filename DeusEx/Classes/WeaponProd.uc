@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponProd extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=4
@@ -34,12 +18,6 @@ defaultproperties
      bPenetrating=False
      StunDuration=10.000000
      bHasMuzzleFlash=False
-     mpReloadTime=3.000000
-     mpHitDamage=10
-     mpBaseAccuracy=0.500000
-     mpAccurateRange=80
-     mpMaxRange=80
-     mpReloadCount=4
      VM_bAlwaysAccurate=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3

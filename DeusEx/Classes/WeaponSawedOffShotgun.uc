@@ -3,23 +3,6 @@
 //=============================================================================
 class WeaponSawedOffShotgun extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-      PickupAmmoCount = 12; //to match assaultshotgun
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=4
@@ -34,13 +17,6 @@ defaultproperties
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
      recoilStrength=1.000000
-     mpReloadTime=0.500000
-     mpHitDamage=9
-     mpBaseAccuracy=0.400000
-     mpAccurateRange=1200
-     mpMaxRange=1200
-     mpReloadCount=6
-     mpPickupAmmoCount=12
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True

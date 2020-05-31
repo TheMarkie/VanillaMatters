@@ -5,21 +5,6 @@ class WeaponLAM extends DeusExWeapon;
 
 var localized String shortName;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 function PostBeginPlay()
 {
    Super.PostBeginPlay();
@@ -84,11 +69,6 @@ defaultproperties
      AITimeLimit=3.500000
      AIFireDelay=5.000000
      bNeedToSetMPPickupAmmo=False
-     mpReloadTime=0.100000
-     mpHitDamage=50
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=2400
-     mpMaxRange=2400
      VM_isGrenade=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=2

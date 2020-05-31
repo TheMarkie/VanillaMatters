@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponShuriken extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-      PickupAmmoCount = 7;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=5
@@ -35,12 +19,6 @@ defaultproperties
      BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      bHandToHand=True
-     mpReloadTime=0.200000
-     mpHitDamage=35
-     mpBaseAccuracy=0.100000
-     mpAccurateRange=640
-     mpMaxRange=640
-     mpPickupAmmoCount=7
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.AmmoShuriken'

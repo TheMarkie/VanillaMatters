@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponAssaultShotgun extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=12
@@ -34,12 +18,6 @@ defaultproperties
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
      recoilStrength=0.500000
-     mpReloadTime=0.500000
-     mpHitDamage=7
-     mpBaseAccuracy=0.200000
-     mpAccurateRange=1800
-     mpMaxRange=1800
-     mpReloadCount=12
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True

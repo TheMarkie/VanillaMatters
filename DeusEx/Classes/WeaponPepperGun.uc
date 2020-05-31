@@ -12,23 +12,7 @@ class WeaponPepperGun extends DeusExWeapon;
 
 // Vanilla Matters
 var int VM_currentSoundIndex;
-
 var Sound VM_fireSounds[5];
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
 
 // Vanilla Matters: Iterate through all the firing sounds.
 simulated function PlayFiringSound() {
@@ -78,10 +62,6 @@ defaultproperties
      bPenetrating=False
      StunDuration=15.000000
      bHasMuzzleFlash=False
-     mpReloadTime=4.000000
-     mpBaseAccuracy=0.700000
-     mpAccurateRange=100
-     mpMaxRange=100
      VM_HeadshotMult=1.000000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=4

@@ -3,21 +3,6 @@
 //=============================================================================
 class WeaponCrowbar extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -34,10 +19,6 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     mpHitDamage=12
-     mpBaseAccuracy=1.000000
-     mpAccurateRange=96
-     mpMaxRange=96
      VM_MoverDamageMult=2.000000
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=2

@@ -5,23 +5,6 @@ class WeaponGEPGun extends DeusExWeapon;
 
 var localized String shortName;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-      bHasScope = True;
-    }
-}
-
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
@@ -55,10 +38,6 @@ defaultproperties
      bHasMuzzleFlash=False
      recoilStrength=1.000000
      bUseWhileCrouched=False
-     mpHitDamage=40
-     mpAccurateRange=14400
-     mpMaxRange=14400
-     mpReloadCount=1
      bCanHaveModReloadTime=True
      AmmoName=Class'DeusEx.AmmoRocket'
      ReloadCount=1

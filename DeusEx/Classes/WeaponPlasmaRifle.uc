@@ -3,22 +3,6 @@
 //=============================================================================
 class WeaponPlasmaRifle extends DeusExWeapon;
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        HitDamage = mpHitDamage;
-        BaseAccuracy = mpBaseAccuracy;
-        ReloadTime = mpReloadTime;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-        ReloadCount = mpReloadCount;
-    }
-}
-
 defaultproperties
 {
      LowAmmoWaterMark=12
@@ -35,12 +19,6 @@ defaultproperties
      AreaOfEffect=AOE_Cone
      bPenetrating=False
      recoilStrength=0.300000
-     mpReloadTime=0.500000
-     mpHitDamage=20
-     mpBaseAccuracy=0.500000
-     mpAccurateRange=8000
-     mpMaxRange=8000
-     mpReloadCount=12
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
