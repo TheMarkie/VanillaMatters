@@ -138,14 +138,6 @@ var bool bNeedToSetMPPickupAmmo;
 
 var bool    bDestroyOnFinish;
 
-var float   mpReloadTime;
-var int     mpHitDamage;
-var float   mpBaseAccuracy;
-var int     mpAccurateRange;
-var int     mpMaxRange;
-var int     mpReloadCount;
-var int     mpPickupAmmoCount;
-
 // Used to track weapon mods accurately.
 var bool bCanHaveModBaseAccuracy;
 var bool bCanHaveModReloadCount;
@@ -217,15 +209,17 @@ var() float     VM_HeadshotMult;
 var() float     VM_baseStandingRate;            // Base standing bonus building rate.
 var() float     VM_standingBonus;               // Max accuracy bonus for standing still.
 
-var float       VM_recoilForce;
-var float       VM_recoilPenalty;
-var() float     VM_recoilRate;
+var private float       VM_recoilForce;
+var private float       VM_recoilRecovery;
+var private rotator     VM_recoilRotation;
+var private rotator     VM_lastPlayerRotation;
 
-var rotator     VM_recoilRecovery;
-var rotator     VM_lastPlayerRotation;
+var private float       VM_spreadStrength;
+var private float       VM_spreadForce;
+var private float       VM_spreadPenalty;
 
-var float           VM_modTimer;                    // Timer before laser/scope mods become effective.
-var() travel float  VM_modTimerMax;                 // The max duration before they become effective. Scales with CombatDifficulty: modTimerMax * CombatDifficulty.
+var private float       VM_modTimer;                // Timer before laser/scope mods become effective.
+var() travel float      VM_modTimerMax;             // The max duration before they become effective. Scales with CombatDifficulty: modTimerMax * CombatDifficulty.
 
 var bool        VM_readyFire;                       // If the gun is ready to be fired.
 
@@ -335,21 +329,6 @@ function TravelPostAccept()
                 }
             }
         }
-    }
-}
-
-
-//
-// PreBeginPlay
-//
-
-function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    if ( Default.mpPickupAmmoCount == 0 )
-    {
-        Default.mpPickupAmmoCount = Default.PickupAmmoCount;
     }
 }
 
@@ -711,8 +690,8 @@ simulated function float CalculateAccuracy() {
 
         accuracy = FMax( accuracy, 0 );
 
-        if ( VM_recoilPenalty > 0 ) {
-            accuracy = accuracy - VM_recoilPenalty;
+        if ( VM_spreadPenalty > 0 ) {
+            accuracy = accuracy - VM_spreadPenalty;
         }
     }
 
@@ -756,14 +735,7 @@ function bool LoadAmmo(int ammoNum)
                 bInstantHit = True;
                 bAutomatic = Default.bAutomatic;
                 ShotTime = Default.ShotTime;
-                if ( Level.NetMode != NM_Standalone )
-                {
-                    ReloadTime = mpReloadTime;
-                }
-                else
-                {
-                    ReloadTime = Default.ReloadTime;
-                }
+                ReloadTime = Default.ReloadTime;
 
                 // Vanilla Matters: Handles reload time bonus from mods in GetReloadTime.
 
@@ -1154,77 +1126,153 @@ function PlaceGrenade()
     }
 }
 
-//
-// scope, laser, and targetting updates are done here
-//
-simulated function Tick(float deltaTime)
-{
+// Vanilla Matters
+simulated function Tick( float deltaTime ) {
+    local float movespeed, standingRate, skillBonus;
+    local DeusExPlayer player;
+    local Pawn pawn;
     local vector loc;
     local rotator rot;
-    local float beepspeed, recoil;
-    local DeusExPlayer player;
-    local Actor RealTarget;
-    local Pawn pawn;
 
-    // Vanilla Matters
-    local float skillBonus, standingRate;
-    local int yaw, pitch;
-
-    player = DeusExPlayer(Owner);
-    pawn = Pawn(Owner);
+    player = DeusExPlayer( Owner );
+    pawn = Pawn( Owner );
 
     Super.Tick(deltaTime);
 
     // don't do any of this if this weapon isn't currently in use
-    if (pawn == None)
-    {
+    if ( pawn == None || pawn.Weapon != self ) {
         LockMode = LOCK_None;
         MaintainLockTimer = 0;
         LockTarget = None;
         LockTimer = 0;
+
         return;
     }
 
-    if (pawn.Weapon != self)
-    {
-        LockMode = LOCK_None;
-        MaintainLockTimer = 0;
-        LockTarget = None;
-        LockTimer = 0;
-        return;
+    if ( VM_isGrenade ) {
+        if (NearWallCheck()) {
+            if ( Level.NetMode == NM_Standalone || !IsAnimating() || AnimSequence != 'Select' ) {
+                if ( !bNearWall || AnimSequence == 'Select' ) {
+                    PlayAnim( 'PlaceBegin',, 0.1 );
+                    bNearWall = True;
+                }
+            }
+        }
+        else {
+            if ( bNearWall ) {
+                PlayAnim( 'PlaceEnd',, 0.1 );
+                bNearWall = False;
+            }
+        }
     }
+
+    ProcessLockTarget( deltaTime, Player );
+
+    skillBonus = GetSkillValue( "Stability" );
+
+    if ( !bHandToHand && player != none ) {
+        ProcessSpread( deltaTime, player, skillBonus );
+        ProcessRecoil( deltaTime, player, skillBonus );
+    }
+
+    // if were standing still, increase the timer
+
+    // Vanilla Matters: Use a new formula for standing bonus.
+    standingRate = default.VM_baseStandingRate + ( skillBonus * 2 );
+    movespeed = VSize( Owner.Velocity );
+    if ( movespeed <= 10 ) {
+        standingTimer = FMin( standingTimer + standingRate, standingRate * 10 );
+    }
+    else if ( movespeed <= 160 ) {
+        standingTimer = FMin( standingTimer + standingRate, standingRate * 5 );
+    }
+    else {
+        standingTimer = FMax( standingTimer - standingRate, 0 );
+    }
+
+    // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
+    if ( ( bLasing && VSize( Owner.Velocity ) < 160 )  || ( bZoomed && VSize( Owner.Velocity ) < 10 ) ) {
+        VM_modTimer = FMin( VM_modTimer + deltaTime, default.VM_modTimerMax );
+    }
+    else {
+        VM_modTimer = FMax( VM_modTimer - deltaTime, 0 );
+    }
+
+    // Vanilla Matters: Move this down here to be more precise.
+    currentAccuracy = CalculateAccuracy();
+
+    if ( bLasing && Emitter != None ) {
+        loc = Owner.Location;
+        loc.Z += pawn.BaseEyeHeight;
+
+        rot = pawn.ViewRotation;
+        rot.Yaw += Rand( 8 ) - 4;
+        rot.Pitch += Rand( 8 ) - 4;
+
+        Emitter.SetLocation( loc );
+        Emitter.SetRotation( rot );
+    }
+
+    // Vanilla Matters: Non-automatic weapons need the player to stop holding fire to start firing again.
+    if ( pawn != none ) {
+        if ( !bAutomatic && !VM_readyFire && ( !bFiring && bReadyToFire ) && pawn.bFire == 0 ) {
+            VM_readyFire = true;
+        }
+    }
+}
+
+function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
+    local float spread;
+
+    spread = default.VM_spreadStrength * ( 1 - skillBonus ) * deltaTime;
+    if ( VM_spreadForce > 0 ) {
+        VM_spreadPenalty = FMin( VM_spreadPenalty + spread, 0.25 );
+        VM_spreadForce = FMax( VM_recoilForce - deltaTime, 0 );
+    }
+    else if ( VM_spreadPenalty > 0 ) {
+        VM_spreadPenalty = FMax( VM_spreadPenalty - spread, 0 );
+    }
+}
+
+// Vanilla Matters
+function ProcessRecoil( float deltaTime, DeusExPlayer player, float skillBonus ) {
+    local int pitch;
+    local float recoil, recovery;
+
+    if ( VM_recoilForce > 0 ) {
+        recoil = default.recoilStrength * ( 1 + ModRecoilStrength - skillBonus ) * deltaTime;
+        pitch = 8192 * recoil;
+
+        player.ViewRotation.Pitch += pitch;
+        if ( player.ViewRotation.Pitch > 16384 && player.ViewRotation.Pitch < 32768 ) {
+            VM_recoilRotation.Pitch -= player.ViewRotation.Pitch - 16384;
+            player.ViewRotation.Pitch = 16384;
+        }
+        VM_recoilRotation.Pitch += pitch;
+
+        VM_recoilForce = FMax( VM_recoilForce - deltaTime, 0 );
+    }
+    else {
+        recovery = deltaTime * 8192;
+        if ( VM_recoilRotation.Pitch > 0 ) {
+            VM_recoilRotation.Pitch = Max( VM_recoilRotation.Pitch - Abs( player.ViewRotation.Pitch - VM_lastPlayerRotation.Pitch ), 0 );
+            pitch = Min( recovery, VM_recoilRotation.Pitch );
+            player.ViewRotation.Pitch = player.ViewRotation.Pitch - pitch;
+            VM_recoilRotation.Pitch = Max( VM_recoilRotation.Pitch - pitch, 0 );
+        }
+    }
+
+    VM_lastPlayerRotation = player.ViewRotation;
+}
+
+// Vanilla Matters: Move target locking out of Tick
+function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
+    local Actor RealTarget;
+    local float beepspeed;
 
     // all this should only happen IF you have ammo loaded
     if (ClipCount < ReloadCount)
     {
-        // check for LAM or other placed mine placement
-        if (bHandToHand && (ProjectileClass != None) && (!Self.IsA('WeaponShuriken')))
-        {
-            if (NearWallCheck())
-            {
-                if (( Level.NetMode != NM_Standalone ) && IsAnimating() && (AnimSequence == 'Select'))
-                {
-                }
-                else
-                {
-                    if (!bNearWall || (AnimSequence == 'Select'))
-                    {
-                        PlayAnim('PlaceBegin',, 0.1);
-                        bNearWall = True;
-                    }
-                }
-            }
-            else
-            {
-                if (bNearWall)
-                {
-                    PlayAnim('PlaceEnd',, 0.1);
-                    bNearWall = False;
-                }
-            }
-        }
-
-
         SoundTimer += deltaTime;
 
         if ( (Level.Netmode == NM_Standalone) || ( (Player != None) && (Player.PlayerIsClient()) ) )
@@ -1313,49 +1361,48 @@ simulated function Tick(float deltaTime)
                 // act on the lock mode
                 switch (LockMode)
                 {
-                case LOCK_None:
-                    TargetMessage = msgNone;
-                    LockTimer -= deltaTime;
-                    break;
+                    case LOCK_None:
+                        TargetMessage = msgNone;
+                        LockTimer -= deltaTime;
 
-                case LOCK_Invalid:
-                    TargetMessage = msgLockInvalid;
-                    LockTimer -= deltaTime;
-                    break;
+                        break;
 
-                case LOCK_Range:
-                    TargetMessage = msgLockRange @ Int(TargetRange/16) @ msgRangeUnit;
-                    LockTimer -= deltaTime;
-                    break;
+                    case LOCK_Invalid:
+                        TargetMessage = msgLockInvalid;
+                        LockTimer -= deltaTime;
 
-                case LOCK_Acquire:
-                    TargetMessage = msgLockAcquire @ Left(String(LockTime-LockTimer), 4) @ msgTimeUnit;
-                    beepspeed = FClamp((LockTime - LockTimer) / Default.LockTime, 0.2, 1.0);
-                    if (SoundTimer > beepspeed)
-                    {
-                        Owner.PlaySound(TrackingSound, SLOT_None);
-                        SoundTimer = 0;
-                    }
-                    break;
+                        break;
 
-                case LOCK_Locked:
-                    // If maintaining a lock, or getting a new one, increment maintainlocktimer
-                    if ((RealTarget != None) && ((RealTarget == LockTarget) || (LockTarget == None)))
-                    {
-                        if (Level.NetMode != NM_Standalone)
-                            MaintainLockTimer = default.MaintainLockTimer;
-                        else
-                            MaintainLockTimer = 0;
-                        LockTarget = Target;
-                    }
-                    TargetMessage = msgLockLocked @ Int(TargetRange/16) @ msgRangeUnit;
-                    // DEUS_EX AMSD Moved out so server can play it so that client knows for sure when locked.
-                    /*if (SoundTimer > 0.1)
-                    {
-                        Owner.PlaySound(LockedSound, SLOT_None);
-                        SoundTimer = 0;
-                    }*/
-                    break;
+                    case LOCK_Range:
+                        TargetMessage = msgLockRange @ Int(TargetRange/16) @ msgRangeUnit;
+                        LockTimer -= deltaTime;
+
+                        break;
+
+                    case LOCK_Acquire:
+                        TargetMessage = msgLockAcquire @ Left(String(LockTime-LockTimer), 4) @ msgTimeUnit;
+                        beepspeed = FClamp((LockTime - LockTimer) / Default.LockTime, 0.2, 1.0);
+                        if (SoundTimer > beepspeed)
+                        {
+                            Owner.PlaySound(TrackingSound, SLOT_None);
+                            SoundTimer = 0;
+                        }
+
+                        break;
+
+                    case LOCK_Locked:
+                        // If maintaining a lock, or getting a new one, increment maintainlocktimer
+                        if ((RealTarget != None) && ((RealTarget == LockTarget) || (LockTarget == None)))
+                        {
+                            if (Level.NetMode != NM_Standalone)
+                                MaintainLockTimer = default.MaintainLockTimer;
+                            else
+                                MaintainLockTimer = 0;
+                            LockTarget = Target;
+                        }
+                        TargetMessage = msgLockLocked @ Int(TargetRange/16) @ msgRangeUnit;
+
+                        break;
                 }
             }
             else
@@ -1384,135 +1431,6 @@ simulated function Tick(float deltaTime)
     {
         PlayLockSound();
         SoundTimer = 0;
-    }
-
-    // Vanilla Matters: Handle recoil and accuracy penalty.
-    skillBonus = GetSkillValue( "Stability" );
-
-    if ( !bHandToHand && player != none ) {
-        if ( VM_recoilRecovery.Pitch > 0 ) {
-            VM_recoilRecovery.Pitch = Max( VM_recoilRecovery.Pitch - Abs( player.ViewRotation.Pitch - VM_lastPlayerRotation.Pitch ), 0 );
-        }
-
-        if ( VM_recoilForce > 0 ) {
-            recoil = default.VM_recoilRate * ( 1 + ModRecoilStrength ) * deltaTime;
-            VM_recoilPenalty = FMin( VM_recoilPenalty + FMin( VM_recoilForce, recoil ), recoilStrength );
-            VM_recoilForce = FMax( VM_recoilForce - recoil, 0 );
-
-            yaw = ( Rand( 2048 ) - 1024 ) * recoil;
-            pitch = ( Rand( 2048 ) + 2048 ) * recoil;
-
-            player.ViewRotation.Yaw = player.ViewRotation.Yaw + yaw;
-            player.ViewRotation.Pitch = player.ViewRotation.Pitch + pitch;
-            if ( player.ViewRotation.Pitch > 16384 && player.ViewRotation.Pitch < 32768 ) {
-                VM_recoilRecovery.Pitch = VM_recoilRecovery.Pitch - ( player.ViewRotation.Pitch - 16384 );
-                player.ViewRotation.Pitch = 16384;
-            }
-
-            VM_recoilRecovery.Yaw = VM_recoilRecovery.Yaw + yaw;
-            VM_recoilRecovery.Pitch = VM_recoilRecovery.Pitch + pitch;
-        }
-        else {
-            recoil = default.VM_recoilRate * ( 1 - skillBonus ) * deltaTime;
-            if ( VM_recoilPenalty > 0 ) {
-                VM_recoilPenalty = FMax( VM_recoilPenalty - ( recoil * ( 1 - FMin( ShotTime * 2, 0.8 ) ) ), 0 );
-            }
-
-            recoil = recoil * 3072;
-            if ( VM_recoilRecovery.Yaw != 0 ) {
-                if ( VM_recoilRecovery.Yaw >= 0 ) {
-                    yaw = Min( recoil, VM_recoilRecovery.Yaw );
-                }
-                else {
-                    yaw = Max( - recoil, VM_recoilRecovery.Yaw );
-                }
-
-                player.ViewRotation.Yaw = player.ViewRotation.Yaw - yaw;
-
-                if ( VM_recoilRecovery.Yaw >= 0 ) {
-                    VM_recoilRecovery.Yaw = Max( VM_recoilRecovery.Yaw - yaw, 0 );
-                }
-                else {
-                    VM_recoilRecovery.Yaw = Min( VM_recoilRecovery.Yaw - yaw, 0 );
-                }
-            }
-
-            if ( VM_recoilRecovery.Pitch > 0 ) {
-                pitch = Min( recoil, VM_recoilRecovery.Pitch );
-
-                player.ViewRotation.Pitch = player.ViewRotation.Pitch - pitch;
-
-                VM_recoilRecovery.Pitch = Max( VM_recoilRecovery.Pitch - pitch, 0 );
-            }
-        }
-
-        VM_lastPlayerRotation = player.ViewRotation;
-    }
-
-    // if were standing still, increase the timer
-
-    // Vanilla Matters: Use a new formula for standing bonus.
-    standingRate = default.VM_baseStandingRate + ( skillBonus * 2 );
-    beepspeed = VSize( Owner.Velocity );
-    if ( beepspeed <= 10 ) {
-        standingTimer = FMin( standingTimer + standingRate, standingRate * 10 );
-    }
-    else if ( beepspeed <= 160 ) {
-        standingTimer = FMin( standingTimer + standingRate, standingRate * 5 );
-    }
-    else {
-        standingTimer = FMax( standingTimer - standingRate, 0 );
-    }
-
-    // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
-    if ( ( bLasing && VSize( Owner.Velocity ) < 160 )  || ( bZoomed && VSize( Owner.Velocity ) < 10 ) ) {
-        VM_modTimer = FMin( VM_modTimer + deltaTime, default.VM_modTimerMax );
-    }
-    else {
-        VM_modTimer = FMax( VM_modTimer - deltaTime, 0 );
-    }
-
-    if (bLasing || bZoomed)
-    {
-        // shake our view to simulate poor aiming
-        if (ShakeTimer > 0.25)
-        {
-            ShakeYaw = currentAccuracy * (Rand(4096) - 2048);
-            ShakePitch = currentAccuracy * (Rand(4096) - 2048);
-            ShakeTimer -= 0.25;
-        }
-
-        ShakeTimer += deltaTime;
-
-        if (bLasing && (Emitter != None))
-        {
-            loc = Owner.Location;
-            loc.Z += Pawn(Owner).BaseEyeHeight;
-
-            // add a little random jitter - looks cool!
-            rot = Pawn(Owner).ViewRotation;
-            rot.Yaw += Rand(5) - 2;
-            rot.Pitch += Rand(5) - 2;
-
-            Emitter.SetLocation(loc);
-            Emitter.SetRotation(rot);
-        }
-
-        if ((player != None) && bZoomed)
-        {
-            player.ViewRotation.Yaw += deltaTime * ShakeYaw;
-            player.ViewRotation.Pitch += deltaTime * ShakePitch;
-        }
-    }
-
-    // Vanilla Matters: Move this down here to be more precise.
-    currentAccuracy = CalculateAccuracy();
-
-    // Vanilla Matters: Non-automatic weapons need the player to stop holding fire to start firing again.
-    if ( pawn != none ) {
-        if ( !bAutomatic && !VM_readyFire && ( !bFiring && bReadyToFire ) && pawn.bFire == 0 ) {
-            VM_readyFire = true;
-        }
     }
 }
 
@@ -2171,9 +2089,9 @@ simulated function PlayFiringSound()
         PlaySimSound( Sound'StealthPistolFire', SLOT_None, TransientSoundVolume, 2048 );
     else
     {
-        // The sniper rifle sound is heard to it's range in multiplayer
-        if ( ( Level.NetMode != NM_Standalone ) &&  Self.IsA('WeaponRifle') )
-            PlaySimSound( FireSound, SLOT_None, TransientSoundVolume, class'WeaponRifle'.Default.mpMaxRange );
+        // The sniper rifle sound is heard to it's max range
+        if ( self.IsA( 'WeaponRifle' ) )
+            PlaySimSound( FireSound, SLOT_None, TransientSoundVolume, class'WeaponRifle'.Default.MaxRange );
         else
             PlaySimSound( FireSound, SLOT_None, TransientSoundVolume, 2048 );
     }
@@ -2674,7 +2592,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 
     // Vanilla Matters: Add recoil force.
     if ( !bHandToHand ) {
-        VM_recoilForce = FMin( VM_recoilForce + ( recoilStrength * 0.4 ), recoilStrength * 2 );
+        VM_spreadForce = FMin( ShotTime * 0.75, 0.5 );
+        VM_recoilForce = FMin( ShotTime * 0.6, 0.4 );
     }
 
     return proj;
@@ -2720,12 +2639,14 @@ simulated function TraceFire( float accuracy )
 
         Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
 
-        rot = Rotator( EndTrace - StartTrace );
-        if ( AmmoName.Name == 'Ammo3006' ) {
-            Spawn( class'SniperTracer',,, StartTrace + 96 * Vector( rot ), rot );
-        }
-        else {
-            Spawn( class'Tracer',,, StartTrace + 96 * Vector( rot ), rot );
+        if ( DeusExPlayer( Owner ) == none ) {
+            rot = Rotator( EndTrace - StartTrace );
+            if ( AmmoName.Name == 'Ammo3006' ) {
+                Spawn( class'SniperTracer',,, StartTrace + 96 * Vector( rot ), rot );
+            }
+            else {
+                Spawn( class'Tracer',,, StartTrace + 96 * Vector( rot ), rot );
+            }
         }
 
         // Vanilla Matters: Process the trace hit after firing visual tracer.
@@ -2736,7 +2657,8 @@ simulated function TraceFire( float accuracy )
 
     // Vanilla Matters: Add recoil force.
     if ( !bHandToHand ) {
-        VM_recoilForce = FMin( VM_recoilForce + ( recoilStrength * 0.4 ), recoilStrength * 2 );
+        VM_spreadForce = FMin( ShotTime * 0.75, 0.5 );
+        VM_recoilForce = FMin( ShotTime * 0.6, 0.4 );
     }
 }
 
@@ -3061,25 +2983,10 @@ simulated function bool UpdateInfo(Object winObject)
 
     // Vanilla Matters: Damage is now displayed exactly per hit, ignoring shot count unlike vanilla.
     if ( class<DeusExProjectile>( ProjectileClass ) != None && class<DeusExProjectile>( ProjectileClass ).Default.VM_bOverridesDamage ) {
-        if ( Level.NetMode != NM_Standalone ) {
-            dmg = class<DeusExProjectile>( ProjectileClass ).Default.mpDamage;
-
-            // VM: Slight hack, mpDamage has a default property value of -1, to denote whether it has a real value defined. If it doesn't, use the normal damage value.
-            if ( dmg == -1 ) {
-                dmg = ProjectileClass.Default.Damage;
-            }
-        }
-        else {
-            dmg = ProjectileClass.Default.Damage;
-        }
+        dmg = ProjectileClass.Default.Damage;
     }
     else {
-        if ( Level.NetMode != NM_Standalone ) {
-            dmg = Default.mpHitDamage;
-        }
-        else {
-            dmg = Default.HitDamage;
-        }
+        dmg = Default.HitDamage;
     }
 
     str = String(dmg);
@@ -3129,10 +3036,7 @@ simulated function bool UpdateInfo(Object winObject)
         str = msgInfoNA;
     else
     {
-        if ( Level.NetMode != NM_Standalone )
-            str = Default.mpReloadCount @ msgInfoRounds;
-        else
-            str = Default.ReloadCount @ msgInfoRounds;
+        str = Default.ReloadCount @ msgInfoRounds;
     }
 
     if (HasClipMod())
@@ -3168,12 +3072,7 @@ simulated function bool UpdateInfo(Object winObject)
         str = msgInfoNA;
     }
     else {
-        if (Level.NetMode != NM_Standalone ) {
-            str = FormatFloatString( default.mpReloadTime, 0.1 );
-        }
-        else {
-            str = FormatFloatString( default.ReloadTime, 0.1 );
-        }
+        str = FormatFloatString( default.ReloadTime, 0.1 );
 
         mod = ModReloadTime - GetSkillValue( "ReloadTime" );
 
@@ -3513,7 +3412,7 @@ state NormalFire {
         sp = ScriptedPawn( Owner );
 
         if ( sp != none ) {
-            return ShotTime * ( sp.BaseAccuracy * 2 + 1 );
+            return ShotTime;
         }
         else {
             player = DeusExPlayer( Owner );
@@ -3786,7 +3685,7 @@ simulated state ClientFiring
         local float mult, sTime;
 
         if (ScriptedPawn(Owner) != None)
-            return ShotTime * (ScriptedPawn(Owner).BaseAccuracy*2+1);
+            return ShotTime;
         else
         {
             // AugCombat decreases shot time
@@ -4212,7 +4111,6 @@ defaultproperties
      VM_HeadshotMult=4.000000
      VM_baseStandingRate=2.500000
      VM_standingBonus=0.100000
-     VM_recoilRate=2.000000
      VM_modTimerMax=0.250000
      VM_readyFire=True
      VM_handsTexPos(0)=-1
