@@ -39,7 +39,7 @@ function bool WillTakeStompDamage(actor stomper)
 
 defaultproperties
 {
-     BaseAccuracy=1.200000
+     BaseAccuracy=0.200000
      maxRange=400.000000
      MinHealth=40.000000
      bPlayIdle=True

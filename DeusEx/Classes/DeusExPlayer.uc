@@ -4690,7 +4690,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         {
             if ( FrobTarget.IsA('DeusExWeapon') && (DeusExWeapon(FrobTarget).PickupAmmoCount == 0) )
             {
-                DeusExWeapon(FrobTarget).PickupAmmoCount = DeusExWeapon(FrobTarget).Default.mpPickupAmmoCount * 3;
+                DeusExWeapon(FrobTarget).PickupAmmoCount = DeusExWeapon(FrobTarget).Default.PickupAmmoCount * 3;
             }
         }
     }
@@ -9428,13 +9428,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     {
         if ( ( instigatedBy != None ) && (instigatedBy.IsA('DeusExPlayer')) )
         {
-            // Special case the sniper rifle
-            if ((DeusExPlayer(instigatedBy).Weapon != None) && ( DeusExPlayer(instigatedBy).Weapon.class == class'WeaponRifle' ))
-            {
-                dxw = DeusExWeapon(DeusExPlayer(instigatedBy).Weapon);
-                if ( (dxw != None ) && ( !dxw.bZoomed ))
-                    actualDamage *= WeaponRifle(dxw).mpNoScopeMult; // Reduce damage if we're not using the scope
-            }
             if ( (TeamDMGame(DXGame) != None) && (TeamDMGame(DXGame).ArePlayersAllied(DeusExPlayer(instigatedBy),Self)) )
             {
                 // Don't notify if the player hurts themselves
@@ -10015,10 +10008,7 @@ function Timer()
 
     if (!InConversation() && bOnFire)
     {
-        if ( Level.NetMode != NM_Standalone )
-            damage = Class'WeaponFlamethrower'.Default.mpBurnDamage;
-        else
-            damage = Class'WeaponFlamethrower'.Default.BurnDamage;
+        damage = Class'WeaponFlamethrower'.Default.BurnDamage;
         TakeDamage(damage, myBurner, Location, vect(0,0,0), 'Burned');
 
         if (HealthTorso <= 0)
@@ -11851,10 +11841,7 @@ function MultiplayerTick(float DeltaTime)
 
     if (bOnFire)
     {
-        if ( Level.NetMode != NM_Standalone )
-            burnTime = Class'WeaponFlamethrower'.Default.mpBurnTime;
-        else
-            burnTime = Class'WeaponFlamethrower'.Default.BurnTime;
+        burnTime = Class'WeaponFlamethrower'.Default.BurnTime;
         burnTimer += deltaTime;
         if (burnTimer >= burnTime)
             ExtinguishFire();

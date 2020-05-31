@@ -198,7 +198,7 @@ function InitializeSkillSystem() {
     VMSkillSystem.Initialize();
 
     // Start in reverse because we're adding to a linked list.
-    for ( i = #StartingSkills; i >= 0; i-- ) {
+    for ( i = ( #StartingSkills - 1 ); i >= 0; i-- ) {
         VMSkillSystem.AddSkill( StartingSkills[i] );
     }
 }
@@ -1229,7 +1229,7 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
         // This is bad. We need to reset the number so restocking works
         if ( Level.NetMode != NM_Standalone ) {
             if ( weapon != none && weapon.PickupAmmoCount == 0 ) {
-                weapon.PickupAmmoCount = weapon.default.mpPickupAmmoCount * 3;
+                weapon.PickupAmmoCount = weapon.default.PickupAmmoCount * 3;
             }
         }
     }
