@@ -8,7 +8,7 @@ defaultproperties
      ShotTime=0.100000
      reloadTime=1.000000
      HitDamage=15
-     BaseAccuracy=0.600000
+     BaseAccuracy=0.700000
      AmmoName=Class'DeusEx.Ammo762mm'
      PickupAmmoCount=50
      bInstantHit=True

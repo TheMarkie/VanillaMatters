@@ -84,7 +84,7 @@ defaultproperties
      HitDamage=40
      maxRange=1280
      AccurateRange=640
-     BaseAccuracy=0.000000
+     BaseAccuracy=1.000000
      AmmoName=Class'DeusEx.AmmoBattery'
      PickupAmmoCount=20
      bInstantHit=True

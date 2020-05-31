@@ -35,7 +35,7 @@ defaultproperties
      EnemyEffective=ENMEFF_Organic
      ShotTime=0.300000
      reloadTime=0.000000
-     BaseAccuracy=0.300000
+     BaseAccuracy=0.850000
      bHasMuzzleFlash=False
      bOwnerWillNotify=True
      bNativeAttack=True
