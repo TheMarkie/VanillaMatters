@@ -565,7 +565,7 @@ function float GetAugValue( class<Augmentation> class ) {
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return FMax( player.GetAugValue( class'AugTarget' ), 0 );
+        return FMax( player.GetAugValue( class ), 0 );
     }
 
     return 0;
@@ -1186,8 +1186,6 @@ simulated function Tick( float deltaTime ) {
     else {
         standingTimer = FMax( standingTimer - deltaTime, 0 );
     }
-
-    Player.ClientMessage( movespeed );
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
     if ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) {
@@ -2429,62 +2427,49 @@ function GetAIVolume(out float volume, out float radius)
 //
 // copied from Weapon.uc
 //
-simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
-{
+// Vanilla Matters
+simulated function Projectile ProjectileFire( class<projectile> ProjClass, float ProjSpeed, bool bWarn ) {
     local Vector Start, X, Y, Z;
     local DeusExProjectile proj;
     local float mult;
     local float volume, radius;
-    local int i, numProj;
+    local int i;
     local Pawn aPawn;
-
-    // Vanilla Matters
-    local float accuracy, throwBonus;
+    local float inaccuracy, throwBonus;
     local DeusExPlayer player;
 
-    throwBonus = 1;
-    player = DeusExPlayer( Owner );
-    if ( player != none ) {
-        throwBonus = player.AugmentationSystem.GetAugLevelValue( class'AugMuscle' );
-        if ( throwBonus == -1.0 ) {
-            throwBonus = 1;
-        }
-        else {
-            throwBonus = ( throwBonus + 1 ) / 2;
-        }
+    throwBonus = GetAugValue( class'AugMuscle' );
+    if ( throwBonus <= 0 ) {
+        throwBonus = 1;
+    }
+    else {
+        throwBonus = ( throwBonus + 1 ) / 2;
     }
 
-    // Vanilla Matters
     mult = 1.0 + GetSkillValue( "Damage" );
     if ( bHandToHand ) {
         mult += GetAugValue( class'AugCombat' );
     }
 
-    accuracy = 1 - currentAccuracy;
+    inaccuracy = 1 - currentAccuracy;
 
     // make noise if we are not silenced
-    if (!bHasSilencer && !bHandToHand)
-    {
-        GetAIVolume(volume, radius);
-        Owner.AISendEvent('WeaponFire', EAITYPE_Audio, volume, radius);
-        Owner.AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius);
-        if (!Owner.IsA('PlayerPawn'))
-            Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
+    if ( !bHasSilencer && !bHandToHand ) {
+        SendAIWeaponEvent();
     }
 
-    // Vanilla Matters: Set the number of projectiles properly instead of vanilla hardcoding.
-    numProj = VM_ShotCount;
+    GetAxes( Pawn( Owner ).ViewRotation, X, Y, Z );
+    Start = ComputeProjectileStart( X, Y, Z );
 
-    GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
-    Start = ComputeProjectileStart(X, Y, Z);
+    AdjustedAim = Pawn( owner ).AdjustAim( ProjSpeed, Start, 0, true, bWarn );
+    AdjustedAim.Yaw += inaccuracy * ( Rand( 4096 ) - 2048 );
+    AdjustedAim.Pitch += inaccuracy * ( Rand( 4096 ) - 1024 );
 
-    for (i=0; i<numProj; i++)
-    {
-        AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, 0, True, bWarn);
-
-        // Vanilla Matters
-        AdjustedAim.Yaw += accuracy * ( Rand( 2048 ) - 1024 );
-        AdjustedAim.Pitch += accuracy * ( Rand( 2048 ) - 1024 );
+    for ( i = 0; i < VM_ShotCount; i++ ) {
+        if ( i > 0 ) {
+            AdjustedAim.Yaw += Rand( 512 ) - 256;
+            AdjustedAim.Pitch += Rand( 512 ) - 256;
+        }
 
         if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
         {
@@ -2585,7 +2570,6 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
                 }
             }
         }
-
     }
 
     // Vanilla Matters: Add recoil force.
@@ -2600,40 +2584,42 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 //
 // copied from Weapon.uc so we can add range information
 //
-simulated function TraceFire( float accuracy )
-{
-    local vector HitLocation, HitNormal, StartTrace, EndTrace, X, Y, Z;
+// Vanilla Matters
+simulated function TraceFire( float accuracy ) {
+    local vector HitLocation, HitNormal, StartTrace, EndTrace;
+    local vector X, Y, Z, spreadY, spreadZ;
     local Rotator rot;
     local actor Other;
     local int i;
+    local float inaccuracy, range;
     local float volume, radius;
 
-    // Vanilla Matters
-    local float spread, range;
-
     // make noise if we are not silenced
-    if (!bHasSilencer && !bHandToHand)
-    {
-        GetAIVolume(volume, radius);
-        Owner.AISendEvent('WeaponFire', EAITYPE_Audio, volume, radius);
-        Owner.AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius);
-        if (!Owner.IsA('PlayerPawn'))
-            Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
+    if ( !bHasSilencer && !bHandToHand ) {
+        SendAIWeaponEvent();
     }
 
-    GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
-    StartTrace = ComputeProjectileStart(X, Y, Z);
-    AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 0, False, False);
+    GetAxes( Pawn( owner ).ViewRotation, X, Y, Z );
+    StartTrace = ComputeProjectileStart( X, Y, Z );
 
-    //Vanilla Matters
-    spread = 1 - accuracy;
+    inaccuracy = 1 - accuracy;
     range = MaxRange / 2;
 
-    for ( i = 0; i < VM_ShotCount; i++) {
-        EndTrace = StartTrace;
-        EndTrace += MaxRange * vector( AdjustedAim );
-        EndTrace += spread * ( FRand() - 0.5 ) * range * Y;
-        EndTrace += spread * ( FRand() - 0.5 ) * range * Z;
+    spreadY = Y * inaccuracy * ( FRand() - 0.5 ) * range;
+    spreadZ = Z * inaccuracy * ( FRand() - 0.5 ) * range;
+
+    EndTrace = StartTrace;
+    EndTrace += X * MaxRange;
+    EndTrace += spreadY;
+    EndTrace += spreadZ;
+
+    for ( i = 0; i < VM_ShotCount; i++ ) {
+        if ( i > 0 ) {
+            EndTrace = StartTrace;
+            EndTrace += X * MaxRange;
+            EndTrace += spreadY + ( Y * ( Rand( 128 ) - 64 ) );
+            EndTrace += spreadZ + ( Z * ( Rand( 128 ) - 64 ) );
+        }
 
         Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
 
@@ -2648,7 +2634,7 @@ simulated function TraceFire( float accuracy )
         }
 
         // Vanilla Matters: Process the trace hit after firing visual tracer.
-        ProcessTraceHit( Other, HitLocation, HitNormal, Vector( AdjustedAim ), Y, Z );
+        ProcessTraceHit( Other, HitLocation, HitNormal, X, Y, Z );
     }
 
     // otherwise we don't hit the target at all
@@ -2730,6 +2716,18 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
       else
          DeusExMPGame(Level.Game).TrackWeapon(self,0);
    }
+}
+
+// Vanilla Matters
+function SendAIWeaponEvent() {
+    local float volume, radius;
+
+    GetAIVolume( volume, radius );
+    Owner.AISendEvent( 'WeaponFire', EAITYPE_Audio, volume, radius );
+    Owner.AISendEvent( 'LoudNoise', EAITYPE_Audio, volume, radius );
+    if ( !Owner.IsA( 'PlayerPawn' ) ) {
+        Owner.AISendEvent( 'Distress', EAITYPE_Audio, volume, radius );
+    }
 }
 
 simulated function IdleFunction()
