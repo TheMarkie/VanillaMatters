@@ -1221,13 +1221,13 @@ simulated function Tick( float deltaTime ) {
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
     local float spread;
 
-    spread = default.VM_spreadStrength * ( 1 - skillBonus ) * deltaTime;
+    spread = default.VM_spreadStrength * deltaTime;
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + spread, 0.1 );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + ( spread * ( 1 - skillBonus ) ), 0.16 * ( 1 - skillBonus ) );
         VM_spreadForce = FMax( VM_recoilForce - deltaTime, 0 );
     }
     else if ( VM_spreadPenalty > 0 ) {
-        VM_spreadPenalty = FMax( VM_spreadPenalty - spread, 0 );
+        VM_spreadPenalty = FMax( VM_spreadPenalty - ( spread * ( 1 + skillBonus ) ), 0 );
     }
 }
 
@@ -1250,7 +1250,7 @@ function ProcessRecoil( float deltaTime, DeusExPlayer player, float skillBonus )
         VM_recoilForce = FMax( VM_recoilForce - deltaTime, 0 );
     }
     else {
-        recovery = deltaTime * 8192;
+        recovery = deltaTime * ( 1 + skillBonus ) * 8192;
         if ( VM_recoilRotation.Pitch > 0 ) {
             VM_recoilRotation.Pitch = Max( VM_recoilRotation.Pitch - Abs( player.ViewRotation.Pitch - VM_lastPlayerRotation.Pitch ), 0 );
             pitch = Min( recovery, VM_recoilRotation.Pitch );
