@@ -1276,6 +1276,10 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
         {
             if (bCanTrack)
             {
+                if ( GetSkillValue( "Homing" ) <= 0 ) {
+                    return;
+                }
+
                 Target = AcquireTarget();
                 RealTarget = Target;
 
@@ -1337,10 +1341,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
                         if (LockTimer == 0)
                         {
                             // Vanilla Matters
-                            LockTime = FMax( default.LockTime * GetSkillValue( "LockTime" ), 0.0);
-
-                            if ((Level.Netmode != NM_Standalone) && (LockTime < 0.25))
-                            LockTime = 0.25;
+                            LockTime = FMax( default.LockTime * ( 1 + GetSkillValue( "LockTime" ) ), 0 );
                         }
 
                         LockTimer += deltaTime;
@@ -1412,7 +1413,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
             }
 
             if (LockTimer < 0)
-            LockTimer = 0;
+                LockTimer = 0;
         }
     }
     else
@@ -3070,7 +3071,7 @@ simulated function bool UpdateInfo(Object winObject)
     else {
         str = FormatFloatString( default.ReloadTime, 0.1 );
 
-        mod = ModReloadTime - GetSkillValue( "ReloadTime" );
+        mod = ModReloadTime + GetSkillValue( "ReloadTime" );
 
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
@@ -3081,16 +3082,6 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
-
-    // recoil
-    str = FormatFloatString(Default.recoilStrength, 0.01);
-    if (HasRecoilMod())
-    {
-        str = str @ BuildPercentString(ModRecoilStrength);
-        str = str @ "=" @ FormatFloatString(recoilStrength, 0.01);
-    }
-
-    winInfo.AddInfoItem(msgInfoRecoil, str, HasRecoilMod());
 
     // Vanilla Matters: Display headshot multiplier.
     str = "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
@@ -3146,9 +3137,6 @@ simulated function bool UpdateInfo(Object winObject)
         str = msgInfoNA;
     }
     winInfo.AddInfoItem(msgInfoSilencer, str, bCanHaveSilencer && bHasSilencer && (Default.bHasSilencer != bHasSilencer));
-
-    // // Governing Skill
-    // winInfo.AddInfoItem(msgInfoSkill, GoverningSkill.default.SkillName);
 
     // Vanilla Matters: Fix some accessed null class context.
     if ( GoverningSkill != None ) {
@@ -3555,7 +3543,7 @@ ignores Fire, AltFire;
             // check for skill use if we are the player
 
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime - GetSkillValue( "ReloadTime" );
+            val = ModReloadTime + GetSkillValue( "ReloadTime" );
             val = ReloadTime + ( val * ReloadTime );
         }
 
@@ -3849,7 +3837,7 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
         else if (DeusExPlayer(Owner) != None)
         {
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime - GetSkillValue( "ReloadTime" );
+            val = ModReloadTime + GetSkillValue( "ReloadTime" );
             val = ReloadTime + ( val * ReloadTime );
         }
         return val;
