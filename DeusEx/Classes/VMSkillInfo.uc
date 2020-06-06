@@ -32,7 +32,12 @@ function int GetMaxLevel() {
 }
 
 function int GetNextLevelCost() {
-    return GetSkillClass().default.Costs[Level];
+    if ( Level < GetMaxLevel() ) {
+        return GetSkillClass().default.Costs[Level];
+    }
+    else {
+        return -1;
+    }
 }
 
 function bool CanUpgrade( int amount ) {
