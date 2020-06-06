@@ -206,7 +206,6 @@ var() float     VM_MoverDamageMult;             // Damage multiplier against mov
 
 var() float     VM_HeadshotMult;
 
-var() float     VM_baseStandingRate;            // Base standing bonus building rate.
 var() float     VM_standingBonus;               // Max accuracy bonus for standing still.
 
 var private float       VM_recoilForce;
@@ -677,7 +676,6 @@ simulated function float CalculateAccuracy() {
     // Vanilla Matters: Handle standing bonus differently.
     if ( player != none ) {
         if ( standingTimer > 0 ) {
-            div = default.VM_baseStandingRate * 10;
             if ( player.bIsCrouching || player.bForceDuck ) {
                 tempacc = default.VM_standingBonus * 1.5;
             }
@@ -685,7 +683,7 @@ simulated function float CalculateAccuracy() {
                 tempacc = default.VM_standingBonus;
             }
 
-            accuracy = accuracy + ( ( standingTimer / div ) * tempacc );
+            accuracy = accuracy + ( ( standingTimer / 0.2 ) * tempacc );
         }
 
         accuracy = FMax( accuracy, 0 );
@@ -1178,20 +1176,21 @@ simulated function Tick( float deltaTime ) {
     // if were standing still, increase the timer
 
     // Vanilla Matters: Use a new formula for standing bonus.
-    standingRate = default.VM_baseStandingRate + ( skillBonus * 2 );
     movespeed = VSize( Owner.Velocity );
     if ( movespeed <= 10 ) {
-        standingTimer = FMin( standingTimer + standingRate, standingRate * 10 );
+        standingTimer = FMin( standingTimer + deltaTime, 0.2 );
     }
     else if ( movespeed <= 160 ) {
-        standingTimer = FMin( standingTimer + standingRate, standingRate * 5 );
+        standingTimer = FMin( standingTimer + deltaTime, 0.1 );
     }
     else {
-        standingTimer = FMax( standingTimer - standingRate, 0 );
+        standingTimer = FMax( standingTimer - deltaTime, 0 );
     }
 
+    Player.ClientMessage( movespeed );
+
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
-    if ( ( bLasing && VSize( Owner.Velocity ) < 160 )  || ( bZoomed && VSize( Owner.Velocity ) < 10 ) ) {
+    if ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) {
         VM_modTimer = FMin( VM_modTimer + deltaTime, default.VM_modTimerMax );
     }
     else {
@@ -1226,7 +1225,7 @@ function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus )
 
     spread = default.VM_spreadStrength * ( 1 - skillBonus ) * deltaTime;
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + spread, 0.25 );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + spread, 0.1 );
         VM_spreadForce = FMax( VM_recoilForce - deltaTime, 0 );
     }
     else if ( VM_spreadPenalty > 0 ) {
@@ -4105,7 +4104,6 @@ defaultproperties
      VM_ShotCount=1
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
-     VM_baseStandingRate=2.500000
      VM_standingBonus=0.100000
      VM_modTimerMax=0.250000
      VM_readyFire=True
