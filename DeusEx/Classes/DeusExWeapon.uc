@@ -548,12 +548,23 @@ function ReloadAmmo( optional bool bForce ) {
 }
 
 // Vanilla Matters: Rewrite to get only skill value.
-simulated function float GetSkillValue( string category ) {
+function float GetSkillValue( string category ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
         return player.GetSkillValue( GetStringClassName() $ category );
+    }
+
+    return 0;
+}
+
+function float GetGlobalSkillValue( string category ) {
+    local DeusExPlayer player;
+
+    player = DeusExPlayer( Owner );
+    if ( player != None ) {
+        return player.GetSkillValue( category );
     }
 
     return 0;
@@ -583,7 +594,7 @@ simulated function float CalculateAccuracy() {
     local ScriptedPawn sp;
 
     // Vanilla Matters
-    if ( VM_bAlwaysAccurate || bHandToHand ) {
+    if ( VM_bAlwaysAccurate ) {
         return 1.0;
     }
 
@@ -2661,6 +2672,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         // Vanilla Matters
         mult = 1.0 + GetSkillValue( "Damage" );
         if ( bHandToHand ) {
+            mult += GetGlobalSkillValue( "MeleeWeaponDamage" );
             mult += GetAugValue( class'AugCombat' );
         }
 
@@ -2995,6 +3007,9 @@ simulated function bool UpdateInfo(Object winObject)
 
     mod = 1.0 + GetSkillValue( "Damage" );
     if ( bHandToHand ) {
+        if ( bInstantHit ) {
+            mod += GetGlobalSkillValue( "MeleeWeaponDamage" );
+        }
         mod += GetAugValue( class'AugCombat' );
     }
 

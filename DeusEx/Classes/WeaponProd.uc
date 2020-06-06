@@ -15,10 +15,10 @@ defaultproperties
      reloadTime=3.000000
      maxRange=80
      AccurateRange=80
+     BaseAccuracy=1.000000
      bPenetrating=False
      StunDuration=10.000000
      bHasMuzzleFlash=False
-     VM_bAlwaysAccurate=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.AmmoBattery'
