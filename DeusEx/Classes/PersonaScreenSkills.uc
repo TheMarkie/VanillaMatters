@@ -159,7 +159,7 @@ function CreateSkillsList() {
     }
 
     // Select the first skill
-    SelectSkillButton( skillButton );
+    SelectSkillButton( skillButtons[0] );
 }
 
 // ----------------------------------------------------------------------
