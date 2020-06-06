@@ -1574,7 +1574,8 @@ simulated function SwapMuzzleFlashTexture()
         MultiSkins[2] = Texture'FlatFXTex37';
 
     MuzzleFlashLight();
-    SetTimer(0.1, False);
+    // Vanilla Matters
+    SetTimer( 0.05, False );
 }
 
 simulated function EraseMuzzleFlashTexture()
@@ -1903,7 +1904,7 @@ function Fire( float value ) {
     local DeusExPlayer player;
 
     // Vanilla Matters: Control if we can fire.
-    if ( !VM_readyFire ) {
+    if ( !VM_readyFire || bFiring ) {
         return;
     }
 
@@ -2064,10 +2065,8 @@ simulated function PlaySelectiveFiring()
 
     if (( Level.NetMode == NM_Standalone ) || ( DeusExPlayer(Owner) == DeusExPlayer(GetPlayerPawn())) )
     {
-        if (bAutomatic)
-            LoopAnim(anim,, 0.1);
-        else
-            PlayAnim(anim,,0.1);
+        // Vanilla Matters: Fixed automatic weapons looping fire animation uncontrollably.
+        PlayAnim( anim,, 0.05 );
     }
     else if ( Role == ROLE_Authority )
     {
@@ -2799,7 +2798,7 @@ simulated function SimFinish()
 function Finish() {
     local Pawn pawn;
 
-    VM_readyFire = ( bAutomatic || bHandToHand );
+    VM_readyFire = bAutomatic || bHandToHand;
 
     ReadyToFire();
 
@@ -2831,7 +2830,7 @@ function Finish() {
         return;
     }
 
-    if ( PlayerPawn( Owner ) == none ) {;
+    if ( PlayerPawn( Owner ) == none ) {
         if ( ( AmmoType == none || AmmoType.AmmoAmount <= 0 ) && ReloadCount != 0 ) {
             pawn.StopFiring();
             pawn.SwitchToBestWeapon();
@@ -3439,14 +3438,11 @@ state NormalFire {
 
         if ( Owner != none ) {
             if ( ScriptedPawn( Owner ) != none ) {
-                bFiring = False;
                 ReloadAmmo();
             }
             else {
                 player = DeusExPlayer( Owner );
                 if ( player != none ) {
-                    bFiring = False;
-
                     if ( player.bAutoReload ) {
                         if ( AmmoType.AmmoAmount == 0 && AmmoName != AmmoNames[0] ) {
                             CycleAmmo();
@@ -3491,6 +3487,8 @@ state NormalFire {
 Begin:
     VM_readyFire = false;
 
+    Sleep( GetShotTime() );
+
     if ( ClipCount >= ReloadCount && ReloadCount != 0 ) {
         if ( !bAutomatic ) {
             bFiring = False;
@@ -3499,8 +3497,6 @@ Begin:
 
         HandleFire();
     }
-
-    Sleep( GetShotTime() );
 
     if ( bHandToHand ) {
         FinishAnim();
