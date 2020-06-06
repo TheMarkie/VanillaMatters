@@ -639,7 +639,9 @@ simulated function float CalculateAccuracy() {
         checkit = True;
 
         // Vanilla Matters: If a scriptedpawn is using a rifle, give it more accuracy because the pawn doesn't scope in and lose on the scope bonus.
-        accuracy = FMax( accuracy + 0.2, sp.BaseAccuracy );
+        if ( bHasScope ) {
+            accuracy = FMax( accuracy + 0.2, sp.BaseAccuracy );
+        }
     }
     else {
         checkit = false;
@@ -650,9 +652,12 @@ simulated function float CalculateAccuracy() {
         checkit = false;
     }
 
-    // Vanilla Matters: Apply the effectiveness of scope or laser dynamically over time.
-    if ( bLasing || bZoomed ) {
-        accuracy = FMin( accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / default.VM_modTimerMax ) ), 1 );
+    if ( bLasing ) {
+        accuracy = accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / VM_modTimerMax ) );
+    }
+
+    if ( bZoomed ) {
+        accuracy = accuracy + ( 0.15 * ( VM_modTimer / VM_modTimerMax ) );
     }
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
@@ -699,12 +704,12 @@ simulated function float CalculateAccuracy() {
             accuracy = accuracy + ( ( standingTimer / 0.2 ) * tempacc );
         }
 
-        accuracy = FMax( accuracy, 0 );
-
         if ( VM_spreadPenalty > 0 ) {
             accuracy = accuracy - VM_spreadPenalty;
         }
     }
+
+    accuracy = FClamp( accuracy, 0, 1 );
 
     return accuracy;
 }
@@ -1201,11 +1206,13 @@ simulated function Tick( float deltaTime ) {
     }
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
-    if ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) {
-        VM_modTimer = FMin( VM_modTimer + deltaTime, default.VM_modTimerMax );
-    }
-    else {
-        VM_modTimer = FMax( VM_modTimer - deltaTime, 0 );
+    if ( VM_spreadForce <= 0 ) {
+        if ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) {
+            VM_modTimer = FMin( VM_modTimer + deltaTime, VM_modTimerMax );
+        }
+        else {
+            VM_modTimer = FMax( VM_modTimer - deltaTime, 0 );
+        }
     }
 
     // Vanilla Matters: Move this down here to be more precise.
@@ -1236,8 +1243,9 @@ function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus )
 
     spread = default.VM_spreadStrength * deltaTime;
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + ( spread * ( 1 - skillBonus ) ), 0.16 * ( 1 - skillBonus ) );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + ( spread * ( 1 - skillBonus ) ), 0.2 * ( 1 - skillBonus ) );
         VM_spreadForce = FMax( VM_recoilForce - deltaTime, 0 );
+        VM_modTimer = FMax( VM_modTimer - ( deltaTime * VM_modTimerMax * 2 ), 0 );
     }
     else if ( VM_spreadPenalty > 0 ) {
         VM_spreadPenalty = FMax( VM_spreadPenalty - ( spread * ( 1 + skillBonus ) ), 0 );
@@ -2000,14 +2008,6 @@ function Fire( float value ) {
             }
             else {
                 ProjectileFire( ProjectileClass, ProjectileSpeed, bWarnTarget );
-            }
-
-            if ( pp != None ) {
-                if ( Level.NetMode == NM_Standalone || bListenClient ) {
-                    pp.ShakeView( ShakeTime, currentAccuracy * ShakeMag + ShakeMag, currentAccuracy * ShakeVert );
-                }
-
-                pp.PlayFiring();
             }
 
             bPointing= true;
@@ -4113,7 +4113,7 @@ defaultproperties
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
      VM_standingBonus=0.100000
-     VM_modTimerMax=0.250000
+     VM_modTimerMax=0.200000
      VM_readyFire=True
      VM_handsTexPos(0)=-1
      VM_handsTexPos(1)=-1
