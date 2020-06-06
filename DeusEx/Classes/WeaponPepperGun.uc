@@ -52,7 +52,7 @@ defaultproperties
      EnviroEffective=ENVEFF_AirVacuum
      Concealability=CONC_Visual
      bAutomatic=True
-     ShotTime=0.200000
+     ShotTime=0.100000
      reloadTime=3.000000
      HitDamage=7
      maxRange=100
@@ -65,6 +65,7 @@ defaultproperties
      VM_HeadshotMult=1.000000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=4
+     VM_LoopFireAnimation=True
      AmmoName=Class'DeusEx.AmmoPepper'
      ReloadCount=100
      PickupAmmoCount=100

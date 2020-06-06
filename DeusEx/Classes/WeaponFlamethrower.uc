@@ -70,6 +70,7 @@ defaultproperties
      bHasMuzzleFlash=False
      bCanHaveModReloadTime=True
      VM_handsTexPos(0)=0
+     VM_LoopFireAnimation=True
      AmmoName=Class'DeusEx.AmmoNapalm'
      ReloadCount=100
      PickupAmmoCount=100

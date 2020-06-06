@@ -227,6 +227,8 @@ var bool        VM_stopReload;
 var Texture     VM_handsTex;                        // Hands texture.
 var int         VM_handsTexPos[2];                  // Positions in the MultiSkins where they use WeaponHandsTex, so we can replace those.
 
+var bool        VM_LoopFireAnimation;
+
 var localized string VM_msgInfoStun;                // Label for stunning weapons.
 var localized String VM_msgInfoHeadshot;            // Label the headshot multipler section.
 var localized String VM_msgFullClip;
@@ -2075,7 +2077,12 @@ simulated function PlaySelectiveFiring()
     if (( Level.NetMode == NM_Standalone ) || ( DeusExPlayer(Owner) == DeusExPlayer(GetPlayerPawn())) )
     {
         // Vanilla Matters: Fixed automatic weapons looping fire animation uncontrollably.
-        PlayAnim( anim,, 0.05 );
+        if ( VM_LoopFireAnimation ) {
+            LoopAnim( anim,, 0.1 );
+        }
+        else {
+            PlayAnim( anim,, 0.05 );
+        }
     }
     else if ( Role == ROLE_Authority )
     {
