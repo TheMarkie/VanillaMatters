@@ -40,6 +40,7 @@ defaultproperties
      HitDamage=30
      maxRange=2400
      AccurateRange=1200
+     BaseAccuracy=0.750000
      bCanHaveScope=True
      ScopeFOV=15
      bCanHaveLaser=True

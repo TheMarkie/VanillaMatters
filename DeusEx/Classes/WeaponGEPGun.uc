@@ -22,13 +22,13 @@ defaultproperties
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
      ShotTime=2.000000
-     reloadTime=3.000000
+     reloadTime=4.000000
      HitDamage=125
      maxRange=24000
      AccurateRange=14400
      bCanHaveScope=True
      bCanTrack=True
-     LockTime=2.000000
+     LockTime=3.000000
      LockedSound=Sound'DeusExSounds.Weapons.GEPGunLock'
      TrackingSound=Sound'DeusExSounds.Weapons.GEPGunTrack'
      AmmoNames(0)=Class'DeusEx.AmmoRocket'

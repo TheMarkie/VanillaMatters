@@ -8,11 +8,11 @@ defaultproperties
      LowAmmoWaterMark=12
      GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_AirVacuum
-     reloadTime=2.000000
+     reloadTime=3.000000
      HitDamage=25
      maxRange=24000
      AccurateRange=14400
-     BaseAccuracy=0.600000
+     BaseAccuracy=0.650000
      bCanHaveScope=True
      ScopeFOV=20
      bCanHaveLaser=True

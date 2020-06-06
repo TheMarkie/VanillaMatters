@@ -14,7 +14,7 @@ defaultproperties
      HitDamage=50
      maxRange=24000
      AccurateRange=14400
-     BaseAccuracy=0.000000
+     BaseAccuracy=0.800000
      bHasMuzzleFlash=False
      bEmitWeaponDrawn=False
      bUseAsDrawnWeapon=False

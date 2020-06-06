@@ -638,13 +638,13 @@ simulated function float CalculateAccuracy() {
     }
 
     // Vanilla Matters: Apply the effectiveness of scope or laser dynamically over time.
-    if ( bLasing ) {
-        accuracy = FMax( accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / default.VM_modTimerMax ) ), 1 );
+    if ( bLasing || bZoomed ) {
+        accuracy = FMin( accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / default.VM_modTimerMax ) ), 1 );
     }
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
     if ( bHasScope && !bZoomed && !bLasing ) {
-        accuracy = accuracy + 0.2;
+        accuracy = accuracy - 0.2;
     }
 
     // Vanilla Matters: Change penalty values for states of health.

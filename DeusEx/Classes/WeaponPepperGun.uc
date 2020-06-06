@@ -57,7 +57,7 @@ defaultproperties
      HitDamage=7
      maxRange=100
      AccurateRange=100
-     BaseAccuracy=0.700000
+     BaseAccuracy=0.600000
      AreaOfEffect=AOE_Sphere
      bPenetrating=False
      StunDuration=15.000000
