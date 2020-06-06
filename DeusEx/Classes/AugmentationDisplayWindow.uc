@@ -956,20 +956,16 @@ function DrawTargetAugmentation(GC gc)
         x = int( w * 0.5 );
         y = int( h * 0.5 );
 
-        mult = FClamp( ( 1 - weapon.currentAccuracy ) * 100.0 * ( width / 640.0 ), corner - 2, 200 );
+        mult = FMin( ( 1 - weapon.currentAccuracy ) * 100.0 * ( width / 640.0 ) * ( 85.0 / player.FovAngle ), 320 );
 
-        gc.SetTileColorRGB( 0, 0, 0 );
-        for ( i = 1; i >= 0; i-- ) {
-            gc.DrawBox( x + i, y - mult + i, 1, corner, 0, 0, 1, Texture'Solid' );
-            gc.DrawBox( x + i, y + mult - corner + i + 1, 1, corner, 0, 0, 1, Texture'Solid' );
+        gc.SetTileColor( crossColor );
+        gc.DrawBox( x, y - mult, 1, corner, 0, 0, 1, Texture'Solid' );
+        gc.DrawBox( x, y + mult - corner + 1, 1, corner, 0, 0, 1, Texture'Solid' );
 
-            gc.DrawBox( x - mult + i, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
-            gc.DrawBox( x + mult - corner + i + 1, y + i, corner, 1, 0, 0, 1, Texture'Solid' );
+        gc.DrawBox( x - mult, y, corner, 1, 0, 0, 1, Texture'Solid' );
+        gc.DrawBox( x + mult - corner + 1, y, corner, 1, 0, 0, 1, Texture'Solid' );
 
-            gc.DrawBox( x + i, y + i, 1, 1, 0, 0, 1, Texture'Solid' );
-
-            gc.SetTileColor( crossColor );
-        }
+        gc.DrawBox( x, y, 1, 1, 0, 0, 1, Texture'Solid' );
 
         VM_recticleDrawn = true;
     }
