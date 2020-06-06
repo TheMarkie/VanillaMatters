@@ -9,12 +9,12 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
-     ShotTime=1.500000
+     ShotTime=1.200000
      reloadTime=2.000000
      HitDamage=50
      maxRange=19200
      AccurateRange=9600
-     BaseAccuracy=0.650000
+     BaseAccuracy=0.600000
      bCanHaveScope=True
      bHasScope=True
      bCanHaveSilencer=True

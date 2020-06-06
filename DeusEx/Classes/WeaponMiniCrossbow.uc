@@ -36,11 +36,11 @@ defaultproperties
      EnemyEffective=ENMEFF_Organic
      Concealability=CONC_All
      ShotTime=0.800000
-     reloadTime=2.000000
+     reloadTime=3.000000
      HitDamage=30
      maxRange=2400
      AccurateRange=1200
-     BaseAccuracy=0.750000
+     BaseAccuracy=0.700000
      bCanHaveScope=True
      ScopeFOV=15
      bCanHaveLaser=True
