@@ -692,7 +692,7 @@ simulated function float CalculateAccuracy() {
     if ( player != none ) {
         if ( standingTimer > 0 ) {
             if ( player.bIsCrouching || player.bForceDuck ) {
-                tempacc = default.VM_standingBonus * 1.5;
+                tempacc = default.VM_standingBonus * 1.25;
             }
             else {
                 tempacc = default.VM_standingBonus;
@@ -1196,10 +1196,10 @@ simulated function Tick( float deltaTime ) {
         standingTimer = FMin( standingTimer + deltaTime, 0.2 );
     }
     else if ( movespeed <= 160 ) {
-        standingTimer = FMin( standingTimer + deltaTime, 0.1 );
+        standingTimer = FMin( standingTimer + deltaTime, 0.15 );
     }
     else {
-        standingTimer = FMax( standingTimer - deltaTime, 0 );
+        standingTimer = FMax( standingTimer - deltaTime, skillBonus * 0.1 );
     }
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
@@ -3037,8 +3037,8 @@ simulated function bool UpdateInfo(Object winObject)
     str = int( BaseAccuracy * 100 ) $ "%";
     mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
     if ( mod != 0.0 ) {
-        str = str @ BuildPercentString( mod );
-        str = str @ "=" @ FormatFloatString( FMin( ( BaseAccuracy + mod ) * 100, 100 ), 0.1 ) $ "%";
+        str = str @ BuildPercentString( mod + 0.000003 );
+        str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
     }
 
     winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
