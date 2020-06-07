@@ -9,7 +9,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
-     ShotTime=0.600000
+     ShotTime=0.400000
      reloadTime=4.000000
      maxRange=2400
      AccurateRange=1200

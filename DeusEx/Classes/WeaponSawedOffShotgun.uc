@@ -9,6 +9,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
+     ShotTime=0.300000
      reloadTime=0.400000
      maxRange=2400
      AccurateRange=1200

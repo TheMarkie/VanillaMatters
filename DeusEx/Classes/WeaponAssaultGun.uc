@@ -45,7 +45,7 @@ defaultproperties
      AmmoNames(1)=Class'DeusEx.Ammo20mm'
      ProjectileNames(1)=Class'DeusEx.HECannister20mm'
      recoilStrength=0.500000
-     VM_spreadStrength=0.200000
+     VM_spreadStrength=0.150000
      MinWeaponAcc=0.200000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
