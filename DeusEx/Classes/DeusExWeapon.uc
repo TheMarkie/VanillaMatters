@@ -1237,11 +1237,11 @@ simulated function Tick( float deltaTime ) {
 
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 2 ) / ShotTime ), default.VM_spreadStrength * ( 1 - skillBonus ) );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ), default.VM_spreadStrength * ( 1 - skillBonus ) );
         VM_spreadForce -= deltaTime;
     }
     else if ( VM_spreadPenalty > 0 ) {
-        VM_spreadPenalty -= ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ) * ( 1 + skillBonus );
+        VM_spreadPenalty -= ( ( deltaTime * VM_spreadStrength * 0.25 ) / ShotTime ) * ( 1 + skillBonus );
     }
 }
 
