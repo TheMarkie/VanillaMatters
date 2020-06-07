@@ -612,7 +612,7 @@ simulated function float CalculateAccuracy() {
     if ( player != none ) {
         // check the player's skill
         // 0.0 = dead on, 1.0 = way off
-        accuracy = accuracy + weapskill;
+        accuracy += weapskill;
 
         // get the health values for the player
         HealthArmRight = player.HealthArmRight;
@@ -627,7 +627,7 @@ simulated function float CalculateAccuracy() {
     else if ( sp != none ) {
         // update the weapon's accuracy with the ScriptedPawn's BaseAccuracy
         // (BaseAccuracy uses higher values for less accuracy, hence we add)
-        accuracy = accuracy + sp.BaseAccuracy;
+        accuracy += sp.BaseAccuracy;
 
         // get the health values for the NPC
         HealthArmRight = sp.HealthArmRight;
@@ -640,7 +640,7 @@ simulated function float CalculateAccuracy() {
 
         // Vanilla Matters: If a scriptedpawn is using a rifle, give it more accuracy because the pawn doesn't scope in and lose on the scope bonus.
         if ( bHasScope ) {
-            accuracy = FMax( accuracy + 0.2, sp.BaseAccuracy );
+            accuracy += 0.2;
         }
     }
     else {
@@ -653,16 +653,16 @@ simulated function float CalculateAccuracy() {
     }
 
     if ( bLasing ) {
-        accuracy = accuracy + ( ( 1 - accuracy ) * ( VM_modTimer / VM_modTimerMax ) );
+        accuracy -= ( 1 - accuracy ) * ( VM_modTimer / VM_modTimerMax );
     }
 
     if ( bZoomed ) {
-        accuracy = accuracy + ( 0.15 * ( VM_modTimer / VM_modTimerMax ) );
+        accuracy -= 0.15 * ( VM_modTimer / VM_modTimerMax );
     }
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
     if ( bHasScope && !bZoomed && !bLasing ) {
-        accuracy = accuracy - 0.2;
+        accuracy -= 0.2;
     }
 
     // Vanilla Matters: Change penalty values for states of health.
@@ -680,12 +680,12 @@ simulated function float CalculateAccuracy() {
             }
 
             // VM: Add flinching penalty.
-            accuracy = accuracy + ( player.GetFlinchPenalty() * div );
+            accuracy += player.GetFlinchPenalty() * div;
         }
 
-        accuracy = accuracy - ( ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.25 * div );
-        accuracy = accuracy - ( ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.15 * div );
-        accuracy = accuracy - ( ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.25 );
+        accuracy -= ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.25 * div;
+        accuracy -= ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.15 * div;
+        accuracy -= ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.25;
     }
 
     // increase accuracy (decrease value) if we haven't been moving for awhile
@@ -701,11 +701,11 @@ simulated function float CalculateAccuracy() {
                 tempacc = default.VM_standingBonus;
             }
 
-            accuracy = accuracy + ( ( standingTimer / 0.2 ) * tempacc );
+            accuracy += ( standingTimer / 0.2 ) * tempacc;
         }
 
         if ( VM_spreadPenalty > 0 ) {
-            accuracy = accuracy - VM_spreadPenalty;
+            accuracy -= VM_spreadPenalty;
         }
     }
 
@@ -1206,8 +1206,8 @@ simulated function Tick( float deltaTime ) {
     }
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
-    if ( VM_spreadForce <= 0 ) {
-        if ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) {
+    if ( bHasScope || bHasLaser ) {
+        if ( VM_spreadForce <= 0 && ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) ) {
             VM_modTimer = FMin( VM_modTimer + deltaTime, VM_modTimerMax );
         }
         else {
@@ -1239,16 +1239,12 @@ simulated function Tick( float deltaTime ) {
 }
 
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
-    local float spread;
-
-    spread = default.VM_spreadStrength * deltaTime;
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + ( spread * ( 1 - skillBonus ) ), 0.2 * ( 1 - skillBonus ) );
-        VM_spreadForce = FMax( VM_recoilForce - deltaTime, 0 );
-        VM_modTimer = FMax( VM_modTimer - ( deltaTime * VM_modTimerMax * 2 ), 0 );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 2 ) / ShotTime ), default.VM_spreadStrength * ( 1 - skillBonus ) );
+        VM_spreadForce -= deltaTime;
     }
     else if ( VM_spreadPenalty > 0 ) {
-        VM_spreadPenalty = FMax( VM_spreadPenalty - ( spread * ( 1 + skillBonus ) ), 0 );
+        VM_spreadPenalty -= ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ) * ( 1 + skillBonus );
     }
 }
 
@@ -2593,8 +2589,8 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
 
     // Vanilla Matters: Add recoil force.
     if ( !bHandToHand ) {
-        VM_spreadForce = FMin( ShotTime * 0.75, 0.5 );
-        VM_recoilForce = FMin( ShotTime * 0.6, 0.4 );
+        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
     }
 
     return proj;
@@ -2660,8 +2656,8 @@ simulated function TraceFire( float accuracy ) {
 
     // Vanilla Matters: Add recoil force.
     if ( !bHandToHand ) {
-        VM_spreadForce = FMin( ShotTime * 0.75, 0.5 );
-        VM_recoilForce = FMin( ShotTime * 0.6, 0.4 );
+        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
     }
 }
 
@@ -4112,7 +4108,7 @@ defaultproperties
      VM_ShotCount=1
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
-     VM_standingBonus=0.100000
+     VM_standingBonus=0.080000
      VM_modTimerMax=0.200000
      VM_readyFire=True
      VM_handsTexPos(0)=-1

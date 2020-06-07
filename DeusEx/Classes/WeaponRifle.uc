@@ -20,7 +20,7 @@ defaultproperties
      bCanHaveSilencer=True
      bHasMuzzleFlash=False
      recoilStrength=0.400000
-     VM_spreadForce=0.500000
+     VM_spreadStrength=0.200000
      bUseWhileCrouched=False
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True

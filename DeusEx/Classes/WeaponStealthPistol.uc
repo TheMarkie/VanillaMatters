@@ -18,7 +18,7 @@ defaultproperties
      bCanHaveScope=True
      ScopeFOV=25
      bCanHaveLaser=True
-     VM_spreadStrength=0.600000
+     VM_spreadStrength=0.100000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModAccurateRange=True

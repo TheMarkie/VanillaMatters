@@ -9,7 +9,7 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
-     ShotTime=0.250000
+     ShotTime=0.200000
      reloadTime=2.000000
      HitDamage=20
      maxRange=4800
@@ -18,7 +18,7 @@ defaultproperties
      ScopeFOV=25
      bCanHaveLaser=True
      recoilStrength=0.250000
-     VM_spreadStrength=0.600000
+     VM_spreadStrength=0.150000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
