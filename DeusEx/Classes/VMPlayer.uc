@@ -65,9 +65,6 @@ var travel Inventory LastHeldInHand;            // Some temporary place to keep 
 var travel int LastMissionNumber;               // Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
 
-var float FlinchPenalty;                        // Accuracy penalty when the player takes damage.
-var() float FlinchDecay;                        // Penalty decay rate.
-
 var byte ChargedPickupStatus[5];
 
 //==============================================
@@ -212,9 +209,6 @@ function VMPlayerTick( float deltaTime ) {
 
     // Calculate visibility values for this frame.
     UpdateVisibility();
-
-    // Decay accuracy flinch penalty.
-    ProcessFlinch( deltaTime );
 
     // Build forward pressure as you move.
     if ( FPSystem != none ) {
@@ -963,18 +957,6 @@ function float DrainEnergy( Augmentation augDraining, float drainAmount, optiona
     return drainAmount;
 }
 
-// Flinching
-function AddFlinchPenalty( float amount ) {
-    FlinchPenalty = FlinchPenalty + amount;
-}
-function float GetFlinchPenalty() {
-    return FlinchPenalty;
-}
-// Handle flinching penalty decay.
-function ProcessFlinch( float dt ) {
-    FlinchPenalty = FClamp( FlinchPenalty - ( FlinchDecay * dt ), 0, 0.8 );
-}
-
 // Override to optimize
 function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
     local int i;
@@ -1656,5 +1638,4 @@ defaultproperties
      MsgTooMuchAmmo="You already have enough %s"
      MsgMuscleCost="You don't have enough energy to do a powerthrow"
      MsgChargedPickupAlready="You are already using that type of equipment"
-     FlinchDecay=0.600000
 }

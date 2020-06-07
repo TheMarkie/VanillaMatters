@@ -653,11 +653,11 @@ simulated function float CalculateAccuracy() {
     }
 
     if ( bLasing ) {
-        accuracy -= ( 1 - accuracy ) * ( VM_modTimer / VM_modTimerMax );
+        accuracy += ( 1 - accuracy ) * ( VM_modTimer / VM_modTimerMax );
     }
 
     if ( bZoomed ) {
-        accuracy -= 0.15 * ( VM_modTimer / VM_modTimerMax );
+        accuracy += 0.15 * ( VM_modTimer / VM_modTimerMax );
     }
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
@@ -678,14 +678,11 @@ simulated function float CalculateAccuracy() {
             else {
                 div = 1 - ( div * 0.1 );
             }
-
-            // VM: Add flinching penalty.
-            accuracy += player.GetFlinchPenalty() * div;
         }
 
-        accuracy -= ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.25 * div;
-        accuracy -= ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.15 * div;
-        accuracy -= ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.25;
+        accuracy -= ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.2 * div;
+        accuracy -= ( 1 - FMax( float( HealthArmLeft ) / BestArmLeft, 0 ) ) * 0.1 * div;
+        accuracy -= ( 1 - FMax( float( HealthHead ) / BestHead, 0 ) ) * 0.2;
     }
 
     // increase accuracy (decrease value) if we haven't been moving for awhile
@@ -1207,7 +1204,7 @@ simulated function Tick( float deltaTime ) {
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
     if ( bHasScope || bHasLaser ) {
-        if ( VM_spreadForce <= 0 && ( ( bLasing && VSize( Owner.Velocity ) <= 160 )  || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) ) {
+        if ( VM_spreadForce <= 0 && ( ( bLasing && VSize( Owner.Velocity ) <= 160 ) || ( bZoomed && VSize( Owner.Velocity ) <= 10 ) ) ) {
             VM_modTimer = FMin( VM_modTimer + deltaTime, VM_modTimerMax );
         }
         else {

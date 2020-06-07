@@ -9548,9 +9548,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             {
                 HealthHead -= actualDamage * 2;
 
-                // Vanilla Matters: Taking damage makes accuracy flinch.
-                AddFlinchPenalty( actualDamage * 0.02 );
-
                 if (bPlayAnim)
                     PlayAnim('HitHead', , 0.1);
             }
@@ -9569,9 +9566,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
                 if (bPlayAnim)
                     PlayAnim('HitLegLeft', , 0.1);
             }
-
-            // Vanilla Matters: Taking damage makes accuracy flinch.
-            AddFlinchPenalty( actualDamage * 0.01 );
 
             // if this part is already dead, damage the adjacent part
             if ((HealthLegRight < 0) && (HealthLegLeft > 0))
@@ -9618,9 +9612,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
                 if (bPlayAnim)
                     PlayAnim('HitTorso', , 0.1);
             }
-
-            // Vanilla Matters: Taking damage makes accuracy flinch.
-            AddFlinchPenalty( actualDamage * 0.02 );
 
             // if this part is already dead, damage the adjacent part
             if (HealthArmLeft < 0)
@@ -12169,9 +12160,6 @@ function ClearHold();
 
 function bool CanDrain( float drainAmount );
 function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) { return 0; }
-
-function AddFlinchPenalty( float amount );
-function float GetFlinchPenalty() { return 0; }
 
 //==============================================
 // Skill interface
