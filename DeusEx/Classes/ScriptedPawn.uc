@@ -3164,36 +3164,22 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
     {
         if (offset.z > headOffsetZ)     // head
         {
-            // narrow the head region
-            if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
-            {
-                // Vanilla Matters: Allow all weapons to be able to headshot equally.
-                // VM: Use custom headshot multiplier property.
-                if ( VM_hitBy != none ) {
-                    headshotMult = VM_hitBy.VM_HeadshotMult;
-                }
-                else {
-                    // Vanilla Matters: Reduces base headshot mult to 4 to make it consistent with the mults to other bodyparts.
-                    headshotMult = 4.0;
-                }
-
-                HealthHead = HealthHead - ( actualDamage * headshotMult );
-
-                if (offset.x < 0.0)
-                    hitPos = HITLOC_HeadBack;
-                else
-                    hitPos = HITLOC_HeadFront;
+            // Vanilla Matters: Allow all weapons to be able to headshot equally.
+            // VM: Use custom headshot multiplier property.
+            if ( VM_hitBy != none ) {
+                headshotMult = VM_hitBy.VM_HeadshotMult;
             }
-            else  // sides of head treated as torso
-            {
-                // Vanilla Matters: Make the torso receive only exactly the expected amount.
-                HealthTorso = HealthTorso - actualDamage;
-
-                if (offset.x < 0.0)
-                    hitPos = HITLOC_TorsoBack;
-                else
-                    hitPos = HITLOC_TorsoFront;
+            else {
+                // Vanilla Matters: Reduces base headshot mult to 4 to make it consistent with the mults to other bodyparts.
+                headshotMult = 4.0;
             }
+
+            HealthHead = HealthHead - ( actualDamage * headshotMult );
+
+            if (offset.x < 0.0)
+                hitPos = HITLOC_HeadBack;
+            else
+                hitPos = HITLOC_HeadFront;
         }
         else if (offset.z < 0.0)    // legs
         {
