@@ -61,7 +61,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconTarget'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconTarget_Small'
      AugmentationName="Targeting"
-     Description="Image-scaling and recognition provided by multiplexing the optic nerve with doped polyacetylene 'quantum wires' not only increases accuracy, but also delivers limited situational info about a target.|n|nTECH ONE: General target information.|n+4% weapon accuracy.|n|nTECH TWO: Extensive target information.|n+8% weapon accuracy.|n|nTECH THREE: Specific target information.|n+12% weapon accuracy.|n|nTECH FOUR: Telescopic vision.|n+16% weapon accuracy."
+     Description="Image-scaling and recognition provided by multiplexing the optic nerve with doped polyacetylene 'quantum wires' not only increases accuracy, but also delivers limited situational info about a target.|n|n[TECH ONE]|nGeneral target information.|n+4% weapon accuracy|n|n[TECH TWO]|nExtensive target information.|n+8% weapon accuracy|n|n[TECH THREE]|nSpecific target information.|n+12% weapon accuracy|n|n[TECH FOUR]|nTelescopic vision.|n+16% weapon accuracy"
      MPInfo="When active, all weapon skills are effectively increased by one level, and you can see an enemy's health.  The skill increases allow you to effectively surpass skill level 3.  Energy Drain: Moderate"
      LevelValues(0)=0.040000
      LevelValues(1)=0.080000

@@ -31,7 +31,7 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconRunSilent_Small'
      bAlwaysActive=True
      AugmentationName="Run Silent"
-     Description="The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.|n|nTECH ONE: Movement is 15% quieter.|n- Falling damage reduced by 8 points.|n|nTECH TWO: Movement is 30% quieter.|n- Falling damage reduced by 12 points.|n|nTECH THREE: Movement is 60% quieter.|n- Falling damage reduced by 16 points.|n|nTECH FOUR: An agent is completely silent.|n- Falling damage reduced by 20 points."
+     Description="The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.|n|n[TECH ONE]|nMovement is 15% quieter.|n- Falling damage reduced by 8 points.|n|n[TECH TWO]|nMovement is 30% quieter.|n- Falling damage reduced by 12 points.|n|n[TECH THREE]|nMovement is 60% quieter.|n- Falling damage reduced by 16 points.|n|n[TECH FOUR]|nAn agent is completely silent.|n- Falling damage reduced by 20 points."
      LevelValues(0)=0.850000
      LevelValues(1)=0.700000
      LevelValues(2)=0.400000

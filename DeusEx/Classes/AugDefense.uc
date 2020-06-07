@@ -187,7 +187,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'
      AugmentationName="Aggressive Defense System"
-     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of missiles and grenades; these nanoparticles will prematurely detonate such objects prior to reaching the agent.|n|nTECH ONE: The range at which hostile objects are detonated is short.|n|nTECH TWO:|n+100% detonation range.|n|nTECH THREE:|n+200% detonation range.|n|nTECH FOUR: Rockets and grenades are detonated almost before they are fired.|n+300% detonation range.|n|nProjectile detonation costs 2 energy."
+     Description="Aerosol nanoparticles are released upon the detection of objects fitting the electromagnetic threat profile of missiles and grenades; these nanoparticles will prematurely detonate such objects prior to reaching the agent.|n|n[TECH ONE]|nThe range at which hostile objects are detonated is short.|n|n[TECH TWO]|n+100% detonation range|n|n[TECH THREE]|n+200% detonation range|n|n[TECH FOUR]|nRockets and grenades are detonated almost before they are fired.|n+300% detonation range|n|nProjectile detonation costs 2 energy."
      MPInfo="When active, enemy rockets detonate when they get close, doing reduced damage.  Some large rockets may still be close enough to do damage when they explode.  Energy Drain: Very Low"
      LevelValues(0)=200.000000
      LevelValues(1)=400.000000
