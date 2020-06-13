@@ -227,7 +227,6 @@ function CreateSkillsListWindow()
 
     lstSkills.SetColumnFont(0, Font'FontMenuHeaders');
     lstSkills.SetSortColumn(0, False);
-    lstSkills.EnableAutoSort(True);
 }
 
 // ----------------------------------------------------------------------
@@ -270,7 +269,6 @@ function PopulateSkillsList() {
         lstSkills.SetRowClientObject( rowIndex, localSkills[i] );
     }
 
-    lstSkills.Sort();
     lstSkills.SetRow( lstSkills.IndexToRowId( 0 ), false );
 }
 
