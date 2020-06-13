@@ -14,6 +14,9 @@ function FirstFrame()
     local UNATCOTroop troop;
     local LAM lam;
 
+    // Vanilla Matters
+    local VMSkillManager skillSystem;
+
     Super.FirstFrame();
 
     // zero the player's skill points
@@ -36,6 +39,16 @@ function FirstFrame()
         // fool a lam into thinking that the player set it
         foreach AllActors(class'LAM', lam, 'Bot1LAM')
             lam.SetOwner(Player);
+
+        // Vanilla Matters: Increase Pistol skill at the start of combat training.
+        if ( !flags.GetBool( 'VM_PistolSkillIncreased' ) ) {
+            skillSystem = Player.GetSkillSystem();
+            if ( skillSystem != none ) {
+                skillSystem.GetSkillInfo( 'SkillWeaponPistol' ).IncreaseLevel( skillSystem.SkillValues );
+            }
+
+            flags.SetBool( 'VM_PistolSkillIncreased', true );
+        }
     }
 }
 
@@ -68,7 +81,6 @@ function Timer()
 
     // Vanilla Matters
     local VMSkillManager skillSystem;
-    local VMSkillInfo info;
 
     Super.Timer();
 
