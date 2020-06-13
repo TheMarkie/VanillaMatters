@@ -714,33 +714,35 @@ function Frob(Actor Frobber, Inventory frobWith)
             until ((item == None) || (item == startItem));
         }
 
-//log("  bFoundSomething = " $ bFoundSomething);
-
-        if (!bFoundSomething)
-            P.ClientMessage(msgEmpty);
+        // Vanilla Matters
+        if ( !bFoundSomething && !VM_bSearchedOnce ) {
+            P.ClientMessage( msgEmpty );
+        }
 
         // Vanilla Matters: Search finished so the body has been searched at least once.
-        VM_bSearchedOnce = true;
+        if ( !VM_bSearchedOnce ) {
+            VM_bSearchedOnce = true;
+        }
     }
 
-   if ((player != None) && (Level.Netmode != NM_Standalone))
-   {
-      player.ClientMessage(Sprintf(msgRecharged, 25));
+    if ((player != None) && (Level.Netmode != NM_Standalone))
+    {
+        player.ClientMessage(Sprintf(msgRecharged, 25));
 
-      PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+        PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-      player.Energy += 25;
-      if (player.Energy > player.EnergyMax)
-         player.Energy = player.EnergyMax;
-   }
+        player.Energy += 25;
+        if (player.Energy > player.EnergyMax)
+            player.Energy = player.EnergyMax;
+    }
 
-    Super.Frob(Frobber, frobWith);
+        Super.Frob(Frobber, frobWith);
 
-   if ((Level.Netmode != NM_Standalone) && (Player != None))
-   {
-       bQueuedDestroy = true;
-       Destroy();
-   }
+    if ((Level.Netmode != NM_Standalone) && (Player != None))
+    {
+        bQueuedDestroy = true;
+        Destroy();
+    }
 }
 
 // Vanilla Matters: Move the POVCorpse spawning out of Frob() to have better control over it.
