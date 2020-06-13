@@ -132,7 +132,7 @@ function RefreshSkillInfo() {
     if ( skill != none ) {
         winIcon.SetBackground( skill.GetSkillIcon() );
         winName.SetText( skill.GetSkillName() );
-        winLevel.SetText( class'VMSkillManager'.default.SkillLevelNames[skill.Level] );
+        winLevel.SetText( class'VMSkillManager'.default.SkillLevelNames[( 3 - skill.GetMaxLevel() ) + skill.Level] );
         winLevelIcons.SetLevel( skill.Level );
 
         if ( skill.Level == skill.GetMaxLevel() ) {

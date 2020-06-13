@@ -291,7 +291,7 @@ function String BuildSkillString( VMSkillInfo info )
     }
 
     skillString = info.GetSkillName() $ ";" $
-                  class'VMSkillManager'.default.SkillLevelNames[info.Level] $ ";" $
+                  class'VMSkillManager'.default.SkillLevelNames[( 3 - info.GetMaxLevel() ) + info.Level] $ ";" $
                   levelCost;
 
     return skillString;
