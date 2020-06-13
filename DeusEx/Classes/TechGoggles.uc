@@ -50,7 +50,7 @@ function ExtraFunction( DeusExPlayer player ) {
         VM_currentVisionLevel = 1;
     }
     else {
-        VM_currentVisionLevel = 1;
+        VM_currentVisionLevel = 2;
     }
 
     if ( level != VM_currentVisionLevel ) {

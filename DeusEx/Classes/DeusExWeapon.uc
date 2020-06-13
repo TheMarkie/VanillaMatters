@@ -1086,11 +1086,10 @@ simulated function bool NearWallCheck()
         }
     }
 
-    // trace out one foot in front of the pawn
+    // Vanilla Matters: Fix place location not matching targeted location.
     StartTrace = Owner.Location;
-    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
-
-    // Vanilla Matters: You can now place grenades on floor.
+    StartTrace.Z += Pawn( Owner ).BaseEyeHeight;
+    EndTrace = StartTrace + ( Vector( Pawn( Owner ).ViewRotation ) * ( Owner.CollisionRadius + 32 ) );
 
     HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
     if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
@@ -1163,7 +1162,7 @@ simulated function Tick( float deltaTime ) {
     }
 
     if ( VM_isGrenade ) {
-        if (NearWallCheck()) {
+        if ( NearWallCheck() ) {
             if ( Level.NetMode == NM_Standalone || !IsAnimating() || AnimSequence != 'Select' ) {
                 if ( !bNearWall || AnimSequence == 'Select' ) {
                     PlayAnim( 'PlaceBegin',, 0.1 );
@@ -2611,8 +2610,11 @@ simulated function TraceFire( float accuracy ) {
         SendAIWeaponEvent();
     }
 
-    GetAxes( Pawn( owner ).ViewRotation, X, Y, Z );
+    GetAxes( Pawn( Owner ).ViewRotation, X, Y, Z );
     StartTrace = ComputeProjectileStart( X, Y, Z );
+    if ( ScriptedPawn( Owner ) != none ) {
+        X = Vector( Pawn( Owner ).AdjustAim( 0, StartTrace, 0, false, false ) );
+    }
 
     inaccuracy = 1 - accuracy;
     range = MaxRange / 2;

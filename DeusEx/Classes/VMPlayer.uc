@@ -1173,20 +1173,16 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
                 }
             }
             else if ( weapon != none ) {
-                canPickup = !( ( weapon.ReloadCount == 0 && weapon.PickupAmmoCount == 0 && weapon.AmmoName != none )
-                    || ( weapon.AmmoName == none || weapon.AmmoName == class'AmmoNone' )
-                );
-
-                if ( canPickup ) {
-                    ClientMessage( Sprintf( CanCarryOnlyOne, weapon.itemName ) );
+                if ( weapon.AmmoName == none
+                    || weapon.AmmoName == class'AmmoNone'
+                    || weapon.PickupAmmoCount <= 0
+                ) {
+                    ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
+                    canPickup = false;
                 }
-                else {
-                    // Fix the bug where you can pick up a weapon whose ammo you're full of.
-                    if ( weapon.AmmoType != none && weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
-                        ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.itemName ) );
-
-                        canPickup = false;
-                    }
+                else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
+                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.ItemName ) );
+                    canPickup = false;
                 }
             }
         }
@@ -1290,7 +1286,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         cpickup = GetActiveChargedPickup( class'BallisticArmor' );
 
         if ( cpickup != None ) {
-            newDamage = newDamage - cpickup.DrainCharge( newDamage - ( newDamage * cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "BallisticArmorResistance", 1 ) ) );
+            newDamage -= cpickup.DrainCharge( newDamage - ( newDamage * ( 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "BallisticArmorResistance", 1 ) ) ) ) );
         }
     }
 
@@ -1302,7 +1298,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         cpickup = GetActiveChargedPickup( class'HazMatSuit' );
 
         if ( cpickup != None ) {
-            newDamage = newDamage * cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "HazMatSuitResistance", 1 );
+            newDamage *= 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "HazMatSuitResistance", 1 ) );
         }
     }
 
@@ -1321,7 +1317,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 
         if ( augValue >= 0.0 ) {
             // AugBallistic now adds a flat damage reduction.
-            newDamage = newDamage - augValue;
+            newDamage -= augValue;
         }
     }
 
@@ -1340,15 +1336,15 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 
     // Allow full damage resistance.
     if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
-        newDamage = newDamage * CombatDifficulty;
-        Damage = Damage * CombatDifficulty;
+        newDamage *= CombatDifficulty;
+        Damage *= CombatDifficulty;
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
     else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
         || damageType == 'PoisonGas' || damageType == 'PoisonEffect'
     ) {
-        newDamage = newDamage * ( ( CombatDifficulty / 2 ) + 0.5 );
-        Damage = Damage * ( ( CombatDifficulty / 2 ) + 0.5 );
+        newDamage *= ( CombatDifficulty / 2 ) + 0.5;
+        Damage *= ( CombatDifficulty / 2 ) + 0.5;
     }
 
     // Move this all the way to the bottom to be most accurate.
