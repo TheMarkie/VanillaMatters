@@ -33,12 +33,9 @@ function ProcessCustomMenuButton(string key)
 {
     switch(key)
     {
-        case "EASY":
+        // Vanilla Matters
+        case "NORMAL":
             InvokeNewGameScreen(1.0);
-            break;
-
-        case "MEDIUM":
-            InvokeNewGameScreen(1.5);
             break;
 
         case "HARD":
@@ -59,10 +56,19 @@ function InvokeNewGameScreen(float difficulty)
 {
     local MenuScreenNewGame newGame;
 
-    newGame = MenuScreenNewGame(root.InvokeMenuScreen(Class'MenuScreenNewGame'));
-
-    if (newGame != None)
-        newGame.SetDifficulty(difficulty);
+    // Vanilla Matters: Move the tutorial prompt here.
+    if ( player.bAskedToTrain ) {
+        newGame = MenuScreenNewGame( root.InvokeMenuScreen( class'MenuScreenNewGame' ) );
+        if ( newGame != none ) {
+            newGame.SetDifficulty( difficulty );
+        }
+    }
+    else {
+        messageBoxMode = MB_AskToTrain;
+        player.bAskedToTrain = true;
+        player.SaveConfig();
+        root.MessageBox( AskToTrainTitle, AskToTrainMessage, 0, false, self );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -70,15 +76,15 @@ function InvokeNewGameScreen(float difficulty)
 
 defaultproperties
 {
-     ButtonNames(0)="Easy"
-     ButtonNames(1)="Medium"
+     ButtonNames(0)="Training"
+     ButtonNames(1)="Normal"
      ButtonNames(2)="Hard"
      ButtonNames(3)="Realistic"
      ButtonNames(4)="Previous Menu"
      buttonXPos=7
      buttonWidth=245
-     buttonDefaults(0)=(Y=13,Action=MA_Custom,Key="EASY")
-     buttonDefaults(1)=(Y=49,Action=MA_Custom,Key="MEDIUM")
+     buttonDefaults(0)=(Y=13,Action=MA_Training)
+     buttonDefaults(1)=(Y=49,Action=MA_Custom,Key="NORMAL")
      buttonDefaults(2)=(Y=85,Action=MA_Custom,Key="HARD")
      buttonDefaults(3)=(Y=121,Action=MA_Custom,Key="REALISTIC")
      buttonDefaults(4)=(Y=179,Action=MA_Previous)

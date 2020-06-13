@@ -4,6 +4,10 @@
 
 class MenuMain expands MenuUIMenuWindow;
 
+// Vanilla Matters
+#exec TEXTURE IMPORT FILE="Textures\MenuMainBackground_1.bmp"       NAME="MenuMainBackground_1"     GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuMainBackground_3.bmp"       NAME="MenuMainBackground_3"     GROUP="VMUI" MIPS=Off
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -42,13 +46,11 @@ function UpdateButtonStatus()
     //
     // Also don't allow the user to save if a DataLink is playing
 
-   // Don't disable in mp if dead.
-
     // Vanilla Matters
     if ( Player.Level.NetMode == NM_Standalone )
     {
         winButtons[1].SetSensitivity( !disableSaving && Player.HasFullForwardPressure() );
-        winButtons[7].SetSensitivity( !disableSaving );
+        winButtons[6].SetSensitivity( !disableSaving );
     }
 
    // Disable the "Save Game", "New Game", "Intro", "Training" and "Load Game" menu choices if in multiplayer
@@ -60,18 +62,6 @@ function UpdateButtonStatus()
       winButtons[4].SetSensitivity(False);
       winButtons[5].SetSensitivity(False);
    }
-
-    // Don't allow saving if a datalink is playing
-    if (player.dataLinkPlay != None)
-        winButtons[1].SetSensitivity(False);
-
-    // Vanilla Matters: Disable multiplayer for now.
-    winButtons[8].SetSensitivity( false );
-
-    // DEUS_EX_DEMO - Uncomment when building demo
-    //
-    // Disable the "Play Intro" button for the demo
-//  winButtons[5].SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -111,30 +101,26 @@ defaultproperties
      ButtonNames(1)="Save Game"
      ButtonNames(2)="Load Game"
      ButtonNames(3)="Settings"
-     ButtonNames(4)="Training"
-     ButtonNames(5)="Play Intro"
-     ButtonNames(6)="Credits"
-     ButtonNames(7)="Back to Game"
-     ButtonNames(8)="Multiplayer"
-     ButtonNames(9)="Exit"
+     ButtonNames(4)="Play Intro"
+     ButtonNames(5)="Credits"
+     ButtonNames(6)="Back to Game"
+     ButtonNames(7)="Exit"
      buttonXPos=7
      buttonWidth=245
-     buttonDefaults(0)=(Y=13,Action=MA_NewGame)
+     buttonDefaults(0)=(Y=13,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuSelectDifficulty')
      buttonDefaults(1)=(Y=49,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenSaveGame')
      buttonDefaults(2)=(Y=85,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenLoadGame')
      buttonDefaults(3)=(Y=121,Invoke=Class'DeusEx.MenuSettings')
-     buttonDefaults(4)=(Y=157,Action=MA_Training)
-     buttonDefaults(5)=(Y=193,Action=MA_Intro)
-     buttonDefaults(6)=(Y=229,Action=MA_MenuScreen,Invoke=Class'DeusEx.CreditsWindow')
-     buttonDefaults(7)=(Y=265,Action=MA_Previous)
-     buttonDefaults(8)=(Y=301,Action=MA_MenuScreen,Invoke=Class'DeusEx.menumpmain')
-     buttonDefaults(9)=(Y=359,Action=MA_Quit)
+     buttonDefaults(4)=(Y=157,Action=MA_Intro)
+     buttonDefaults(5)=(Y=193,Action=MA_MenuScreen,Invoke=Class'DeusEx.CreditsWindow')
+     buttonDefaults(6)=(Y=229,Action=MA_Previous)
+     buttonDefaults(7)=(Y=283,Action=MA_Quit)
      Title="Welcome to DEUS EX"
      ClientWidth=258
-     ClientHeight=400
+     ClientHeight=329
      verticalOffset=2
-     clientTextures(0)=Texture'DeusExUI.UserInterface.MenuMainBackground_1'
+     clientTextures(0)=Texture'DeusEx.VMUI.MenuMainBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuMainBackground_2'
-     clientTextures(2)=Texture'DeusExUI.UserInterface.MenuMainBackground_3'
+     clientTextures(2)=Texture'DeusEx.VMUI.MenuMainBackground_3'
      textureCols=2
 }
