@@ -1674,23 +1674,24 @@ function GenerateTotalHealth()
 // ----------------------------------------------------------------------
 // UpdatePoison()
 // ----------------------------------------------------------------------
-
-function UpdatePoison(float deltaTime)
-{
-    if ((Health <= 0) || bDeleteMe)  // no more pain -- you're already dead!
+// Vanilla Matters
+function UpdatePoison( float deltaTime ) {
+    if ( Health <= 0 || bDeleteMe ) {
         return;
+    }
 
-    if (poisonCounter > 0)
-    {
+    if ( poisonCounter > 0 ) {
         poisonTimer += deltaTime;
-        if (poisonTimer >= 2.0)  // pain every two seconds
-        {
-            poisonTimer = 0;
+        if ( poisonTimer >= 1 ) {
+            poisonTimer -= 1;
             poisonCounter--;
-            TakeDamage(poisonDamage, Poisoner, Location, vect(0,0,0), 'PoisonEffect');
+
+            TakeDamage( poisonDamage, Poisoner, Location, vect( 0, 0, 0 ), 'PoisonEffect' );
         }
-        if ((poisonCounter <= 0) || (Health <= 0) || bDeleteMe)
+
+        if ( poisonCounter <= 0 || Health <= 0 || bDeleteMe ) {
             StopPoison();
+        }
     }
 }
 
