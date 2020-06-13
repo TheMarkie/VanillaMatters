@@ -14,7 +14,7 @@ defaultproperties
      HitDamage=50
      maxRange=19200
      AccurateRange=9600
-     BaseAccuracy=0.600000
+     BaseAccuracy=0.650000
      bCanHaveScope=True
      bHasScope=True
      bCanHaveSilencer=True
