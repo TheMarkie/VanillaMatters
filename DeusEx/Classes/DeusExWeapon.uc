@@ -2430,7 +2430,8 @@ function GetAIVolume(out float volume, out float radius)
     if (!bHasSilencer && !bHandToHand)
     {
         volume = NoiseLevel*Pawn(Owner).SoundDampening;
-        radius = volume * 800.0;
+        // Vanilla Matters
+        radius = volume * 1600;
     }
 }
 

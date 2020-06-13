@@ -1757,7 +1757,7 @@ function UpdateActorVisibility( actor seeActor, float deltaTime, float checkTime
     if ( CheckPeriod >= checkTime ) {
         CheckPeriod = CheckPeriod - checkTime;
         if (seeActor != None) {
-            bCanSee = ( AICanSee( seeActor, ComputeActorVisibility( seeActor ), false, checkDir, true, true ) > 0);
+            bCanSee = ( AICanSee( seeActor, ComputeActorVisibility( seeActor ), false, checkDir, true, true ) > 0 );
         }
         else {
             bCanSee = false;
@@ -1930,7 +1930,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
             lastCycle = CycleIndex;
             foreach CycleActors( class'Pawn', candidate, CycleIndex ) {
                 dist = VSize( candidate.Location - Location );
-                if ( dist > 2400 || candidate == CycleCandidate ) {
+                if ( dist > 3200 || candidate == CycleCandidate ) {
                     continue;
                 }
 
