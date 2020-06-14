@@ -1341,7 +1341,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
     else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
-        || damageType == 'PoisonGas' || damageType == 'PoisonEffect'
+        || damageType == 'PoisonGas'
     ) {
         newDamage *= ( CombatDifficulty / 2 ) + 0.5;
         Damage *= ( CombatDifficulty / 2 ) + 0.5;

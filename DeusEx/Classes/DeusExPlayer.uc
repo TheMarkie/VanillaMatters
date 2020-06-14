@@ -9399,7 +9399,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             ServerConditionalNotifyMsg( MPMSG_FirstPoison );
         }
 
-        StartPoison( instigatedBy, Damage );
+        // Vanilla Matters: Reduce poison damage by half.
+        StartPoison( instigatedBy, Damage * 0.5 );
     }
 
     // reduce our damage correctly
