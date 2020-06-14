@@ -12221,8 +12221,6 @@ defaultproperties
 {
      TruePlayerName="JC Denton"
      CombatDifficulty=1.000000
-     SkillPointsTotal=6575
-     SkillPointsAvail=6575
      Credits=500
      Energy=100.000000
      EnergyMax=100.000000
