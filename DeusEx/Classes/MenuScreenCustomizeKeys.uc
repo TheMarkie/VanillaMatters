@@ -15,10 +15,14 @@ struct S_KeyDisplayItem
     var localized String DisplayName;
 };
 
-var localized string    FunctionText[58];
-var string              MenuValues1[58];
-var string              MenuValues2[58];
-var string              AliasNames[58];
+// Vanilla Matters
+struct Keybind {
+    var localized string Text;
+    var string Function;
+};
+
+var string              MenuValues1[43];
+var string              MenuValues2[43];
 var string              PendingCommands[100];
 var localized S_KeyDisplayItem    keyDisplayNames[71];
 var localized string              NoneText;
@@ -31,6 +35,9 @@ var localized string strHeaderAssignedLabel;
 var localized string WaitingHelpText;
 var localized string InputHelpText;
 var localized string ReassignedFromLabel;
+
+// Vanilla Matters
+var localized Keybind Keybinds[43];
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -251,14 +258,15 @@ function BuildKeyBindings()
                 if ( pos != -1 )
                     Alias = Left(Alias, pos);
 
-                for ( j=0; j<arrayCount(AliasNames); j++ )
-                {
-                    if ( AliasNames[j] == Alias )
-                    {
-                        if ( MenuValues1[j] == "" )
-                            MenuValues1[j] = GetKeyDisplayNameFromKeyName(KeyName);
-                        else if ( MenuValues2[j] == "" )
-                            MenuValues2[j] = GetKeyDisplayNameFromKeyName(KeyName);
+                // Vanilla Matters
+                for ( j = 0; j < ArrayCount( Keybinds ); j++ ) {
+                    if ( Keybinds[j].Function == Alias ) {
+                        if ( MenuValues1[j] == "" ) {
+                            MenuValues1[j] = GetKeyDisplayNameFromKeyName( KeyName );
+                        }
+                        else if ( MenuValues2[j] == "" ) {
+                            MenuValues2[j] = GetKeyDisplayNameFromKeyName( KeyName );
+                        }
                     }
                 }
             }
@@ -400,20 +408,17 @@ function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 
     // Now check to make sure there are no overlapping
     // assignments.
-
-    for ( i=0; i<arrayCount(AliasNames); i++ )
-    {
-        if ( MenuValues2[i] == keyDisplayName )
-        {
-            ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[i]));
+    // Vanilla Matters
+    for ( i = 0; i < arrayCount( Keybinds ); i++ ) {
+        if ( MenuValues2[i] == keyDisplayName ) {
+            ShowHelp( Sprintf( ReassignedFromLabel, keyDisplayName, Keybinds[i].Text ) );
+            AddPending( "SET InputExt " $ GetKeyFromDisplayName( MenuValues2[i] ) );
             MenuValues2[i] = "";
         }
 
-        if ( MenuValues1[i] == keyDisplayName )
-        {
-            ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[i]));
+        if ( MenuValues1[i] == keyDisplayName ) {
+            ShowHelp( Sprintf( ReassignedFromLabel, keyDisplayName, Keybinds[i].Text ) );
+            AddPending( "SET InputExt " $ GetKeyFromDisplayName( MenuValues1[i] ) );
             MenuValues1[i] = MenuValues2[i];
             MenuValues2[i] = "";
         }
@@ -452,7 +457,8 @@ function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 
     }
 
-    AddPending("SET InputExt "$KeyName$" "$AliasNames[Selection]);
+    // Vanilla Matters
+    AddPending( "SET InputExt " $ KeyName $ " " $ Keybinds[Selection].Function );
 
     // Update the buttons
     RefreshKeyBindings();
@@ -495,8 +501,10 @@ function PopulateKeyList()
     // First erase the old list
     lstKeys.DeleteAllRows();
 
-    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
-        lstKeys.AddRow(FunctionText[keyIndex] $ ";" $ GetInputDisplayText(keyIndex));
+    // Vanilla Matters
+    for ( keyIndex = 0; keyIndex < ArrayCount( Keybinds ); keyIndex++ ) {
+        lstKeys.AddRow( Keybinds[keyIndex].Text $ ";" $ GetInputDisplayText( keyIndex ) );
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -535,10 +543,10 @@ function RefreshKeyBindings()
     local int keyIndex;
     local int rowId;
 
-    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
-    {
-        rowId = lstKeys.IndexToRowId(keyIndex);
-        lstKeys.SetField(rowId, 1, GetInputDisplayText(keyIndex));
+    // Vanilla Matters
+    for ( keyIndex = 0; keyIndex < ArrayCount( Keybinds ); keyIndex++ ) {
+        rowId = lstKeys.IndexToRowId( keyIndex );
+        lstKeys.SetField( rowId, 1, GetInputDisplayText( keyIndex ) );
     }
 }
 
@@ -561,122 +569,49 @@ function ResetToDefaults()
 
 defaultproperties
 {
-     FunctionText(0)="Fire Weapon/Use object in hand"
-     FunctionText(1)="Use object in world"
-     FunctionText(2)="Drop/Throw Item"
-     FunctionText(3)="Put Away Item"
-     FunctionText(4)="Move Forward"
-     FunctionText(5)="Move Backward"
-     FunctionText(6)="Turn Left"
-     FunctionText(7)="Turn Right"
-     FunctionText(8)="Strafe Left"
-     FunctionText(9)="Strafe Right"
-     FunctionText(10)="Lean Left"
-     FunctionText(11)="Lean Right"
-     FunctionText(12)="Jump"
-     FunctionText(13)="Crouch"
-     FunctionText(14)="Mouse Look"
-     FunctionText(15)="Look Up"
-     FunctionText(16)="Look Down"
-     FunctionText(17)="Center View"
-     FunctionText(18)="Walk/Run"
-     FunctionText(19)="Toggle Walk/Run"
-     FunctionText(20)="Strafe"
-     FunctionText(21)="Select Next Belt Item"
-     FunctionText(22)="Select Previous Belt Item"
-     FunctionText(23)="Reload Weapon"
-     FunctionText(24)="Toggle Scope"
-     FunctionText(25)="Toggle Laser Sight"
-     FunctionText(26)="Toggle Flash Light"
-     FunctionText(27)="Activate All Augmentations"
-     FunctionText(28)="Deactivate All Augmentations"
-     FunctionText(29)="Change Ammo"
-     FunctionText(30)="Take Screenshot"
-     FunctionText(31)="Activate Inventory Screen"
-     FunctionText(32)="Activate Health Screen"
-     FunctionText(33)="Activate Augmentations Screen"
-     FunctionText(34)="Activate Skills Screen"
-     FunctionText(35)="Activate Goals/Notes Screen"
-     FunctionText(36)="Activate Conversations Screen"
-     FunctionText(37)="Activate Images Screen"
-     FunctionText(38)="Activate Logs Screen"
-     FunctionText(39)="Quick Save"
-     FunctionText(40)="Quick Load"
-     FunctionText(41)="Toggle Crosshairs"
-     FunctionText(42)="Toggle Hit Display"
-     FunctionText(43)="Toggle Compass"
-     FunctionText(44)="Toggle Augmentation Display"
-     FunctionText(45)="Toggle Object Belt"
-     FunctionText(46)="Toggle Ammo Display"
-     FunctionText(47)="Augmentation Hotbar Slot 1"
-     FunctionText(48)="Augmentation Hotbar Slot 2"
-     FunctionText(49)="Augmentation Hotbar Slot 3"
-     FunctionText(50)="Augmentation Hotbar Slot 4"
-     FunctionText(51)="Augmentation Hotbar Slot 5"
-     FunctionText(52)="Augmentation Hotbar Slot 6"
-     FunctionText(53)="Augmentation Hotbar Slot 7"
-     FunctionText(54)="Augmentation Hotbar Slot 8"
-     FunctionText(55)="Augmentation Hotbar Slot 9"
-     FunctionText(56)="Augmentation Hotbar Slot 10"
-     FunctionText(57)="Console"
-     AliasNames(0)="ParseLeftClick|Fire"
-     AliasNames(1)="ParseRightClick"
-     AliasNames(2)="DropItem"
-     AliasNames(3)="PutInHand"
-     AliasNames(4)="MoveForward"
-     AliasNames(5)="MoveBackward"
-     AliasNames(6)="TurnLeft"
-     AliasNames(7)="TurnRight"
-     AliasNames(8)="StrafeLeft"
-     AliasNames(9)="StrafeRight"
-     AliasNames(10)="LeanLeft"
-     AliasNames(11)="LeanRight"
-     AliasNames(12)="Jump"
-     AliasNames(13)="Duck"
-     AliasNames(14)="Look"
-     AliasNames(15)="LookUp"
-     AliasNames(16)="LookDown"
-     AliasNames(17)="CenterView"
-     AliasNames(18)="Walking"
-     AliasNames(19)="ToggleWalk"
-     AliasNames(20)="Strafe"
-     AliasNames(21)="NextBeltItem"
-     AliasNames(22)="PrevBeltItem"
-     AliasNames(23)="ReloadWeapon"
-     AliasNames(24)="ToggleScope"
-     AliasNames(25)="ToggleLaser"
-     AliasNames(26)="ToggleFlashlight"
-     AliasNames(27)="ActivateAllAugs"
-     AliasNames(28)="DeactivateAllAugs"
-     AliasNames(29)="SwitchAmmo"
-     AliasNames(30)="Shot"
-     AliasNames(31)="ShowInventoryWindow"
-     AliasNames(32)="ShowHealthWindow"
-     AliasNames(33)="ShowAugmentationsWindow"
-     AliasNames(34)="ShowSkillsWindow"
-     AliasNames(35)="ShowGoalsWindow"
-     AliasNames(36)="ShowConversationsWindow"
-     AliasNames(37)="ShowImagesWindow"
-     AliasNames(38)="ShowLogsWindow"
-     AliasNames(39)="QuickSave"
-     AliasNames(40)="QuickLoad"
-     AliasNames(41)="ToggleCrosshair"
-     AliasNames(42)="ToggleHitDisplay"
-     AliasNames(43)="ToggleCompass"
-     AliasNames(44)="ToggleAugDisplay"
-     AliasNames(45)="ToggleObjectBelt"
-     AliasNames(46)="ToggleAmmoDisplay"
-     AliasNames(47)="AugSlot1"
-     AliasNames(48)="AugSlot2"
-     AliasNames(49)="AugSlot3"
-     AliasNames(50)="AugSlot4"
-     AliasNames(51)="AugSlot5"
-     AliasNames(52)="AugSlot6"
-     AliasNames(53)="AugSlot7"
-     AliasNames(54)="AugSlot8"
-     AliasNames(55)="AugSlot9"
-     AliasNames(56)="AugSlot10"
-     AliasNames(57)="Type"
+     Keybinds(0)=(Text="Fire weapon/Use item in hand",Function="ParseLeftClick|Fire")
+     Keybinds(1)=(Text="Use object in world",Function="ParseRightClick")
+     Keybinds(2)=(Text="Drop/Throw item",Function="DropItem")
+     Keybinds(3)=(Text="Put away item",Function="PutInHand")
+     Keybinds(4)=(Text="Move Forward",Function="MoveForward")
+     Keybinds(5)=(Text="Move Backward",Function="MoveBackward")
+     Keybinds(6)=(Text="Move Left",Function="StrafeLeft")
+     Keybinds(7)=(Text="Move Right",Function="StrafeRight")
+     Keybinds(8)=(Text="Lean Left",Function="LeanLeft")
+     Keybinds(9)=(Text="Lean Right",Function="LeanRight")
+     Keybinds(10)=(Text="Jump",Function="Jump")
+     Keybinds(11)=(Text="Crouch",Function="Duck")
+     Keybinds(12)=(Text="Walk/Run",Function="Walking")
+     Keybinds(13)=(Text="Toggle Walk/Run",Function="ToggleWalk")
+     Keybinds(14)=(Text="Reload Weapon",Function="ReloadWeapon")
+     Keybinds(15)=(Text="Change Ammo",Function="SwitchAmmo")
+     Keybinds(16)=(Text="Toggle Flashlight",Function="ToggleFlashlight")
+     Keybinds(17)=(Text="Toggle Scope",Function="ToggleScope")
+     Keybinds(18)=(Text="Toggle Laser Sight",Function="ToggleLaser")
+     Keybinds(19)=(Text="Select Next Belt Item",Function="NextBeltItem")
+     Keybinds(20)=(Text="Select Previous Belt Item",Function="PrevBeltItem")
+     Keybinds(21)=(Text="Augmentation Hotkey 1",Function="AugSlot1")
+     Keybinds(22)=(Text="Augmentation Hotkey 2",Function="AugSlot2")
+     Keybinds(23)=(Text="Augmentation Hotkey 3",Function="AugSlot3")
+     Keybinds(24)=(Text="Augmentation Hotkey 4",Function="AugSlot4")
+     Keybinds(25)=(Text="Augmentation Hotkey 5",Function="AugSlot5")
+     Keybinds(26)=(Text="Augmentation Hotkey 6",Function="AugSlot6")
+     Keybinds(27)=(Text="Augmentation Hotkey 7",Function="AugSlot7")
+     Keybinds(28)=(Text="Augmentation Hotkey 8",Function="AugSlot8")
+     Keybinds(29)=(Text="Augmentation Hotkey 9",Function="AugSlot9")
+     Keybinds(30)=(Text="Augmentation Hotkey 10",Function="AugSlot10")
+     Keybinds(31)=(Text="Show Inventory Screen",Function="ShowInventoryWindow")
+     Keybinds(32)=(Text="Show Health Screen",Function="ShowHealthWindow")
+     Keybinds(33)=(Text="Show Augmentations Screen",Function="ShowAugmentationsWindow")
+     Keybinds(34)=(Text="Show Skills Screen",Function="ShowSkillsWindow")
+     Keybinds(35)=(Text="Show Goals/Notes Screen",Function="ShowGoalsWindow")
+     Keybinds(36)=(Text="Show Conversations Screen",Function="ShowConversationsWindow")
+     Keybinds(37)=(Text="Show Images Screen",Function="ShowImagesWindow")
+     Keybinds(38)=(Text="Show Logs Screen",Function="ShowLogsWindow")
+     Keybinds(39)=(Text="Quick Save",Function="QuickSave")
+     Keybinds(40)=(Text="Quick Load",Function="QuickLoad")
+     Keybinds(41)=(Text="Take Screenshot",Function="Shot")
+     Keybinds(42)=(Text="Console",Function="Type")
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")
