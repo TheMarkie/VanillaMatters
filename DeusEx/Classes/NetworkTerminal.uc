@@ -15,7 +15,6 @@ var Class<ComputerUIWindow> FirstScreen;    // First screen to push
 
 // Hacking related variables
 var float loginTime;            // time that the user logged in
-var float detectionTime;        // total time a user may be logged on
 var int   kickTimerID;          // timer ID for kicking the user off
 var bool  bHacked;              // this computer has been hacked
 var bool  bNoHack;              // this computer has been purposely not hacked
@@ -344,23 +343,13 @@ function ForceCloseScreen()
 // ----------------------------------------------------------------------
 // CreateHackWindow()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function CreateHackWindow() {
+    local Float hackTime, detectionTime;
 
-function CreateHackWindow()
-{
-    local Float hackTime;
-    local Float skillLevelValue;
-
-    skillLevelValue = player.GetSkillValue( "HackingTimeMult" );
-
-    // Check to see if the player is skilled in Hacking before
-    // creating the window
-    // Vanilla Matters: Base hackability on HackingTime instead of skill level.
-    if ( skillLevelValue > 0 && bUsesHackWindow )
-    {
-        // Base the detection and hack time on the skill level
-        // Vanilla Matters: Change hack time formula
-        hackTime = FMax( 5 - skillLevelValue, 1 );
-        detectionTime *= skillLevelValue;
+    detectionTime = player.GetSkillValue( "HackingTime" );
+    if ( detectionTime > 0 && bUsesHackWindow ) {
+        hackTime = 4 - player.GetSkillLevel( 'SkillComputer' );
 
         // First create the shadow window
         winHackShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
@@ -630,7 +619,6 @@ function bool AreSpecialOptionsAvailable(optional bool bCheckActivated)
 
 defaultproperties
 {
-     detectionTime=7.000000
      kickTimerID=-1
      bUsesHackWindow=True
      shadowOffsetX=15
