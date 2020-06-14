@@ -15,10 +15,10 @@ struct S_KeyDisplayItem
     var localized String DisplayName;
 };
 
-var localized string    FunctionText[62];
-var string              MenuValues1[62];
-var string              MenuValues2[62];
-var string              AliasNames[62];
+var localized string    FunctionText[58];
+var string              MenuValues1[58];
+var string              MenuValues2[58];
+var string              AliasNames[58];
 var string              PendingCommands[100];
 var localized S_KeyDisplayItem    keyDisplayNames[71];
 var localized string              NoneText;
@@ -618,11 +618,7 @@ defaultproperties
      FunctionText(54)="Augmentation Hotbar Slot 8"
      FunctionText(55)="Augmentation Hotbar Slot 9"
      FunctionText(56)="Augmentation Hotbar Slot 10"
-     FunctionText(57)="Show Multiplayer Scores"
-     FunctionText(58)="Send Message To Team"
-     FunctionText(59)="Send Message To All"
-     FunctionText(60)="Activate Multiplayer Skill Menu"
-     FunctionText(61)="Show Multiplayer Kill Details"
+     FunctionText(57)="Console"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -680,11 +676,7 @@ defaultproperties
      AliasNames(54)="AugSlot8"
      AliasNames(55)="AugSlot9"
      AliasNames(56)="AugSlot10"
-     AliasNames(57)="ShowScores"
-     AliasNames(58)="TeamTalk"
-     AliasNames(59)="Talk"
-     AliasNames(60)="BuySkills"
-     AliasNames(61)="KillerProfile"
+     AliasNames(57)="Type"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")
