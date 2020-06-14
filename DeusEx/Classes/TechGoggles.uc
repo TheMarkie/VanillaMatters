@@ -92,7 +92,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.GogglesIR'
      PickupViewMesh=LodMesh'DeusExItems.GogglesIR'
      ThirdPersonMesh=LodMesh'DeusExItems.GogglesIR'
-     Charge=300
+     Charge=200
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconTechGoggles'
      largeIcon=Texture'DeusExUI.Icons.LargeIconTechGoggles'

@@ -19,7 +19,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.HazMatSuit'
      PickupViewMesh=LodMesh'DeusExItems.HazMatSuit'
      ThirdPersonMesh=LodMesh'DeusExItems.HazMatSuit'
-     Charge=150
+     Charge=100
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconHazMatSuit'
      largeIcon=Texture'DeusExUI.Icons.LargeIconHazMatSuit'

@@ -22,7 +22,7 @@ defaultproperties
      PlayerViewMesh=LodMesh'DeusExItems.BallisticArmor'
      PickupViewMesh=LodMesh'DeusExItems.BallisticArmor'
      ThirdPersonMesh=LodMesh'DeusExItems.BallisticArmor'
-     Charge=300
+     Charge=200
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconArmorBallistic'
      largeIcon=Texture'DeusExUI.Icons.LargeIconArmorBallistic'
