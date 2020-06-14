@@ -6,8 +6,8 @@ class SkillComputer extends VMSkill;
 defaultproperties
 {
      SkillName="Computer"
-     Description="The covert manipulation of computers and security consoles.|n|n[UNTRAINED]|nAn agent can use terminals to read bulletins and news.|n|n[TRAINED]|nAn agent can hack ATMs, computers and security consoles.|n- Available hacking time is 7s.|n|n[ADVANCED]|nAn agent gains the ability to control gun turrets.|n- Available hacking time is 14s.|n|n[MASTER]|nAn agent is an elite hacker that few systems can withstand.|n- Available hacking time is 28s."
+     Description="The covert manipulation of computers and security consoles.|n|n[TRAINED]|nAn agent can hack ATMs, computers and security consoles.|nAvailable hacking time is 10 seconds.|n|n[ADVANCED]|nAn agent gains the ability to control gun turrets.|nAvailable hacking time is 15 seconds.|n|n[MASTER]|nAn agent is an elite hacker that few systems can withstand.|nAvailable hacking time is 25 seconds."
      SkillIcon=Texture'DeusExUI.UserInterface.SkillIconComputer'
-     Costs=(1350,2700,4500)
-     SkillValues=((Name="HackingTimeMult",Values=(0,1,2,4)))
+     Costs=(2000,3000)
+     SkillValues=((Name="HackingTime",Values=(10,15,25)))
 }
