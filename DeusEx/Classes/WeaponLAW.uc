@@ -30,7 +30,7 @@ defaultproperties
      HitDamage=400
      maxRange=24000
      AccurateRange=14400
-     BaseAccuracy=0.600000
+     BaseAccuracy=0.800000
      bHasMuzzleFlash=False
      recoilStrength=1.000000
      VM_handsTexPos(0)=0

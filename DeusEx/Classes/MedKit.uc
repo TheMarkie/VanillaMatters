@@ -162,7 +162,7 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 
 defaultproperties
 {
-     healAmount=35
+     healAmount=30
      MustBeUsedOn="Use to heal critical body parts, or use on character screen to direct healing at a certain body part."
      maxCopies=10
      bCanHaveMultipleCopies=True
