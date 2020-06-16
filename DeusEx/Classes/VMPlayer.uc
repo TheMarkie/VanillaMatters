@@ -1388,11 +1388,8 @@ function VMSkillInfo GetFirstSkillInfo() {
 // Override
 function bool IncreaseSkillLevel( VMSkillInfo info ) {
     if ( info.CanUpgrade( SkillPointsAvail ) ) {
-        if ( VMSkillSystem.IncreaseLevel( info ) ) {
-            SkillPointsAvail -= info.GetNextLevelCost();
-
-            return true;
-        }
+        SkillPointsAvail -= info.GetNextLevelCost();
+        return VMSkillSystem.IncreaseLevel( info );
     }
 
     return false;

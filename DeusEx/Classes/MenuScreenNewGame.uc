@@ -473,18 +473,17 @@ function NextPortrait()
 // ----------------------------------------------------------------------
 // UpgradeSkill()
 // ----------------------------------------------------------------------
-
-function UpgradeSkill()
-{
-    // First make sure we have a skill selected
-    if ( selectedSkill == None )
+// Vanilla Matters
+function UpgradeSkill() {
+    if ( selectedSkill == none || !selectedSkill.CanUpgrade( player.SkillPointsAvail ) ) {
         return;
+    }
 
     // Vanilla Matters
     player.SkillPointsAvail -= selectedSkill.GetNextLevelCost();
     selectedSkill.Level += 1;
 
-    lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
+    lstSkills.ModifyRow( selectedRowId, BuildSkillString( selectedSkill ) );
 
     UpdateSkillPoints();
     EnableButtons();
@@ -494,17 +493,17 @@ function UpgradeSkill()
 // DowngradeSkill()
 // ----------------------------------------------------------------------
 
-function DowngradeSkill()
-{
+function DowngradeSkill() {
     // First make sure we have a skill selected
-    if ( selectedSkill == None )
+    if ( selectedSkill == none || selectedSkill.Level <= 0 ) {
         return;
+    }
 
     // Vanilla Matters
     selectedSkill.Level -= 1;
     player.SkillPointsAvail += selectedSkill.GetNextLevelCost();
 
-    lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
+    lstSkills.ModifyRow( selectedRowId, BuildSkillString( selectedSkill ) );
 
     UpdateSkillPoints();
     EnableButtons();

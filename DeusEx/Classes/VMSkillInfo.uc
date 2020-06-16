@@ -41,11 +41,11 @@ function int GetNextLevelCost() {
 }
 
 function bool CanUpgrade( int amount ) {
-    if ( Level >= GetMaxLevel() || amount < GetNextLevelCost() ) {
-        return false;
+    if ( Level < GetMaxLevel() && amount >= GetNextLevelCost() ) {
+        return true;
     }
     else {
-        return true;
+        return false;
     }
 }
 
