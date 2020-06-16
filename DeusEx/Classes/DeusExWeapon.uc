@@ -1448,46 +1448,30 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
 //
 // scope functions for weapons which have them
 //
-
-function ScopeOn()
-{
-    if (bHasScope && !bZoomed && (Owner != None) && Owner.IsA('DeusExPlayer'))
-    {
+// Vanilla Matters
+function ScopeOn() {
+    if ( bHasScope && !bZoomed ) {
         // Show the Scope View
-        bZoomed = True;
-        RefreshScopeDisplay(DeusExPlayer(Owner), False, bZoomed);
-
-        // Vanilla Matters: Make turning on the scope always reset the effective timer to 0, regardless if laser is active.
-        VM_modTimer = 0;
-
-        // Vanilla Matters: Set modTimerMax depending on the combatDifficulty.
-        if ( DeusExPlayer( Owner ) != None ) {
-            VM_modTimerMax = Default.VM_modTimerMax * DeusExPlayer( Owner ).CombatDifficulty;
-        }
+        RefreshScopeDisplay( DeusExPlayer( Owner ), false, true );
+        bZoomed = true;
     }
 }
-
-function ScopeOff()
-{
-    if (bHasScope && bZoomed && (Owner != None) && Owner.IsA('DeusExPlayer'))
-    {
-        bZoomed = False;
+// Vanilla Matters
+function ScopeOff() {
+    if ( bHasScope && bZoomed ) {
         // Hide the Scope View
-      RefreshScopeDisplay(DeusExPlayer(Owner), False, bZoomed);
-        //DeusExRootWindow(DeusExPlayer(Owner).rootWindow).scopeView.DeactivateView();
+        RefreshScopeDisplay( DeusExPlayer( Owner ), false, false );
+        bZoomed = false;
     }
 }
-
-simulated function ScopeToggle()
-{
-    if (IsInState('Idle'))
-    {
-        if (bHasScope && (Owner != None) && Owner.IsA('DeusExPlayer'))
-        {
-            if (bZoomed)
-                ScopeOff();
-            else
-                ScopeOn();
+// Vanilla Matters
+simulated function ScopeToggle() {
+    if ( bHasScope ) {
+        if ( bZoomed ) {
+            ScopeOff();
+        }
+        else {
+            ScopeOn();
         }
     }
 }
@@ -1495,18 +1479,20 @@ simulated function ScopeToggle()
 // ----------------------------------------------------------------------
 // RefreshScopeDisplay()
 // ----------------------------------------------------------------------
-
+// Vanilla Matters
 simulated function RefreshScopeDisplay(DeusExPlayer player, bool bInstant, bool bScopeOn)
 {
-    if (bScopeOn && (player != None))
-    {
-        // Show the Scope View
-        DeusExRootWindow(player.rootWindow).scopeView.ActivateView(ScopeFOV, False, bInstant);
+    if ( player == none ) {
+        return;
     }
-   else if (!bScopeOn)
-   {
-      DeusExrootWindow(player.rootWindow).scopeView.DeactivateView();
-   }
+
+    if ( bScopeOn ) {
+        DeusExRootWindow( player.rootWindow ).scopeView.ActivateView( ScopeFOV, False, bInstant );
+    }
+    else
+    {
+        DeusExrootWindow( player.rootWindow ).scopeView.DeactivateView();
+    }
 }
 
 //
