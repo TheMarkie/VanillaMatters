@@ -4,8 +4,8 @@
 class Mission04 expands MissionScript;
 
 // Vanilla Matters
-var() int VM_raidReward;
-var() string VM_raidRewardMsg;
+var() int VM_RescueReward;
+var() string VM_RescueRewardMsg;
 
 // ----------------------------------------------------------------------
 // FirstFrame()
@@ -35,15 +35,15 @@ function FirstFrame()
         }
 
         // Vanilla Matters: Deletes vanilla flags if Paul is indicated to be safe.
-        if ( flags.GetBool( 'VM_RaidCleared' ) ) {
+        if ( flags.GetBool( 'VM_PaulRescued' ) ) {
             flags.DeleteFlag( 'PaulDenton_Dead', FLAG_Bool );
             flags.DeleteFlag( 'PlayerBailedOutWindow', FLAG_Bool );
 
-            if ( !flags.GetBool( 'VM_RaidRewarded' ) ) {
-                Player.SkillPointsAdd( VM_raidReward );
-                Player.ClientMessage( VM_raidRewardMsg );
+            if ( !flags.GetBool( 'VM_PaulRescueRewarded' ) ) {
+                Player.SkillPointsAdd( VM_RescueReward );
+                Player.ClientMessage( VM_RescueRewardMsg );
 
-                flags.SetBool( 'VM_RaidRewarded', true );
+                flags.SetBool( 'VM_PaulRescueRewarded', true );
             }
         }
     }
@@ -72,8 +72,10 @@ function FirstFrame()
         foreach AllActors( class'FlagTrigger', ft ) {
             if ( ft.Name == 'FlagTrigger17' ) {
                 ft.Event = '';
-
-                break;
+            }
+            // Vanilla Matters: Fix Paul being announced dead when exiting through the window.
+            else if ( ft.Name == 'FlagTrigger0' ) {
+                ft.Destroy();
             }
         }
     }
@@ -102,18 +104,20 @@ function PreTravel()
 
     // Vanilla Matters: Keep track of Paul's actual status to set flags appropriately.
     if ( localURL == "04_NYC_HOTEL" ) {
-        raidCleared = true;
-        foreach AllActors( class'ScriptedPawn', sp ) {
-            if ( sp.IsA( 'UNATCOTroop' ) || sp.IsA( 'MIB' ) ) {
-                raidCleared = false;
-            }
-        }
+        if ( flags.GetBool( 'M04RaidDone' ) ) {
+            if ( !flags.GetBool( 'PaulDenton_Dead' ) ) {
+                raidCleared = true;
+                foreach AllActors( class'ScriptedPawn', sp ) {
+                    if ( sp.IsA( 'UNATCOTroop' ) || sp.IsA( 'MIB' ) ) {
+                        raidCleared = false;
+                    }
+                }
 
-        if ( raidCleared ) {
-            flags.SetBool( 'VM_RaidCleared', true, true, 5 );
-        }
-        else {
-            flags.SetBool( 'VM_RaidCleared', false, true, 5 );
+                flags.SetBool( 'VM_PaulRescued', raidCleared, true, 5 );
+            }
+            else {
+                flags.SetBool( 'VM_PaulRescued', false, true, 5 );
+            }
         }
     }
 
@@ -326,7 +330,7 @@ function Timer()
 
 // Vanilla Matters: Fix a problem with Paul's raid-starting conversation being triggered inconsistently.
 function Tick( float deltaTime ) {
-    local int penalty, vital, limb;
+    local int vital, limb;
     local ScriptedPawn pawn;
     local PaulDenton Paul;
     local FlagTrigger ft;
@@ -363,8 +367,7 @@ function Tick( float deltaTime ) {
                         // VM: Make Paul vulnerable.
                         Paul.bInvincible = false;
 
-                        penalty = 50 * Player.CombatDifficulty;
-                        vital = 450 - penalty;
+                        vital = 500 - ( ( Player.CombatDifficulty - 1 ) * 50 );
                         limb = vital / 2;
                         Paul.HealthHead = vital;
                         Paul.HealthTorso = vital;
@@ -389,6 +392,6 @@ function Tick( float deltaTime ) {
 
 defaultproperties
 {
-     VM_raidReward=500
-     VM_raidRewardMsg="You helped Paul to safety"
+     VM_RescueReward=500
+     VM_RescueRewardMsg="You helped Paul to safety"
 }
