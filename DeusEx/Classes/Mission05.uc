@@ -70,18 +70,12 @@ function FirstFrame()
                 nextItem = none;
 
                 foreach AllActors( class'SpawnPoint', SP, 'player_inv' ) {
-                    while( item != none && ( item.IsA( 'NanoKeyRing' ) || !item.bDisplayableInv ) ) {
-                        if ( Ammo( item ) != none ) {
-                            nextItem = item.Inventory;
-
-                            Player.DeleteInventory( item );
-                            item.Destroy();
-
-                            item = nextItem;
-                        }
-                        else {
-                            item = item.Inventory;
-                        }
+                    while( item != none
+                        && ( ( !item.bDisplayableInv && Ammo( item ) == none )
+                            || item.PickupViewMesh == Mesh'TestBox'
+                        )
+                    ) {
+                        item = item.Inventory;
                     }
 
                     if ( item != none ) {
@@ -98,7 +92,6 @@ function FirstFrame()
                             }
                         }
 
-                        Player.DeleteInventory( item );
                         item.DropFrom( SP.Location );
                     }
 
