@@ -1146,7 +1146,7 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
     }
     else if ( DeusExPickup( FrobTarget ) != none ) {
         if ( FindInventoryType( FrobTarget.Class ) != none ) {
-            slotSearchNeeded = DeusExPickup( FrobTarget ).bCanHaveMultipleCopies;
+            slotSearchNeeded = !DeusExPickup( FrobTarget ).bCanHaveMultipleCopies;
         }
     }
     else {
