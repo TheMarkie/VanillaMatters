@@ -5,7 +5,6 @@ class Terrorist extends HumanMilitary;
 
 defaultproperties
 {
-     MinHealth=40.000000
      CarcassType=Class'DeusEx.TerroristCarcass'
      WalkingSpeed=0.296000
      AvoidAccuracy=0.100000
