@@ -1624,8 +1624,8 @@ function bool HasFullForwardPressure() {
 
 defaultproperties
 {
-     SkillPointsTotal=4000
-     SkillPointsAvail=4000
+     SkillPointsTotal=4500
+     SkillPointsAvail=4500
      MsgFullHealth="You already have full health"
      MsgFullEnergy="You already have full energy"
      MsgUseChargedPickup="You need to have the item in your inventory to activate it"
