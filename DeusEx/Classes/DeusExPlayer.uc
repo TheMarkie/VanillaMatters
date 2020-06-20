@@ -10216,43 +10216,6 @@ function MakePlayerIgnored(bool bNewIgnore)
 }
 
 // ----------------------------------------------------------------------
-// CalculatePlayerVisibility()
-// ----------------------------------------------------------------------
-
-function float CalculatePlayerVisibility(ScriptedPawn P)
-{
-    local float vis;
-    local AdaptiveArmor armor;
-
-    vis = 1.0;
-    if ((P != None) && (AugmentationSystem != None))
-    {
-        if (P.IsA('Robot'))
-        {
-            // if the aug is on, give the player full invisibility
-            if (AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
-                vis = 0.0;
-        }
-        else
-        {
-            // if the aug is on, give the player full invisibility
-            if (AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0)
-                vis = 0.0;
-        }
-
-        // go through the actor list looking for owned AdaptiveArmor
-        // since they aren't in the inventory anymore after they are used
-
-      if (UsingChargedPickup(class'AdaptiveArmor'))
-            {
-                vis = 0.0;
-            }
-    }
-
-    return vis;
-}
-
-// ----------------------------------------------------------------------
 // ClientFlash()
 //
 // copied from Engine.PlayerPawn
@@ -12141,9 +12104,7 @@ function bool IsFeatureEnabled( name featureName ) { return false; }
 function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
 
 function RequestAutoSave( optional float delay );
-function bool ShouldSave( DeusExLevelInfo info ) {
-    return false;
-}
+function bool ShouldSave( DeusExLevelInfo info ) { return false; }
 
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
 function ResetSkinStyle();
@@ -12166,37 +12127,20 @@ function float DrainEnergy( Augmentation augDraining, float drainAmount, optiona
 // Skill interface
 //==============================================
 function InitializeSkillSystem();
-function VMSkillManager GetSkillSystem() {
-    return none;
-}
-function VMSkillInfo GetFirstSkillInfo() {
-    return none;
-}
+function VMSkillManager GetSkillSystem() { return none; }
+function VMSkillInfo GetFirstSkillInfo() { return none; }
 
-function bool IncreaseSkillLevel( VMSkillInfo info ) {
-    return false;
-}
-function bool DecreaseSkillLevel( VMSkillInfo info ) {
-    return false;
-}
+function bool IncreaseSkillLevel( VMSkillInfo info ) { return false; }
+function bool DecreaseSkillLevel( VMSkillInfo info ) { return false; }
 
-function float GetSkillValue( string name, optional float defaultValue ) {
-    return defaultValue;
-}
-function int GetSkillLevel( name name ) {
-    return -1;
-}
+function float GetSkillValue( string name, optional float defaultValue ) { return defaultValue; }
+function int GetSkillLevel( name name ) { return -1; }
 
 //==============================================
 // Aug interface
 //==============================================
-function float GetAugValue( class<Augmentation> class ) {
-    return -1;
-}
-
-function int GetAugLevel( class<Augmentation> class ) {
-    return -1;
-}
+function float GetAugValue( class<Augmentation> class ) { return -1; }
+function int GetAugLevel( class<Augmentation> class ) { return -1; }
 
 //==============================================
 // ForwardPressure interface
@@ -12209,6 +12153,7 @@ function bool HasFullForwardPressure() { return true; }
 //==============================================
 // Misc interface
 //==============================================
+function float CalculatePlayerVisibility( optional ScriptedPawn P ) { return 1; }
 function StartBurning( Pawn burner, float burnDamage );
 
 // Simple command to turn on cheats.
