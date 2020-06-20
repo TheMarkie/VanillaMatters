@@ -1793,10 +1793,10 @@ function float ComputeActorVisibility(actor seeActor)
     player = DeusExPlayer( seeActor );
     if ( player != none ) {
         pvis = player.CalculatePlayerVisibility( self );
-        mult = player.CombatDifficulty;
+        mult = 1.25 - ( player.CombatDifficulty * 0.25 );
 
         if ( ( ( SeekPawn == player && bSeekPostCombat ) || Enemy == player ) && pvis > 0 ) {
-            mult = 0.5;
+            mult -= 0.5;
         }
 
         visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 100, 0, 3 );
