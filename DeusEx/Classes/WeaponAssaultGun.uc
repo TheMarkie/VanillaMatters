@@ -10,8 +10,6 @@ class WeaponAssaultGun extends DeusExWeapon;
 #exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire4.wav"       NAME="AssaultGunFire4"      GROUP="VMSounds"
 #exec AUDIO IMPORT FILE="Sounds\AssaultGun\fire5.wav"       NAME="AssaultGunFire5"      GROUP="VMSounds"
 
-var float   mpRecoilStrength;
-
 // Vanilla Matters
 var Sound VM_fireSounds[5];
 
@@ -36,7 +34,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.125000
      reloadTime=3.000000
-     MaxRange=3200
+     MaxRange=2400
      BaseAccuracy=0.700000
      bCanHaveLaser=True
      bCanHaveSilencer=True

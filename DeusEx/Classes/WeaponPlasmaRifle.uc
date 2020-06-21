@@ -10,7 +10,6 @@ defaultproperties
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=3.000000
      HitDamage=25
-     maxRange=24000
      BaseAccuracy=0.650000
      bCanHaveScope=True
      ScopeFOV=20

@@ -82,7 +82,7 @@ defaultproperties
      shockDamage=40
      ShotTime=1.500000
      HitDamage=40
-     maxRange=1280
+     maxRange=640
      BaseAccuracy=1.000000
      AmmoName=Class'DeusEx.AmmoBattery'
      PickupAmmoCount=20

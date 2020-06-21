@@ -14,7 +14,6 @@ defaultproperties
      ShotTime=0.200000
      reloadTime=0.200000
      HitDamage=40
-     maxRange=1280
      BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      bHandToHand=True

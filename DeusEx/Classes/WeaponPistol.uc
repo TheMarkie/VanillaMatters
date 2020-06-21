@@ -12,7 +12,7 @@ defaultproperties
      ShotTime=0.200000
      reloadTime=2.000000
      HitDamage=20
-     maxRange=4800
+     maxRange=2400
      BaseAccuracy=0.700000
      ScopeFOV=25
      bCanHaveLaser=True

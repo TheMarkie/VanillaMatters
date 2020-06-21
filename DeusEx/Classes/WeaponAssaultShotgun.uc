@@ -11,7 +11,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.400000
      reloadTime=4.000000
-     MaxRange=2400
+     MaxRange=1600
      BaseAccuracy=0.650000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'

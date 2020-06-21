@@ -24,7 +24,6 @@ defaultproperties
      ShotTime=2.000000
      reloadTime=4.000000
      HitDamage=125
-     maxRange=24000
      bCanHaveScope=True
      bCanTrack=True
      LockTime=3.000000
