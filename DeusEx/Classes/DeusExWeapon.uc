@@ -2962,21 +2962,6 @@ simulated function bool UpdateInfo(Object winObject)
     if (bAmmoAvailable)
         winInfo.AddLine();
 
-    // Ammo loaded
-    if ((AmmoName != class'AmmoNone') && (!bHandToHand) && (ReloadCount != 0))
-        winInfo.AddAmmoLoadedItem(msgInfoAmmoLoaded, AmmoType.itemName);
-
-    // ammo info
-    if ((AmmoName == class'AmmoNone') || bHandToHand || (ReloadCount == 0))
-        str = msgInfoNA;
-    else
-        str = AmmoName.Default.ItemName;
-    for (i=0; i<ArrayCount(AmmoNames); i++)
-        if ((AmmoNames[i] != None) && (AmmoNames[i] != AmmoName))
-            str = str $ "|n" $ AmmoNames[i].Default.ItemName;
-
-    winInfo.AddAmmoTypesItem(msgInfoAmmo, str);
-
     // base damage
 
     // Vanilla Matters: Damage is now displayed exactly per hit, ignoring shot count unlike vanilla.
@@ -3067,8 +3052,6 @@ simulated function bool UpdateInfo(Object winObject)
     // reload time
 
     //  Vanilla Matters: Add in reload time bonus from skills.
-    mod = 0;
-
     if ( Default.ReloadCount == 0 || bHandToHand) {
         str = msgInfoNA;
     }
@@ -3087,15 +3070,28 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
 
-    // Vanilla Matters: Display headshot multiplier.
-    str = "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
-    mod = ( Default.VM_HeadshotMult / Default.VM_HeadshotMult ) - 1;
-
+    // recoil
+    mod = ModRecoilStrength - GetSkillValue( "Stability" );
+    str = FormatFloatString( default.recoilStrength * 10, 0.01 );
     if ( mod != 0 ) {
-        str = str @ BuildPercentString( mod ) @ "=" @ "x" $ FormatFloatString( Default.VM_HeadshotMult, 0.1 );
+        str = str @ BuildPercentString( mod );
+        str = str @ "=" @ FormatFloatString( default.recoilStrength * ( 1 + mod ) * 10, 0.01 );
     }
 
-    winInfo.AddInfoItem( VM_msgInfoHeadshot, str, mod != 0 );
+    winInfo.AddInfoItem( msgInfoRecoil, str, mod != 0 );
+
+    // max range
+    str = FormatFloatString( default.MaxRange / 16.0, 1.0 ) @ msgRangeUnit;
+    if ( HasRangeMod() ) {
+        str = str @ BuildPercentString( ModAccurateRange );
+        str = str @ "=" @ FormatFloatString( ( default.MaxRange * ( 1 + ModAccurateRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
+    }
+
+    winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
+
+    // Vanilla Matters: Display headshot multiplier.
+    str = "x" $ FormatFloatString( default.VM_HeadshotMult, 0.1 );
+    winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
     // mass
     winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
@@ -4068,18 +4064,18 @@ defaultproperties
      msgTimeUnit="SEC"
      msgMassUnit="LBS"
      msgNotWorking="This weapon doesn't work underwater"
-     msgInfoAmmoLoaded="Ammo loaded:"
-     msgInfoAmmo="Ammo type(s):"
-     msgInfoDamage="Base damage:"
-     msgInfoClip="Clip size:"
-     msgInfoROF="Rate of fire:"
-     msgInfoReload="Reload time:"
+     msgInfoAmmoLoaded="Ammo Loaded:"
+     msgInfoAmmo="Ammo Type(s):"
+     msgInfoDamage="Base Damage:"
+     msgInfoClip="Clip Size:"
+     msgInfoROF="Rate of Fire:"
+     msgInfoReload="Reload Time:"
      msgInfoRecoil="Recoil:"
      msgInfoAccuracy="Base Accuracy:"
-     msgInfoAccRange="Acc. range:"
-     msgInfoMaxRange="Max. range:"
+     msgInfoAccRange="Accurate Range:"
+     msgInfoMaxRange="Max Range:"
      msgInfoMass="Mass:"
-     msgInfoLaser="Laser sight:"
+     msgInfoLaser="Laser Sight:"
      msgInfoScope="Scope:"
      msgInfoSilencer="Silencer:"
      msgInfoNA="N/A"
