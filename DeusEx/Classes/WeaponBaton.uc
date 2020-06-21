@@ -16,7 +16,6 @@ defaultproperties
      reloadTime=0.000000
      HitDamage=8
      maxRange=80
-     AccurateRange=80
      BaseAccuracy=1.000000
      bPenetrating=False
      bHasMuzzleFlash=False

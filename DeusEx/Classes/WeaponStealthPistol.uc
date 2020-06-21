@@ -13,7 +13,6 @@ defaultproperties
      reloadTime=1.500000
      HitDamage=15
      maxRange=4800
-     AccurateRange=2400
      BaseAccuracy=0.700000
      bCanHaveScope=True
      ScopeFOV=25
@@ -21,7 +20,7 @@ defaultproperties
      VM_spreadStrength=0.100000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
-     bCanHaveModAccurateRange=True
+     bCanHaveModMaxRange=True
      bCanHaveModReloadTime=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1

@@ -7,7 +7,6 @@ defaultproperties
 {
      HitDamage=15
      maxRange=450
-     AccurateRange=300
      AreaOfEffect=AOE_Cone
      bHandToHand=True
      VM_ShotCount=3

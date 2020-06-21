@@ -63,7 +63,6 @@ var() travel float      ShotTime;               // number of seconds between sho
 var() travel float      ReloadTime;             // number of seconds needed to reload the clip
 var() int               HitDamage;              // damage done by a single shot (or for shotguns, a single slug)
 var() int               MaxRange;               // absolute maximum range in world units (feet * 16)
-var() travel int        AccurateRange;          // maximum accurate range in world units (feet * 16)
 var() travel float      BaseAccuracy;           // base accuracy (0.0 is dead on, 1.0 is far off)
 
 var bool                bCanHaveScope;          // can this weapon have a scope?
@@ -141,12 +140,12 @@ var bool    bDestroyOnFinish;
 // Used to track weapon mods accurately.
 var bool bCanHaveModBaseAccuracy;
 var bool bCanHaveModReloadCount;
-var bool bCanHaveModAccurateRange;
+var bool bCanHaveModMaxRange;
 var bool bCanHaveModReloadTime;
 var bool bCanHaveModRecoilStrength;
 var travel float ModBaseAccuracy;
 var travel float ModReloadCount;
-var travel float ModAccurateRange;
+var travel float ModMaxRange;
 var travel float ModReloadTime;
 var travel float ModRecoilStrength;
 
@@ -241,7 +240,7 @@ replication
 {
     // server to client
     reliable if ((Role == ROLE_Authority) && (bNetOwner))
-        ClipCount, bZoomed, bHasSilencer, bHasLaser, ModBaseAccuracy, ModReloadCount, ModAccurateRange, ModReloadTime, ModRecoilStrength;
+        ClipCount, bZoomed, bHasSilencer, bHasLaser, ModBaseAccuracy, ModReloadCount, ModMaxRange, ModReloadTime, ModRecoilStrength;
 
     // Things the client should send to the server
     //reliable if ( (Role<ROLE_Authority) )
@@ -415,8 +414,8 @@ function bool HandlePickupQuery(Inventory Item)
             ModBaseAccuracy = W.ModBaseAccuracy;
         if (W.ModReloadCount > ModReloadCount)
             ModReloadCount = W.ModReloadCount;
-        if (W.ModAccurateRange > ModAccurateRange)
-            ModAccurateRange = W.ModAccurateRange;
+        if (W.ModMaxRange > ModMaxRange)
+            ModMaxRange = W.ModMaxRange;
 
         // these are negative
         if (W.ModReloadTime < ModReloadTime)
@@ -434,8 +433,6 @@ function bool HandlePickupQuery(Inventory Item)
         // copy the actual stats as well
         if (W.ReloadCount > ReloadCount)
             ReloadCount = W.ReloadCount;
-        if (W.AccurateRange > AccurateRange)
-            AccurateRange = W.AccurateRange;
 
         // these are negative
         if (W.BaseAccuracy < BaseAccuracy)
@@ -2341,9 +2338,7 @@ function PlayLandingSound()
 }
 
 
-function GetWeaponRanges(out float wMinRange,
-                         out float wMaxAccurateRange,
-                         out float wMaxRange)
+function GetWeaponRanges(out float wMinRange, out float wMaxRange)
 {
     local Class<DeusExProjectile> dxProjectileClass;
 
@@ -2351,13 +2346,11 @@ function GetWeaponRanges(out float wMinRange,
     if (dxProjectileClass != None)
     {
         wMinRange         = dxProjectileClass.Default.blastRadius;
-        wMaxAccurateRange = dxProjectileClass.Default.AccurateRange;
         wMaxRange         = dxProjectileClass.Default.MaxRange;
     }
     else
     {
         wMinRange         = 0;
-        wMaxAccurateRange = AccurateRange;
         wMaxRange         = MaxRange;
     }
 }
@@ -2492,7 +2485,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                 }
 
                 // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                proj.AccurateRange *= throwBonus + ModAccurateRange;
+                proj.AccurateRange *= throwBonus + ModMaxRange;
                 proj.Speed = proj.Speed * throwBonus;
             }
         }
@@ -2527,7 +2520,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                             }
 
                             // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                            proj.AccurateRange *= throwBonus + ModAccurateRange;
+                            proj.AccurateRange *= throwBonus + ModMaxRange;
                             proj.Speed = proj.Speed * throwBonus;
                         }
                     }
@@ -2554,7 +2547,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                         }
 
                         // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                        proj.AccurateRange *= throwBonus + ModAccurateRange;
+                        proj.AccurateRange *= throwBonus + ModMaxRange;
                         proj.Speed = proj.Speed * throwBonus;
                     }
                     if ( Role == ROLE_Authority )
@@ -2604,7 +2597,7 @@ simulated function TraceFire( float accuracy ) {
     }
 
     inaccuracy = 1 - accuracy;
-    range = ( MaxRange * ( 1 + ModAccurateRange ) ) / 2;
+    range = ( MaxRange * ( 1 + ModMaxRange ) ) / 2;
 
     spreadY = Y * inaccuracy * ( FRand() - 0.5 ) * range;
     spreadZ = Z * inaccuracy * ( FRand() - 0.5 ) * range;
@@ -3083,8 +3076,8 @@ simulated function bool UpdateInfo(Object winObject)
     // max range
     str = FormatFloatString( default.MaxRange / 16.0, 1.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
-        str = str @ BuildPercentString( ModAccurateRange );
-        str = str @ "=" @ FormatFloatString( ( default.MaxRange * ( 1 + ModAccurateRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
+        str = str @ BuildPercentString( ModMaxRange );
+        str = str @ "=" @ FormatFloatString( ( default.MaxRange * ( 1 + ModMaxRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
@@ -3288,7 +3281,7 @@ simulated function bool HasMaxClipMod()
 
 simulated function bool HasRangeMod()
 {
-    return (ModAccurateRange != 0.0);
+    return (ModMaxRange != 0.0);
 }
 
 // ----------------------------------------------------------------------
@@ -3297,7 +3290,7 @@ simulated function bool HasRangeMod()
 
 simulated function bool HasMaxRangeMod()
 {
-    return (ModAccurateRange == 0.5);
+    return (ModMaxRange == 0.5);
 }
 
 // ----------------------------------------------------------------------
@@ -4039,7 +4032,6 @@ defaultproperties
      reloadTime=1.000000
      HitDamage=10
      maxRange=9600
-     AccurateRange=4800
      BaseAccuracy=0.500000
      ScopeFOV=10
      MaintainLockTimer=1.000000

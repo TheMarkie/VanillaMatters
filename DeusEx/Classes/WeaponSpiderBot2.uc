@@ -9,5 +9,4 @@ defaultproperties
      ShotTime=1.000000
      HitDamage=20
      maxRange=640
-     AccurateRange=320
 }

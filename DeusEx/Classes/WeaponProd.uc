@@ -14,7 +14,6 @@ defaultproperties
      ShotTime=1.000000
      reloadTime=3.000000
      maxRange=80
-     AccurateRange=80
      BaseAccuracy=1.000000
      bPenetrating=False
      StunDuration=10.000000

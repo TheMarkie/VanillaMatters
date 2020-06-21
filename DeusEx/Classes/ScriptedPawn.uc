@@ -6538,7 +6538,6 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
     local Vector X, Y, Z;
     local Vector projStart, projEnd;
     local float  tempMinRange, tempMaxRange;
-    local float  temp;
     local float  dist;
     local float  extraDist;
     local actor  hitActor;
@@ -6582,7 +6581,7 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
     extraDist = target.CollisionRadius;
     //extraDist = 0;
 
-    GetPawnWeaponRanges(self, tempMinRange, tempMaxRange, temp);
+    GetPawnWeaponRanges(self, tempMinRange, tempMaxRange);
 
     if (bDiscountMinRange)
         tempMinRange = 0;
@@ -6721,8 +6720,7 @@ function bool ComputeTargetLead(pawn target, vector projectileStart,
 // GetPawnWeaponRanges()
 // ----------------------------------------------------------------------
 
-function GetPawnWeaponRanges(Pawn other, out float minRange,
-                             out float maxAccurateRange, out float maxRange)
+function GetPawnWeaponRanges(Pawn other, out float minRange, out float maxRange)
 {
     local DeusExWeapon            pawnWeapon;
     local Class<DeusExProjectile> projectileClass;
@@ -6730,19 +6728,16 @@ function GetPawnWeaponRanges(Pawn other, out float minRange,
     pawnWeapon = DeusExWeapon(other.Weapon);
     if (pawnWeapon != None)
     {
-        pawnWeapon.GetWeaponRanges(minRange, maxAccurateRange, maxRange);
+        pawnWeapon.GetWeaponRanges(minRange, maxRange);
         if (IsThrownWeapon(pawnWeapon))  // hack
             minRange = 0;
     }
     else
     {
         minRange         = 0;
-        maxAccurateRange = other.CollisionRadius;
-        maxRange         = maxAccurateRange;
+        maxRange         = other.CollisionRadius;
     }
 
-    if (maxAccurateRange > maxRange)
-        maxAccurateRange = maxRange;
     if (minRange > maxRange)
         minRange = maxRange;
 
@@ -6756,13 +6751,12 @@ function GetPawnWeaponRanges(Pawn other, out float minRange,
 function GetWeaponBestRange(DeusExWeapon dxWeapon, out float bestRangeMin,
                             out float bestRangeMax)
 {
-    local float temp;
     local float minRange,   maxRange;
     local float AIMinRange, AIMaxRange;
 
     if (dxWeapon != None)
     {
-        dxWeapon.GetWeaponRanges(minRange, maxRange, temp);
+        dxWeapon.GetWeaponRanges(minRange, maxRange);
         if (IsThrownWeapon(dxWeapon))  // hack
             minRange = 0;
         AIMinRange = dxWeapon.AIMinRange;
@@ -7025,7 +7019,6 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
 {
     local float            selfMinRange, selfMaxRange;
     local float            enemyMinRange, enemyMaxRange;
-    local float            temp;
     local float            dist;
     local float            innerRange[2], outerRange[2];
     local Rotator          relativeRotation;
@@ -7061,8 +7054,8 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
     fudgeMargin = 100;
     minArea     = 35;
 
-    GetPawnWeaponRanges(self, selfMinRange, selfMaxRange, temp);
-    GetPawnWeaponRanges(enemy, enemyMinRange, temp, enemyMaxRange);
+    GetPawnWeaponRanges(self, selfMinRange, selfMaxRange);
+    GetPawnWeaponRanges(enemy, enemyMinRange, enemyMaxRange);
 
     if (selfMaxRange > 1200)
         selfMaxRange = 1200;
@@ -7786,14 +7779,12 @@ function bool SwitchToBestWeapon()
     local float        range, centerRange;
     local float        cutoffRange;
     local float        enemyRange;
-    local float        minEnemy, accEnemy, maxEnemy;
+    local float        minEnemy, maxEnemy;
     local ScriptedPawn enemyPawn;
     local Robot        enemyRobot;
     local DeusExPlayer enemyPlayer;
     local float        enemyRadius;
     local bool         bEnemySet;
-    local int          loopCount, i;  // hack - check for infinite inventory
-    local Inventory    loopInv;       // hack - check for infinite inventory
 
     if (ShouldDropWeapon())
     {
@@ -7822,7 +7813,6 @@ function bool SwitchToBestWeapon()
 
     bEnemySet   = false;
     minEnemy    = 0;
-    accEnemy    = 0;
     enemyRange  = 400;  // default
     enemyRadius = 0;
     enemyPawn   = None;
@@ -7833,32 +7823,14 @@ function bool SwitchToBestWeapon()
         enemyRange  = VSize(Enemy.Location - Location);
         enemyRadius = Enemy.CollisionRadius;
         if (DeusExWeapon(Enemy.Weapon) != None)
-            DeusExWeapon(Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
+            DeusExWeapon(Enemy.Weapon).GetWeaponRanges(minEnemy, maxEnemy);
         enemyPawn   = ScriptedPawn(Enemy);
         enemyRobot  = Robot(Enemy);
         enemyPlayer = DeusExPlayer(Enemy);
     }
 
-    loopCount = 0;
     while (inv != None)
     {
-        // THIS IS A MAJOR HACK!!!
-        loopCount++;
-        if (loopCount == 9999)
-        {
-            log("********** RUNAWAY LOOP IN SWITCHTOBESTWEAPON ("$self$") **********");
-            loopInv = Inventory;
-            i = 0;
-            while (loopInv != None)
-            {
-                i++;
-                if (i > 300)
-                    break;
-                log("   Inventory "$i$" - "$loopInv);
-                loopInv = loopInv.Inventory;
-            }
-        }
-
         curWeapon = DeusExWeapon(inv);
         if (curWeapon != None)
         {
@@ -7893,7 +7865,7 @@ function bool SwitchToBestWeapon()
                     score = (centerRange - enemyRange)/range;
                 else
                     score = (enemyRange - centerRange)/range;
-                if ((minRange >= minEnemy) && (accRange <= accEnemy))
+                if ((minRange >= minEnemy) && (accRange <= maxEnemy))
                     score += 0.5;  // arbitrary
                 if ((cutoffRange >= enemyRange-CollisionRadius) && (cutoffRange >= 256)) // do not use long-range weapons on short-range targets
                     score += 10000;

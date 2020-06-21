@@ -29,7 +29,6 @@ defaultproperties
      reloadTime=0.000000
      HitDamage=400
      maxRange=24000
-     AccurateRange=14400
      BaseAccuracy=0.800000
      bHasMuzzleFlash=False
      recoilStrength=1.000000

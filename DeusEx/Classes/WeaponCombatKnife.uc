@@ -14,7 +14,6 @@ defaultproperties
      reloadTime=0.000000
      HitDamage=9
      maxRange=64
-     AccurateRange=64
      BaseAccuracy=1.000000
      bHasMuzzleFlash=False
      bHandToHand=True

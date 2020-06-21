@@ -36,8 +36,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.125000
      reloadTime=3.000000
-     maxRange=3200
-     AccurateRange=1600
+     MaxRange=3200
      BaseAccuracy=0.700000
      bCanHaveLaser=True
      bCanHaveSilencer=True
@@ -49,7 +48,7 @@ defaultproperties
      MinWeaponAcc=0.200000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
-     bCanHaveModAccurateRange=True
+     bCanHaveModMaxRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
      VM_handsTexPos(0)=0

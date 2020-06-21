@@ -38,7 +38,6 @@ defaultproperties
      reloadTime=0.000000
      HitDamage=25
      maxRange=96
-     AccurateRange=96
      BaseAccuracy=1.000000
      AreaOfEffect=AOE_Cone
      bHasMuzzleFlash=False

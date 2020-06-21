@@ -8,7 +8,6 @@ defaultproperties
      ShotTime=0.100000
      HitDamage=25
      maxRange=120
-     AccurateRange=120
      BaseAccuracy=0.000000
      bFallbackWeapon=True
      Misc1Sound=Sound'DeusExSounds.Animal.KarkianAttack'

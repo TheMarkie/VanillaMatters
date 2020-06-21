@@ -8,7 +8,6 @@ defaultproperties
      ShotTime=1.500000
      HitDamage=25
      maxRange=450
-     AccurateRange=300
      bHandToHand=True
      AmmoName=Class'DeusEx.AmmoGreaselSpit'
      PickupAmmoCount=4

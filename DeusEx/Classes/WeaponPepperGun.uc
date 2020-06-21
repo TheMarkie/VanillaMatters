@@ -56,7 +56,6 @@ defaultproperties
      reloadTime=3.000000
      HitDamage=7
      maxRange=100
-     AccurateRange=100
      BaseAccuracy=0.600000
      AreaOfEffect=AOE_Sphere
      bPenetrating=False
