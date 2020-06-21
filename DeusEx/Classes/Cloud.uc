@@ -140,7 +140,6 @@ defaultproperties
      damageInterval=1.000000
      blastRadius=1.000000
      DamageType=PoisonGas
-     AccurateRange=100
      maxRange=100
      maxDrawScale=5.000000
      bIgnoresNanoDefense=True

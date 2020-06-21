@@ -3,10 +3,6 @@
 //=============================================================================
 class Shuriken extends DeusExProjectile;
 
-//var float mpDamage;
-var int     mpAccurateRange;
-var int     mpMaxRange;
-
 // set it's rotation correctly
 simulated function Tick(float deltaTime)
 {
@@ -26,27 +22,11 @@ simulated function Tick(float deltaTime)
     }
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        Damage = mpDamage;
-        AccurateRange = mpAccurateRange;
-        MaxRange = mpMaxRange;
-    }
-}
-
 defaultproperties
 {
-     mpAccurateRange=640
-     mpMaxRange=640
      bBlood=True
      bStickToWall=True
      DamageType=shot
-     AccurateRange=640
      maxRange=1280
      spawnWeaponClass=Class'DeusEx.WeaponShuriken'
      bIgnoresNanoDefense=True

@@ -32,7 +32,6 @@ simulated function Tick(float DeltaTime)
 defaultproperties
 {
      DamageType=Poison
-     AccurateRange=300
      maxRange=450
      bIgnoresNanoDefense=True
      speed=600.000000

@@ -55,7 +55,6 @@ defaultproperties
      bDebris=True
      blastRadius=512.000000
      DamageType=exploded
-     AccurateRange=400
      maxRange=800
      ItemName="HE 20mm Shell"
      ItemArticle="a"

@@ -95,7 +95,6 @@ defaultproperties
      bDebris=True
      blastRadius=192.000000
      DamageType=exploded
-     AccurateRange=14400
      maxRange=24000
      bTracking=True
      ItemName="GEP Rocket"

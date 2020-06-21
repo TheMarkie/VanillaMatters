@@ -5,7 +5,6 @@ class Tracer extends DeusExProjectile;
 
 defaultproperties
 {
-     AccurateRange=16000
      maxRange=16000
      bIgnoresNanoDefense=True
      speed=4000.000000

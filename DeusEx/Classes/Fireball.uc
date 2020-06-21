@@ -47,7 +47,6 @@ defaultproperties
 {
      blastRadius=1.000000
      DamageType=Flamed
-     AccurateRange=320
      maxRange=320
      bIgnoresNanoDefense=True
      ItemName="Fireball"

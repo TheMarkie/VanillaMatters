@@ -2485,7 +2485,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                 }
 
                 // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                proj.AccurateRange *= throwBonus + ModMaxRange;
+                proj.MaxRange *= throwBonus + ModMaxRange;
                 proj.Speed = proj.Speed * throwBonus;
             }
         }
@@ -2520,7 +2520,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                             }
 
                             // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                            proj.AccurateRange *= throwBonus + ModMaxRange;
+                            proj.MaxRange *= throwBonus + ModMaxRange;
                             proj.Speed = proj.Speed * throwBonus;
                         }
                     }
@@ -2547,7 +2547,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                         }
 
                         // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                        proj.AccurateRange *= throwBonus + ModMaxRange;
+                        proj.MaxRange *= throwBonus + ModMaxRange;
                         proj.Speed = proj.Speed * throwBonus;
                     }
                     if ( Role == ROLE_Authority )

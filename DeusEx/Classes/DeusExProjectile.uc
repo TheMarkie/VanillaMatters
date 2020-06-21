@@ -13,7 +13,6 @@ var vector initDir;             // initial direction of travel
 var float blastRadius;          // radius to explode
 var Actor damagee;              // who is being damaged
 var name damageType;            // type of damage that this projectile does
-var int AccurateRange;          // maximum accurate range in world units (feet * 16)
 var int MaxRange;               // maximum range in world units (feet * 16)
 var vector initLoc;             // initial location for range tracking
 var bool bTracking;             // should this projectile track a target?
@@ -233,7 +232,7 @@ simulated function Tick(float deltaTime)
     dist = Abs(VSize(initLoc - Location));
 
     // Vanilla Matters: Tweak the drop rate.
-    if ( dist > AccurateRange ) {
+    if ( dist > MaxRange ) {
         Acceleration = Region.Zone.ZoneGravity / 4;
     }
 
@@ -663,7 +662,6 @@ auto simulated state Flying
 
 defaultproperties
 {
-     AccurateRange=800
      maxRange=1600
      MinDrawScale=0.050000
      maxDrawScale=2.500000

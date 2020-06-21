@@ -96,7 +96,6 @@ defaultproperties
      bExplodes=True
      blastRadius=128.000000
      DamageType=Burned
-     AccurateRange=14400
      maxRange=24000
      bIgnoresNanoDefense=True
      ItemName="Plasma Bolt"
