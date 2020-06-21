@@ -2876,6 +2876,7 @@ simulated function bool UpdateInfo(Object winObject)
     // Vanilla Matters
     local float t;
     local name damageType;
+    local class<DeusExProjectile> projClass;
 
     P = Pawn(Owner);
     if (P == None)
@@ -2955,11 +2956,13 @@ simulated function bool UpdateInfo(Object winObject)
     if (bAmmoAvailable)
         winInfo.AddLine();
 
+    projClass = class<DeusExProjectile>( ProjectileClass );
+
     // base damage
 
     // Vanilla Matters: Damage is now displayed exactly per hit, ignoring shot count unlike vanilla.
-    if ( class<DeusExProjectile>( ProjectileClass ) != None && class<DeusExProjectile>( ProjectileClass ).Default.VM_bOverridesDamage ) {
-        dmg = ProjectileClass.Default.Damage;
+    if ( projClass != None && projClass.Default.VM_bOverridesDamage ) {
+        dmg = projClass.Default.Damage;
     }
     else {
         dmg = Default.HitDamage;
@@ -3074,10 +3077,17 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddInfoItem( msgInfoRecoil, str, mod != 0 );
 
     // max range
-    str = FormatFloatString( default.MaxRange / 16.0, 1.0 ) @ msgRangeUnit;
+    // Vanilla Matters
+    if ( projClass != none ) {
+        dmg = projClass.default.MaxRange;
+    }
+    else {
+        dmg = default.MaxRange;
+    }
+    str = FormatFloatString( dmg / 16.0, 1.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
         str = str @ BuildPercentString( ModMaxRange );
-        str = str @ "=" @ FormatFloatString( ( default.MaxRange * ( 1 + ModMaxRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
+        str = str @ "=" @ FormatFloatString( ( dmg * ( 1 + ModMaxRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
