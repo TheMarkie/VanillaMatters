@@ -23,7 +23,7 @@ defaultproperties
      bUseWhileCrouched=False
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
-     bCanHaveModRecoilStrength=True
+     bCanHaveModStability=True
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.Ammo3006'
      ReloadCount=6

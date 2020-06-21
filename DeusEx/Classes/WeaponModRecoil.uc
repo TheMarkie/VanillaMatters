@@ -13,7 +13,7 @@ function ApplyMod(DeusExWeapon weapon)
 {
     if (weapon != None)
     {
-        weapon.ModRecoilStrength += WeaponModifier;
+        weapon.ModStability += WeaponModifier;
     }
 }
 
@@ -24,7 +24,7 @@ function ApplyMod(DeusExWeapon weapon)
 simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 {
     if (weapon != None)
-        return (weapon.bCanHaveModRecoilStrength && !weapon.HasMaxRecoilMod());
+        return (weapon.bCanHaveModStability && !weapon.HasMaxStabilityMod());
     else
         return False;
 }
@@ -34,11 +34,11 @@ simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
 
 defaultproperties
 {
-     WeaponModifier=-0.100000
-     ItemName="Weapon Modification (Recoil)"
+     WeaponModifier=0.080000
+     ItemName="Weapon Modification (Stability)"
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponModRecoil'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponModRecoil'
-     Description="A stock cushioned with polycellular shock absorbing material will significantly reduce perceived recoil.|n-10% recoil."
+     Description="A stock cushioned with polycellular shock absorbing material that can increase perceived stability.|n+8% stability."
      beltDescription="MOD RECOL"
      Skin=Texture'DeusExItems.Skins.WeaponModTex5'
 }

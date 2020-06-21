@@ -142,12 +142,12 @@ var bool bCanHaveModBaseAccuracy;
 var bool bCanHaveModReloadCount;
 var bool bCanHaveModMaxRange;
 var bool bCanHaveModReloadTime;
-var bool bCanHaveModRecoilStrength;
+var bool bCanHaveModStability;
 var travel float ModBaseAccuracy;
 var travel float ModReloadCount;
 var travel float ModMaxRange;
 var travel float ModReloadTime;
-var travel float ModRecoilStrength;
+var travel float ModStability;
 
 var localized String msgCannotBeReloaded;
 var localized String msgOutOf;
@@ -230,6 +230,8 @@ var bool        VM_LoopFireAnimation;
 
 var localized string VM_msgInfoStun;                // Label for stunning weapons.
 var localized String VM_msgInfoHeadshot;            // Label the headshot multipler section.
+var localized string VM_msgInfoStability;
+var localized string VM_msgInfoDefault;
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
 
@@ -240,7 +242,7 @@ replication
 {
     // server to client
     reliable if ((Role == ROLE_Authority) && (bNetOwner))
-        ClipCount, bZoomed, bHasSilencer, bHasLaser, ModBaseAccuracy, ModReloadCount, ModMaxRange, ModReloadTime, ModRecoilStrength;
+        ClipCount, bZoomed, bHasSilencer, bHasLaser, ModBaseAccuracy, ModReloadCount, ModMaxRange, ModReloadTime, ModStability;
 
     // Things the client should send to the server
     //reliable if ( (Role<ROLE_Authority) )
@@ -420,8 +422,8 @@ function bool HandlePickupQuery(Inventory Item)
         // these are negative
         if (W.ModReloadTime < ModReloadTime)
             ModReloadTime = W.ModReloadTime;
-        if (W.ModRecoilStrength < ModRecoilStrength)
-            ModRecoilStrength = W.ModRecoilStrength;
+        if (W.ModStability > ModStability)
+            ModStability = W.ModStability;
 
         if (W.bHasLaser)
             bHasLaser = True;
@@ -1233,7 +1235,7 @@ simulated function Tick( float deltaTime ) {
 
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
     if ( VM_spreadForce > 0 ) {
-        VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ), default.VM_spreadStrength * ( 1 - skillBonus ) );
+        VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ), default.VM_spreadStrength * ( 1 - ModStability - skillBonus ) );
         VM_spreadForce -= deltaTime;
     }
     else if ( VM_spreadPenalty > 0 ) {
@@ -1247,7 +1249,7 @@ function ProcessRecoil( float deltaTime, DeusExPlayer player, float skillBonus )
     local float recoil, recovery;
 
     if ( VM_recoilForce > 0 ) {
-        recoil = default.recoilStrength * ( 1 + ModRecoilStrength - skillBonus ) * deltaTime;
+        recoil = default.recoilStrength * ( 1 - ModStability - skillBonus ) * deltaTime;
         pitch = 8192 * recoil;
 
         player.ViewRotation.Pitch += pitch;
@@ -3066,18 +3068,18 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
 
-    // recoil
-    mod = ModRecoilStrength - GetSkillValue( "Stability" );
-    str = FormatFloatString( default.recoilStrength * 10, 0.01 );
+    // Vanilla Matters: Stability.
+    mod = GetSkillValue( "Stability" ) + ModStability;
     if ( mod != 0 ) {
-        str = str @ BuildPercentString( mod );
-        str = str @ "=" @ FormatFloatString( default.recoilStrength * ( 1 + mod ) * 10, 0.01 );
+        str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
+    }
+    else {
+        str = VM_msgInfoDefault;
     }
 
-    winInfo.AddInfoItem( msgInfoRecoil, str, mod != 0 );
+    winInfo.AddInfoItem( VM_msgInfoStability, str, mod != 0 );
 
-    // max range
-    // Vanilla Matters
+    // Vanilla Matters: Max Range.
     if ( projClass != none ) {
         dmg = projClass.default.MaxRange;
     }
@@ -3092,7 +3094,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
 
-    // Vanilla Matters: Display headshot multiplier.
+    // Vanilla Matters: Headshot Multiplier.
     str = "x" $ FormatFloatString( default.VM_HeadshotMult, 0.1 );
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
@@ -3300,7 +3302,7 @@ simulated function bool HasRangeMod()
 
 simulated function bool HasMaxRangeMod()
 {
-    return (ModMaxRange == 0.5);
+    return (ModMaxRange >= 0.5);
 }
 
 // ----------------------------------------------------------------------
@@ -3318,25 +3320,25 @@ simulated function bool HasAccuracyMod()
 
 simulated function bool HasMaxAccuracyMod()
 {
-    return (ModBaseAccuracy == 0.5);
+    return (ModBaseAccuracy >= 0.1);
 }
 
 // ----------------------------------------------------------------------
-// HasRecoilMod()
+// HasStabilityMod()
 // ----------------------------------------------------------------------
 
-simulated function bool HasRecoilMod()
+simulated function bool HasStabilityMod()
 {
-    return (ModRecoilStrength != 0.0);
+    return (ModStability != 0.0);
 }
 
 // ----------------------------------------------------------------------
-// HasMaxRecoilMod()
+// HasMaxStabilityMod()
 // ----------------------------------------------------------------------
 
-simulated function bool HasMaxRecoilMod()
+simulated function bool HasMaxStabilityMod()
 {
-    return (ModRecoilStrength == -0.5);
+    return (ModStability >= 0.4);
 }
 
 // ----------------------------------------------------------------------
@@ -4099,6 +4101,8 @@ defaultproperties
      VM_handsTexPos(1)=-1
      VM_msgInfoStun="Stun duration:"
      VM_msgInfoHeadshot="Headshot:"
+     VM_msgInfoStability="Stability:"
+     VM_msgInfoDefault="Default"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"
      ReloadCount=10

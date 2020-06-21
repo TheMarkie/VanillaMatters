@@ -20,7 +20,7 @@ defaultproperties
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
-     bCanHaveModRecoilStrength=True
+     bCanHaveModStability=True
      VM_ShotCount=3
      AmmoName=Class'DeusEx.AmmoPlasma'
      ReloadCount=12

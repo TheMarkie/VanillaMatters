@@ -21,7 +21,7 @@ defaultproperties
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
-     bCanHaveModRecoilStrength=True
+     bCanHaveModStability=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.Ammo10mm'

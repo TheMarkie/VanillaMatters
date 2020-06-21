@@ -20,7 +20,7 @@ defaultproperties
      VM_spreadStrength=0.150000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
-     bCanHaveModRecoilStrength=True
+     bCanHaveModStability=True
      VM_ShotCount=4
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=3

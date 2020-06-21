@@ -48,7 +48,7 @@ defaultproperties
      bCanHaveModReloadCount=True
      bCanHaveModMaxRange=True
      bCanHaveModReloadTime=True
-     bCanHaveModRecoilStrength=True
+     bCanHaveModStability=True
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.Ammo762mm'
