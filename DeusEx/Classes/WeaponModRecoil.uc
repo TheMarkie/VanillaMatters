@@ -13,9 +13,6 @@ function ApplyMod(DeusExWeapon weapon)
 {
     if (weapon != None)
     {
-        weapon.recoilStrength    += (weapon.Default.recoilStrength * WeaponModifier);
-        if (weapon.recoilStrength < 0.0)
-            weapon.recoilStrength = 0.0;
         weapon.ModRecoilStrength += WeaponModifier;
     }
 }

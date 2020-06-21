@@ -2492,7 +2492,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                 }
 
                 // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                proj.AccurateRange = proj.AccurateRange * throwBonus;
+                proj.AccurateRange *= throwBonus + ModAccurateRange;
                 proj.Speed = proj.Speed * throwBonus;
             }
         }
@@ -2527,7 +2527,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                             }
 
                             // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                            proj.AccurateRange = proj.AccurateRange * throwBonus;
+                            proj.AccurateRange *= throwBonus + ModAccurateRange;
                             proj.Speed = proj.Speed * throwBonus;
                         }
                     }
@@ -2554,7 +2554,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
                         }
 
                         // Vanilla Matters: AugMuscle now increases throw distance and speed.
-                        proj.AccurateRange = proj.AccurateRange * throwBonus;
+                        proj.AccurateRange *= throwBonus + ModAccurateRange;
                         proj.Speed = proj.Speed * throwBonus;
                     }
                     if ( Role == ROLE_Authority )
@@ -2604,7 +2604,7 @@ simulated function TraceFire( float accuracy ) {
     }
 
     inaccuracy = 1 - accuracy;
-    range = MaxRange / 2;
+    range = ( MaxRange * ( 1 + ModAccurateRange ) ) / 2;
 
     spreadY = Y * inaccuracy * ( FRand() - 0.5 ) * range;
     spreadZ = Z * inaccuracy * ( FRand() - 0.5 ) * range;

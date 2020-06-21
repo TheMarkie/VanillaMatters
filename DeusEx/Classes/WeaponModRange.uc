@@ -13,7 +13,6 @@ function ApplyMod(DeusExWeapon weapon)
 {
     if (weapon != None)
     {
-        weapon.AccurateRange    += (weapon.Default.AccurateRange * WeaponModifier);
         weapon.ModAccurateRange += WeaponModifier;
     }
 }
