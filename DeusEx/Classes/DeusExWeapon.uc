@@ -2960,8 +2960,6 @@ simulated function bool UpdateInfo(Object winObject)
 
     projClass = class<DeusExProjectile>( ProjectileClass );
 
-    // base damage
-
     // Vanilla Matters: Damage is now displayed exactly per hit, ignoring shot count unlike vanilla.
     if ( projClass != None && projClass.Default.VM_bOverridesDamage ) {
         dmg = projClass.Default.Damage;
@@ -2985,7 +2983,6 @@ simulated function bool UpdateInfo(Object winObject)
         mod += GetAugValue( class'AugCombat' );
     }
 
-    // Vanilla Matters
     if ( mod != 1.0 ) {
         str = str @ BuildPercentString( mod - 1 );
         str = str @ "=" @ FormatFloatString( dmg * mod, 0.1 );
@@ -3005,79 +3002,60 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( VM_msgInfoStun, str, mod != 1.0 );
     }
 
-    // Vanilla Matters: Rewrite to be compatible with the new way to handle accuracy mods.
-    str = int( BaseAccuracy * 100 ) $ "%";
-    mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
-    if ( mod != 0.0 ) {
-        str = str @ BuildPercentString( mod + 0.000003 );
-        str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
-    }
+    // Vanilla Matters: Skip these info sections if the weapon is melee or non-gun.
+    if ( !bHandToHand && default.ReloadCount > 0 ) {
+        // Vanilla Matters: Accuracy.
+        str = int( BaseAccuracy * 100 ) $ "%";
+        mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+        if ( mod != 0.0 ) {
+            str = str @ BuildPercentString( mod + 0.000003 );
+            str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
+        }
 
-    winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
+        winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
 
-    // clip size
-    if ((Default.ReloadCount == 0) || bHandToHand)
-        str = msgInfoNA;
-    else
-    {
+        // Vanilla Matters: Stability.
+        mod = GetSkillValue( "Stability" ) + ModStability;
+        if ( mod != 0 ) {
+            str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
+        }
+        else {
+            str = VM_msgInfoDefault;
+        }
+
+        winInfo.AddInfoItem( VM_msgInfoStability, str, mod != 0 );
+
+        // Vanilla Matters: Clip Size.
         str = Default.ReloadCount @ msgInfoRounds;
-    }
+        if ( HasClipMod() ) {
+            str = str @ BuildPercentString( ModReloadCount );
+            str = str @ "=" @ ReloadCount @ msgInfoRounds;
+        }
 
-    if (HasClipMod())
-    {
-        str = str @ BuildPercentString(ModReloadCount);
-        str = str @ "=" @ ReloadCount @ msgInfoRounds;
-    }
+        winInfo.AddInfoItem( msgInfoClip, str, HasClipMod() );
 
-    winInfo.AddInfoItem(msgInfoClip, str, HasClipMod());
-
-    // rate of fire
-    if ((Default.ReloadCount == 0) || bHandToHand)
-    {
-        str = msgInfoNA;
-    }
-    else
-    {
-        if (bAutomatic)
+        // Vanilla Matters: Rate of Fire.
+        if ( bAutomatic ) {
             str = msgInfoAuto;
-        else
+        }
+        else {
             str = msgInfoSingle;
+        }
+        str = str $ "," @ FormatFloatString( 1.0 / default.ShotTime, 0.1 ) @ msgInfoRoundsPerSec;
 
-        str = str $ "," @ FormatFloatString(1.0/Default.ShotTime, 0.1) @ msgInfoRoundsPerSec;
-    }
-    winInfo.AddInfoItem(msgInfoROF, str);
+        winInfo.AddInfoItem( msgInfoROF, str );
 
-    // reload time
-
-    //  Vanilla Matters: Add in reload time bonus from skills.
-    if ( Default.ReloadCount == 0 || bHandToHand) {
-        str = msgInfoNA;
-    }
-    else {
+        //  Vanilla Matters: Reload Time.
         str = FormatFloatString( default.ReloadTime, 0.1 );
-
         mod = ModReloadTime + GetSkillValue( "ReloadTime" );
-
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
             str = str @ "=" @ FormatFloatString( default.ReloadTime + ( mod * default.ReloadTime ), 0.1 );
         }
-
         str = str @ msgTimeUnit;
-    }
 
-    winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
-
-    // Vanilla Matters: Stability.
-    mod = GetSkillValue( "Stability" ) + ModStability;
-    if ( mod != 0 ) {
-        str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
+        winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
     }
-    else {
-        str = VM_msgInfoDefault;
-    }
-
-    winInfo.AddInfoItem( VM_msgInfoStability, str, mod != 0 );
 
     // Vanilla Matters: Max Range.
     if ( projClass != none ) {
@@ -3108,12 +3086,9 @@ simulated function bool UpdateInfo(Object winObject)
             str = msgInfoYes;
         else
             str = msgInfoNo;
+
+        winInfo.AddInfoItem(msgInfoLaser, str, bCanHaveLaser && bHasLaser && (Default.bHasLaser != bHasLaser));
     }
-    else
-    {
-        str = msgInfoNA;
-    }
-    winInfo.AddInfoItem(msgInfoLaser, str, bCanHaveLaser && bHasLaser && (Default.bHasLaser != bHasLaser));
 
     // scope mod
     if (bCanHaveScope)
@@ -3122,12 +3097,9 @@ simulated function bool UpdateInfo(Object winObject)
             str = msgInfoYes;
         else
             str = msgInfoNo;
+
+        winInfo.AddInfoItem(msgInfoScope, str, bCanHaveScope && bHasScope && (Default.bHasScope != bHasScope));
     }
-    else
-    {
-        str = msgInfoNA;
-    }
-    winInfo.AddInfoItem(msgInfoScope, str, bCanHaveScope && bHasScope && (Default.bHasScope != bHasScope));
 
     // silencer mod
     if (bCanHaveSilencer)
@@ -3136,19 +3108,8 @@ simulated function bool UpdateInfo(Object winObject)
             str = msgInfoYes;
         else
             str = msgInfoNo;
-    }
-    else
-    {
-        str = msgInfoNA;
-    }
-    winInfo.AddInfoItem(msgInfoSilencer, str, bCanHaveSilencer && bHasSilencer && (Default.bHasSilencer != bHasSilencer));
 
-    // Vanilla Matters: Fix some accessed null class context.
-    if ( GoverningSkill != None ) {
-        winInfo.AddInfoItem( msgInfoSkill, GoverningSkill.default.SkillName );
-    }
-    else {
-        winInfo.AddInfoItem( msgInfoSkill, msgInfoNA );
+        winInfo.AddInfoItem(msgInfoSilencer, str, bCanHaveSilencer && bHasSilencer && (Default.bHasSilencer != bHasSilencer));
     }
 
     winInfo.AddLine();
