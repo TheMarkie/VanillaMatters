@@ -59,7 +59,7 @@ defaultproperties
      largeIconHeight=77
      invSlotsX=4
      invSlotsY=2
-     Description="The GEP gun is a relatively recent invention in the field of armaments: a portable, shoulder-mounted launcher that can fire rockets and laser guide them to their target with pinpoint accuracy. While suitable for high-threat combat situations, it can be bulky for those agents who have not grown familiar with it.|n|nTakes a base duration of 2 seconds to lock on targets, affected by skill."
+     Description="The GEP gun is a relatively recent invention in the field of armaments: a portable, shoulder-mounted launcher that can fire rockets and laser guide them to their target with pinpoint accuracy. While suitable for high-threat combat situations, it can be bulky for those agents who have not grown familiar with it.|n|nRequires training to perform rocket guiding. Takes a base duration of 3 seconds to lock on targets."
      beltDescription="GEP GUN"
      Mesh=LodMesh'DeusExItems.GEPGunPickup'
      CollisionRadius=27.000000
