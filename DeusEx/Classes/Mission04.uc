@@ -364,18 +364,7 @@ function Tick( float deltaTime ) {
                 foreach AllActors( class'PaulDenton', Paul ) {
                     // VM: Only trigger the convo if within range.
                     if ( VSize( Paul.Location - Player.Location ) <= 70 ) {
-                        // VM: Make Paul vulnerable.
                         Paul.bInvincible = false;
-
-                        vital = 500 - ( ( Player.CombatDifficulty - 1 ) * 50 );
-                        limb = vital / 2;
-                        Paul.HealthHead = vital;
-                        Paul.HealthTorso = vital;
-                        Paul.HealthArmLeft = limb;
-                        Paul.HealthArmRight = limb;
-                        Paul.HealthLegLeft = limb;
-                        Paul.HealthLegRight = limb;
-                        Paul.Health = vital;
 
                         Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
                     }
