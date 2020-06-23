@@ -2992,29 +2992,21 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
                             Vector offset, Name damageType)
 {
     local int   actualDamage;
-    local float headOffsetZ, headOffsetY, armOffset;
 
     actualDamage = Damage;
 
-    // calculate our hit extents
-    // headOffsetZ = CollisionHeight * 0.7;
-    // headOffsetY = CollisionRadius * 0.3;
-    // armOffset   = CollisionRadius * 0.35;
-
     // if the pawn is stunned, damage is 4X
 
-    // Vanilla Matters: Fix the bug where stunned enemies can't receive point-blank damage bonus from behind.
-    // VM: Stunned enemies can't receive damage bonus from damage types that stun, to prevent damage stacking.
-    // VM: Restrict bonus to prod stunned state only.
-    if ( IsInState( 'Stunned' ) && damageType != 'Stunned' ) {
-        actualDamage = actualDamage * 4;
+    // Vanilla Matters
+    if ( VM_stunDuration > 0 && damageType != 'Stunned' ) {
+        actualDamage *= 4;
     }
 
     // Vanilla Matters: Backstab bonus is now granted when the pawn isn't suspecting, not when struck from behind.
     // VM: Also apply to non-lethal damage types only.
     if ( damageType == 'KnockedOut' || damageType == 'Stunned' ) {
-        if ( !bDistressed && EnemyReadiness <= 0 ) {
-            actualDamage = actualDamage * 10;
+        if ( !bDistressed || VM_stunDuration > 0 ) {
+            actualDamage *= 10;
         }
     }
 
@@ -5168,8 +5160,6 @@ function PlayDying(name damageType, vector hitLoc)
     }
 
     // don't scream if we are stunned
-    // if ((damageType == 'Stunned') || (damageType == 'KnockedOut') ||
-    //     (damageType == 'Poison') || (damageType == 'PoisonEffect'))
     // Vanilla Matters: Add in HalonGas as a non-lethal damage source.
     if ( damageType == 'Stunned' || damageType == 'KnockedOut' || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas' )
     {
