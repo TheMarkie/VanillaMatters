@@ -373,7 +373,7 @@ exec function QuickSave() {
         CurrentQSIndex = 9997;
     }
 
-    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ info.MissionLocation );
+    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ info.MissionLocation );
 }
 
 // Override
@@ -400,7 +400,7 @@ function AutoSave() {
     IsAutoSaving = false;
     AutoSaveTimer = 0;
 
-    SaveGame( CurrentASIndex, "Auto Save -" @ info.MissionLocation );
+    SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ info.MissionLocation );
 }
 
 function bool ShouldSave( DeusExLevelInfo info ) {
