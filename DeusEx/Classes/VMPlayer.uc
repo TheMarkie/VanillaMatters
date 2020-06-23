@@ -417,7 +417,7 @@ function bool ShouldSave( DeusExLevelInfo info ) {
 }
 
 // Override
-function QuickLoadConfirmed() {
+exec function QuickLoad() {
     if ( Level.Netmode != NM_Standalone ) {
         return;
     }
