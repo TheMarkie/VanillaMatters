@@ -5,6 +5,8 @@
 class PersonaScreenSkills extends PersonaScreenBaseWindow;
 
 // Vanilla Matters: Custom background and border to fix the empty spot of the removed skills.
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_1.bmp"     NAME="SkillsBackground_1"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\SkillsBackground_2.bmp"     NAME="SkillsBackground_2"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\SkillsBackground_4.bmp"     NAME="SkillsBackground_4"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\SkillsBackground_5.bmp"     NAME="SkillsBackground_5"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\SkillsBackground_6.bmp"     NAME="SkillsBackground_6"       GROUP="VMUI" MIPS=Off
@@ -55,23 +57,9 @@ function CreateControls()
     CreateTitleWindow(9, 5, SkillsTitleText);
     CreateInfoWindow();
     CreateButtons();
-    CreateSkillsHeaders();
     CreateSkillsTileWindow();
     CreateSkillsList();
     CreateSkillPointsWindow();
-    CreateStatusWindow();
-}
-
-// ----------------------------------------------------------------------
-// CreateStatusWindow()
-// ----------------------------------------------------------------------
-
-function CreateStatusWindow()
-{
-    winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-    //winStatus.SetPos(356, 329);
-    // Vanilla Matters: Move the status bar up to fit the new shortened menu.
-    winStatus.SetPos( 356, 275 );
 }
 
 // ----------------------------------------------------------------------
@@ -81,10 +69,8 @@ function CreateStatusWindow()
 function CreateSkillsTileWindow()
 {
     winTile = TileWindow(winClient.NewChild(Class'TileWindow'));
-
-    winTile.SetPos(12, 39);
-    //winTile.SetSize(302, 297);
-    // Vanilla Matters: Reduce the skills tile window size to fit the shortened menu.
+    // Vanilla Matters: Tweak the skills tile window size and position to fit the shortened menu.
+    winTile.SetPos( 12, 21 );
     winTile.SetSize( 302, 243 );
     winTile.SetMinorSpacing(0);
     winTile.SetMargins(0, 0);
@@ -99,9 +85,8 @@ function CreateInfoWindow()
 {
     winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
     winInfo.SetPos(356, 22);
-    //winInfo.SetSize(238, 299);
     // Vanilla Matters: Reduce the info window size to fit the shortened menu.
-    winInfo.SetSize( 238, 245 );
+    winInfo.SetSize( 238, 265 );
 }
 
 // ----------------------------------------------------------------------
@@ -114,29 +99,12 @@ function CreateButtons()
 
     winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
     // Vanilla Matters: Move the button up to fit the new shortened menu.
-    winActionButtons.SetPos( 10, 284 );
+    winActionButtons.SetPos( 10, 266 );
     winActionButtons.SetWidth(149);
     winActionButtons.FillAllSpace(False);
 
     btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnUpgrade.SetButtonText(UpgradeButtonLabel);
-}
-
-// ----------------------------------------------------------------------
-// CreateSkillsHeaders()
-// ----------------------------------------------------------------------
-
-function CreateSkillsHeaders()
-{
-    local PersonaNormalTextWindow winText;
-
-    winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-    winText.SetPos(177, 24);
-    winText.SetText(SkillLevelHeaderText);
-
-    winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-    winText.SetPos(247, 24);
-    winText.SetText(PointsNeededHeaderText);
 }
 
 // ----------------------------------------------------------------------
@@ -171,16 +139,14 @@ function CreateSkillPointsWindow()
     local PersonaHeaderTextWindow winText;
 
     winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-    //winText.SetPos(180, 341);
     // Vanilla Matters: Move the skill points text up to fit the new shortened menu.
-    winText.SetPos( 180, 287 );
+    winText.SetPos( 180, 269 );
     winText.SetHeight(15);
     winText.SetText(SkillPointsHeaderText);
 
     winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-    //winSkillPoints.SetPos(250, 341);
     // Vanilla Matters: Move the skill points text up to fit the new shortened menu.
-    winSkillPoints.SetPos( 250, 287 );
+    winSkillPoints.SetPos( 250, 269 );
     winSkillPoints.SetSize(54, 15);
     winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);
     winSkillPoints.SetText(player.SkillPointsAvail);
@@ -409,11 +375,11 @@ defaultproperties
      SkillUpgradedLevelLabel="%s upgraded"
      clientBorderOffsetY=33
      ClientWidth=604
-     ClientHeight=361
+     ClientHeight=297
      clientOffsetX=19
      clientOffsetY=12
-     clientTextures(0)=Texture'DeusExUI.UserInterface.SkillsBackground_1'
-     clientTextures(1)=Texture'DeusExUI.UserInterface.SkillsBackground_2'
+     clientTextures(0)=Texture'DeusEx.VMUI.SkillsBackground_1'
+     clientTextures(1)=Texture'DeusEx.VMUI.SkillsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.SkillsBackground_3'
      clientTextures(3)=Texture'DeusEx.VMUI.SkillsBackground_4'
      clientTextures(4)=Texture'DeusEx.VMUI.SkillsBackground_5'
