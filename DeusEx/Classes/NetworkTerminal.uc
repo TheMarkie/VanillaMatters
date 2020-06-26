@@ -345,11 +345,11 @@ function ForceCloseScreen()
 // ----------------------------------------------------------------------
 // Vanilla Matters
 function CreateHackWindow() {
-    local Float hackTime, detectionTime;
+    local float hackTime, detectionTime;
 
     detectionTime = player.GetSkillValue( "HackingTime" );
     if ( detectionTime > 0 && bUsesHackWindow ) {
-        hackTime = 4 - player.GetSkillLevel( 'SkillComputer' );
+        hackTime = 6 - player.GetSkillLevel( 'SkillComputer' );
 
         // First create the shadow window
         winHackShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
@@ -432,23 +432,6 @@ function UpdateHackDetectionTime()
     local Float diff;
     local Float saveDetectionTime;
 
-    // If the hack window is active, then we need to update
-    // the detection time
-    // if ((winHack != None) && (!winhack.bHacking) && (compOwner != None) && (!bHacked))
-    // {
-    //  detectionTime = winHack.GetSaveDetectionTime();
-
-    //  if (compOwner.IsA('Computers'))
- //      {
-    //      diff = player.Level.TimeSeconds - Computers(compOwner).lastHackTime;
- //      }
-    //  else
-    //      diff = player.Level.TimeSeconds - ATM(compOwner).lastHackTime;
-
-    //  if (diff < detectionTime)
-    //      winHack.UpdateDetectionTime(diff + 0.5);
-    // }
-
     // Vanilla Matters: Update detectionTime depending on level time in seconds.
     if ( winHack != None && !winhack.bHacking && compOwner != None && !bHacked ) {
         saveDetectionTime = winHack.GetSaveDetectionTime();
@@ -458,7 +441,6 @@ function UpdateHackDetectionTime()
             // VM: Add in last remaining detectionTime, we're gonna do this only for Computers because ATMs get locked out regardless.
             diff = diff + Computers( compOwner ).VM_lastRemainingDetectionTime;
         }
-        // VM: No idea if I should keep this since ATM gets locked out after being hacked regardless.
         else {
             diff = ( ( player.Level.TimeSeconds - ATM( compOwner ).lastHackTime ) / 900.0 ) * saveDetectionTime;
         }

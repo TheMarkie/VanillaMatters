@@ -30,6 +30,14 @@ function CloseScreen(String action)
     }
 }
 
+// Vanilla Matters
+function CreateHackWindow() {
+    // Vanilla Matters: Only allow hacking ATMs from Advanced up.
+    if ( player.GetSkillLevel( 'SkillComputer' ) >= 1 ) {
+        super.CreateHackWindow();
+    }
+}
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
