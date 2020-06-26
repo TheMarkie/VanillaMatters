@@ -4,6 +4,10 @@
 
 class ComputerScreenSecurity expands ComputerUIWindow;
 
+// Vanilla Matters
+#exec TEXTURE IMPORT FILE="Textures\ComputerSecurityBackground_1.bmp"     NAME="ComputerSecurityBackground_1"       GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\ComputerSecurityBackground_2.bmp"     NAME="ComputerSecurityBackground_2"       GROUP="VMUI" MIPS=Off
+
 var MenuUISpecialButtonWindow    btnPanUp;
 var MenuUISpecialButtonWindow    btnPanDown;
 var MenuUISpecialButtonWindow    btnPanLeft;
@@ -17,8 +21,8 @@ var ComputerSecuritySliderWindow winPanSlider;
 var ComputerSecurityCameraWindow winCameras[3];
 var ComputerSecurityCameraWindow selectedCamera;
 
-var Class<ComputerCameraUIChoice> choices[4];
-var ComputerCameraUIChoice choiceWindows[4];
+var Class<ComputerCameraUIChoice> choices[3];
+var ComputerCameraUIChoice choiceWindows[3];
 var int choiceStartX;
 var int choiceStartY;
 var int choiceVerticalGap;
@@ -180,7 +184,7 @@ function CreateCameraViewWindows()
     winCameras[2].SetViewIndex(2);
 
     // Vanilla Matters: Register the cameras with the choice buttons so we know which we're controlling currently.
-    for ( i = 0; i < 4; i++ ) {
+    for ( i = 0; i < ArrayCount( choiceWindows ); i++ ) {
         for( j = 0; j < 3; j++ ) {
             choiceWindows[i].VM_cameras[j] = winCameras[j];
         }
@@ -343,7 +347,7 @@ function ToggleCameraState(optional bool bCamIsActive, optional bool bCamWasActi
             //if ((selectedCamera.Turret.bActive != cam.bActive) || (selectedCamera.Turret.bDisabled == cam.bActive))
             player.SetTurretState(SelectedCamera.Turret,bCamIsActive,!bCamIsActive);
             selectedCamera.UpdateTurretStatus();
-            ComputerSecurityChoice_Turret(choiceWindows[3]).SetMPEnumState();
+            ComputerSecurityChoice_Turret(choiceWindows[2]).SetMPEnumState();
          }
         }
     }
@@ -370,7 +374,7 @@ function AllyCamera()
       {
          player.SetTurretTrackMode(ComputerSecurity(selectedCamera.compOwner),selectedCamera.turret,false,true);
          selectedCamera.UpdateTurretStatus();
-         ComputerSecurityChoice_Turret(choiceWindows[3]).SetMPEnumState();
+         ComputerSecurityChoice_Turret(choiceWindows[2]).SetMPEnumState();
       }
     }
 }
@@ -518,8 +522,8 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
     if (Player.Level.NetMode == NM_Standalone)
     {
         // Vanilla Matters
-        if ( player.GetSkillLevel( 'SkillComputer' ) < 2 && winTerm.bHacked ) {
-            choiceWindows[3].DisableChoice();
+        if ( player.GetSkillLevel( 'SkillComputer' ) < 3 && winTerm.bHacked ) {
+            choiceWindows[2].DisableChoice();
         }
     }
 }
@@ -758,8 +762,7 @@ defaultproperties
 {
      choices(0)=Class'DeusEx.ComputerSecurityChoice_Camera'
      choices(1)=Class'DeusEx.ComputerSecurityChoice_DoorAccess'
-     choices(2)=Class'DeusEx.ComputerSecurityChoice_DoorOpen'
-     choices(3)=Class'DeusEx.ComputerSecurityChoice_Turret'
+     choices(2)=Class'DeusEx.ComputerSecurityChoice_Turret'
      choiceStartX=13
      choiceStartY=30
      choiceVerticalGap=34
@@ -779,8 +782,8 @@ defaultproperties
      Title="Surveillance"
      ClientWidth=622
      ClientHeight=435
-     clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_1'
-     clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_2'
+     clientTextures(0)=Texture'DeusEx.VMUI.ComputerSecurityBackground_1'
+     clientTextures(1)=Texture'DeusEx.VMUI.ComputerSecurityBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_5'

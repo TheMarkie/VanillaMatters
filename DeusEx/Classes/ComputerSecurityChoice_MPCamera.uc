@@ -56,7 +56,7 @@ function SetMPEnumState()
    local int TurretState;
    if ((winCamera != None) && (winCamera.camera != None))
    {
-      TurretState = SecurityWindow.choiceWindows[3].GetValue();
+      TurretState = SecurityWindow.choiceWindows[2].GetValue();
 
       if (TurretState == 0)
          SetValue(0);
