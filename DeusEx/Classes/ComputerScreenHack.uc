@@ -41,9 +41,7 @@ var localized String HackDetectedLabel;
 var localized String MPHackInitializingLabel;
 
 // Vanilla Matters
-var float   VM_actionCost;          // Amount of time has to be drained for all the actions taken.
-var int     VM_actionCount;         // Amount of actions taken.
-var int     VM_totalActionCount;    // Total amount of actions taken.
+var float   VM_actionCost;          // Amount of time has to be drained.
 
 var Color VM_colBudget;
 
@@ -260,7 +258,6 @@ function StartHack()
 
     // Vanilla Matters
     VM_actionCost = 0;
-    VM_actionCount = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -330,9 +327,7 @@ function SetDetectionTime(Float newDetectionTime, Float newHackTime)
 
 // Vanilla Matters: Add in how much time has to be drained from the detectionTime.
 function AddTimeCost( float timeCost ) {
-    VM_actionCost = VM_actionCost + timeCost;
-    VM_actionCount = VM_actionCount + 1;
-    VM_totalActionCount = VM_totalActionCount + 1;
+    VM_actionCost += timeCost;
 }
 
 // ----------------------------------------------------------------------
@@ -500,19 +495,13 @@ function Tick(float deltaTime)
         // Vanilla Matters: Calculate stuff and deducts detectionTime properly.
         if ( bHacked ) {
             if ( VM_actionCost > 0 ) {
-                if ( VM_actionCost >= detectionTime ) {
-                    timeCost = deltaTime * VM_actionCount * 50;
-                }
-                else {
-                    timeCost = deltaTime * VM_actionCount * 25;
-                }
+                timeCost = deltaTime * 25;
 
                 detectionTime = detectionTime - timeCost;
                 VM_actionCost = VM_actionCost - timeCost;
 
                 if ( VM_actionCost <= 0 ) {
                     VM_actionCost = 0;
-                    VM_actionCount = 0;
                 }
 
                 // Vanilla Matters: Add FP rate for hacking.
