@@ -7462,11 +7462,11 @@ function Tick(float deltaTime)
     bCheckPlayer = true;
     bCheckOther = true;
     if ( bTickVisibleOnly ) {
-        if ( DistanceFromPlayer > 1200 ) {
+        if ( DistanceFromPlayer > 1600 ) {
             bDoLowPriority = false;
         }
 
-        if ( DistanceFromPlayer > 2400 ) {
+        if ( DistanceFromPlayer > 3200 ) {
             bCheckPlayer = false;
         }
 
