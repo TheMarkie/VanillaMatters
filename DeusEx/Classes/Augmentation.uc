@@ -12,6 +12,7 @@ class Augmentation extends Actor
 #exec TEXTURE IMPORT FILE="Textures\AugIconHeal.bmp"        NAME="AugIconHeal"      GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconHeart.bmp"       NAME="AugIconHeart"     GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconRadar.bmp"       NAME="AugIconRadar"     GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconRunSilent.bmp"   NAME="AugIconRunSilent" GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconSpeed.bmp"       NAME="AugIconSpeed"     GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconTarget.bmp"      NAME="AugIconTarget"    GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconVision.bmp"      NAME="AugIconVision"    GROUP="VMUI" MIPS=Off
