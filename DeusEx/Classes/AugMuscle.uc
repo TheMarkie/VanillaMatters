@@ -3,9 +3,6 @@
 //=============================================================================
 class AugMuscle extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 // Vanilla Matters
 var() float VM_muscleCost;
 
@@ -14,28 +11,8 @@ state Active
 Begin:
 }
 
-function Deactivate()
-{
-    // Vanilla Matters: Don't need this anymore since it's all handled in DeusExPlayer.
-}
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      //Lift with your legs, not with your back.
-      AugmentationLocation = LOC_Leg;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=2.000000
      VM_muscleCost=10.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconMuscle'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'

@@ -3,9 +3,6 @@
 //=============================================================================
 class AugRadarTrans extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
 Begin:
@@ -21,23 +18,8 @@ function float GetEnergyRate()
     return energyRate * LevelValues[CurrentLevel];
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      AugmentationLocation = LOC_Torso;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=0.500000
-     mpEnergyDrain=30.000000
      EnergyRate=300.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconRadarTrans'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconRadarTrans_Small'

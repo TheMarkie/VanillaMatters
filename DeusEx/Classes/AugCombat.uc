@@ -3,9 +3,6 @@
 //=============================================================================
 class AugCombat extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
 Begin:
@@ -16,22 +13,8 @@ function Deactivate()
     Super.Deactivate();
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=1.000000
-     mpEnergyDrain=40.000000
      EnergyRate=30.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconCombat'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconCombat_Small'

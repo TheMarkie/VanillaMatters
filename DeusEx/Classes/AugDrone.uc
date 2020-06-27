@@ -3,9 +3,6 @@
 //=============================================================================
 class AugDrone extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 var float reconstructTime;
 var float lastDroneTime;
 
@@ -43,22 +40,8 @@ function Deactivate()
     Player.bSpyDroneActive = False;
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=200.000000
-     mpEnergyDrain=15.000000
      reconstructTime=30.000000
      lastDroneTime=-30.000000
      EnergyRate=30.000000

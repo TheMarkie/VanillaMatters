@@ -3,9 +3,6 @@
 //=============================================================================
 class AugVision extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 // ----------------------------------------------------------------------------
 // Networking Replication
 // ----------------------------------------------------------------------------
@@ -56,22 +53,8 @@ simulated function SetVisionAugStatus( int Level, float LevelValue, bool active 
     }
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=1000.000000
-     mpEnergyDrain=60.000000
      EnergyRate=6.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconVision'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconVision_Small'

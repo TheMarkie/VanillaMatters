@@ -3,33 +3,11 @@
 //=============================================================================
 class AugPower extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
 Begin:
      // Vanilla Matters: We added a variable to AugmentationManager instead.
      Player.AugmentationSystem.VM_energyMult = LevelValues[CurrentLevel];
-}
-
-function Deactivate()
-{
-    //Super.Deactivate();
-
-     // Vanilla Matters: Can't turn it off now.
-}
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
 }
 
 defaultproperties

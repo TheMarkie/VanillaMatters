@@ -3,10 +3,6 @@
 //=============================================================================
 class AugDefense extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-//var bool bDefenseActive;
-
 var float defenseSoundTime;
 const defenseSoundDelay = 2;
 
@@ -14,21 +10,6 @@ const defenseSoundDelay = 2;
 var float VM_targetDistance;
 
 var() float VM_defenseBaseCost;
-
-// ----------------------------------------------------------------------------
-// Networking Replication
-// ----------------------------------------------------------------------------
-
-replication
-{
-   // //server to client variable propagation.
-   // reliable if (Role == ROLE_Authority)
-   //    bDefenseActive;
-
-   // //server to client function call
-   // reliable if (Role == ROLE_Authority)
-   //    TriggerDefenseAugHUD, SetDefenseAugStatus;
-}
 
 // Vanilla Matters: Gonna rewrite all that stuff above to optimize things and add new features.
 state Active {
@@ -63,7 +44,6 @@ state Active {
         }
         else {
             SetDefenseAugStatus( false, CurrentLevel, none );
-            // VM_defenseWeaponTime = 0;
 
             return;
         }
@@ -166,23 +146,8 @@ simulated function SetDefenseAugStatus( bool bDefenseActive, int defenseLevel, A
     DeusExRootWindow( Player.rootWindow ).hud.augDisplay.VM_bDefenseEnoughDistance = enoughDistance;
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-        defenseSoundTime=0;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=500.000000
-     mpEnergyDrain=10.000000
      VM_defenseBaseCost=2.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconDefense'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDefense_Small'

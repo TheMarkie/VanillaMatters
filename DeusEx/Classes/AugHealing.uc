@@ -3,9 +3,6 @@
 //=============================================================================
 class AugHealing extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 // Vanilla Matters
 var float standingTimer;        // How much time the player has been standing still.
 
@@ -43,21 +40,8 @@ function Deactivate()
     Super.Deactivate();
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=10.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconHealing'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconHealing_Small'
      AugmentationName="Regeneration"

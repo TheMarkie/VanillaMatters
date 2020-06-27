@@ -3,9 +3,6 @@
 //=============================================================================
 class AugEnviro extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
 Begin:
@@ -16,22 +13,8 @@ function Deactivate()
     Super.Deactivate();
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      AugmentationLocation = LOC_Subdermal;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=0.250000
      Icon=Texture'DeusExUI.UserInterface.AugIconEnviro'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconEnviro_Small'
      bAlwaysActive=True

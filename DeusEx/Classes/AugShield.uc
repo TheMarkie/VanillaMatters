@@ -3,25 +3,8 @@
 //=============================================================================
 class AugShield extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      AugmentationLocation = LOC_Arm;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=0.400000
      Icon=Texture'DeusExUI.UserInterface.AugIconShield'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
      bAlwaysActive=True

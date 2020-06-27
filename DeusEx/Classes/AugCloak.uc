@@ -3,9 +3,6 @@
 //=============================================================================
 class AugCloak extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 // Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory lastInHand;
 
@@ -79,23 +76,8 @@ simulated function float GetEnergyRate()
     return energyRate * LevelValues[CurrentLevel];
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      AugmentationLocation = LOC_Eye;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=1.000000
-     mpEnergyDrain=40.000000
      EnergyRate=300.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconCloak'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconCloak_Small'
