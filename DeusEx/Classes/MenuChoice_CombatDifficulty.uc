@@ -9,7 +9,7 @@ class MenuChoice_CombatDifficulty extends MenuUIChoiceSlider;
 // ----------------------------------------------------------------------
 
 function LoadSetting() {
-    SetValue( FClamp( player.CombatDifficulty, startValue, endValue ) );
+    btnSlider.winSlider.SetTickPosition( ( FClamp( player.CombatDifficulty, startValue, endValue ) / 0.5 ) - 1 );
 }
 
 // ----------------------------------------------------------------------
@@ -17,7 +17,7 @@ function LoadSetting() {
 // ----------------------------------------------------------------------
 
 function SaveSetting() {
-    player.CombatDifficulty = GetValue();
+    player.CombatDifficulty = ( btnSlider.winSlider.GetTickPosition() + 1 ) * 0.5;
 }
 
 // ----------------------------------------------------------------------
@@ -37,7 +37,7 @@ function SetEnumerators() {
     local int enumIndex;
 
     enumIndex = 0;
-    for( difficulty = 1.0; difficulty <= 5.0; difficulty = difficulty + 0.5 ) {
+    for( difficulty = 0.5; difficulty <= 5.0; difficulty += 0.5 ) {
         SetEnumeration( enumIndex++, Left( String( difficulty ), Instr( String( difficulty ), "." ) + 2 ) );
     }
 }
@@ -47,8 +47,8 @@ function SetEnumerators() {
 
 defaultproperties
 {
-     numTicks=9
-     startValue=1.000000
+     numTicks=10
+     startValue=0.500000
      endValue=5.000000
      defaultValue=1.000000
      HelpText="Combat difficulty of the game. Affects damage received and miscellaneous factors.|nNormal = 1; Hard = 2; Realistic = 4. Save-dependent."
