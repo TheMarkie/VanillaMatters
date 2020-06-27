@@ -13814,6 +13814,9 @@ state RubbingEyes
 
     // Vanilla Mattters: Handle stun duration with ticks to be cleaner.
     function Tick( float deltaTime ) {
+        // Vanilla Matters
+        UpdatePoison( deltaTime );
+
         if ( !bStunned ) {
             return;
         }
@@ -13905,6 +13908,9 @@ state Stunned
 
     // Vanilla Mattters: Handle stun duration with ticks to be cleaner.
     function Tick( float deltaTime ) {
+        // Vanilla Matters
+        UpdatePoison( deltaTime );
+
         if ( !bStunned ) {
             return;
         }
