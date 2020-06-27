@@ -2665,27 +2665,7 @@ simulated function PlayFootStep()
     // AugStealth decreases our footstep volume
     volume *= RunSilentValue;
 
-    if ( Level.NetMode == NM_Standalone )
-        PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
-    else    // special case for multiplayer
-    {
-        if ( !bIsWalking )
-        {
-            // Tone down player's own footsteps
-            if ( !bOtherPlayer )
-            {
-                volume *= 0.33;
-                PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
-            }
-            else // Exagerate other players sounds (range slightly greater than distance you see with vision aug)
-            {
-                volume *= 2.0;
-                range = (class'AugVision'.Default.mpAugValue * 1.2);
-                volume = FClamp(volume, 0, 1.0);
-                PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
-            }
-        }
-    }
+    PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
     AISendEvent('LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
 }
 

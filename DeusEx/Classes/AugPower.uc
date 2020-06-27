@@ -12,7 +12,6 @@ Begin:
 
 defaultproperties
 {
-     mpAugValue=0.600000
      Icon=Texture'DeusExUI.UserInterface.AugIconPowerRecirc'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconPowerRecirc_Small'
      bAlwaysActive=True
