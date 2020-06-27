@@ -5522,8 +5522,6 @@ function HandleHacking(Name event, EAIEventState state, XAIParams params)
 
     local Pawn pawnActor;
 
-    log( self @ bHateHacking @ bFearHacking );
-
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
     {
         pawnActor = GetPlayerPawn();
@@ -5680,16 +5678,13 @@ function HandleLoudNoise(Name event, EAIEventState state, XAIParams params)
 // ----------------------------------------------------------------------
 // HandleProjectiles()
 // ----------------------------------------------------------------------
-
-function HandleProjectiles(Name event, EAIEventState state, XAIParams params)
-{
-    // React, Fear
-
-    local DeusExProjectile dxProjectile;
-
-    if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
-        if (params.bestActor != None)
-            ReactToProjectiles(params.bestActor);
+// Vanilla Matters
+function HandleProjectiles( Name event, EAIEventState state, XAIParams params ) {
+    if ( params.Visibility >= VisibilityThreshold ) {
+        if ( params.bestActor != none ) {
+            ReactToProjectiles( params.bestActor );
+        }
+    }
 }
 
 
@@ -13311,6 +13306,8 @@ state AvoidingProjectiles
         useLoc = Location + vect(0,0,1)*BaseEyeHeight + Vector(Rotation);
         bCanConverse = False;
         EnableCheckDestLoc(false);
+        // Vanilla Matters
+        AIStartEvent( 'Projectile', EAITYPE_Visual );
     }
 
     function EndState()
@@ -13321,6 +13318,8 @@ state AvoidingProjectiles
         ResetReactions();
         bStasis = True;
         bCanConverse = True;
+        // Vanilla Matters
+        AIEndEvent( 'Projectile', EAITYPE_Visual );
     }
 
 Begin:
