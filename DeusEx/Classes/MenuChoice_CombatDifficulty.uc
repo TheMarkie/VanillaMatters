@@ -36,7 +36,6 @@ function SetEnumerators() {
     local float difficulty;
     local int enumIndex;
 
-    enumIndex = 0;
     for( difficulty = 0.5; difficulty <= 5.0; difficulty += 0.5 ) {
         SetEnumeration( enumIndex++, Left( String( difficulty ), Instr( String( difficulty ), "." ) + 2 ) );
     }
@@ -51,6 +50,6 @@ defaultproperties
      startValue=0.500000
      endValue=5.000000
      defaultValue=1.000000
-     HelpText="Combat difficulty of the game. Affects damage received and miscellaneous factors.|nNormal = 1; Hard = 2; Realistic = 4. Save-dependent."
+     HelpText="Combat difficulty of the game. Affects damage received and AI detection.|nNormal = 1; Hard = 2; Realistic = 4. Save-dependent."
      actionText="Combat |&Difficulty"
 }
