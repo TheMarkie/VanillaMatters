@@ -1,16 +1,15 @@
 //=============================================================================
 // MenuScreenVM
 //=============================================================================
+class MenuScreenVM expands MenuUIScreenWindow;
 
-// // Vanilla Matters: Custom textures for this menu.
+// Vanilla Matters: Custom textures for this menu.
 #exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_1.bmp"     NAME="MenuVMBackground_1"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_2.bmp"     NAME="MenuVMBackground_2"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_3.bmp"     NAME="MenuVMBackground_3"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_4.bmp"     NAME="MenuVMBackground_4"       GROUP="VMUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_5.bmp"     NAME="MenuVMBackground_5"       GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_5.bmp"     NAME="MenuVMBackground_6"       GROUP="VMUI" MIPS=Off
-
-class MenuScreenVM expands MenuUIScreenWindow;
+#exec TEXTURE IMPORT FILE="Textures\MenuVMBackground_6.bmp"     NAME="MenuVMBackground_6"       GROUP="VMUI" MIPS=Off
 
 // ----------------------------------------------------------------------
 // SaveSettings()
@@ -52,6 +51,5 @@ defaultproperties
      clientTextures(3)=Texture'DeusEx.VMUI.MenuVMBackground_4'
      clientTextures(4)=Texture'DeusEx.VMUI.MenuVMBackground_5'
      clientTextures(5)=Texture'DeusEx.VMUI.MenuVMBackground_6'
-     textureRows=1
      helpPosY=245
 }
