@@ -3,60 +3,26 @@
 //=============================================================================
 class AugSpeed extends Augmentation;
 
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
 Begin:
     Player.GroundSpeed *= LevelValues[CurrentLevel];
-    //Player.JumpZ *= LevelValues[CurrentLevel];
 
     // Vanilla Matters: Jump height will use a different value from speed bonus.
     Player.JumpZ = Player.JumpZ * ( LevelValues[CurrentLevel] + 0.1 );
-
-    if ( Level.NetMode != NM_Standalone )
-    {
-        if ( Human(Player) != None )
-            Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
-    }
 }
 
 function Deactivate()
 {
     Super.Deactivate();
 
-    if (( Level.NetMode != NM_Standalone ) && Player.IsA('Human') )
-        Player.GroundSpeed = Human(Player).Default.mpGroundSpeed;
-    else
-        Player.GroundSpeed = Player.Default.GroundSpeed;
-
+    Player.GroundSpeed = Player.Default.GroundSpeed;
     Player.JumpZ = Player.Default.JumpZ;
-    if ( Level.NetMode != NM_Standalone )
-    {
-        if ( Human(Player) != None )
-            Human(Player).UpdateAnimRate( -1.0 );
-    }
-}
-
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-      AugmentationLocation = LOC_Torso;
-    }
 }
 
 defaultproperties
 {
-     mpAugValue=2.000000
-     mpEnergyDrain=300.000000
-     EnergyRate=30.000000
+     EnergyRate=20.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
      AugmentationName="Speed Enhancement"
@@ -68,8 +34,8 @@ defaultproperties
      LevelValues(3)=1.700000
      AugmentationLocation=LOC_Leg
      MPConflictSlot=5
-     VM_EnergyRateAddition(1)=30.000000
-     VM_EnergyRateAddition(2)=60.000000
-     VM_EnergyRateAddition(3)=90.000000
+     VM_EnergyRateAddition(1)=20.000000
+     VM_EnergyRateAddition(2)=40.000000
+     VM_EnergyRateAddition(3)=60.000000
      VM_dragIcon=Texture'DeusEx.VMUI.AugIconSpeed'
 }
