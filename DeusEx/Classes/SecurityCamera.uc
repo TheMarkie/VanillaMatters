@@ -115,9 +115,6 @@ function HackAction(Actor Hacker, bool bHacked)
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-    if (bConfused)
-        return;
-
     Super.Trigger(Other, Instigator);
 
     if (!bActive)
@@ -127,16 +124,19 @@ function Trigger(Actor Other, Pawn Instigator)
         bActive = True;
         LightType = LT_Steady;
         LightHue = 80;
-        MultiSkins[2] = Texture'GreenLightTex';
         AmbientSound = sound'CameraHum';
+        // Vanilla Matters
+        if ( !bConfused ) {
+            MultiSkins[2] = Texture'GreenLightTex';
+        }
+        else {
+            MultiSkins[2] = Texture'YellowLightTex';
+        }
     }
 }
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-    if (bConfused)
-        return;
-
     Super.UnTrigger(Other, Instigator);
 
     if (bActive)
@@ -149,6 +149,8 @@ function UnTrigger(Actor Other, Pawn Instigator)
         AmbientSound = None;
         DesiredRotation = origRot;
         hackStrength = 0.0;
+        // Vanilla Matters
+        MultiSkins[2] = Texture'BlackMaskTex';
     }
 }
 
@@ -271,13 +273,16 @@ function Tick(float deltaTime)
 
    curTarget = None;
 
-   // if this camera is not active, get out
-    if (!bActive)
-    {
-      // DEUS_EX AMSD For multiplayer
-      ReplicatedRotation = DesiredRotation;
+    // Vanilla Matters
+    if ( !bActive ) {
+        // DEUS_EX AMSD For multiplayer
+        ReplicatedRotation = DesiredRotation;
 
-        MultiSkins[2] = Texture'BlackMaskTex';
+        // Vanilla Matters: Still update the confusion timer while it's turned off.
+        if ( bConfused ) {
+            confusionTimer += deltaTime;
+        }
+
         return;
     }
 
