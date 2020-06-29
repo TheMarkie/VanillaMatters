@@ -34,12 +34,11 @@ function UpdateButtonStatus()
     local DeusExLevelInfo info;
 
     // Vanilla Matters
-    local bool disableSaving;
+    local bool shouldSave;
 
     info = player.GetLevelInfo();
 
-    disableSaving = ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
-        || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' );
+    shouldSave = player.ShouldSave( info );
 
     // Disable the "Save Game" and "Back to Game" menu choices
     // if the player's dead or we're on the logo map.
@@ -49,8 +48,8 @@ function UpdateButtonStatus()
     // Vanilla Matters
     if ( Player.Level.NetMode == NM_Standalone )
     {
-        winButtons[1].SetSensitivity( !disableSaving && Player.HasFullForwardPressure() );
-        winButtons[6].SetSensitivity( !disableSaving );
+        winButtons[1].SetSensitivity( shouldSave && Player.HasFullForwardPressure() );
+        winButtons[6].SetSensitivity( shouldSave );
     }
 
    // Disable the "Save Game", "New Game", "Intro", "Training" and "Load Game" menu choices if in multiplayer

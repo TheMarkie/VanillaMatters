@@ -12084,7 +12084,7 @@ function bool IsFeatureEnabled( name featureName ) { return false; }
 function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
 
 function RequestAutoSave( optional float delay );
-function bool ShouldSave( DeusExLevelInfo info ) { return false; }
+function bool ShouldSave( DeusExLevelInfo info ) { return true; }
 
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
 function ResetSkinStyle();
