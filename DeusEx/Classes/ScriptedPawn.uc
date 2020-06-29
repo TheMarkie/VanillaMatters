@@ -1793,7 +1793,7 @@ function float ComputeActorVisibility(actor seeActor)
     player = DeusExPlayer( seeActor );
     if ( player != none ) {
         pvis = player.CalculatePlayerVisibility( self );
-        mult = 1.25 - ( player.CombatDifficulty * 0.25 );
+        mult = 1 - ( ( player.CombatDifficulty - 1 ) * 0.15 );
 
         if ( ( ( SeekPawn == player && bSeekPostCombat ) || Enemy == player ) && pvis > 0 ) {
             mult -= 0.5;
@@ -1851,27 +1851,26 @@ function UpdateReactionLevel(bool bRise, float deltaSeconds)
 function Pawn CheckCycle() {
     local Pawn cycleEnemy;
     local DeusExPlayer player;
+    local float mult;
 
     cycleEnemy = None;
 
     if ( CycleCumulative <= 0 ) {
         CycleTimer = FMax( CycleTimer - CyclePeriod, 0 );
         if ( CycleTimer <= 0 ) {
-            EnemyReadiness = EnemyReadiness - ( CyclePeriod / 4 );
+            EnemyReadiness = FMax( EnemyReadiness - ( CyclePeriod / 4 ), 0 );
         }
     }
     else {
         CycleTimer = 3;
 
+        mult = 1;
         player = DeusExPlayer( CycleCandidate );
         if ( player != none ) {
-            CycleCumulative = CycleCumulative * ( player.CombatDifficulty + 1 );
-        }
-        else {
-            CycleCumulative = CycleCumulative * 2;
+            mult += ( player.CombatDifficulty - 1 ) * 0.15;
         }
 
-        EnemyReadiness = FMax( EnemyReadiness, 0 ) + ( CycleCumulative * ( CyclePeriod / 0.5 ) );
+        EnemyReadiness += CycleCumulative * ( CyclePeriod / 0.3 ) * mult;
 
         if ( EnemyReadiness >= 1.0 ) {
             EnemyReadiness = 1.0;
@@ -1953,8 +1952,8 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                         if ( proxyEnemy ) {
                             visibility = 0.2;
                         }
-                        else if ( SeekPawn == candidate && ( dist <= 60 || ( actorVis > 0 && dist <= 240 ) ) ) {
-                            visibility = AICanSee( candidate, 1.0, false, true, true, true );
+                        else if ( SeekPawn == candidate && ( dist <= 80 || ( actorVis > 0 && dist <= 200 ) ) ) {
+                            visibility = AICanSee( candidate, 3.0, false, true, true, true );
                         }
                         else {
                             visibility = AICanSee( candidate, actorVis, true, true, true, true );
@@ -1962,7 +1961,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
 
                         if ( visibility > 0 ) {
                             if ( potentialEnemy ) {
-                                IncreaseAgitation( candidate, visibility + VisibilityThreshold );
+                                IncreaseAgitation( candidate, 1.0 );
 
                                 PotentialEnemyAlliance = '';
                                 PotentialEnemyTimer = 0;
@@ -1976,7 +1975,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                                     minDist = dist;
                                 }
 
-                                CycleCumulative = CycleCumulative + visibility + VisibilityThreshold;
+                                CycleCumulative += visibility;
                             }
                         }
                     }
@@ -1999,7 +1998,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
         }
     }
 
-    UpdateReactionLevel( EnemyReadiness >= ( VisibilityThreshold * 15 ) || GetStateName() == 'Seeking' || bDistressed, deltaTime );
+    UpdateReactionLevel( EnemyReadiness >= ( VisibilityThreshold * 10 ) || GetStateName() == 'Seeking' || bDistressed, deltaTime );
 
     if ( !valid ) {
         CycleCumulative = 0;
