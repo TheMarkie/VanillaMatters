@@ -54,7 +54,7 @@ defaultproperties
      HealthLegRight=40
      HealthArmLeft=40
      HealthArmRight=40
-     VisibilityThreshold=0.022000
+     VisibilityThreshold=0.021000
      DrawType=DT_Mesh
      Mass=150.000000
      Buoyancy=155.000000
