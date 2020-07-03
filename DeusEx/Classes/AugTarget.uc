@@ -39,7 +39,7 @@ simulated function SetTargetingAugStatus(int Level, bool IsActive)
 
 defaultproperties
 {
-     EnergyRate=15.000000
+     EnergyRate=20.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconTarget'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconTarget_Small'
      AugmentationName="Targeting"

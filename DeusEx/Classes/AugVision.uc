@@ -55,7 +55,7 @@ simulated function SetVisionAugStatus( int Level, float LevelValue, bool active 
 
 defaultproperties
 {
-     EnergyRate=6.000000
+     EnergyRate=10.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconVision'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconVision_Small'
      AugmentationName="Vision Enhancement"
@@ -65,8 +65,8 @@ defaultproperties
      LevelValues(3)=1600.000000
      AugmentationLocation=LOC_Eye
      MPConflictSlot=6
-     VM_EnergyRateAddition(1)=12.000000
-     VM_EnergyRateAddition(2)=18.000000
-     VM_EnergyRateAddition(3)=24.000000
+     VM_EnergyRateAddition(1)=10.000000
+     VM_EnergyRateAddition(2)=20.000000
+     VM_EnergyRateAddition(3)=30.000000
      VM_dragIcon=Texture'DeusEx.VMUI.AugIconVision'
 }
