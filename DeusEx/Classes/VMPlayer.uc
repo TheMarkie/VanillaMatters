@@ -1334,7 +1334,6 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         Damage *= ( CombatDifficulty / 2 ) + 0.5;
     }
 
-    // Move this all the way to the bottom to be most accurate.
     if ( newDamage < Damage ) {
         if ( !checkOnly ) {
             pct = 1.0 - ( newDamage / Damage );
@@ -1344,11 +1343,6 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         }
 
         reduced = true;
-    }
-    else {
-        if ( !checkOnly ) {
-            SetDamagePercent( 0.0 );
-        }
     }
 
     adjustedDamage = int( newDamage );
