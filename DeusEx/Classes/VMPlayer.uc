@@ -1281,6 +1281,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
             augValue = AugmentationSystem.GetAugLevelValue( class'AugBallistic' );
             if ( augValue >= 0.0 ) {
+                newDamage *= augValue;
             }
         }
 

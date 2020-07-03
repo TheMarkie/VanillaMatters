@@ -35,12 +35,12 @@ defaultproperties
      smallIcon=Texture'DeusExUI.UserInterface.AugIconBallistic_Small'
      bAlwaysActive=True
      AugmentationName="Ballistic Protection"
-     Description="Monomolecular plates reinforce the skin's epithelial membrane, reducing the damage an agent receives from projectiles and bladed weapons.|n|n[TECH ONE]|nDamage from projectiles and bladed weapons is reduced by 1 point.|n|n[TECH TWO]|nDamage from projectiles and bladed weapons is reduced by 2 points.|n|n[TECH THREE]|nDamage from projectiles and bladed weapons is reduced by 4 points.|n|n[TECH FOUR]|nAn agent is well armored against projectiles and bladed weapons. Damage from projectiles and bladed weapons is reduced by 8 points."
+     Description="Monomolecular plates reinforce the skin's epithelial membrane, reducing the damage an agent receives from projectiles and bladed weapons.|n|n[TECH ONE]|nDamage from projectiles and bladed weapons is reduced by 15%.|n|n[TECH TWO]|nDamage is reduced by 30%.|n|n[TECH THREE]|nDamage is reduced by 45%.|n|n[TECH FOUR]|nAn agent is well armored against projectiles and bladed weapons.|nDamage is reduced by 60%."
      MPInfo="When active, damage from projectiles and melee weapons is reduced by 6.  Energy Drain: None"
-     LevelValues(0)=1.000000
-     LevelValues(1)=2.000000
-     LevelValues(2)=4.000000
-     LevelValues(3)=8.000000
+     LevelValues(0)=0.850000
+     LevelValues(1)=0.700000
+     LevelValues(2)=0.550000
+     LevelValues(3)=0.400000
      AugmentationLocation=LOC_Subdermal
      MPConflictSlot=4
 }
