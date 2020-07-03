@@ -1254,27 +1254,48 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     local bool reduced;
     local ChargedPickup cpickup;
 
-    reduced = false;
     newDamage = float( Damage );
 
-    if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
-        || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
-    ) {
-        if ( AugmentationSystem != none ) {
-            augValue = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-        }
-
-        if ( augValue >= 0.0 ) {
-            newDamage *= augValue;
-        }
-
-        if ( newDamage ~= 0.0 ) {
-            StopPoison();
-            drugEffectTimer = 0;
+    if ( damageType == 'HalonGas' ) {
+        if ( bOnFire && !checkOnly ) {
+            ExtinguishFire();
         }
     }
 
-    // Vanilla Matters: Nullify all damage of the gas type if you have a Rebreather.
+    if ( AugmentationSystem != none ) {
+        if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
+            || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
+        ) {
+            augValue = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+            if ( augValue >= 0.0 ) {
+                newDamage *= augValue;
+            }
+
+            if ( newDamage ~= 0.0 ) {
+                StopPoison();
+                drugEffectTimer = 0;
+            }
+        }
+
+        // Add sabot to augballistic.
+        if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
+            augValue = AugmentationSystem.GetAugLevelValue( class'AugBallistic' );
+            if ( augValue >= 0.0 ) {
+            }
+        }
+
+        // Add EMP to augshield.
+        if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
+            damageType == 'Exploded' || damageType == 'Shocked'
+        ) {
+            augValue = AugmentationSystem.GetAugLevelValue( class'AugShield' );
+            if ( augValue >= 0.0 ) {
+                newDamage *= augValue;
+            }
+        }
+    }
+
+    // Nullify all damage of the gas type if you have a Rebreather.
     if ( UsingChargedPickup( class'Rebreather' )
         && ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'HalonGas' )
     ) {
@@ -1282,9 +1303,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     }
 
     if ( damageType == 'Shot' || damageType == 'Sabot' || damageType == 'Exploded' || damageType == 'AutoShot' ) {
-        // Make Ballistic Armor absorbs the damage properly and deals with spillovers.
         cpickup = GetActiveChargedPickup( class'BallisticArmor' );
-
         if ( cpickup != None ) {
             newDamage -= cpickup.DrainCharge( newDamage - ( newDamage * ( 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "BallisticArmorResistance", 1 ) ) ) ) );
         }
@@ -1293,44 +1312,11 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     // Make HazMatSuit block more damagetypes to be consistent with vanilla tooltip.
     if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation' || damageType == 'HalonGas'
         || damageType == 'PoisonEffect' || damageType == 'Flamed' || damageType == 'Burned'
-            || damageType == 'Shocked' || damageType == 'EMP' ) {
-
+            || damageType == 'Shocked' || damageType == 'EMP'
+    ) {
         cpickup = GetActiveChargedPickup( class'HazMatSuit' );
-
         if ( cpickup != None ) {
             newDamage *= 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "HazMatSuitResistance", 1 ) );
-        }
-    }
-
-    if ( damageType == 'HalonGas' ) {
-        if ( bOnFire && !checkOnly ) {
-            ExtinguishFire();
-        }
-    }
-
-    // Add sabot to augballistic.
-    if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' )
-    {
-        if ( AugmentationSystem != none ) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugBallistic' );
-        }
-
-        if ( augValue >= 0.0 ) {
-            // AugBallistic now adds a flat damage reduction.
-            newDamage -= augValue;
-        }
-    }
-
-    // Add EMP to augshield.
-    if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
-        damageType == 'Exploded' || damageType == 'Shocked' )
-    {
-        if (AugmentationSystem != none) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugShield' );
-        }
-
-        if ( augValue >= 0.0 ) {
-            newDamage *= augValue;
         }
     }
 
