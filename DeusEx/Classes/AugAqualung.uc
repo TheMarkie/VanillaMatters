@@ -3,11 +3,6 @@
 //=============================================================================
 class AugAqualung extends Augmentation;
 
-var float mult, pct;
-
-var float mpAugValue;
-var float mpEnergyDrain;
-
 state Active
 {
     // Vanilla Matters: Keep increasing the breath span so it never runs out.
@@ -29,21 +24,8 @@ Begin:
     }
 }
 
-simulated function PreBeginPlay()
-{
-    Super.PreBeginPlay();
-
-    // If this is a netgame, then override defaults
-    if ( Level.NetMode != NM_StandAlone )
-    {
-        LevelValues[3] = mpAugValue;
-        EnergyRate = mpEnergyDrain;
-    }
-}
-
 defaultproperties
 {
-     mpAugValue=220.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconAquaLung'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconAquaLung_Small'
      bAlwaysActive=True
