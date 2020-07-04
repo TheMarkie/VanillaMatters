@@ -82,6 +82,7 @@ function SetSkin(DeusExPlayer player)
 
 defaultproperties
 {
+     BaseAccuracy=26.000000
      CarcassType=Class'DeusEx.PaulDentonCarcass'
      WalkingSpeed=0.120000
      bImportant=True
