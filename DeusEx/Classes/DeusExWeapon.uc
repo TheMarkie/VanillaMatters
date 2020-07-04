@@ -625,8 +625,7 @@ simulated function float CalculateAccuracy() {
     }
     else if ( sp != none ) {
         // update the weapon's accuracy with the ScriptedPawn's BaseAccuracy
-        // (BaseAccuracy uses higher values for less accuracy, hence we add)
-        accuracy += sp.BaseAccuracy;
+        accuracy += sp.default.BaseAccuracy;
 
         // get the health values for the NPC
         HealthArmRight = sp.HealthArmRight;
