@@ -42,7 +42,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <ue1launcherProjectDir>D:\_Dev\C++\ue1launcher\ue1launcher\</ue1launcherProjectDir>
-    <ModDir>D:\_Programs\Steam\steamapps\common\Deus Ex\VanillaMatters\System\</ModDir>
+    <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
