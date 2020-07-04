@@ -1870,7 +1870,7 @@ function Pawn CheckCycle() {
             mult += ( player.CombatDifficulty - 1 ) * 0.15;
         }
 
-        EnemyReadiness += CycleCumulative * ( CyclePeriod / 0.3 ) * mult;
+        EnemyReadiness += CycleCumulative * CyclePeriod * mult;
 
         if ( EnemyReadiness >= 1.0 ) {
             EnemyReadiness = 1.0;
