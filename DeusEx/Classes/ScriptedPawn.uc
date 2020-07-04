@@ -7785,7 +7785,7 @@ function bool SwitchToBestWeapon()
             if (SpecialTimer <= 0)
             {
                 bBlockSpecial = true;
-                FireTimer = dxWeapon.AIFireDelay;
+                FireTimer = dxWeapon.ShotTime;
             }
         }
     }
