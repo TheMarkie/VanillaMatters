@@ -18,6 +18,7 @@ defaultproperties
      ScopeFOV=25
      bCanHaveLaser=True
      VM_spreadStrength=0.100000
+     AIFireDelay=0.400000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModMaxRange=True

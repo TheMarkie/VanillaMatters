@@ -18,6 +18,7 @@ defaultproperties
      bCanHaveLaser=True
      recoilStrength=0.250000
      VM_spreadStrength=0.150000
+     AIFireDelay=0.600000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True

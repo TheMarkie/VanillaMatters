@@ -52,6 +52,7 @@ defaultproperties
      ProjectileNames(2)=Class'DeusEx.DartFlare'
      StunDuration=10.000000
      bHasMuzzleFlash=False
+     AIFireDelay=5.000000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadTime=True
      VM_HeadshotMult=5.000000

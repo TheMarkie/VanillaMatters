@@ -18,6 +18,7 @@ defaultproperties
      AreaOfEffect=AOE_Cone
      recoilStrength=0.300000
      VM_spreadStrength=0.150000
+     AIFireDelay=0.800000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True

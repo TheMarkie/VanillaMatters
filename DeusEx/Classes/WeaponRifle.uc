@@ -21,6 +21,7 @@ defaultproperties
      recoilStrength=0.400000
      VM_spreadStrength=0.200000
      bUseWhileCrouched=False
+     AIFireDelay=2.500000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True

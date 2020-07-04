@@ -17,6 +17,7 @@ defaultproperties
      AreaOfEffect=AOE_Cone
      bPenetrating=False
      recoilStrength=0.300000
+     AIFireDelay=1.500000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
