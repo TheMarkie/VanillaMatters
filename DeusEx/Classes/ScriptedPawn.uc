@@ -7859,8 +7859,10 @@ function bool SwitchToBestWeapon()
                     curFallbackLevel = 2;
                 if (!bEnemySet && !curWeapon.bUseAsDrawnWeapon)
                     curFallbackLevel = 1;
-                if ((curWeapon.AIFireDelay > 0) && (FireTimer > 0))
+                // Vanilla Matters
+                if ( FireTimer >= 5 ) {
                     curFallbackLevel = 0;
+                }
                 if (bBlockSpecial && (curWeapon.AITimeLimit > 0) && (SpecialTimer <= 0))
                     curFallbackLevel = 0;
 
@@ -11376,26 +11378,28 @@ State Attacking
         return (destType);
     }
 
-    function bool FireIfClearShot()
-    {
+    // Vanilla Matters
+    function bool FireIfClearShot() {
         local DeusExWeapon dxWeapon;
 
-        dxWeapon = DeusExWeapon(Weapon);
-        if (dxWeapon != None)
-        {
-            if ((dxWeapon.AIFireDelay > 0) && (FireTimer > 0))
+        dxWeapon = DeusExWeapon( Weapon );
+        if ( dxWeapon != None ) {
+            if ( FireTimer > 0 ) {
                 return false;
-            else if (AICanShoot(enemy, true, true, 0.025))
-            {
-                Weapon.Fire(0);
+            }
+            else if ( AICanShoot( Enemy, true, true, 0.025 ) ) {
+                Weapon.Fire( 0 );
+
                 FireTimer = dxWeapon.AIFireDelay;
+                if ( !dxWeapon.bAutomatic ) {
+                    FireTimer += dxWeapon.ShotTime;
+                }
+
                 return true;
             }
-            else
-                return false;
         }
-        else
-            return false;
+
+        return false;
     }
 
     function CheckAttack(bool bPlaySound)
