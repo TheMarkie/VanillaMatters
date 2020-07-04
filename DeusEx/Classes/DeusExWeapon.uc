@@ -3499,11 +3499,7 @@ ignores Fire, AltFire;
 
         val = ReloadTime;
 
-        if (ScriptedPawn(Owner) != None)
-        {
-            val = ReloadTime * (ScriptedPawn(Owner).BaseAccuracy*2+1);
-        }
-        else if (DeusExPlayer(Owner) != None)
+        if (DeusExPlayer(Owner) != None)
         {
             // check for skill use if we are the player
 
@@ -3795,11 +3791,7 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
 
         val = ReloadTime;
 
-        if (ScriptedPawn(Owner) != None)
-        {
-            val = ReloadTime * (ScriptedPawn(Owner).BaseAccuracy*2+1);
-        }
-        else if (DeusExPlayer(Owner) != None)
+        if (DeusExPlayer(Owner) != None)
         {
             // Vanilla Matters: Handle all forms of bonuses here.
             val = ModReloadTime + GetSkillValue( "ReloadTime" );
@@ -3878,22 +3870,17 @@ state FlameThrowerOn
     {
         local float mult, sTime;
 
-        if (ScriptedPawn(Owner) != None)
-            return ShotTime * (ScriptedPawn(Owner).BaseAccuracy*2+1);
-        else
+        // AugCombat decreases shot time
+        mult = 1.0;
+        if (bHandToHand && DeusExPlayer(Owner) != None)
         {
-            // AugCombat decreases shot time
-            mult = 1.0;
-            if (bHandToHand && DeusExPlayer(Owner) != None)
-            {
-                mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
-                if (mult == -1.0)
-                    mult = 1.0;
-            }
-
-            sTime = ShotTime * mult;
-            return (sTime);
+            mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
+            if (mult == -1.0)
+                mult = 1.0;
         }
+
+        sTime = ShotTime * mult;
+        return (sTime);
     }
 
 Begin:

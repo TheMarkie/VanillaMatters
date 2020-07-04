@@ -5,6 +5,7 @@ class WIB extends MIB;
 
 defaultproperties
 {
+     BaseAccuracy=0.240000
      MinHealth=0.000000
      CarcassType=Class'DeusEx.WIBCarcass'
      WalkingSpeed=0.296000

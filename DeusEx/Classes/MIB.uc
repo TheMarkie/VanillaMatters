@@ -106,6 +106,7 @@ function GotoDisabledState( name damageType, EHitLocation hitPos ) {
 
 defaultproperties
 {
+     BaseAccuracy=0.240000
      MinHealth=0.000000
      CarcassType=Class'DeusEx.MIBCarcass'
      WalkingSpeed=0.213333
