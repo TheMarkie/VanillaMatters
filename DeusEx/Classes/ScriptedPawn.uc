@@ -11389,12 +11389,7 @@ State Attacking
             }
             else if ( AICanShoot( Enemy, true, true, 0.025 ) ) {
                 Weapon.Fire( 0 );
-
-                FireTimer = dxWeapon.AIFireDelay;
-                if ( !dxWeapon.bAutomatic ) {
-                    FireTimer += dxWeapon.ShotTime;
-                }
-
+                FireTimer = dxWeapon.AIFireDelay + dxWeapon.ShotTime;
                 return true;
             }
         }
