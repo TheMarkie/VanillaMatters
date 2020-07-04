@@ -550,7 +550,7 @@ function CopySkills() {
 
         // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
         if ( info.SkillClassName == 'SkillWeaponPistol' ) {
-            player.SkillPointsAvail -= info.GetNextLevelCost();
+            player.SkillPointsAvail -= localSkills[i].GetNextLevelCost();
             localSkills[i].Level += 1;
         }
 
