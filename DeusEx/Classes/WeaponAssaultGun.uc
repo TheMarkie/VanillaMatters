@@ -35,6 +35,7 @@ defaultproperties
      reloadTime=3.000000
      maxRange=2400
      BaseAccuracy=0.700000
+     AIFireDelay=0.075000
      bCanHaveLaser=True
      bCanHaveSilencer=True
      AmmoNames(0)=Class'DeusEx.Ammo762mm'

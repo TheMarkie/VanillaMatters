@@ -16,7 +16,7 @@ defaultproperties
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
      recoilStrength=0.300000
-     AIFireDelay=0.800000
+     AIFireDelay=0.600000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True

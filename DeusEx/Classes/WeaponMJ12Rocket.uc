@@ -16,6 +16,7 @@ defaultproperties
      HitDamage=75
      AIMinRange=500.000000
      AIMaxRange=2000.000000
+     AIFireDelay=5.000000
      AmmoName=Class'DeusEx.AmmoRocketMini'
      PickupAmmoCount=20
      ProjectileClass=Class'DeusEx.RocketMini'
