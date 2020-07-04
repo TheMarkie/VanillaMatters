@@ -9,7 +9,6 @@ class AdaptiveArmor extends ChargedPickup;
 
 defaultproperties
 {
-     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.SuitLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconArmorAdaptive'
      ExpireMessage="Thermoptic camo power supply used up"

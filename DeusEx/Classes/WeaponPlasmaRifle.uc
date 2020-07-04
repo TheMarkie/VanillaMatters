@@ -6,7 +6,6 @@ class WeaponPlasmaRifle extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=12
-     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=3.000000
      HitDamage=25

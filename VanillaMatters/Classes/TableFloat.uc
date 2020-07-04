@@ -8,3 +8,7 @@ native final function Clear();
 
 native final function Set( string key, float value );
 native final function bool TryGetValue( string key, out float value );
+
+defaultproperties
+{
+}

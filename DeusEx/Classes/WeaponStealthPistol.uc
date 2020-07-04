@@ -5,7 +5,6 @@ class WeaponStealthPistol extends DeusExWeapon;
 
 defaultproperties
 {
-     GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=0.010000
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_All
@@ -17,12 +16,12 @@ defaultproperties
      bCanHaveScope=True
      ScopeFOV=25
      bCanHaveLaser=True
-     VM_spreadStrength=0.100000
      AIFireDelay=0.400000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModMaxRange=True
      bCanHaveModReloadTime=True
+     VM_spreadStrength=0.100000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.Ammo10mm'

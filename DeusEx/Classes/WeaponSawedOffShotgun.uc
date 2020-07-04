@@ -6,7 +6,6 @@ class WeaponSawedOffShotgun extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=4
-     GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
      ShotTime=0.300000
@@ -17,13 +16,13 @@ defaultproperties
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
      recoilStrength=0.400000
-     VM_spreadStrength=0.200000
      AIFireDelay=0.800000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True
      VM_pumpAction=True
      VM_ShotCount=6
+     VM_spreadStrength=0.200000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.AmmoShell'

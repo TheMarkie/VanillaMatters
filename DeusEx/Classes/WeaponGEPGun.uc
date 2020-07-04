@@ -18,7 +18,6 @@ defaultproperties
 {
      ShortName="GEP Gun"
      LowAmmoWaterMark=4
-     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
      ShotTime=2.000000

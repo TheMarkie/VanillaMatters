@@ -49,7 +49,6 @@ function SetEnumerators() {
 defaultproperties
 {
      numTicks=13
-     startValue=0.000000
      endValue=120.000000
      defaultValue=120.000000
      HelpText="FPS limit. This is not related to VSync. Default: 120."

@@ -9,7 +9,6 @@ class BallisticArmor extends ChargedPickup;
 
 defaultproperties
 {
-     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.SuitLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconArmorBallistic'
      VM_bQuiet=True

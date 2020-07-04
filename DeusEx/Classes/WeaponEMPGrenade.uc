@@ -61,13 +61,11 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 defaultproperties
 {
      LowAmmoWaterMark=2
-     GoverningSkill=Class'DeusEx.SkillDemolition'
      EnemyEffective=ENMEFF_Robot
      Concealability=CONC_Visual
      ShotTime=0.300000
      reloadTime=0.100000
      HitDamage=100
-     maxRange=4800
      BaseAccuracy=1.000000
      bPenetrating=False
      StunDuration=60.000000

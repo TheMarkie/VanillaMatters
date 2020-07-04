@@ -6,7 +6,6 @@ class WeaponCombatKnife extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=0
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      Concealability=CONC_Visual

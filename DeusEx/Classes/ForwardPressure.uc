@@ -243,6 +243,7 @@ function ResetZoneInfo() {
 
 defaultproperties
 {
+     MsgNotEnoughPressure="You don't have enough pressure to save"
      MaxForwardPressure=100.000000
      CriticalRate=100.000000
      ConversationRate=20.000000
@@ -263,7 +264,6 @@ defaultproperties
      HackingBonusRate=6.000000
      ZoneRadius=800.000000
      StealthRadius=800.000000
-     MsgNotEnoughPressure="You don't have enough pressure to save"
      bHidden=True
      bTravel=True
 }

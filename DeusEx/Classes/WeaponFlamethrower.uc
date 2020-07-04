@@ -57,11 +57,10 @@ defaultproperties
      burnTime=30
      burnDamage=5
      LowAmmoWaterMark=50
-     GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
      ShotTime=0.100000
-     ReloadTime=5.000000
+     reloadTime=5.000000
      HitDamage=15
      maxRange=320
      BaseAccuracy=0.900000

@@ -16,3 +16,7 @@ var private transient const int _intPad7;
 var private transient const int _intPad8;
 var private transient const int _intPad9;
 var private transient const int _intPad10;
+
+defaultproperties
+{
+}

@@ -623,9 +623,6 @@ simulated function BeginPlay()
     }
 }
 
-
-
-
 defaultproperties
 {
      elasticity=0.500000

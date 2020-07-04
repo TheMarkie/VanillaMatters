@@ -9,7 +9,6 @@ class HazMatSuit extends ChargedPickup;
 
 defaultproperties
 {
-     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.SuitLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconHazMatSuit'
      VM_DamageResistance=0.750000

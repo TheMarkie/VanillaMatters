@@ -40,7 +40,6 @@ defaultproperties
      ShotTime=0.300000
      reloadTime=0.100000
      HitDamage=0
-     maxRange=4800
      BaseAccuracy=1.000000
      bPenetrating=False
      bHasMuzzleFlash=False

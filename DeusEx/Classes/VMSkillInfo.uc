@@ -87,3 +87,7 @@ function IncreaseToMax( optional TableFloat table ) {
         Level = maxLevel;
     }
 }
+
+defaultproperties
+{
+}

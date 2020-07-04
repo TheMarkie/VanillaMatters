@@ -6,7 +6,6 @@ class WeaponSword extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=0
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      ShotTime=0.600000

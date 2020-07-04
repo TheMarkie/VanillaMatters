@@ -6,7 +6,6 @@ class WeaponProd extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=4
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      EnviroEffective=ENVEFF_Air

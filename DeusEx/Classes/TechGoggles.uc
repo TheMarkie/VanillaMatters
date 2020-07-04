@@ -82,7 +82,6 @@ function ChargedPickupEnd( DeusExPlayer Player ) {
 defaultproperties
 {
      VM_currentVisionLevel=1
-     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.TechGogglesLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconGoggles'
      ExpireMessage="TechGoggles power supply used up"

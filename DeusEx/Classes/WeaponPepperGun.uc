@@ -46,7 +46,6 @@ defaultproperties
      VM_fireSounds(3)=Sound'DeusEx.VMSounds.PepperGunFire4'
      VM_fireSounds(4)=Sound'DeusEx.VMSounds.PepperGunFire5'
      LowAmmoWaterMark=50
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.200000
      EnemyEffective=ENMEFF_Organic
      EnviroEffective=ENVEFF_AirVacuum

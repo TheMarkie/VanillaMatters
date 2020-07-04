@@ -54,13 +54,11 @@ defaultproperties
 {
      ShortName="LAM"
      LowAmmoWaterMark=2
-     GoverningSkill=Class'DeusEx.SkillDemolition'
      EnviroEffective=ENVEFF_AirWater
      Concealability=CONC_All
      ShotTime=0.300000
      reloadTime=0.100000
      HitDamage=250
-     maxRange=4800
      BaseAccuracy=1.000000
      bHasMuzzleFlash=False
      bHandToHand=True

@@ -6,23 +6,22 @@ class WeaponAssaultShotgun extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=12
-     GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
      ShotTime=0.400000
      reloadTime=4.000000
-     MaxRange=1600
+     maxRange=1600
      BaseAccuracy=0.650000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
      AmmoNames(1)=Class'DeusEx.AmmoSabot'
      AreaOfEffect=AOE_Cone
      recoilStrength=0.300000
-     VM_spreadStrength=0.150000
      AIFireDelay=0.800000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True
      VM_ShotCount=4
+     VM_spreadStrength=0.150000
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=3
      AmmoName=Class'DeusEx.AmmoShell'

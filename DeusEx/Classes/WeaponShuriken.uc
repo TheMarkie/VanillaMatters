@@ -6,7 +6,6 @@ class WeaponShuriken extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=5
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      EnviroEffective=ENVEFF_AirVacuum

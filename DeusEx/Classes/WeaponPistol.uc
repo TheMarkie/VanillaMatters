@@ -6,7 +6,6 @@ class WeaponPistol extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=6
-     GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
      ShotTime=0.200000
@@ -17,12 +16,12 @@ defaultproperties
      ScopeFOV=25
      bCanHaveLaser=True
      recoilStrength=0.250000
-     VM_spreadStrength=0.150000
      AIFireDelay=0.600000
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True
+     VM_spreadStrength=0.150000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.Ammo10mm'

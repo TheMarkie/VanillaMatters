@@ -6,7 +6,6 @@ class WeaponCrowbar extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=0
-     GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      ShotTime=0.700000
      reloadTime=0.000000

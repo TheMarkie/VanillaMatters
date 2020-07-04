@@ -57,3 +57,7 @@ static function UpdateValues( TableFloat table, int oldLevel, int newLevel ) {
         table.Set( skillValue.Name, value );
     }
 }
+
+defaultproperties
+{
+}

@@ -6,7 +6,6 @@ class WeaponRifle extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=6
-     GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      NoiseLevel=2.000000
      EnviroEffective=ENVEFF_Air
      ShotTime=1.200000
@@ -19,12 +18,12 @@ defaultproperties
      bCanHaveSilencer=True
      bHasMuzzleFlash=False
      recoilStrength=0.400000
-     VM_spreadStrength=0.200000
      bUseWhileCrouched=False
      AIFireDelay=2.500000
      bCanHaveModReloadCount=True
      bCanHaveModReloadTime=True
      bCanHaveModStability=True
+     VM_spreadStrength=0.200000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.Ammo3006'
      ReloadCount=6

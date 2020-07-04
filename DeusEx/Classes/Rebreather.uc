@@ -40,7 +40,6 @@ function ChargedPickupEnd( DeusExPlayer player ) {
 
 defaultproperties
 {
-     skillNeeded=Class'DeusEx.SkillEnviro'
      LoopSound=Sound'DeusExSounds.Pickup.RebreatherLoop'
      ChargedIcon=Texture'DeusExUI.Icons.ChargedIconRebreather'
      ExpireMessage="Rebreather power supply used up"
