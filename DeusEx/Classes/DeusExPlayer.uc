@@ -9798,7 +9798,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 //          if ((suit.Owner == Self) && suit.bActive)
       if (UsingChargedPickup(class'HazMatSuit'))
             {
-                skillLevel = GetSkillSystem().GetValue( "HazMatSuitResistance", 1 );
                 newDamage *= class'HazMatSuit'.default.VM_DamageResistance * skillLevel;
             }
     }
@@ -9809,7 +9808,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         // since they aren't in the inventory anymore after they are used
       if (UsingChargedPickup(class'BallisticArmor'))
             {
-                skillLevel = GetSkillSystem().GetValue( "BallisticArmorResistance", 1 );
                 newDamage *= class'BallisticArmor'.default.VM_DamageResistance * skillLevel;
             }
     }

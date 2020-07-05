@@ -1306,7 +1306,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     if ( damageType == 'Shot' || damageType == 'Sabot' || damageType == 'Exploded' || damageType == 'AutoShot' ) {
         cpickup = GetActiveChargedPickup( class'BallisticArmor' );
         if ( cpickup != None ) {
-            newDamage -= cpickup.DrainCharge( newDamage - ( newDamage * ( 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "BallisticArmorResistance", 1 ) ) ) ) );
+            newDamage -= cpickup.DrainCharge( newDamage - ( newDamage * ( 1 - cpickup.default.VM_DamageResistance ) ) );
         }
     }
 
@@ -1317,7 +1317,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     ) {
         cpickup = GetActiveChargedPickup( class'HazMatSuit' );
         if ( cpickup != None ) {
-            newDamage *= 1 - ( cpickup.default.VM_DamageResistance * VMSkillSystem.GetValue( "HazMatSuitResistance", 1 ) );
+            newDamage *= 1 - cpickup.default.VM_DamageResistance;
         }
     }
 

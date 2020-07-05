@@ -66,14 +66,6 @@ simulated function bool UpdateInfo(Object winObject)
         // Vanilla Matters: Add in damage resistance value if there's any.
         if ( default.VM_DamageResistance != 0.0 ) {
             winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - default.VM_DamageResistance ) * 100, 0.1 ) $ "% " );
-
-            skillLevelValue = player.GetSkillValue( GetStringClassName() $ "Resistance" );
-
-            damageResistance = ( 1 - ( default.VM_DamageResistance * skillLevelValue ) ) * 100.0;
-
-            if ( damageResistance != default.VM_DamageResistance ) {
-                winInfo.AppendText( class'DeusExWeapon'.static.BuildPercentString( 1 - skillLevelValue ) @ "=" @ class'DeusExWeapon'.static.FormatFloatString( damageResistance, 0.1 ) $ "%" );
-            }
         }
 
         // Vanilla Matters: Add in whether the charged pickup is toggleable.
