@@ -54,9 +54,14 @@ simulated function bool UpdateInfo(Object winObject)
 
         // Vanilla Matters
         UpdateCharge( player );
-
-        outText = ChargeRemainingLabel @ int( GetChargeInSeconds() ) @ VM_msgInfoSecondsLabel;
-        winInfo.AppendText(outText);
+        outText = ChargeRemainingLabel;
+        if ( VM_bDraining ) {
+            outText = outText @ int( GetChargeInSeconds() ) @ VM_msgInfoSecondsLabel;
+        }
+        else {
+            outText = outText @ Charge;
+        }
+        winInfo.AppendText( outText );
 
         // Vanilla Matters: Add in damage resistance value if there's any.
         if ( default.VM_DamageResistance != 0.0 ) {
