@@ -50,7 +50,12 @@ function bool ButtonActivated( Window buttonPressed )
     Super.ButtonActivated(buttonPressed);
     securityWindow.ToggleDoorLock();
 
-    // Vanilla Matters: Make each access toggle cost an amount of time.
+    // Vanilla Matters
+    if ( !winCamera.door.bFrobbable || winCamera.door.bOneWay ) {
+        securityWindow.TriggerDoor();
+    }
+
+    // Vanilla Matters
     HandleTimeCost();
 
     return True;
@@ -65,7 +70,12 @@ function bool ButtonActivatedRight( Window buttonPressed )
     Super.ButtonActivated(buttonPressed);
     securityWindow.ToggleDoorLock();
 
-    // Vanilla Matters: Make each access toggle cost an amount of time.
+    // Vanilla Matters
+    if ( !winCamera.door.bFrobbable || winCamera.door.bOneWay ) {
+        securityWindow.TriggerDoor();
+    }
+
+    // Vanilla Matters
     HandleTimeCost();
 
     return True;
