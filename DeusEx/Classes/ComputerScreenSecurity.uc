@@ -49,10 +49,6 @@ function InitWindow()
 {
     Super.InitWindow();
 
-    // set up the timer to auto-update the door status
-    if (doorTimerID == -1)
-        doorTimerID = AddTimer(0.25, True, 0, 'DoorRefreshTimer');
-
    // setup the timer for refreshing the screen in multiplayer
    if (networkTimerID == -1)
       networkTimerID = AddTimer(0.25, True, 0, 'NetworkRefreshTimer');
@@ -68,12 +64,6 @@ event DestroyWindow()
 {
     Super.DestroyWindow();
 
-    if (doorTimerID != -1)
-    {
-        RemoveTimer(doorTimerID);
-        doorTimerID = -1;
-    }
-
    if (networkTimerID != -1)
    {
       Removetimer(networkTimerID);
@@ -84,16 +74,17 @@ event DestroyWindow()
 // -----------------------------------------------------------------------
 // NetworkRefreshTimer
 // -----------------------------------------------------------------------
-function NetworkRefreshTimer(int timerID, int invocations, int clientData)
-{
-   local int cameraIndex;
+// Vanilla Matters
+function NetworkRefreshTimer( int timerID, int invocations, int clientData ) {
+    local int cameraIndex;
 
-   for (cameraIndex = 0; cameraIndex < arrayCount(winCameras); cameraIndex++)
-   {
+    for ( cameraIndex = 0; cameraIndex < arrayCount( winCameras ); cameraIndex++ ) {
         winCameras[cameraIndex].UpdateCameraStatus();
         winCameras[cameraIndex].UpdateTurretStatus();
         winCameras[cameraIndex].UpdateDoorStatus();
-   }
+    }
+
+    choiceWindows[1].CycleNextValue();
 }
 
 // ----------------------------------------------------------------------

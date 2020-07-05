@@ -17,11 +17,6 @@ function SetCameraView(ComputerSecurityCameraWindow newCamera)
         if (winCamera.door != None)
         {
             EnableWindow();     // In case was previously disabled
-
-            if (winCamera.door.bLocked)
-                SetValue(0);
-            else
-                SetValue(1);
         }
         else
         {
@@ -47,15 +42,14 @@ function SetCameraView(ComputerSecurityCameraWindow newCamera)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    Super.ButtonActivated(buttonPressed);
-    securityWindow.ToggleDoorLock();
-
     // Vanilla Matters
     if ( !winCamera.door.bFrobbable || winCamera.door.bOneWay ) {
         securityWindow.TriggerDoor();
     }
+    else {
+        securityWindow.ToggleDoorLock();
+    }
 
-    // Vanilla Matters
     HandleTimeCost();
 
     return True;
@@ -67,18 +61,40 @@ function bool ButtonActivated( Window buttonPressed )
 
 function bool ButtonActivatedRight( Window buttonPressed )
 {
-    Super.ButtonActivated(buttonPressed);
-    securityWindow.ToggleDoorLock();
-
     // Vanilla Matters
     if ( !winCamera.door.bFrobbable || winCamera.door.bOneWay ) {
         securityWindow.TriggerDoor();
     }
+    else {
+        securityWindow.ToggleDoorLock();
+    }
 
-    // Vanilla Matters
     HandleTimeCost();
 
     return True;
+}
+
+// Vanilla Matters
+function CycleNextValue() {
+    if ( winCamera.door == none ) {
+        return;
+    }
+
+    if ( winCamera.door.bLocked ) {
+        SetValue( 0 );
+    }
+    else {
+        SetValue( 1 );
+    }
+
+    if ( !winCamera.door.bFrobbable || winCamera.door.bOneWay ) {
+        if ( winCamera.door.KeyNum != 0 ) {
+            btnInfo.SetButtonText( "Open" );
+        }
+        else {
+            btnInfo.SetButtonText( "Closed" );
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
