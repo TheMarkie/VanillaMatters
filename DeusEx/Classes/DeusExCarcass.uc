@@ -337,14 +337,21 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector mo
 
     // Vanilla Matters: Make the carcase "die" if taken enough damage.
     if ( bNotDead ) {
-        bNotDead = false;
+        // VM: Non-lethal damage can't kill.
+        if ( damageType != 'Stunned' && damageType != 'KnockedOut'
+            && damageType != 'Poison' && damageType != 'PoisonEffect'
+            && damageType != 'TearGas' && damageType != 'HalonGas'
+            && damageType != 'EMP' && damageType != 'NanoVirus'
+        ) {
+            bNotDead = false;
 
-        if ( !bAnimalCarcass ) {
-            itemName = VM_name @ "(" $ default.itemName $ ")";
-        }
+            if ( !bAnimalCarcass ) {
+                itemName = VM_name @ "(" $ default.itemName $ ")";
+            }
 
-        if ( FRand() < 0.1 ) {
-            bGenerateFlies = true;
+            if ( FRand() < 0.1 ) {
+                bGenerateFlies = true;
+            }
         }
     }
 

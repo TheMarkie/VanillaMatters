@@ -5141,7 +5141,6 @@ function PlayDying(name damageType, vector hitLoc)
     local Vector X, Y, Z;
     local float dotp;
 
-//  ClientMessage("PlayDying()");
     if (Region.Zone.bWaterZone)
         PlayAnimPivot('WaterDeath',, 0.1);
     else if (bSitting)  // if sitting, always fall forward
@@ -5160,8 +5159,9 @@ function PlayDying(name damageType, vector hitLoc)
 
     // don't scream if we are stunned
     // Vanilla Matters: Add in HalonGas as a non-lethal damage source.
-    if ( damageType == 'Stunned' || damageType == 'KnockedOut' || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas' )
-    {
+    if ( damageType == 'Stunned' || damageType == 'KnockedOut'
+        || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas'
+    ) {
         bStunned = True;
         if (bIsFemale)
             PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
