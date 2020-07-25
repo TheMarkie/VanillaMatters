@@ -12111,7 +12111,8 @@ function VMSkillInfo GetFirstSkillInfo() { return none; }
 function bool IncreaseSkillLevel( VMSkillInfo info ) { return false; }
 function bool DecreaseSkillLevel( VMSkillInfo info ) { return false; }
 
-function float GetSkillValue( string name, optional float defaultValue ) { return defaultValue; }
+function float GetSkillValue( name name, optional float defaultValue ) { return defaultValue; }
+function float GetSkillCategoryValue( name category, name name, optional float defaultValue ) { return defaultValue; }
 function int GetSkillLevel( name name ) { return -1; }
 
 //==============================================

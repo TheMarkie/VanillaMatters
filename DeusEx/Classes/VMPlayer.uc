@@ -195,8 +195,8 @@ function InitializeSkillSystem() {
     VMSkillSystem.Initialize();
 
     // Start in reverse because we're adding to a linked list.
-    for ( i = ( #StartingSkills - 1 ); i >= 0; i-- ) {
-        VMSkillSystem.AddSkill( StartingSkills[i] );
+    for ( i = #StartingSkills - 1; i >= 0; i-- ) {
+        VMSkillSystem.Add( StartingSkills[i].Name );
     }
 }
 
@@ -1387,9 +1387,18 @@ function bool DecreaseSkillLevel( VMSkillInfo info ) {
 }
 
 // Override
-function float GetSkillValue( string name, optional float defaultValue ) {
+function float GetSkillValue( name name, optional float defaultValue ) {
     if ( VMSkillSystem != none ) {
         return VMSkillSystem.GetValue( name, defaultValue );
+    }
+    else {
+        return defaultValue;
+    }
+}
+// Override
+function float GetSkillCategoryValue( name category, name name, optional float defaultValue ) {
+    if ( VMSkillSystem != none ) {
+        return VMSkillSystem.GetCategoryValue( category, name, defaultValue );
     }
     else {
         return defaultValue;
