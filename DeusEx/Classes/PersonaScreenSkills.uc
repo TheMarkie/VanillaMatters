@@ -307,10 +307,6 @@ function UpgradeSkill()
     // Vanilla Matters
     if ( player.IncreaseSkillLevel( selectedSkill ) ) {
         selectedSkillButton.RefreshSkillInfo();
-
-        // Send status message
-        winStatus.AddText( Sprintf( SkillUpgradedLevelLabel, selectedSkill.GetSkillName() ) );
-
         winSkillPoints.SetText( player.SkillPointsAvail );
     }
 
