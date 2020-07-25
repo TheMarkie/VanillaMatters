@@ -1,12 +1,9 @@
-//=============================================================================
-// SkillDemolition.
-//=============================================================================
 class SkillDemolition extends VMSkill;
 
 defaultproperties
 {
-     SkillName="Weapons: Destructive"
+     UpgradeName="Weapons: Destructive"
      Description="PLACEHOLDER SKILL, YOU SHOULD NOT SEE THIS."
-     SkillIcon=Texture'DeusExUI.UserInterface.SkillIconDemolition'
+     Icon=Texture'DeusExUI.UserInterface.SkillIconDemolition'
      Costs=(900,1800,3000)
 }
