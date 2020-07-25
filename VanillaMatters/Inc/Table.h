@@ -36,3 +36,6 @@ protected:
 //==============================================
 DECLARE_TABLE_CLASS( Float, FLOAT )
 DECLARE_TABLE_CLASS( Int, INT )
+
+// Table for UTableFloat
+DECLARE_TABLE_CLASS( TableFloat, UTableFloat* )
