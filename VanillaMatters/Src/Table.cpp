@@ -19,12 +19,10 @@ IMPLEMENT_FUNCTION( UTable##name, -1, execSet ) \
 IMPLEMENT_FUNCTION( UTable##name, -1, execTryGetValue ) \
 \
 void UTable##name::execAdd( FFrame& Stack, RESULT_DECL ) { \
-    P_GET_STR( fstr ) \
+    P_GET_NAME( name ) \
     P_GET_##type( value ) \
     P_FINISH \
-\
-    wstring key = FStringToWString( fstr ); \
-    ToLowerWString( &key ); \
+    INT key = name.GetIndex(); \
     bool hasKey = _map.contains( key ); \
     _map[key] = value; \
     if ( !hasKey ) { \
@@ -32,28 +30,22 @@ void UTable##name::execAdd( FFrame& Stack, RESULT_DECL ) { \
     } \
 } \
 void UTable##name::execRemove( FFrame& Stack, RESULT_DECL ) { \
-    P_GET_STR( fstr ) \
+    P_GET_NAME( name ) \
     P_FINISH \
-\
-    wstring key = FStringToWString( fstr ); \
-    ToLowerWString( &key ); \
+    INT key = name.GetIndex(); \
     _map.erase( key ); \
     Count--; \
 } \
 void UTable##name::execClear( FFrame& Stack, RESULT_DECL ) { \
     P_FINISH \
-\
     _map.clear(); \
     Count = 0; \
 } \
-\
 void UTable##name::execSet( FFrame& Stack, RESULT_DECL ) { \
-    P_GET_STR( fstr ) \
+    P_GET_NAME( name ) \
     P_GET_##type( value ) \
     P_FINISH \
-\
-    wstring key = FStringToWString( fstr ); \
-    ToLowerWString( &key ); \
+    INT key = name.GetIndex(); \
     bool hasKey = _map.contains( key ); \
     _map[key] = value; \
     if ( !hasKey ) { \
@@ -61,12 +53,10 @@ void UTable##name::execSet( FFrame& Stack, RESULT_DECL ) { \
     } \
 } \
 void UTable##name::execTryGetValue( FFrame& Stack, RESULT_DECL ) { \
-    P_GET_STR( fstr ) \
+    P_GET_NAME( name ) \
     P_GET_##type##_REF( value ) \
     P_FINISH \
-\
-    wstring key = FStringToWString( fstr ); \
-    ToLowerWString( &key ); \
+    INT key = name.GetIndex(); \
     auto it = _map.find( key ); \
     if ( it != _map.end() ) { \
         *value = it->second; \
@@ -75,30 +65,6 @@ void UTable##name::execTryGetValue( FFrame& Stack, RESULT_DECL ) { \
     else { \
         *value = {}; \
         *( UBOOL* ) Result = 0; \
-    } \
-} \
-\
-void UTable##name::Serialize( FArchive& Ar ) { \
-    UTable::Serialize( Ar ); \
-    if ( Ar.IsLoading() ) { \
-        INT count; \
-        Ar << AR_INDEX( count ); \
-        _map.empty(); \
-        for ( INT i = 0; i < count; i++ ) { \
-            FString* fstr = new FString; \
-            Ar << *fstr; \
-            type* value = new type; \
-            Ar << *value; \
-            _map[FStringToWString( *fstr )] = *value; \
-        } \
-        Count = count; \
-    } \
-    else { \
-        Ar << AR_INDEX( Count ); \
-        for ( auto pair : _map ) { \
-            Ar << WStringToFString( pair.first ); \
-            Ar << pair.second; \
-        } \
     } \
 }
 

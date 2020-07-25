@@ -10,13 +10,12 @@ public: \
     DECLARE_FUNCTION( execSet ) \
     DECLARE_FUNCTION( execTryGetValue ) \
     DECLARE_CLASS( UTable##name, UTable, 0 ) \
-    void Serialize( FArchive& Ar ) override; \
 protected: \
     UTable##name() : UTable() { \
-        _map = unordered_map<wstring, type>(); \
+        _map = unordered_map<INT, type>(); \
     } \
 private: \
-    unordered_map<wstring, type> _map; \
+    unordered_map<INT, type> _map; \
 };
 
 //==============================================
