@@ -3053,7 +3053,7 @@ function int CalculateSkillHealAmount(int baseHealPoints)
     local int adjustedHealAmount;
 
     // check skill use
-    mult = GetSkillValue( "HealingBonus" );
+    mult = GetSkillValue( 'HealingBonus' );
 
     // Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
     adjustedHealAmount = baseHealPoints + mult;
@@ -3534,7 +3534,7 @@ state PlayerWalking
         // Vanilla Matters: Change heavy weapon penalty check to apply a direct penalty instead of level check
         if ( Weapon != none && Weapon.Mass > 30 )
         {
-            newSpeed = defSpeed * ( 0.5 + GetSkillValue( "HeavyWeaponMovementSpeedBonus" ) );
+            newSpeed = defSpeed * ( 0.5 + GetSkillValue( 'HeavyWeaponMovementSpeedBonus' ) );
         }
 
         // Multiplayer movement adjusters
@@ -3794,9 +3794,9 @@ event HeadZoneChange(ZoneInfo newHeadZone)
         Acceleration = vect(0,0,0);
 
         // Vanilla Matters
-        swimDuration = UnderWaterTime + GetSkillValue( "LungCapacity" ) + augLevel;
+        swimDuration = UnderWaterTime + GetSkillValue( 'LungCapacity' ) + augLevel;
         swimTimer = swimDuration;
-        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( "SwimmingSpeedMult" ) );
+        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( 'SwimmingSpeedMult' ) );
     }
 
     Super.HeadZoneChange(newHeadZone);
@@ -3907,9 +3907,9 @@ state PlayerSwimming
         }
 
         // Vanilla Matters
-        swimDuration = UnderWaterTime + GetSkillValue( "LungCapacity" ) + augLevel;
+        swimDuration = UnderWaterTime + GetSkillValue( 'LungCapacity' ) + augLevel;
         swimTimer = swimDuration;
-        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( "SwimmingSpeedMult" ) );
+        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( 'SwimmingSpeedMult' ) );
         swimBubbleTimer = 0;
 
         Super.BeginState();

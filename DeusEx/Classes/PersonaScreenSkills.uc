@@ -361,7 +361,7 @@ function RefreshWindow(float DeltaTime)
 // Vanilla Matters: Update description window
 function UpdateInfo( VMSkillInfo info ) {
     winInfo.Clear();
-    winInfo.SetTitle( info.GetSkillName() );
+    winInfo.SetTitle( info.GetName() );
     winInfo.SetText( info.GetDescription() );
 }
 

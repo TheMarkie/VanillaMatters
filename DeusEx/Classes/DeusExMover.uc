@@ -606,7 +606,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                     curPick.bBeingUsed = true;
                     curPick.PlayUseAnim();
                     bPicking = true;
-                    numPicks = int( FMax( Player.GetSkillValue( "Lockpicking" ), 1 ) );
+                    numPicks = int( FMax( Player.GetSkillValue( 'Lockpicking' ), 1 ) );
                     TicksPerPick = ( pickTime * 10.0 ) / numPicks;
 
                     // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.

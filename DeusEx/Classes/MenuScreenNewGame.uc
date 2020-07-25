@@ -288,8 +288,8 @@ function String BuildSkillString( VMSkillInfo info )
         levelCost = string( info.GetNextLevelCost() );
     }
 
-    skillString = info.GetSkillName() $ ";" $
-                  class'VMSkillManager'.default.SkillLevelNames[( 3 - info.GetMaxLevel() ) + info.Level] $ ";" $
+    skillString = info.GetName() $ ";" $
+                  class'VMSkillManager'.static.GetLevelName( info.Level, info.GetMaxLevel() ) $ ";" $
                   levelCost;
 
     return skillString;
@@ -367,7 +367,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
     selectedSkill = VMSkillInfo( ListWindow( list ).GetRowClientObject( focusRowId ) );
     selectedRowId = focusRowId;
 
-    winSkillInfo.SetSkill( selectedSkill.GetSkillClass() );
+    winSkillInfo.SetSkill( selectedSkill );
 
     EnableButtons();
 
@@ -546,10 +546,10 @@ function CopySkills() {
     while( info != none ) {
         i = #localSkills;
         localSkills[i] = new class'VMSkillInfo';
-        localSkills[i].SkillClassName = info.SkillClassName;
+        localSkills[i].DefinitionClassName = info.DefinitionClassName;
 
         // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
-        if ( info.SkillClassName == 'SkillWeaponPistol' ) {
+        if ( info.DefinitionClassName == 'SkillWeaponPistol' ) {
             player.SkillPointsAvail -= localSkills[i].GetNextLevelCost();
             localSkills[i].Level += 1;
         }

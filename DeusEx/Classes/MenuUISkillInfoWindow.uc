@@ -14,9 +14,6 @@ var LargeTextWindow        winSkillDescription;
 var Color colSkillName;
 var Color colSkillDesc;
 
-// Vanilla Matters
-var class<VMSkill> skill;
-
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -70,12 +67,10 @@ function CreateControls()
 // SetSkill()
 // ----------------------------------------------------------------------
 // Vanilla Matters
-function SetSkill( class<VMSkill> newSkill ) {
-    skill = newSkill;
-
-    winSkillIcon.SetBackground( skill.default.SkillIcon );
-    winSkillName.SetText( skill.default.SkillName );
-    winSkillDescription.SetText( skill.default.Description );
+function SetSkill( VMSkillInfo info ) {
+    winSkillName.SetText( info.GetName() );
+    winSkillDescription.SetText( info.GetDescription() );
+    winSkillIcon.SetBackground( info.GetIcon() );
 }
 
 // ----------------------------------------------------------------------

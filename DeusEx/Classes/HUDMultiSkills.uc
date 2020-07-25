@@ -217,10 +217,10 @@ event DrawWindow(GC gc)
             info = player.GetFirstSkillInfo();
             while ( info != None ) {
                 if ( index == 10 ) {
-                    str = "0. " $ info.GetSkillName();
+                    str = "0. " $ info.GetName();
                 }
                 else {
-                    str = index $ ". " $ info.GetSkillName();
+                    str = index $ ". " $ info.GetName();
                 }
 
                 gc.GetTextExtent( 0, w, h, str );

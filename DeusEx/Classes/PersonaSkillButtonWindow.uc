@@ -130,9 +130,9 @@ function VMSkillInfo GetSkill()
 // Vanilla Matters
 function RefreshSkillInfo() {
     if ( skill != none ) {
-        winIcon.SetBackground( skill.GetSkillIcon() );
-        winName.SetText( skill.GetSkillName() );
-        winLevel.SetText( class'VMSkillManager'.default.SkillLevelNames[( 3 - skill.GetMaxLevel() ) + skill.Level] );
+        winName.SetText( skill.GetName() );
+        winIcon.SetBackground( skill.GetIcon() );
+        winLevel.SetText( class'VMSkillManager'.static.GetLevelName( skill.Level, skill.GetMaxLevel() ) );
         winLevelIcons.SetLevel( skill.Level );
 
         if ( skill.Level == skill.GetMaxLevel() ) {
