@@ -549,18 +549,18 @@ function ReloadAmmo( optional bool bForce ) {
 }
 
 // Vanilla Matters: Rewrite to get only skill value.
-function float GetSkillValue( string category ) {
+function float GetSkillValue( name category ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return player.GetSkillValue( GetStringClassName() $ category );
+        return player.GetSkillCategoryValue( category, Class.Name );
     }
 
     return 0;
 }
 
-function float GetGlobalSkillValue( string category ) {
+function float GetGlobalSkillValue( name category ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
@@ -600,7 +600,7 @@ simulated function float CalculateAccuracy() {
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+    weapskill = GetAugValue( class'AugTarget' ) + GetSkillValue( 'Accuracy' );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
     accuracy = accuracy + ModBaseAccuracy;
@@ -1126,7 +1126,7 @@ function PlaceGrenade()
             gren.SetBase(placeMover);
 
         // Vanilla Matters
-        dmgX = 1.0 + GetSkillValue( "Damage" );
+        dmgX = 1.0 + GetSkillValue( 'Damage' );
 
         gren.Damage *= dmgX;
 
@@ -1178,7 +1178,7 @@ simulated function Tick( float deltaTime ) {
 
     ProcessLockTarget( deltaTime, Player );
 
-    skillBonus = GetSkillValue( "Stability" );
+    skillBonus = GetSkillValue( 'Stability' );
 
     if ( !bHandToHand && player != none ) {
         ProcessSpread( deltaTime, player, skillBonus );
@@ -1287,7 +1287,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
         {
             if (bCanTrack)
             {
-                if ( GetSkillValue( "Homing" ) <= 0 ) {
+                if ( GetSkillValue( 'Homing' ) <= 0 ) {
                     return;
                 }
 
@@ -1352,7 +1352,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
                         if (LockTimer == 0)
                         {
                             // Vanilla Matters
-                            LockTime = FMax( default.LockTime * ( 1 + GetSkillValue( "LockTime" ) ), 0 );
+                            LockTime = FMax( default.LockTime * ( 1 + GetSkillValue( 'LockTime' ) ), 0 );
                         }
 
                         LockTimer += deltaTime;
@@ -2438,7 +2438,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
         throwBonus = ( throwBonus + 1 ) / 2;
     }
 
-    mult = 1.0 + GetSkillValue( "Damage" );
+    mult = 1.0 + GetSkillValue( 'Damage' );
     if ( bHandToHand ) {
         mult += GetAugValue( class'AugCombat' );
     }
@@ -2653,9 +2653,9 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     if (Other != None)
     {
         // Vanilla Matters
-        mult = 1.0 + GetSkillValue( "Damage" );
+        mult = 1.0 + GetSkillValue( 'Damage' );
         if ( bHandToHand ) {
-            mult += GetGlobalSkillValue( "MeleeWeaponDamage" );
+            mult += GetGlobalSkillValue( 'MeleeWeaponDamage' );
             mult += GetAugValue( class'AugCombat' );
         }
 
@@ -2974,10 +2974,10 @@ simulated function bool UpdateInfo(Object winObject)
         str = str $ "x" $ Default.VM_ShotCount;
     }
 
-    mod = 1.0 + GetSkillValue( "Damage" );
+    mod = 1.0 + GetSkillValue( 'Damage' );
     if ( bHandToHand ) {
         if ( bInstantHit ) {
-            mod += GetGlobalSkillValue( "MeleeWeaponDamage" );
+            mod += GetGlobalSkillValue( 'MeleeWeaponDamage' );
         }
         mod += GetAugValue( class'AugCombat' );
     }
@@ -3005,7 +3005,7 @@ simulated function bool UpdateInfo(Object winObject)
     if ( !bHandToHand && default.ReloadCount > 0 ) {
         // Vanilla Matters: Accuracy.
         str = int( BaseAccuracy * 100 ) $ "%";
-        mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+        mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( 'Accuracy' );
         if ( mod != 0.0 ) {
             str = str @ BuildPercentString( mod + 0.000003 );
             str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
@@ -3014,7 +3014,7 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
 
         // Vanilla Matters: Stability.
-        mod = GetSkillValue( "Stability" ) + ModStability;
+        mod = GetSkillValue( 'Stability' ) + ModStability;
         if ( mod != 0 ) {
             str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
         }
@@ -3046,7 +3046,7 @@ simulated function bool UpdateInfo(Object winObject)
 
         //  Vanilla Matters: Reload Time.
         str = FormatFloatString( default.ReloadTime, 0.1 );
-        mod = ModReloadTime + GetSkillValue( "ReloadTime" );
+        mod = ModReloadTime + GetSkillValue( 'ReloadTime' );
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
             str = str @ "=" @ FormatFloatString( default.ReloadTime + ( mod * default.ReloadTime ), 0.1 );
@@ -3504,7 +3504,7 @@ ignores Fire, AltFire;
             // check for skill use if we are the player
 
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetSkillValue( "ReloadTime" );
+            val = ModReloadTime + GetSkillValue( 'ReloadTime' );
             val = ReloadTime + ( val * ReloadTime );
         }
 
@@ -3794,7 +3794,7 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
         if (DeusExPlayer(Owner) != None)
         {
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetSkillValue( "ReloadTime" );
+            val = ModReloadTime + GetSkillValue( 'ReloadTime' );
             val = ReloadTime + ( val * ReloadTime );
         }
         return val;
