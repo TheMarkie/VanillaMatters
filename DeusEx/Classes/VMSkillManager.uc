@@ -1,63 +1,70 @@
-class VMSkillManager extends Actor;
+class VMSkillManager extends VMUpgradeManager;
 
 //==============================================
 // Strings
 //==============================================
-var() localized string SkillLevelNames[4];
+var() localized string LevelNames[4];
 
 //==============================================
 // Data
 //==============================================
+var travel TableFloat GlobalValues;
+var travel TableTableFloat CategoryValues;
 var travel VMSkillInfo FirstSkillInfo;
-var travel TableFloat SkillValues;
+
+//==============================================
+// General info
+//==============================================
+static function string GetLevelName( int level, int maxLevel ) {
+    return default.LevelNames[3 - maxLevel + level];
+}
 
 //==============================================
 // Management
 //==============================================
 function Initialize() {
-    SkillValues = new class'TableFloat';
-}
-
-function bool AddSkill( class<VMSkill> class, optional int startingLevel ) {
-    local VMSkillInfo info;
-
-    if ( startingLevel < 0 || GetSkillInfo( class.Name ) != none ) {
-        return false;
-    }
-
-    info = new class'VMSkillInfo';
-    info.SkillClassName = class.Name;
-    info.Level = startingLevel;
-    info.Next = FirstSkillInfo;
-    FirstSkillInfo = info;
-
-    info.RefreshValues( SkillValues );
-
-    return true;
+    GlobalValues = new class'TableFloat';
+    CategoryValues = new class'TableTableFloat';
 }
 
 function Reset() {
     local VMSkillInfo info;
 
-    SkillValues.Clear();
+    GlobalValues.Clear();
+    CategoryValues.Clear();
 
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.RefreshValues( SkillValues );
+        info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
     }
 }
 
+function bool Add( name name, optional int startingLevel ) {
+    local VMSkillInfo info;
+
+    info = new class'VMSkillInfo';
+    info.DefinitionClassName = name;
+    info.Level = startingLevel;
+    info.Next = FirstSkillInfo;
+    FirstSkillInfo = info;
+
+    info.RefreshValues( GlobalValues, CategoryValues );
+
+    return true;
+}
+
 function RefreshValues() {
     local VMSkillInfo info;
 
-    SkillValues.Clear();
+    GlobalValues.Clear();
+    CategoryValues.Clear();
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.RefreshValues( SkillValues );
+        info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
     }
@@ -71,7 +78,7 @@ function VMSkillInfo GetSkillInfo( name name ) {
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        if ( info.SkillClassName == name ) {
+        if ( info.DefinitionClassName == name ) {
             break;
         }
 
@@ -82,24 +89,34 @@ function VMSkillInfo GetSkillInfo( name name ) {
 }
 
 function bool IncreaseLevel( VMSkillInfo info ) {
-    return info.IncreaseLevel( SkillValues );
+    if ( info.IncreaseLevel() ) {
+        info.UpdateValues( GlobalValues, CategoryValues, info.Level - 1, info.Level );
+
+        return true;
+    }
+
+    return false;
 }
 function bool DecreaseLevel( VMSkillInfo info ) {
-    return info.DecreaseLevel( SkillValues );
+    if ( info.DecreaseLevel() ) {
+        info.UpdateValues( GlobalValues, CategoryValues, info.Level + 1, info.Level );
+
+        return true;
+    }
+
+    return false;
 }
 
-function IncreaseToMax( VMSkillInfo info ) {
-    info.IncreaseToMax( SkillValues );
-}
 function IncreaseAllToMax() {
     local VMSkillInfo info;
 
-    SkillValues.Clear();
+    GlobalValues.Clear();
+    CategoryValues.Clear();
 
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.RefreshValues( SkillValues );
+        info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
     }
@@ -108,15 +125,27 @@ function IncreaseAllToMax() {
 //==============================================
 // Skill values
 //==============================================
-function float GetValue( string name, optional float defaultValue ) {
+function float GetValue( name name, optional float defaultValue ) {
     local float value;
 
-    if ( SkillValues.TryGetValue( name, value ) ) {
+    if ( GlobalValues.TryGetValue( name, value ) ) {
         return value;
     }
-    else {
-        return defaultValue;
+
+    return defaultValue;
+}
+
+function float GetCategoryValue( name category, name name, optional float defaultValue ) {
+    local float value;
+    local TableFloat table;
+
+    if ( CategoryValues.TryGetValue( category, table ) ) {
+        if ( table.TryGetValue( name, value ) ) {
+            return value;
+        }
     }
+
+    return defaultValue;
 }
 
 function int GetLevel( name name ) {
@@ -132,10 +161,8 @@ function int GetLevel( name name ) {
 
 defaultproperties
 {
-     SkillLevelNames(0)="UNTRAINED"
-     SkillLevelNames(1)="TRAINED"
-     SkillLevelNames(2)="ADVANCED"
-     SkillLevelNames(3)="MASTER"
-     bHidden=True
-     bTravel=True
+     LevelNames(0)="UNTRAINED"
+     LevelNames(1)="TRAINED"
+     LevelNames(2)="ADVANCED"
+     LevelNames(3)="MASTER"
 }
