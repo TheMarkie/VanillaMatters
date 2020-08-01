@@ -3,6 +3,17 @@
 //=============================================================================
 class JCDentonMale extends Human;
 
+// Colored hand textures
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"       NAME="WeaponHandsTex1a"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"       NAME="WeaponHandsTex2a"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"       NAME="WeaponHandsTex3a"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"       NAME="WeaponHandsTex4a"     GROUP="VM" MIPS=On
+
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"       NAME="WeaponHandsTex1b"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"       NAME="WeaponHandsTex2b"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"       NAME="WeaponHandsTex3b"     GROUP="VM" MIPS=On
+#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"       NAME="WeaponHandsTex4b"     GROUP="VM" MIPS=On
+
 // ----------------------------------------------------------------------
 // TravelPostAccept()
 // ----------------------------------------------------------------------
