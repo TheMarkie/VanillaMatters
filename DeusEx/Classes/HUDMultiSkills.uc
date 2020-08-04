@@ -320,11 +320,11 @@ function VMSkillInfo GetSkillFromIndex( DeusExPlayer thisPlayer, int index ) {
 // AttemptBuySkill()
 // ----------------------------------------------------------------------
 // Vanilla Matters
-function bool AttemptBuySkill( DeusExPlayer thisPlayer, VMSkillInfo info ) {
+function bool AttemptBuySkill( DeusExPlayer thisPlayer, name name ) {
     if ( info != None ) {
         if ( info.CanUpgrade( thisPlayer.SkillPointsAvail ) ) {
             thisPlayer.BuySkillSound( 0 );
-            return thisPlayer.IncreaseSkillLevel( info );
+            return thisPlayer.IncreaseSkillLevel( name );
         }
         else {
             thisPlayer.BuySkillSound( 1 );
@@ -345,7 +345,7 @@ function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum ) {
     }
 
     info = GetSkillFromIndex( thisPlayer, objectNum );
-    if ( AttemptBuySkill( thisPlayer, info ) ) {
+    if ( AttemptBuySkill( thisPlayer, info.DefinitionClassName ) ) {
         thisPlayer.bBuySkills = false;      // Got our skill, exit out of menu
     }
 

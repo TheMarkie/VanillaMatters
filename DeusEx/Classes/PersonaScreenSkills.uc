@@ -305,7 +305,7 @@ function UpgradeSkill()
         return;
 
     // Vanilla Matters
-    if ( player.IncreaseSkillLevel( selectedSkill ) ) {
+    if ( player.IncreaseSkillLevel( selectedSkill.DefinitionClassName ) ) {
         selectedSkillButton.RefreshSkillInfo();
         winSkillPoints.SetText( player.SkillPointsAvail );
     }

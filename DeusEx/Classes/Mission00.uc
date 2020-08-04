@@ -44,7 +44,7 @@ function FirstFrame()
         if ( !flags.GetBool( 'VM_PistolSkillIncreased' ) ) {
             skillSystem = Player.GetSkillSystem();
             if ( skillSystem != none ) {
-                skillSystem.IncreaseLevel( skillSystem.GetSkillInfo( 'SkillWeaponPistol' ) );
+                skillSystem.IncreaseLevel( 'SkillWeaponPistol' );
             }
 
             flags.SetBool( 'VM_PistolSkillIncreased', true );
@@ -172,7 +172,7 @@ function Timer()
             // Vanilla Matters
             skillSystem = Player.GetSkillSystem();
             if ( skillSystem != none ) {
-                skillSystem.IncreaseLevel( skillSystem.GetSkillInfo( 'SkillWeaponRifle' ) );
+                skillSystem.IncreaseLevel( 'SkillWeaponRifle' );
             }
 
             flags.SetBool('MS_SkillIncreased', True);
