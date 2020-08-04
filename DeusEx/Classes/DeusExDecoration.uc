@@ -509,15 +509,11 @@ function Bump(actor Other)
             augMult = 1;
             if (player != None)
             {
-                if (player.AugmentationSystem != None)
-                {
-                    augLevel = player.AugmentationSystem.GetClassLevel(class'AugMuscle');
-
-                    // Vanilla Matters: Makes bonus from augmuscle bigger.
-                    if ( augLevel >= 0 ) {
-                        augMult = augLevel + 2.5;
-                        maxPush = maxPush * ( augLevel + 2 );
-                    }
+                // Vanilla Matters
+                augLevel = player.GetAugmentationLevel( 'AugMuscle' );
+                if ( augLevel >= 0 ) {
+                    augMult = augLevel + 2.5;
+                    maxPush = maxPush * ( augLevel + 2 );
                 }
             }
 

@@ -255,7 +255,7 @@ function bool RestartPlayer( pawn aPlayer )
     //Restore HUD
     PlayerToRestart.ShowHud(True);
     //Clear Augmentations
-    PlayerToRestart.AugmentationSystem.ResetAugmentations();
+    PlayerToRestart.InitializeAugmentationSystem();
     //Clear Skills
     // Vanilla Matters
     PlayerToRestart.GetSkillSystem().Reset();
@@ -268,8 +268,8 @@ function bool RestartPlayer( pawn aPlayer )
 
     //Restore Augs
     PlayerToRestart.ClearAugmentationDisplay();
-    PlayerToRestart.AugmentationSystem.CreateAugmentations(PlayerToRestart);
-    PlayerToRestart.AugmentationSystem.AddDefaultAugmentations();
+    // Vanilla Matters
+    PlayerToRestart.InitializeAugmentationSystem();
     //Restore Bio-Energy
     PlayerToRestart.Energy = PlayerToRestart.EnergyMax;
     //Restore Skills

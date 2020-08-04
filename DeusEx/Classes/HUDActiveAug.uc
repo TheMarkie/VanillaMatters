@@ -8,26 +8,8 @@ var Color colBlack;
 var Color colAugActive;
 var Color colAugInactive;
 
-var int    hotKeyNum;
-var String hotKeyString;
-
-// ----------------------------------------------------------------------
-// DrawHotKey()
-// ----------------------------------------------------------------------
-
-function DrawHotKey(GC gc)
-{
-    // gc.SetAlignments(HALIGN_Right, VALIGN_Top);
-    // gc.SetFont(Font'FontTiny');
-
-    // // Draw Dropshadow
-    // gc.SetTextColor(colBlack);
-    // gc.DrawText(16, 1, 15, 8, hotKeyString);
-
-    // // Draw Dropshadow
-    // gc.SetTextColor(colText);
-    // gc.DrawText(17, 0, 15, 8, hotKeyString);
-}
+// Vanilla Matters
+var name DefinitionClassName;
 
 // ----------------------------------------------------------------------
 // SetObject()

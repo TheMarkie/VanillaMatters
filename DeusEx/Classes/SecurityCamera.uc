@@ -205,7 +205,8 @@ function CheckPlayerVisibility( DeusExPlayer player ) {
         hit = Trace( HitLocation, HitNormal, player.Location, Location, true );
         if ( hit == player ) {
             if ( Level.Netmode == NM_Standalone ) {
-                if ( player.AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 ) {
+                // Vanilla Matters
+                if ( player.IsAugmentationActive( 'AugRadarTrans' ) ) {
                     hit = none;
                 }
             }
@@ -442,25 +443,26 @@ function Actor AcquireMultiplayerTarget()
     local Vector dist;
 
    //DEUS_EX AMSD See if our old target is still valid.
-   if ((prevtarget != None) && (prevtarget != safetarget) && (Pawn(prevtarget) != None))
-   {
-      if (Pawn(prevtarget).AICanSee(self, 1.0, false, false, false, true) > 0)
-      {
-         if (DeusExPlayer(prevtarget) == None)
-         {
-            curtarget = prevtarget;
-            return curtarget;
-         }
-         else
-         {
-            if (DeusExPlayer(prevtarget).AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') == -1.0)
+    if ((prevtarget != None) && (prevtarget != safetarget) && (Pawn(prevtarget) != None))
+    {
+        if (Pawn(prevtarget).AICanSee(self, 1.0, false, false, false, true) > 0)
+        {
+            if (DeusExPlayer(prevtarget) == None)
             {
-               curtarget = prevtarget;
-               return curtarget;
+                curtarget = prevtarget;
+                return curtarget;
             }
-         }
-      }
-   }
+            else
+            {
+                // Vanilla Matters
+                if ( !DeusExPlayer( prevtarget ).IsAugmentationActive( 'AugRadarTrans' ) )
+                {
+                    curtarget = prevtarget;
+                    return curtarget;
+                }
+            }
+        }
+    }
     // MB Optimized to use pawn list, previous way used foreach VisibleActors
     apawn = Level.PawnList;
     while ( apawn != None )
@@ -483,7 +485,8 @@ function Actor AcquireMultiplayerTarget()
                         if (! ( (TeamDMGame(aplayer.DXGame) != None) && (safeTarget != None) && (TeamDMGame(aplayer.DXGame).ArePlayersAllied( DeusExPlayer(safeTarget),aplayer)) ) )
                         {
                             // If the player's RadarTrans aug is off, the turret can see him
-                            if (aplayer.AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') == -1.0)
+                            // Vanilla Matters
+                            if ( !aplayer.IsAugmentationActive( 'AugRadarTrans' ) )
                             {
                                 curTarget = apawn;
                                 break;

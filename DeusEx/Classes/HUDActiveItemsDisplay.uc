@@ -43,15 +43,14 @@ function CreateContainerWindows()
 // ----------------------------------------------------------------------
 // AddIcon()
 // ----------------------------------------------------------------------
-
-function AddIcon(Texture newIcon, Object saveObject)
-{
-    local HUDActiveItem activeItem;
-
-    if (saveObject.IsA('Augmentation'))
-        winAugsContainer.AddIcon(newIcon, saveObject);
-    else
-        winItemsContainer.AddIcon(newIcon, saveObject);
+// Vanilla Matters
+function AddIcon( Texture newIcon, Object saveObject ) {
+    if ( saveObject.IsA( 'VMAugmentationInfo' ) ) {
+        winAugsContainer.AddIcon( newIcon, saveObject );
+    }
+    else {
+        winItemsContainer.AddIcon( newIcon, saveObject );
+    }
 
     AskParentForReconfigure();
 }
@@ -59,13 +58,14 @@ function AddIcon(Texture newIcon, Object saveObject)
 // ----------------------------------------------------------------------
 // RemoveIcon()
 // ----------------------------------------------------------------------
-
-function RemoveIcon(Object removeObject)
-{
-    if (removeObject.IsA('Augmentation'))
-        winAugsContainer.RemoveObject(removeObject);
-    else
-        winItemsContainer.RemoveObject(removeObject);
+// Vanilla Matters
+function RemoveIcon( Object removeObject ) {
+    if ( saveObject.IsA( 'VMAugmentationInfo' ) ) {
+        winAugsContainer.RemoveObject( removeObject );
+    }
+    else {
+        winItemsContainer.RemoveObject( removeObject );
+    }
 
     AskParentForReconfigure();
 }
@@ -73,11 +73,7 @@ function RemoveIcon(Object removeObject)
 // ----------------------------------------------------------------------
 // UpdateAugIconStatus()
 // ----------------------------------------------------------------------
-
-function UpdateAugIconStatus(Augmentation aug)
-{
-    winAugsContainer.UpdateAugIconStatus(aug);
-}
+// Vanilla Matters: No longer used.
 
 // ----------------------------------------------------------------------
 // ClearAugmentationDisplay()
