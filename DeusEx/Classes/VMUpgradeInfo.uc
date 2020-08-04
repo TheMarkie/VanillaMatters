@@ -4,6 +4,11 @@ class VMUpgradeInfo extends Object
 var travel name DefinitionClassName;
 var travel int Level;
 
+function Initialize( name name, int level ) {
+    DefinitionClassName = name;
+    Level = level;
+}
+
 //==============================================
 // General info
 //==============================================
@@ -11,7 +16,7 @@ function string GetName() { return ""; }
 function string GetDescription() { return ""; }
 function Texture GetIcon() { return none; }
 function int GetMaxLevel() { return 0; }
-function bool CanUpgrade( int amount ) { return false; }
+function bool CanUpgrade( optional int amount ) { return false; }
 
 //==============================================
 // Management

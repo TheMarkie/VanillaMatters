@@ -11,51 +11,49 @@ function class<VMSkill> GetDefinitionClass() {
     return _definitionClass;
 }
 
+function Initialize( name name, int level ) {
+    super.Initialize( name, level );
+    GetDefinitionClass();
+}
+
 //==============================================
 // General info
 //==============================================
 function string GetName() {
-    return GetDefinitionClass().default.UpgradeName;
+    return _definitionClass.default.UpgradeName;
 }
 function string GetDescription() {
-    return GetDefinitionClass().default.Description;
+    return _definitionClass.default.Description;
 }
 function Texture GetIcon() {
-    return GetDefinitionClass().default.Icon;
+    return _definitionClass.default.Icon;
 }
 
 function int GetMaxLevel() {
-    return GetDefinitionClass().static.GetMaxLevel();
+    return _definitionClass.static.GetMaxLevel();
 }
-
 function int GetNextLevelCost() {
     if ( Level < GetMaxLevel() ) {
-        return GetDefinitionClass().default.Costs[Level];
+        return _definitionClass.default.Costs[Level];
     }
     else {
         return -1;
     }
 }
-
-function bool CanUpgrade( int amount ) {
-    if ( Level < GetMaxLevel() && amount >= _definitionClass.default.Costs[Level] ) {
-        return true;
-    }
-    else {
-        return false;
-    }
+function bool CanUpgrade( optional int amount ) {
+    return ( Level < GetMaxLevel() && amount >= _definitionClass.default.Costs[Level] );
 }
 
 //==============================================
 // Management
 //==============================================
 function RefreshValues( TableFloat globalTable, TableTableFloat categoryTable ) {
-    GetDefinitionClass().static.UpdateValues( globalTable, -1, Level );
+    _definitionClass.static.UpdateValues( globalTable, -1, Level );
     _definitionClass.static.UpdateCategoryValues( categoryTable, -1, Level );
 }
 
 function UpdateValues( TableFloat globalTable, TableTableFloat categoryTable, int oldLevel, int newLevel ) {
-    GetDefinitionClass().static.UpdateValues( globalTable, oldLevel, newLevel );
+    _definitionClass.static.UpdateValues( globalTable, oldLevel, newLevel );
     _definitionClass.static.UpdateCategoryValues( categoryTable, oldLevel, newLevel );
 }
 
