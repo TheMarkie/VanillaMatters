@@ -36,10 +36,15 @@ var float AutoSaveTimer;
 //==============================================
 // Systems
 //==============================================
+var transient DeusExRootWindow DXRootWindow;
+
 var travel ForwardPressure FPSystem;
 
 var travel VMSkillManager VMSkillSystem;
 var() array< class<VMSKill> > StartingSkills;
+
+var travel VMAugmentationManager VMAugmentationSystem;
+var() array< class<VMAugmentation> > StartingAugmentations;
 
 //==============================================
 // Properties
@@ -89,6 +94,8 @@ event TravelPostAccept() {
 
     super.TravelPostAccept();
 
+    DXRootWindow = DeusExRootWindow( rootWindow );
+
     info = GetLevelInfo();
     if ( info != none ) {
         missionNumber = info.MissionNumber;
@@ -101,12 +108,14 @@ event TravelPostAccept() {
         InitializeSkillSystem();
     }
     else {
-        VMSkillSystem.RefreshValues();
+        VMSkillSystem.Refresh( self );
     }
 
-    if (AugmentationSystem != none) {
-        // Should ensure all augs work fine through patches.
-        AugmentationSystem.RefreshesAugs();
+    if ( VMAugmentationSystem == none ) {
+        InitializeAugmentationSystem();
+    }
+    else {
+        VMAugmentationSystem.Refresh( self );
     }
 
     // Repair the held item since it's fucked up by vanilla coding.
@@ -181,11 +190,24 @@ function InitializeSkillSystem() {
     local int i;
 
     VMSkillSystem = Spawn( class'VMSkillManager', self );
-    VMSkillSystem.Initialize();
+    VMSkillSystem.Initialize( self );
 
     // Start in reverse because we're adding to a linked list.
     for ( i = #StartingSkills - 1; i >= 0; i-- ) {
         VMSkillSystem.Add( StartingSkills[i].Name );
+    }
+}
+
+// Override
+function InitializeAugmentationSystem() {
+    local int i;
+
+    VMAugmentationSystem = Spawn( class'VMAugmentationManager', self );
+    VMAugmentationSystem.Initialize( self );
+
+    // Start in reverse because we're adding to a linked list.
+    for ( i = #StartingAugmentations - 1; i >= 0; i-- ) {
+        VMAugmentationSystem.Add( StartingAugmentations[i].Name );
     }
 }
 
@@ -220,14 +242,14 @@ function UpdateVisibility() {
 
     adaptiveOn = UsingChargedPickup( class'AdaptiveArmor' );
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 || adaptiveOn ) {
+    if ( IsAugmentationActive( 'AugRadarTrans' ) || adaptiveOn ) {
         VisibilityRobot = 0;
     }
     else {
         VisibilityRobot = AIVisibility();
     }
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugCloak' ) != -1.0 || adaptiveOn ) {
+    if ( IsAugmentationActive( 'AugCloak' ) || adaptiveOn ) {
         VisibilityNormal = 0;
     }
     else {
@@ -554,15 +576,14 @@ function Landed( vector HitNormal ) {
         if ( Velocity.Z < -700 && ReducedDamageType != 'All' ) {
             if ( Role == ROLE_Authority ) {
                 augReduce = 0;
-                if ( AugmentationSystem != none ) {
+                if ( VMAugmentationSystem != none ) {
                     // Make AugStealth also reduce a smaller amount of fall damage, while AugSpeed reduce more.
-                    augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
+                    augLevel = VMAugmentationSystem.GetLevel( 'AugSpeed' );
                     if ( augLevel >= 0 ) {
                         augReduce = 20 * ( augLevel + 1 );
                     }
                     else {
-                        augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
-
+                        augLevel = VMAugmentationSystem.GetLevel( 'AugStealth' );
                         if ( augLevel >= 0 ) {
                             augReduce = 4 + ( 4 * ( augLevel + 1 ) );
                         }
@@ -624,7 +645,7 @@ exec function ToggleFlashlight() {
 // Override
 exec function ParseLeftClick() {
     local Inventory item;
-    local Augmentation aug;
+    local VMAugmentationInfo aug;
     local ChargedPickup cpickup;
 
     if ( RestrictInput() ) {
@@ -716,22 +737,23 @@ exec function ParseLeftClick() {
         if ( FrobTarget != None ) {
             TakeHold( Inventory( FrobTarget ), true );
         }
-        else if ( CarriedDecoration != None && AugmentationSystem != None ) {
-            aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
+        else if ( CarriedDecoration != None && VMAugmentationSystem != None ) {
+            aug = VMAugmentationSystem.GetInfo( 'AugMuscle' );
 
-            if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-                if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
-                    ClientMessage( MsgMuscleCost );
-                }
-                else if ( DeusExDecoration( CarriedDecoration ) != None ) {
-                    DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = true;
-                    DeusExDecoration( CarriedDecoration ).VM_powerThrower = self;
+            if ( aug != None && aug.IsActive ) {
+                // TODO: Add support for powerthrow.
+                // if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
+                //     ClientMessage( MsgMuscleCost );
+                // }
+                // else if ( DeusExDecoration( CarriedDecoration ) != None ) {
+                //     DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = true;
+                //     DeusExDecoration( CarriedDecoration ).VM_powerThrower = self;
 
-                    PlaySound( JumpSound, SLOT_None );
-                    PlaySound( aug.ActivateSound, SLOT_None );
+                //     PlaySound( JumpSound, SLOT_None );
+                //     PlaySound( aug.ActivateSound, SLOT_None );
 
-                    DropDecoration();
-                }
+                //     DropDecoration();
+                // }
             }
         }
         else if ( LastPutAway != None ) {
@@ -918,11 +940,7 @@ function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
 }
 
 function bool CanDrain( float drainAmount ) {
-    if ( AugmentationSystem != None ) {
-        return ( Energy >= ( drainAmount * AugmentationSystem.VM_energyMult ) );
-    }
-
-    return false;
+    return Energy >= drainAmount;
 }
 
 // Override: Drain energy then return the amount that doesn't get drained properly if energy is depleted.
@@ -1251,11 +1269,11 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         }
     }
 
-    if ( AugmentationSystem != none ) {
+    if ( VMAugmentationSystem != none ) {
         if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
             || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
         ) {
-            augValue = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+            augValue = VMAugmentationSystem.GetValue( 'AugEnviro' );
             if ( augValue >= 0.0 ) {
                 newDamage *= augValue;
             }
@@ -1268,7 +1286,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 
         // Add sabot to augballistic.
         if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugBallistic' );
+            augValue = VMAugmentationSystem.GetValue( 'AugBallistic' );
             if ( augValue >= 0.0 ) {
                 newDamage *= augValue;
             }
@@ -1278,7 +1296,7 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
             damageType == 'Exploded' || damageType == 'Shocked'
         ) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugShield' );
+            augValue = VMAugmentationSystem.GetValue( 'AugShield' );
             if ( augValue >= 0.0 ) {
                 newDamage *= augValue;
             }
@@ -1356,23 +1374,12 @@ function VMSkillInfo GetFirstSkillInfo() {
 }
 
 // Override
-function bool IncreaseSkillLevel( VMSkillInfo info ) {
-    if ( info.CanUpgrade( SkillPointsAvail ) ) {
-        SkillPointsAvail -= info.GetNextLevelCost();
-        return VMSkillSystem.IncreaseLevel( info );
-    }
-
-    return false;
+function bool IncreaseSkillLevel( name name ) {
+    return VMSkillSystem.IncreaseLevel( name );
 }
 // Override
-function bool DecreaseSkillLevel( VMSkillInfo info ) {
-    if ( VMSkillSystem.DecreaseLevel( info ) ) {
-        SkillPointsAvail += info.GetNextLevelCost();
-
-        return true;
-    }
-
-    return false;
+function bool DecreaseSkillLevel( name name ) {
+    return VMSkillSystem.DecreaseLevel( name );
 }
 
 // Override
@@ -1483,9 +1490,7 @@ function ClearAugmentationDisplay() {
 // Misc
 //==============================================
 function ActivateAugByKey( int keyNum ) {
-    if ( AugmentationSystem != none ) {
-        AugmentationSystem.ActivateAugByKey( keyNum );
-    }
+    // TODO: Add support for aug hotbar.
 }
 
 // Replace CatchFire to have burn damage depend on initial damage taken.
@@ -1547,21 +1552,8 @@ function DroneExplode()
     if ( aDrone != none )
     {
         // Make drone detonation cost energy.
-        aug = AugDrone( AugmentationSystem.FindAugmentation( class'AugDrone' ) );
-
-        if ( aug != None ) {
-            if ( !CanDrain( aug.GetEnergyRate() ) ) {
-                ClientMessage( MsgDroneCost );
-
-                return;
-            }
-
-            aug.Deactivate();
-
-            aDrone.Explode( aDrone.Location, vect( 0, 0, 1 ) );
-
-            DrainEnergy( aug, aug.GetEnergyRate() );
-        }
+        ToggleAugmentation( 'AugDrone', false );
+        // TODO: Add support for AugDrone detonation.
     }
 }
 
