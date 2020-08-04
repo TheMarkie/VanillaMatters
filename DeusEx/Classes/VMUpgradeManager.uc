@@ -1,20 +1,29 @@
 class VMUpgradeManager extends Actor
     abstract;
 
-//==============================================
-// Management
-//==============================================
-function Initialize();
-function Reset();
-function bool Add( name name, optional int startingLevel ) { return false; }
+var VMPlayer Player;
 
 //==============================================
 // Management
 //==============================================
+function Initialize( VMPlayer player ) {
+    Player = player;
+}
+function bool Add( name name, optional int startingLevel ) { return false; }
+function Refresh( VMPlayer player ) {
+    Player = player;
+}
+function Reset();
+
+//==============================================
+// Management
+//==============================================
+function bool IncreaseLevel( name name ) { return false; }
+function bool DecreaseLevel( name name ) { return false; }
 function IncreaseAllToMax();
 
 //==============================================
-// Skill values
+// Values
 //==============================================
 function float GetValue( name name, optional float defaultValue ) { return defaultValue; }
 function int GetLevel( name name ) { return -1; }

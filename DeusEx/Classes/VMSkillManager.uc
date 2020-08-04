@@ -22,9 +22,41 @@ static function string GetLevelName( int level, int maxLevel ) {
 //==============================================
 // Management
 //==============================================
-function Initialize() {
+function Initialize( VMPlayer player ) {
+    super.Initialize( player );
+
     GlobalValues = new class'TableFloat';
     CategoryValues = new class'TableTableFloat';
+}
+
+function bool Add( name name, optional int startingLevel ) {
+    local VMSkillInfo info;
+
+    info = new class'VMSkillInfo';
+    info.Initialize( name, startingLevel );
+    info.RefreshValues( GlobalValues, CategoryValues );
+
+    info.Next = FirstSkillInfo;
+    FirstSkillInfo = info;
+
+    return true;
+}
+
+function Refresh( VMPlayer player ) {
+    local VMSkillInfo info;
+
+    super.Refresh( player );
+
+    GlobalValues.Clear();
+    CategoryValues.Clear();
+
+    info = FirstSkillInfo;
+    while ( info != none ) {
+        info.GetDefinitionClass();
+        info.RefreshValues( GlobalValues, CategoryValues );
+
+        info = info.Next;
+    }
 }
 
 function Reset() {
@@ -36,34 +68,7 @@ function Reset() {
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.RefreshValues( GlobalValues, CategoryValues );
-
-        info = info.Next;
-    }
-}
-
-function bool Add( name name, optional int startingLevel ) {
-    local VMSkillInfo info;
-
-    info = new class'VMSkillInfo';
-    info.DefinitionClassName = name;
-    info.Level = startingLevel;
-    info.Next = FirstSkillInfo;
-    FirstSkillInfo = info;
-
-    info.RefreshValues( GlobalValues, CategoryValues );
-
-    return true;
-}
-
-function RefreshValues() {
-    local VMSkillInfo info;
-
-    GlobalValues.Clear();
-    CategoryValues.Clear();
-
-    info = FirstSkillInfo;
-    while ( info != none ) {
+        info.GetDefinitionClass();
         info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
@@ -73,7 +78,7 @@ function RefreshValues() {
 //==============================================
 // Skill Management
 //==============================================
-function VMSkillInfo GetSkillInfo( name name ) {
+function VMSkillInfo GetInfo( name name ) {
     local VMSkillInfo info;
 
     info = FirstSkillInfo;
@@ -88,8 +93,13 @@ function VMSkillInfo GetSkillInfo( name name ) {
     return info;
 }
 
-function bool IncreaseLevel( VMSkillInfo info ) {
-    if ( info.IncreaseLevel() ) {
+function bool IncreaseLevel( name name ) {
+    local VMSkillInfo info;
+
+    info = GetInfo( name );
+    if ( info != none && info.CanUpgrade( Player.SkillPointsAvail ) ) {
+        Player.SkillPointsAvail -= info.GetNextLevelCost();
+        info.IncreaseLevel();
         info.UpdateValues( GlobalValues, CategoryValues, info.Level - 1, info.Level );
 
         return true;
@@ -97,8 +107,12 @@ function bool IncreaseLevel( VMSkillInfo info ) {
 
     return false;
 }
-function bool DecreaseLevel( VMSkillInfo info ) {
-    if ( info.DecreaseLevel() ) {
+function bool DecreaseLevel( name name ) {
+    local VMSkillInfo info;
+
+    info = GetInfo( name );
+    if ( info != none && info.DecreaseLevel() ) {
+        Player.SkillPointsAvail += info.GetNextLevelCost();
         info.UpdateValues( GlobalValues, CategoryValues, info.Level + 1, info.Level );
 
         return true;
@@ -123,7 +137,7 @@ function IncreaseAllToMax() {
 }
 
 //==============================================
-// Skill values
+// Values
 //==============================================
 function float GetValue( name name, optional float defaultValue ) {
     local float value;
@@ -151,7 +165,7 @@ function float GetCategoryValue( name category, name name, optional float defaul
 function int GetLevel( name name ) {
     local VMSkillInfo info;
 
-    info = GetSkillInfo( name );
+    info = GetInfo( name );
     if ( info != none ) {
         return info.Level;
     }
