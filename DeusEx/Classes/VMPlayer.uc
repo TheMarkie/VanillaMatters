@@ -1405,20 +1405,78 @@ function int GetSkillLevel( name name ) {
 //==============================================
 // Aug Management
 //==============================================
-function float GetAugValue( class<Augmentation> class ) {
-    if ( AugmentationSystem != none ) {
-        return AugmentationSystem.GetAugLevelValue( class );
+function ToggleAugmentation( name name, bool activate ) {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.Toggle( name, activate );
+    }
+}
+
+function bool IsAugmentationActive( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.IsActive( name );
+    }
+}
+
+function ActivateAllAugmentations() {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.ActivateAll();
+    }
+}
+
+function DeactivateAllAugmentations() {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.DeactivateAll();
+    }
+}
+
+function float GetAugmentationValue( name name, optional float defaultValue ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.GetValue( name, defaultValue );
+    }
+
+    return defaultValue;
+}
+
+function int GetAugmentationLevel( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.GetLevel( name );
     }
 
     return -1;
 }
 
-function int GetAugLevel( class<Augmentation> class ) {
-    if ( AugmentationSystem != none ) {
-        return AugmentationSystem.GetClassLevel( class );
+function float GetTotalAugmentationRate( float deltaTime ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.GetTotalRate( deltaTime );
     }
 
-    return -1;
+    return 0;
+}
+
+function UpdateAugmentationDisplay( VMAugmentationInfo info, bool show ) {
+    if ( DXRootWindow == none ) {
+        return;
+    }
+
+    if ( show ) {
+        DXRootWindow.hud.activeItems.AddIcon( info.GetSmallIcon(), info );
+    }
+    else {
+        DXRootWindow.hud.activeItems.RemoveIcon( info );
+    }
+}
+
+function RefreshAugmentationDisplay() {
+    ClearAugmentationDisplay();
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.RefreshDisplay();
+    }
+}
+
+function ClearAugmentationDisplay() {
+    if ( DXRootWindow != none && DXRootWindow.hud != none ) {
+        DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
+    }
 }
 
 //==============================================
