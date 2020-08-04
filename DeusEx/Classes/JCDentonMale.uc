@@ -40,6 +40,7 @@ event TravelPostAccept()
 defaultproperties
 {
      StartingSkills=(Class'DeusEx.SkillWeaponPistol',Class'DeusEx.SkillWeaponRifle',Class'DeusEx.SkillWeaponHeavy',Class'DeusEx.SkillWeaponLowTech',Class'DeusEx.SkillComputer',Class'DeusEx.SkillTech',Class'DeusEx.SkillLockpicking',Class'DeusEx.SkillMedicine',Class'DeusEx.SkillEnviro')
+     StartingAugmentations=(Class'DeusEx.AugDatalink',Class'DeusEx.AugIFF',Class'DeusEx.AugLight')
      CarcassType=Class'DeusEx.JCDentonMaleCarcass'
      JumpSound=Sound'DeusExSounds.Player.MaleJump'
      HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
