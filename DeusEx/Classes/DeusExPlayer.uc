@@ -378,8 +378,8 @@ replication
 {
     // server to client
     reliable if ((Role == ROLE_Authority) && (bNetOwner))
-        AugmentationSystem, SkillSystem, SkillPointsTotal, SkillPointsAvail, inHand, inHandPending, KeyRing, Energy,
-          bSpyDroneActive, DXGame, bBuySkills, drugEffectTimer, killProfile;
+        SkillPointsTotal, SkillPointsAvail, inHand, inHandPending, KeyRing, Energy,
+        bSpyDroneActive, DXGame, bBuySkills, drugEffectTimer, killProfile;
 
     reliable if (Role == ROLE_Authority)
        ShieldStatus, RunSilentValue, aDrone, NintendoImmunityTimeLeft;
@@ -392,26 +392,25 @@ replication
     // Functions the client can call
     reliable if (Role < ROLE_Authority)
         DoFrob, ParseLeftClick, ParseRightClick, ReloadWeapon, PlaceItemInSlot, RemoveItemFromSlot, ClearInventorySlots,
-      SetInvSlots, FindInventorySlot, ActivateBelt, DropItem, SetInHand, AugAdd, ExtinguishFire, CatchFire,
-      AllEnergy, ClearPosition, ClearBelt, AddObjectToBelt, RemoveObjectFromBelt, TeamSay,
-      KeypadRunUntriggers, KeypadRunEvents, KeypadToggleLocks, ReceiveFirstOptionSync, ReceiveSecondOptionSync,CreateDrone, MoveDrone,
-      CloseComputerScreen, SetComputerHackTime, UpdateCameraRotation, ToggleCameraState,
-      SetTurretTrackMode, SetTurretState, NewMultiplayerMatch, PopHealth, ServerUpdateLean, BuySkills, PutInHand,
-      MakeCameraAlly, PunishDetection, ServerSetAutoReload, FailRootWindowCheck, FailConsoleCheck, ClientPossessed;
+        SetInvSlots, FindInventorySlot, ActivateBelt, DropItem, SetInHand, AugAdd, ExtinguishFire, CatchFire,
+        AllEnergy, ClearPosition, ClearBelt, AddObjectToBelt, RemoveObjectFromBelt, TeamSay,
+        KeypadRunUntriggers, KeypadRunEvents, KeypadToggleLocks, ReceiveFirstOptionSync, ReceiveSecondOptionSync,CreateDrone, MoveDrone,
+        CloseComputerScreen, SetComputerHackTime, UpdateCameraRotation, ToggleCameraState,
+        SetTurretTrackMode, SetTurretState, NewMultiplayerMatch, PopHealth, ServerUpdateLean, BuySkills, PutInHand,
+        MakeCameraAlly, PunishDetection, ServerSetAutoReload, FailRootWindowCheck, FailConsoleCheck, ClientPossessed;
 
-   // Unreliable functions the client can call
-   unreliable if (Role < ROLE_Authority)
-      MaintainEnergy, UpdateTranslucency;
+    // Unreliable functions the client can call
+    unreliable if (Role < ROLE_Authority)
+        MaintainEnergy, UpdateTranslucency;
 
-   // Functions the server calls in client
-   reliable if ((Role == ROLE_Authority) && (bNetOwner))
-      UpdateAugmentationDisplayStatus, AddAugmentationDisplay, RemoveAugmentationDisplay, ClearAugmentationDisplay, ShowHud,
-        ActivateKeyPadWindow, SetDamagePercent, SetServerTimeDiff, ClientTurnOffScores;
+    // Functions the server calls in client
+    reliable if ((Role == ROLE_Authority) && (bNetOwner))
+        ShowHud, ActivateKeyPadWindow, SetDamagePercent, SetServerTimeDiff, ClientTurnOffScores;
 
-   reliable if (Role == ROLE_Authority)
-      InvokeComputerScreen, ClientDeath, AddChargedDisplay, RemoveChargedDisplay, MultiplayerDeathMsg, MultiplayerNotifyMsg,
-      BuySkillSound, ShowMultiplayerWin, ForceDroneOff ,AddDamageDisplay, ClientSpawnHits, CloseThisComputer, ClientPlayAnimation, ClientSpawnProjectile, LocalLog,
-      VerifyRootWindow, VerifyConsole, ForceDisconnect;
+    reliable if (Role == ROLE_Authority)
+        InvokeComputerScreen, ClientDeath, AddChargedDisplay, RemoveChargedDisplay, MultiplayerDeathMsg, MultiplayerNotifyMsg,
+        BuySkillSound, ShowMultiplayerWin, ForceDroneOff ,AddDamageDisplay, ClientSpawnHits, CloseThisComputer, ClientPlayAnimation, ClientSpawnProjectile, LocalLog,
+        VerifyRootWindow, VerifyConsole, ForceDisconnect;
 
 }
 
@@ -517,20 +516,6 @@ function InitializeSubSystems()
     // Spawn the Color Manager
     CreateColorThemeManager();
     ThemeManager.SetOwner(self);
-
-    // install the augmentation system if not found
-    if (AugmentationSystem == None)
-    {
-        AugmentationSystem = Spawn(class'AugmentationManager', Self);
-        AugmentationSystem.CreateAugmentations(Self);
-        AugmentationSystem.AddDefaultAugmentations();
-        AugmentationSystem.SetOwner(Self);
-    }
-    else
-    {
-        AugmentationSystem.SetPlayer(Self);
-        AugmentationSystem.SetOwner(Self);
-    }
 
    if ((Level.Netmode == NM_Standalone) || (!bBeltIsMPInventory))
    {
@@ -649,13 +634,6 @@ event TravelPostAccept()
     // are properly initialized and reset.
 
     RestoreSkillPoints();
-
-    if (AugmentationSystem != None)
-    {
-        // set the player correctly
-        AugmentationSystem.SetPlayer(Self);
-        AugmentationSystem.RefreshAugDisplay();
-    }
 
     // Nuke any existing conversation
     if (conPlay != None)
@@ -799,20 +777,6 @@ function DeusExLevelInfo GetLevelInfo()
 
     return info;
 }
-
-//
-// If player chose to dual map the F keys
-//
-exec function DualmapF3() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(0); }
-exec function DualmapF4() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(1); }
-exec function DualmapF5() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(2); }
-exec function DualmapF6() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(3); }
-exec function DualmapF7() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(4); }
-exec function DualmapF8() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(5); }
-exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(6); }
-exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
-exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
-exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
 
 //
 // Team Say
@@ -1011,7 +975,8 @@ function ShowIntro(optional bool bStartNewGame)
     bStartNewGameAfterIntro = bStartNewGame;
 
     // Make sure all augmentations are OFF before going into the intro
-    AugmentationSystem.DeactivateAll();
+    // Vanilla Matters
+    DeactivateAllAugmentations();
 
     // Reset the player
     Level.Game.SendPlayer(Self, "00_Intro");
@@ -1110,12 +1075,12 @@ function ShowMultiplayerWin( String winnerName, int winningTeam, String Killer, 
         }
     }
 
-   //Do cleanup
-   if (PlayerIsClient())
-   {
-      if (AugmentationSystem != None)
-         AugmentationSystem.DeactivateAll();
-   }
+    //Do cleanup
+    if (PlayerIsClient())
+    {
+        // Vanilla Matters
+        DeactivateAllAugmentations();
+    }
 }
 
 
@@ -1137,12 +1102,8 @@ function ResetPlayer(optional bool bTraining)
     ResetPlayerToDefaults();
 
     // Reset Augmentations
-    if (AugmentationSystem != None)
-    {
-        AugmentationSystem.ResetAugmentations();
-        AugmentationSystem.Destroy();
-        AugmentationSystem = None;
-    }
+    // Vanilla Matters
+    GetAugmentationSystem().Reset();
 
     // Give the player a pistol and a prod
     if (!bTraining)
@@ -1536,65 +1497,66 @@ function MaintainEnergy(float deltaTime)
 
     // Don't waste time doing this if the player is dead or paralyzed
     if ((!IsInState('Dying')) && (!IsInState('Paralyzed')))
-   {
-      if (Energy > 0)
-      {
-         // Decrement energy used for augmentations
-         energyUse = AugmentationSystem.CalcEnergyUse(deltaTime);
+    {
+        if (Energy > 0)
+        {
+            // Vanilla Matters
+            energyUse = GetTotalAugmentationRate( deltaTime );
 
-         Energy -= EnergyUse;
-
-        // Vanilla Matters: Add in FP rate for energy used.
-        AddForwardPressure( energyUse, 'Energy' );
-
-         // Calculate the energy drain due to EMP attacks
-         if (EnergyDrain > 0)
-         {
-            energyUse = EnergyDrainTotal * deltaTime;
             Energy -= EnergyUse;
-            EnergyDrain -= EnergyUse;
-            if (EnergyDrain <= 0)
+
+            // Vanilla Matters: Add in FP rate for energy used.
+            AddForwardPressure( energyUse, 'Energy' );
+
+            // Calculate the energy drain due to EMP attacks
+            if (EnergyDrain > 0)
             {
-               EnergyDrain = 0;
-               EnergyDrainTotal = 0;
+                energyUse = EnergyDrainTotal * deltaTime;
+                Energy -= EnergyUse;
+                EnergyDrain -= EnergyUse;
+                if (EnergyDrain <= 0)
+                {
+                    EnergyDrain = 0;
+                    EnergyDrainTotal = 0;
+                }
+
+                // Vanilla Matters: Adds FP rate for EMP damage received.
+                AddForwardPressure( energyUse, 'Damage' );
             }
+        }
 
-            // Vanilla Matters: Adds FP rate for EMP damage received.
-            AddForwardPressure( energyUse, 'Damage' );
-         }
-      }
+        //Do check if energy is 0.
+        // If the player's energy drops to zero, deactivate
+        // all augmentations
+        if (Energy <= 0)
+        {
+            //If we were using energy, then tell the client we're out.
+            //Otherwise just make sure things are off.  If energy was
+            //already 0, then energy use will still be 0, so we won't
+            //spam.  DEUS_EX AMSD
+            if (energyUse > 0)
+                ClientMessage(EnergyDepleted);
+            Energy = 0;
+            EnergyDrain = 0;
+            EnergyDrainTotal = 0;
+            // Vanilla Matters
+            DeactivateAllAugmentations();
 
-      //Do check if energy is 0.
-      // If the player's energy drops to zero, deactivate
-      // all augmentations
-      if (Energy <= 0)
-      {
-         //If we were using energy, then tell the client we're out.
-         //Otherwise just make sure things are off.  If energy was
-         //already 0, then energy use will still be 0, so we won't
-         //spam.  DEUS_EX AMSD
-         if (energyUse > 0)
-            ClientMessage(EnergyDepleted);
-         Energy = 0;
-         EnergyDrain = 0;
-         EnergyDrainTotal = 0;
-         AugmentationSystem.DeactivateAll();
-
-         // Vanilla Matters: Make the player drop a big decoration since AugMuscle shouldn't be working.
-         if ( CarriedDecoration != None ) {
-            if ( !CanBeLifted( CarriedDecoration ) ) {
-              DropDecoration();
+            // Vanilla Matters: Make the player drop a big decoration since AugMuscle shouldn't be working.
+            if ( CarriedDecoration != None ) {
+                if ( !CanBeLifted( CarriedDecoration ) ) {
+                    DropDecoration();
+                }
             }
-         }
-      }
+        }
 
-      // If all augs are off, then start regenerating in multiplayer,
-      // up to 25%.
-      if ((energyUse == 0) && (Energy <= MaxRegenPoint) && (Level.NetMode != NM_Standalone))
-      {
-         energyRegen = RegenRate * deltaTime;
-         Energy += energyRegen;
-      }
+        // If all augs are off, then start regenerating in multiplayer,
+        // up to 25%.
+        if ((energyUse == 0) && (Energy <= MaxRegenPoint) && (Level.NetMode != NM_Standalone))
+        {
+            energyRegen = RegenRate * deltaTime;
+            Energy += energyRegen;
+        }
     }
 }
 // ----------------------------------------------------------------------
@@ -1620,8 +1582,8 @@ simulated function RefreshSystems(float DeltaTime)
    if (LastRefreshTime < 0.25)
       return;
 
-   if (AugmentationSystem != None)
-      AugmentationSystem.RefreshAugDisplay();
+    // Vanilla Matters
+    RefreshAugmentationDisplay();
 
    root = DeusExRootWindow(rootWindow);
    if (root != None)
@@ -1752,14 +1714,6 @@ function UpdatePoison(float deltaTime)
 function StartPoison( Pawn poisoner, int Damage )
 {
     local float augLevel;
-
-    if ( Level.NetMode != NM_Standalone )
-    {
-        // Don't do poison and drug effects if in multiplayer and AugEnviro is on
-        augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-        if ( augLevel != -1.0 )
-            return;
-    }
 
     myPoisoner = poisoner;
 
@@ -1967,22 +1921,24 @@ function UpdateTranslucency(float DeltaTime)
 
    CamoVis = 1.0;
 
-   //Check cloaking.
-    if (AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0)
-   {
-      bMakeTranslucent = TRUE;
-      CamoVis = Game.CloakEffect;
-   }
+    //Check cloaking.
+    // Vanilla Matters
+    if ( IsAugmentationActive( 'AugCloak' ) )
+    {
+        bMakeTranslucent = TRUE;
+        CamoVis = Game.CloakEffect;
+    }
 
    // If you have a weapon out, scale up the camo and turn off the cloak.
    // Adaptive armor leaves you completely invisible, but drains quickly.
-   if ((inHand != None) && (inHand.IsA('DeusExWeapon')) && (CamoVis < 1.0))
-   {
-      CamoVis = 1.0;
-      bMakeTranslucent=FALSE;
-      ClientMessage(WeaponUnCloak);
-      AugmentationSystem.FindAugmentation(class'AugCloak').Deactivate();
-   }
+    if ((inHand != None) && (inHand.IsA('DeusExWeapon')) && (CamoVis < 1.0))
+    {
+        CamoVis = 1.0;
+        bMakeTranslucent=FALSE;
+        ClientMessage(WeaponUnCloak);
+        // Vanilla Matters
+        ToggleAugmentation( 'AugCloak', false );
+    }
 
    // go through the actor list looking for owned AdaptiveArmor
    // since they aren't in the inventory anymore after they are used
@@ -2083,64 +2039,31 @@ function SaveSkillPoints()
 // exec functions for command line for demo
 // ----------------------------------------------------------------------
 
-exec function AugAdd(class<Augmentation> aWantedAug)
+exec function AugAdd( name name )
 {
     local Augmentation anAug;
 
     if (!bCheatsEnabled)
         return;
 
-    if (AugmentationSystem != None)
-    {
-        anAug = AugmentationSystem.GivePlayerAugmentation(aWantedAug);
-
-        if (anAug == None)
-            ClientMessage(GetItemName(String(aWantedAug)) $ " is not a valid augmentation!");
-    }
-}
-
-// ----------------------------------------------------------------------
-// ActivateAugmentation()
-// ----------------------------------------------------------------------
-
-exec function ActivateAugmentation(int num)
-{
-    local Augmentation anAug;
-    local int count, wantedSlot, slotIndex;
-    local bool bFound;
-
-    if (RestrictInput())
-        return;
-
-    if (Energy == 0)
-    {
-        ClientMessage(EnergyDepleted);
-        PlaySound(AugmentationSystem.FirstAug.DeactivateSound, SLOT_None);
-        return;
-    }
-
-    if (AugmentationSystem != None)
-        AugmentationSystem.ActivateAugByKey(num);
+    // Vanilla Matters
+    GetAugmentationSystem().Add( name );
 }
 
 // ----------------------------------------------------------------------
 // ActivateAllAugs()
 // ----------------------------------------------------------------------
-
-exec function ActivateAllAugs()
-{
-    if (AugmentationSystem != None)
-        AugmentationSystem.ActivateAll();
+// Vanilla Matters
+exec function ActivateAllAugs() {
+    ActivateAllAugmentations();
 }
 
 // ----------------------------------------------------------------------
 // DeactivateAllAugs()
 // ----------------------------------------------------------------------
-
-exec function DeactivateAllAugs()
-{
-    if (AugmentationSystem != None)
-        AugmentationSystem.DeactivateAll();
+// Vanilla Matters
+exec function DeactivateAllAugs() {
+    DeactivateAllAugmentations();
 }
 
 // ----------------------------------------------------------------------
@@ -2167,47 +2090,6 @@ function RemoveInventoryType(Class<Inventory> removeType)
 
     if (item != None)
         DeleteInventory(item);
-}
-
-// ----------------------------------------------------------------------
-// AddAugmentationDisplay()
-// ----------------------------------------------------------------------
-
-function AddAugmentationDisplay(Augmentation aug)
-{
-   //DEUS_EX AMSD Added none check here.
-    if ((rootWindow != None) && (aug != None))
-        DeusExRootWindow(rootWindow).hud.activeItems.AddIcon(aug.SmallIcon, aug);
-}
-
-// ----------------------------------------------------------------------
-// RemoveAugmentationDisplay()
-// ----------------------------------------------------------------------
-
-function RemoveAugmentationDisplay(Augmentation aug)
-{
-    DeusExRootWindow(rootWindow).hud.activeItems.RemoveIcon(aug);
-}
-
-// ----------------------------------------------------------------------
-// ClearAugmentationDisplay()
-// ----------------------------------------------------------------------
-
-function ClearAugmentationDisplay()
-{
-    // Vanilla Matters: Null check.
-    if ( DeusExRootWindow(rootWindow) != none && DeusExRootWindow(rootWindow).hud != none ) {
-        DeusExRootWindow(rootWindow).hud.activeItems.ClearAugmentationDisplay();
-    }
-}
-
-// ----------------------------------------------------------------------
-// UpdateAugmentationDisplayStatus()
-// ----------------------------------------------------------------------
-
-function UpdateAugmentationDisplayStatus(Augmentation aug)
-{
-    DeusExRootWindow(rootWindow).hud.activeItems.UpdateAugIconStatus(aug);
 }
 
 // ----------------------------------------------------------------------
@@ -2653,7 +2535,7 @@ simulated function PlayFootStep()
     massFactor  = Mass/150.0;
 
     // Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
-    radius = 375.0 * ( AugmentationSystem.GetClassLevel( class'AugSpeed' ) + 2 );
+    radius = 375.0 * ( GetAugmentationLevel( 'AugSpeed' ) + 2 );
 
     volume      = (speedFactor+0.2) * massFactor;
     range       = radius * volume;
@@ -2805,44 +2687,7 @@ function HighlightCenterObject()
 
 function Landed(vector HitNormal)
 {
-    local vector legLocation;
-    local int augLevel;
-    local float augReduce, dmg;
-
-    //Note - physics changes type to PHYS_Walking by default for landed pawns
-    PlayLanded(Velocity.Z);
-    if (Velocity.Z < -1.4 * JumpZ)
-    {
-        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
-        if ((Velocity.Z < -700) && (ReducedDamageType != 'All'))
-            if ( Role == ROLE_Authority )
-            {
-                // check our jump augmentation and reduce falling damage if we have it
-                // jump augmentation doesn't exist anymore - use Speed instaed
-                // reduce an absolute amount of damage instead of a relative amount
-                augReduce = 0;
-                if (AugmentationSystem != None)
-                {
-                    augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-                    if (augLevel >= 0)
-                        augReduce = 15 * (augLevel+1);
-                }
-
-                dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
-                legLocation = Location + vect(-1,0,-1);         // damage left leg
-                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
-
-                legLocation = Location + vect(1,0,-1);          // damage right leg
-                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
-
-                dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
-                legLocation = Location + vect(0,0,1);           // damage torso
-                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
-            }
-    }
-    else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
-        MakeNoise(0.1 * Level.Game.Difficulty);
-    bJustLanded = true;
+    // Vanilla Matters: Handled in VMPlayer.
 }
 
 // ----------------------------------------------------------------------
@@ -3155,20 +3000,6 @@ function DoJump( optional float F )
 
         Velocity.Z = JumpZ;
 
-        if ( Level.NetMode != NM_Standalone )
-        {
-         if (AugmentationSystem == None)
-            augLevel = -1.0;
-         else
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-            w = DeusExWeapon(InHand);
-            if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
-            {
-                scaleFactor = 1.0 - FClamp( ((w.Mass - 30.0)/55.0), 0.0, 0.5 );
-                Velocity.Z *= scaleFactor;
-            }
-        }
-
         // reduce the jump velocity if you are crouching
 //      if (bIsCrouching)
 //          Velocity.Z *= 0.9;
@@ -3299,11 +3130,8 @@ function float GetCurrentGroundSpeed()
 {
     local float augValue, speed;
 
-    // Remove this later and find who's causing this to Access None MB
-    if ( AugmentationSystem == None )
-        return 0;
-
-   augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+    // Vanilla Matters
+    augValue = GetAugmentationValue( 'AugSpeed' );
 
     if (augValue == -1.0)
         augValue = 1.0;
@@ -3778,9 +3606,7 @@ event HeadZoneChange(ZoneInfo newHeadZone)
         HeadRegion.Zone.SoundRadius = 0;
 
     // Vanilla Matters
-    if ( AugmentationSystem != None ) {
-        augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
-    }
+    augLevel = GetAugmentationValue( 'AugAqualung' );
 
     if (newHeadZone.bWaterZone && !HeadRegion.Zone.bWaterZone)
     {
@@ -3902,9 +3728,7 @@ state PlayerSwimming
         SetBasedPawnSize(Default.CollisionRadius, 16);
 
         // Vanilla Matters
-        if ( AugmentationSystem != None ) {
-            augLevel = AugmentationSystem.GetAugLevelValue( class'AugAqualung' );
-        }
+        augLevel = GetAugmentationValue( 'AugAqualung' );
 
         // Vanilla Matters
         swimDuration = UnderWaterTime + GetSkillValue( 'LungCapacity' ) + augLevel;
@@ -4294,17 +4118,7 @@ function bool RestrictInput()
 // ----------------------------------------------------------------------
 function DroneExplode()
 {
-    local AugDrone anAug;
-
-    if (aDrone != None)
-    {
-        aDrone.Explode(aDrone.Location, vect(0,0,1));
-      //DEUS_EX AMSD Don't blow up OTHER player drones...
-      anAug = AugDrone(AugmentationSystem.FindAugmentation(class'AugDrone'));
-        //foreach AllActors(class'AugDrone', anAug)
-      if (anAug != None)
-         anAug.Deactivate();
-    }
+    // Vanilla Matters: Handled in VMPlayer.
 }
 
 // ----------------------------------------------------------------------
@@ -5553,9 +5367,9 @@ function bool CanBeLifted(Decoration deco)
     maxLift = 50;
 
     // Vanilla Matters: Check if energy is depleted before using the aug, since it's always active.
-    if ( AugmentationSystem != None && Energy > 0 )
+    if ( Energy > 0 )
     {
-        augLevel = AugmentationSystem.GetClassLevel(class'AugMuscle');
+        augLevel = GetAugmentationLevel( 'AugMuscle' );
         augMult = 1;
         if (augLevel >= 0)
             augMult = augLevel+2;
@@ -5639,12 +5453,8 @@ function PutCarriedDecorationInHand()
             FrobTarget = None;
 
             // Vanilla Matters: Hacky way to start draining energy on picking up a heavy object.
-            if ( CarriedDecoration.Mass > 50 && AugmentationSystem != None ) {
-                aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
-
-                aug.EnergyRate = ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost;
-
-                aug.FakeActivate();
+            if ( CarriedDecoration.Mass > 50 ) {
+                ToggleAugmentation( 'AugMuscle', true );
             }
         }
         else
@@ -5700,17 +5510,10 @@ function DropDecoration()
             // Vanilla Matters: Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
             boost = 500;
 
-            // throw velocity is based on augmentation
-            if (AugmentationSystem != None)
-            {
-                mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-                if (mult == -1.0)
-                    mult = 1.0;
-
-                // Vanilla Matters: Add some more boost if the deco is powerthrown.
-                if ( deco != none && deco.VM_bPowerthrown ) {
-                    boost = boost + ( boost * mult ) + ( 1000 * ( AugmentationSystem.GetClassLevel( class'AugMuscle' ) + 1 ) );
-                }
+            // Vanilla Matters: Add some more boost if the deco is powerthrown.
+            if ( deco != none && deco.VM_bPowerthrown ) {
+                mult = GetAugmentationValue( 'AugMuscle', 1 );
+                boost = boost + ( boost * mult ) + ( 1000 * ( GetAugmentationLevel( 'AugMuscle' ) + 1 ) );
             }
 
             if (IsLeaning())
@@ -5764,20 +5567,8 @@ function DropDecoration()
                 DeusExDecoration(CarriedDecoration).ResetScaleGlow();
 
             // Vanilla Matters: Handle AugMuscle stuff.
-            if ( AugmentationSystem != None ) {
-                aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
-                // VM: Set the drain rate back to 0 since nothing is held.
-                if ( CarriedDecoration.Mass > 50 ) {
-                    aug.EnergyRate = 0;
-
-                    aug.FakeDeactivate();
-                }
-
-                // VM: Drain energy for powerthrow.
-                if ( deco != None && deco.VM_bPowerthrown ) {
-                    DrainEnergy( aug, ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost );
-                }
-            }
+            // Vanilla Matters TODO: Add support for powerthrow drain.
+            ToggleAugmentation( 'AugMuscle', false );
 
             CarriedDecoration = None;
         }
@@ -5966,16 +5757,9 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
             // Vanilla Matters: Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
             boost = 300;
 
-            // throw velocity is based on augmentation
-            if (AugmentationSystem != None)
-            {
-                mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-                if (mult == -1.0)
-                    mult = 1.0;
-
-                // Vanilla Matters: Calculate the velocity boost from AugMuscle.
-                boost = boost + ( boost * mult );
-            }
+            // Vanilla Matters: Calculate the velocity boost from AugMuscle.
+            mult = GetAugmentationValue( 'AugMuscle', 1 );
+            boost = boost + ( boost * mult );
 
             if (bDrop)
             {
@@ -9205,43 +8989,13 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
         GetWeaponName( w, killProfile.activeWeapon );
 
         // What augs the killer was using
-        if ( pkiller.AugmentationSystem != None )
-        {
-            killProfile.numActiveAugs = pkiller.AugmentationSystem.NumAugsActive();
-            augCnt = 0;
-            anAug = pkiller.AugmentationSystem.FirstAug;
-            while ( anAug != None )
-            {
-                if ( anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive && (augCnt < ArrayCount(killProfile.activeAugs)))
-                {
-                    killProfile.activeAugs[augCnt] = anAug.augmentationName;
-                    augCnt += 1;
-                }
-                anAug = anAug.next;
-            }
-        }
-        else
-            killProfile.numActiveAugs = 0;
+        // Vanilla Matters TODO: Add support for new augmentation system.
 
         // My weapon and skill
         GetWeaponName( DeusExWeapon(inHand), killProfile.myActiveWeapon );
         // Vanilla Matters: Active weapon skill is not a thing anymore so we don't set myActiveSkill
         // Fill in my own active augs
-        if ( AugmentationSystem != None )
-        {
-            killProfile.myNumActiveAugs = AugmentationSystem.NumAugsActive();
-            augCnt = 0;
-            anAug = AugmentationSystem.FirstAug;
-            while ( anAug != None )
-            {
-                if ( anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive && (augCnt < ArrayCount(killProfile.myActiveAugs)))
-                {
-                    killProfile.myActiveAugs[augCnt] = anAug.augmentationName;
-                    augCnt += 1;
-                }
-                anAug = anAug.next;
-            }
-        }
+        // Vanilla Matters TODO: Add support for new augmentation system.
         killProfile.streak = (pkiller.PlayerReplicationInfo.Streak + 1);
         killProfile.healthLow = pkiller.HealthLegLeft;
         killProfile.healthMid =  pkiller.HealthTorso;
@@ -9762,122 +9516,8 @@ simulated function int GetMPHitLocation(Vector HitLocation)
 // ----------------------------------------------------------------------
 function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
 {
-    local float newDamage;
-    local float augLevel, skillLevel;
-    local float pct;
-    local HazMatSuit suit;
-    local BallisticArmor armor;
-    local bool bReduced;
-
-    bReduced = False;
-    newDamage = Float(Damage);
-
-    if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-        (damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-
-        // get rid of poison if we're maxed out
-        if (newDamage ~= 0.0)
-        {
-            StopPoison();
-            drugEffectTimer -= 4;   // stop the drunk effect
-            if (drugEffectTimer < 0)
-                drugEffectTimer = 0;
-        }
-
-        // go through the actor list looking for owned HazMatSuits
-        // since they aren't in the inventory anymore after they are used
-
-
-      //foreach AllActors(class'HazMatSuit', suit)
-//          if ((suit.Owner == Self) && suit.bActive)
-      if (UsingChargedPickup(class'HazMatSuit'))
-            {
-                newDamage *= class'HazMatSuit'.default.VM_DamageResistance * skillLevel;
-            }
-    }
-
-    if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
-    {
-        // go through the actor list looking for owned BallisticArmor
-        // since they aren't in the inventory anymore after they are used
-      if (UsingChargedPickup(class'BallisticArmor'))
-            {
-                newDamage *= class'BallisticArmor'.default.VM_DamageResistance * skillLevel;
-            }
-    }
-
-    if (damageType == 'HalonGas')
-    {
-        if (bOnFire && !bCheckOnly)
-            ExtinguishFire();
-    }
-
-    if ((damageType == 'Shot') || (damageType == 'AutoShot'))
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-    }
-
-    if (damageType == 'EMP')
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-    }
-
-    if ((damageType == 'Burned') || (damageType == 'Flamed') ||
-        (damageType == 'Exploded') || (damageType == 'Shocked'))
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-    }
-
-    if (newDamage < Damage)
-    {
-        if (!bCheckOnly)
-        {
-            pct = 1.0 - (newDamage / Float(Damage));
-            SetDamagePercent(pct);
-            ClientFlash(0.01, vect(0, 0, 50));
-        }
-        bReduced = True;
-    }
-    else
-    {
-        if (!bCheckOnly)
-            SetDamagePercent(0.0);
-    }
-
-
-    //
-    // Reduce or increase the damage based on the combat difficulty setting
-    //
-    if ((damageType == 'Shot') || (damageType == 'AutoShot'))
-    {
-        newDamage *= CombatDifficulty;
-
-        // always take at least one point of damage
-        if ((newDamage <= 1) && (Damage > 0))
-            newDamage = 1;
-    }
-
-    adjustedDamage = Int(newDamage);
-
-    return bReduced;
+    // Vanilla Matters: Handled in VMPlayer.
+    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -9895,8 +9535,8 @@ function Died(pawn Killer, name damageType, vector HitLocation)
     if (bOnFire)
         ExtinguishFire();
 
-    if (AugmentationSystem != None)
-        AugmentationSystem.DeactivateAll();
+    // Vanilla Matters
+    DeactivateAllAugmentations();
 
    if ((Level.NetMode == NM_DedicatedServer) || (Level.NetMode == NM_ListenServer))
       ClientDeath();
@@ -10730,21 +10370,7 @@ exec function AllSkillPoints()
 // ----------------------------------------------------------------------
 // AllAugs()
 // ----------------------------------------------------------------------
-
-exec function AllAugs()
-{
-    local Augmentation anAug;
-    local int i;
-
-    if (!bCheatsEnabled)
-        return;
-
-    if (AugmentationSystem != None)
-    {
-        AugmentationSystem.AddAllAugs();
-        AugmentationSystem.SetAllAugsToMaxLevel();
-    }
-}
+// Vanilla Matters Not implemented.
 
 // ----------------------------------------------------------------------
 // AllWeapons()
@@ -11031,20 +10657,7 @@ exec function DXDumpInfo()
     bHasAugs = False;
     log("");
     log("  Augmentations:");
-    if (AugmentationSystem != None)
-    {
-        aug = AugmentationSystem.FirstAug;
-        while (aug != None)
-        {
-            if (aug.bHasIt && (aug.AugmentationLocation != LOC_Default) && (aug.AugmentationName != ""))
-            {
-                bHasAugs = True;
-                log("    "$aug.AugmentationName$" - Location: "$aug.AugLocsText[aug.AugmentationLocation]$" - Level: "$aug.CurrentLevel+1);
-            }
-
-            aug = aug.next;
-        }
-    }
+    // Vanilla Matters TODO: Add support for new augmentation system
 
     if (!bHasAugs)
         log("    None");
@@ -11648,36 +11261,8 @@ function int GetAugPriority( Augmentation AugToCheck)
 // ----------------------------------------------------------------------
 function GrantAugs(int NumAugs)
 {
-   local Augmentation CurrentAug;
-   local int PriorityIndex;
-   local int AugsLeft;
-
-   if (Role < ROLE_Authority)
-      return;
-   AugsLeft = NumAugs;
-
-   for (PriorityIndex = 0; PriorityIndex < ArrayCount(AugPrefs); PriorityIndex++)
-   {
-      if (AugsLeft <= 0)
-      {
-         return;
-      }
-      if (AugPrefs[PriorityIndex] == '')
-      {
-         return;
-      }
-      for (CurrentAug = AugmentationSystem.FirstAug; CurrentAug != None; CurrentAug = CurrentAug.next)
-      {
-         if ((CurrentAug.Class.Name == AugPrefs[PriorityIndex]) && (CurrentAug.bHasIt == False))
-         {
-             AugmentationSystem.GivePlayerAugmentation(CurrentAug.Class);
-                // Max out aug
-                if (CurrentAug.bHasIt)
-                    CurrentAug.CurrentLevel = CurrentAug.MaxLevel;
-            AugsLeft = AugsLeft - 1;
-         }
-      }
-   }
+    // Vanilla Matters: Not implemented.
+    Warn( "GrantAugs is currently not implemented. Do not use!" );
 }
 
 // ------------------------------------------------------------------------
@@ -11796,9 +11381,10 @@ function MultiplayerTick(float DeltaTime)
    }
 
     // If we have a drone active (post-death etc) and we're not using the aug, kill it off
-    augLevel = AugmentationSystem.GetAugLevelValue(class'AugDrone');
-    if (( aDrone != None ) && (augLevel == -1.0))
-        aDrone.TakeDamage(100, None, aDrone.Location, vect(0,0,0), 'EMP');
+    // Vanilla Matters
+    if ( aDrone != none && !IsAugmentationActive( 'AugDrone' ) ) {
+        aDrone.TakeDamage( 1000, none, aDrone.Location, vect( 0, 0, 0 ), 'EMP' );
+    }
 
     if ( Level.Timeseconds > ServerTimeLastRefresh )
     {
@@ -11819,15 +11405,10 @@ function MultiplayerTick(float DeltaTime)
 }
 
 // ----------------------------------------------------------------------
-
+// Vanilla Matters
 function ForceDroneOff()
 {
-    local AugDrone anAug;
-
-   anAug = AugDrone(AugmentationSystem.FindAugmentation(class'AugDrone'));
-    //foreach AllActors(class'AugDrone', anAug)
-   if (anAug != None)
-      anAug.Deactivate();
+    ToggleAugmentation( 'AugDrone', false );
 }
 
 // ----------------------------------------------------------------------
@@ -12108,18 +11689,33 @@ function InitializeSkillSystem();
 function VMSkillManager GetSkillSystem() { return none; }
 function VMSkillInfo GetFirstSkillInfo() { return none; }
 
-function bool IncreaseSkillLevel( VMSkillInfo info ) { return false; }
-function bool DecreaseSkillLevel( VMSkillInfo info ) { return false; }
+function bool IncreaseSkillLevel( name name ) { return false; }
+function bool DecreaseSkillLevel( name name ) { return false; }
 
 function float GetSkillValue( name name, optional float defaultValue ) { return defaultValue; }
 function float GetSkillCategoryValue( name category, name name, optional float defaultValue ) { return defaultValue; }
 function int GetSkillLevel( name name ) { return -1; }
 
 //==============================================
-// Aug interface
+// Augmentation interface
 //==============================================
-function float GetAugValue( class<Augmentation> class ) { return -1; }
-function int GetAugLevel( class<Augmentation> class ) { return -1; }
+function InitializeAugmentationSystem();
+function VMAugmentationManager GetAugmentationSystem() { return none; }
+function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
+
+function ToggleAugmentation( name name, bool activate );
+function ActivateAllAugmentations();
+function DeactivateAllAugmentations();
+function bool IsAugmentationActive( name name ) { return false; }
+
+function float GetAugmentationValue( name name, optional float defaultValue ) { return defaultValue; }
+function int GetAugmentationLevel( name name ) { return -1; }
+
+function float GetTotalAugmentationRate( float deltaTime ) { return 0; }
+
+function UpdateAugmentationDisplay( VMAugmentationInfo aug, bool show );
+function RefreshAugmentationDisplay();
+function ClearAugmentationDisplay();
 
 //==============================================
 // ForwardPressure interface
