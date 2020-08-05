@@ -13,7 +13,7 @@ function bool Add( name name, optional int startingLevel ) {
     }
 
     info = new class'VMAugmentationInfo';
-    info.Initialize( name, level );
+    info.Initialize( name, startingLevel );
     info.Refresh( Player );
 
     info.Next = FirstAugmentationInfo;
@@ -134,7 +134,6 @@ function ActivateAll() {
         info = info.Next;
     }
 }
-
 function DeactivateAll() {
     local VMAugmentationInfo info;
 
