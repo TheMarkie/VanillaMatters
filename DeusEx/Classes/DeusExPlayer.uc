@@ -14,7 +14,7 @@ var travel int      PlayerSkin;
 var travel Float CombatDifficulty;
 
 // Augmentation system vars
-var travel AugmentationManager AugmentationSystem;
+// var travel AugmentationManager AugmentationSystem;
 
 // Skill system vars
 var travel SkillManager SkillSystem;
@@ -1937,7 +1937,7 @@ function UpdateTranslucency(float DeltaTime)
         bMakeTranslucent=FALSE;
         ClientMessage(WeaponUnCloak);
         // Vanilla Matters
-        ToggleAugmentation( 'AugCloak', false );
+        SetAugmentation( 'AugCloak', false );
     }
 
    // go through the actor list looking for owned AdaptiveArmor
@@ -5454,7 +5454,7 @@ function PutCarriedDecorationInHand()
 
             // Vanilla Matters: Hacky way to start draining energy on picking up a heavy object.
             if ( CarriedDecoration.Mass > 50 ) {
-                ToggleAugmentation( 'AugMuscle', true );
+                SetAugmentation( 'AugMuscle', true );
             }
         }
         else
@@ -5568,7 +5568,7 @@ function DropDecoration()
 
             // Vanilla Matters: Handle AugMuscle stuff.
             // Vanilla Matters TODO: Add support for powerthrow drain.
-            ToggleAugmentation( 'AugMuscle', false );
+            SetAugmentation( 'AugMuscle', false );
 
             CarriedDecoration = None;
         }
@@ -11408,7 +11408,7 @@ function MultiplayerTick(float DeltaTime)
 // Vanilla Matters
 function ForceDroneOff()
 {
-    ToggleAugmentation( 'AugDrone', false );
+    SetAugmentation( 'AugDrone', false );
 }
 
 // ----------------------------------------------------------------------
@@ -11703,7 +11703,7 @@ function InitializeAugmentationSystem();
 function VMAugmentationManager GetAugmentationSystem() { return none; }
 function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
 
-function ToggleAugmentation( name name, bool activate );
+function SetAugmentation( name name, bool activate );
 function bool IsAugmentationActive( name name ) { return false; }
 function ActivateAllAugmentations();
 function DeactivateAllAugmentations();

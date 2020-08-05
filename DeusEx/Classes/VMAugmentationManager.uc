@@ -115,12 +115,20 @@ function IncreaseAllToMax() {
 //==============================================
 // Augmentation Activation/Deactivation
 //==============================================
-function Toggle( name name, bool activate ) {
+function Set( name name, bool activate ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
     if ( info != none ) {
         info.Toggle( Player, activate );
+    }
+}
+function Toggle( name name ) {
+    local VMAugmentationInfo info;
+
+    info = GetInfo( name );
+    if ( info != none ) {
+        info.Toggle( Player, !info.IsActive );
     }
 }
 

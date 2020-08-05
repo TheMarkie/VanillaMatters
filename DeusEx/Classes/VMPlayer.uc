@@ -1413,9 +1413,14 @@ function int GetSkillLevel( name name ) {
 //==============================================
 // Aug Management
 //==============================================
-function ToggleAugmentation( name name, bool activate ) {
+function SetAugmentation( name name, bool activate ) {
     if ( VMAugmentationSystem != none ) {
-        VMAugmentationSystem.Toggle( name, activate );
+        VMAugmentationSystem.Set( name, activate );
+    }
+}
+function ToggleAugmentation( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.Toggle( name );
     }
 }
 function bool IsAugmentationActive( name name ) {
@@ -1496,7 +1501,7 @@ function ClearAugmentationDisplay() {
 // Misc
 //==============================================
 function ActivateAugByKey( int keyNum ) {
-    // TODO: Add support for aug hotbar.
+    ToggleAugmentation( AugmentationHotBar[keyNum] );
 }
 
 // Replace CatchFire to have burn damage depend on initial damage taken.
@@ -1558,7 +1563,7 @@ function DroneExplode()
     if ( aDrone != none )
     {
         // Make drone detonation cost energy.
-        ToggleAugmentation( 'AugDrone', false );
+        SetAugmentation( 'AugDrone', false );
         // TODO: Add support for AugDrone detonation.
     }
 }
