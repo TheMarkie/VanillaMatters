@@ -11704,9 +11704,12 @@ function VMAugmentationManager GetAugmentationSystem() { return none; }
 function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
 
 function ToggleAugmentation( name name, bool activate );
+function bool IsAugmentationActive( name name ) { return false; }
 function ActivateAllAugmentations();
 function DeactivateAllAugmentations();
-function bool IsAugmentationActive( name name ) { return false; }
+
+function AddAugmentationHotBar( int slot, name name );
+function RemoveAugmentationHotBar( int slot );
 
 function float GetAugmentationValue( name name, optional float defaultValue ) { return defaultValue; }
 function int GetAugmentationLevel( name name ) { return -1; }

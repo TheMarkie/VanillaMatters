@@ -227,13 +227,13 @@ function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
 
 function PopulateBar() {
     local int i;
-    local AugmentationManager manager;
+    local VMAugmentationManager manager;
 
-    manager = player.AugmentationSystem;
+    manager = player.GetAugmentationSystem();
     if ( manager != none ) {
         for ( i = 0; i < 10; i++ ) {
             if ( manager.VM_augSlots[i] != none ) {
-                AddAug( manager.VM_augSlots[i], i );
+                AddAug( manager.GetInfo( player.AugmentationHotBar[i] ), i );
             }
         }
     }
@@ -269,6 +269,20 @@ function SelectAug( Augmentation aug, bool bNewToggle ) {
             augs[i].HighlightSelect( false );
         }
     }
+}
+
+// ----------------------------------------------------------------------
+// DestroyWindow()
+// ----------------------------------------------------------------------
+
+function DestroyWindow() {
+    local int i;
+
+    for ( i = 0; i < 10; i++ ) {
+        player.AddAugmentationHotBar( augs[i].GetAugName(), i );
+    }
+
+    super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------

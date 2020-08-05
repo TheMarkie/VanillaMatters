@@ -45,6 +45,7 @@ var() array< class<VMSKill> > StartingSkills;
 
 var travel VMAugmentationManager VMAugmentationSystem;
 var() array< class<VMAugmentation> > StartingAugmentations;
+var name AugmentationHotBar[10];
 
 //==============================================
 // Properties
@@ -1417,19 +1418,16 @@ function ToggleAugmentation( name name, bool activate ) {
         VMAugmentationSystem.Toggle( name, activate );
     }
 }
-
 function bool IsAugmentationActive( name name ) {
     if ( VMAugmentationSystem != none ) {
         return VMAugmentationSystem.IsActive( name );
     }
 }
-
 function ActivateAllAugmentations() {
     if ( VMAugmentationSystem != none ) {
         VMAugmentationSystem.ActivateAll();
     }
 }
-
 function DeactivateAllAugmentations() {
     if ( VMAugmentationSystem != none ) {
         VMAugmentationSystem.DeactivateAll();
@@ -1443,7 +1441,6 @@ function float GetAugmentationValue( name name, optional float defaultValue ) {
 
     return defaultValue;
 }
-
 function int GetAugmentationLevel( name name ) {
     if ( VMAugmentationSystem != none ) {
         return VMAugmentationSystem.GetLevel( name );
@@ -1460,6 +1457,17 @@ function float GetTotalAugmentationRate( float deltaTime ) {
     return 0;
 }
 
+function AddAugmentationHotBar( int slot, name name ) {
+    if ( slot >= 0 && slot < 10 ) {
+        AugmentationHotBar[slot] = name;
+    }
+}
+function RemoveAugmentationHotBar( int slot ) {
+    if ( slot >= 0 && slot < 10 ) {
+        AugmentationHotBar[slot] = '';
+    }
+}
+
 function UpdateAugmentationDisplay( VMAugmentationInfo info, bool show ) {
     if ( DXRootWindow == none ) {
         return;
@@ -1472,14 +1480,12 @@ function UpdateAugmentationDisplay( VMAugmentationInfo info, bool show ) {
         DXRootWindow.hud.activeItems.RemoveIcon( info );
     }
 }
-
 function RefreshAugmentationDisplay() {
     ClearAugmentationDisplay();
     if ( VMAugmentationSystem != none ) {
         VMAugmentationSystem.RefreshDisplay();
     }
 }
-
 function ClearAugmentationDisplay() {
     if ( DXRootWindow != none && DXRootWindow.hud != none ) {
         DXRootWindow.hud.activeItems.ClearAugmentationDisplay();

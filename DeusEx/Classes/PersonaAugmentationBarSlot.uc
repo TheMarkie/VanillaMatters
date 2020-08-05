@@ -6,10 +6,10 @@ class PersonaAugmentationBarSlot expands ToggleWindow;
 #exec TEXTURE IMPORT FILE="Textures\AugBarSlot.bmp"     NAME="AugBarSlot"       GROUP="VMUI" MIPS=Off
 
 var DeusExPlayer player;
-var AugmentationManager augManager;
 
 var int slot;
-var Augmentation aug;
+var VMAugmentationInfo aug;
+
 var Color colSlotNum;
 var Color colOutline;
 var Color colIconActive;
@@ -37,7 +37,7 @@ var int  dragStartY;
 
 var PersonaScreenAugmentations augWnd;
 
-var Texture dragIcon;
+var Texture Icon;
 
 enum FillModes {
     FM_Selected,
@@ -76,7 +76,6 @@ function InitWindow() {
     SetFont( Font'FontTiny' );
 
     player = DeusExPlayer( GetRootWindow().parentPawn );
-    augManager = player.AugmentationSystem;
 
     StyleChanged();
 }
@@ -107,22 +106,13 @@ function SetSlot( int pos ) {
 // SetAug()
 // ----------------------------------------------------------------------
 
-function SetAug( Augmentation newAug ) {
+function SetAug( VMAugmentationInfo newAug ) {
     if ( newAug != None ) {
-        newAug.HotKeyNum = slot;
-        augManager.VM_augSlots[slot] = newAug;
-        dragIcon = newAug.VM_dragIcon;
+        Icon = newAug.GetSmallIcon();
     }
     else {
         HighlightSelect( false );
         SetToggle( false );
-
-        dragIcon = none;
-        augManager.VM_augSlots[slot] = none;
-    }
-
-    if ( aug != none ) {
-        aug.HotKeyNum = -1;
     }
 
     aug = newAug;
@@ -132,8 +122,15 @@ function SetAug( Augmentation newAug ) {
 // GetItem()
 // ----------------------------------------------------------------------
 
-function Augmentation GetAug() {
+function VMAugmentationInfo GetAug() {
     return aug;
+}
+function name GetAugName() {
+    if ( aug != none ) {
+        return aug.DefinitionClassName;
+    }
+
+    return '';
 }
 
 // ----------------------------------------------------------------------
@@ -150,7 +147,7 @@ function DrawWindow( GC gc ) {
         gc.DrawPattern( borderX + 1, borderY + 1, slotFillWidth, slotFillHeight, 0, 0, Texture'Solid' );
     }
 
-    if ( aug != none && aug.smallIcon != none && !dragging ) {
+    if ( aug != none && Icon != none && !dragging ) {
         DrawSlotIcon( gc );
 
         gc.SetAlignments( HALIGN_Center, VALIGN_Center );
@@ -172,14 +169,14 @@ function DrawWindow( GC gc ) {
 function DrawSlotIcon( GC gc ) {
     gc.SetStyle( DSTY_Translucent );
 
-    if ( aug.bIsActive ) {
+    if ( aug.IsActive ) {
         gc.SetTileColor( colIconActive );
     }
     else {
         gc.SetTileColor( colIconNormal );
     }
 
-    gc.DrawTexture( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, aug.smallIcon );
+    gc.DrawTexture( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, Icon );
 }
 
 function DrawSlotBackground( GC gc ) {
@@ -302,7 +299,7 @@ function MouseMoved( float newX, float newY ) {
 // CursorRequested()
 // ----------------------------------------------------------------------
 
-function texture CursorRequested( window win, float pointX, float pointY, out float hotX, out float hotY, out color newColor, out Texture shadowTexture ) {
+function Texture CursorRequested( window win, float pointX, float pointY, out float hotX, out float hotY, out color newColor, out Texture shadowTexture ) {
     shadowTexture = None;
 
     if ( dragging ) {
@@ -312,7 +309,7 @@ function texture CursorRequested( window win, float pointX, float pointY, out fl
             newColor.B = 64;
         }
 
-        return dragIcon;
+        return Icon;
     }
 
     return none;
