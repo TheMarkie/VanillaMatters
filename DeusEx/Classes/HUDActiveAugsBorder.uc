@@ -31,7 +31,6 @@ function CreateIcons()
     for(keyIndex=FirstKeyNum; keyIndex<=LastKeyNum; keyIndex++)
     {
         iconWindow = HUDActiveAug(winIcons.NewChild(Class'HUDActiveAug'));
-        iconWindow.SetKeyNum(keyIndex);
         iconWindow.Hide();
     }
 }
@@ -117,7 +116,7 @@ function HUDActiveAug FindAugWindow( VMAugmentationInfo info ) {
 
     currentWindow = winIcons.GetTopChild( false );
     while( currentWindow != none ) {
-        if ( HUDActiveAug( currentWindow ).DefinitionClassName == anAug.DefinitionClassName ) {
+        if ( HUDActiveAug( currentWindow ).DefinitionClassName == info.DefinitionClassName ) {
             break;
         }
 

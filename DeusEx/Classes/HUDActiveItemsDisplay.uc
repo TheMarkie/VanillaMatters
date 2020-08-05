@@ -60,7 +60,7 @@ function AddIcon( Texture newIcon, Object saveObject ) {
 // ----------------------------------------------------------------------
 // Vanilla Matters
 function RemoveIcon( Object removeObject ) {
-    if ( saveObject.IsA( 'VMAugmentationInfo' ) ) {
+    if ( removeObject.IsA( 'VMAugmentationInfo' ) ) {
         winAugsContainer.RemoveObject( removeObject );
     }
     else {

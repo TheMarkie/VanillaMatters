@@ -120,11 +120,11 @@ function ClearBar() {
 // RemoveAug()
 // ----------------------------------------------------------------------
 
-function RemoveAug( Augmentation aug ) {
+function RemoveAug( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].GetAug() == aug ) {
+        if ( augs[i].GetAugName() == name ) {
             augs[i].SetAug( none );
         }
     }
@@ -134,7 +134,7 @@ function RemoveAug( Augmentation aug ) {
 // AddAug()
 // ----------------------------------------------------------------------
 
-function bool AddAug( Augmentation aug, int pos ) {
+function bool AddAug( VMAugmentationInfo aug, int pos ) {
     local int  i;
     local int FirstPos;
     local bool retval;
@@ -142,9 +142,9 @@ function bool AddAug( Augmentation aug, int pos ) {
     retval = true;
     if ( aug != None ) {
         if ( IsValid( pos ) ) {
-            RemoveAug( aug );
+            RemoveAug( aug.DefinitionClassName );
 
-            if ( augs[pos].GetAug() != none ) {
+            if ( augs[pos].aug != none ) {
                 ClearPosition( pos );
             }
 
@@ -167,7 +167,7 @@ function bool AddAug( Augmentation aug, int pos ) {
 
 function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot slot2 ) {
     local int pos1, pos2;
-    local Augmentation aug1, aug2;
+    local VMAugmentationInfo aug1, aug2;
 
     if ( slot1 == slot2 ) {
         return;
@@ -193,19 +193,6 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
 }
 
 // ----------------------------------------------------------------------
-// GetAug()
-// ----------------------------------------------------------------------
-
-function Augmentation GetAug( int pos ) {
-    if ( IsValid( pos ) ) {
-        return ( augs[pos].GetAug() );
-    }
-    else {
-        return none;
-    }
-}
-
-// ----------------------------------------------------------------------
 // GetSlot()
 // ----------------------------------------------------------------------
 
@@ -227,13 +214,15 @@ function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
 
 function PopulateBar() {
     local int i;
+    local VMPlayer p;
     local VMAugmentationManager manager;
 
+    p = VMPlayer( player );
     manager = player.GetAugmentationSystem();
     if ( manager != none ) {
         for ( i = 0; i < 10; i++ ) {
-            if ( manager.VM_augSlots[i] != none ) {
-                AddAug( manager.GetInfo( player.AugmentationHotBar[i] ), i );
+            if ( p.AugmentationHotBar[i] != '' ) {
+                AddAug( manager.GetInfo( p.AugmentationHotBar[i] ), i );
             }
         }
     }
@@ -279,7 +268,7 @@ function DestroyWindow() {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        player.AddAugmentationHotBar( augs[i].GetAugName(), i );
+        player.AddAugmentationHotBar( i, augs[i].GetAugName() );
     }
 
     super.DestroyWindow();

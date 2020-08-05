@@ -321,15 +321,13 @@ function VMSkillInfo GetSkillFromIndex( DeusExPlayer thisPlayer, int index ) {
 // ----------------------------------------------------------------------
 // Vanilla Matters
 function bool AttemptBuySkill( DeusExPlayer thisPlayer, name name ) {
-    if ( info != None ) {
-        if ( info.CanUpgrade( thisPlayer.SkillPointsAvail ) ) {
-            thisPlayer.BuySkillSound( 0 );
-            return thisPlayer.IncreaseSkillLevel( name );
-        }
-        else {
-            thisPlayer.BuySkillSound( 1 );
-            return false;
-        }
+    if ( thisPlayer.IncreaseSkillLevel( name ) ) {
+        thisPlayer.BuySkillSound( 0 );
+        return true;
+    }
+    else {
+        thisPlayer.BuySkillSound( 1 );
+        return false;
     }
 }
 

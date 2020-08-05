@@ -122,9 +122,6 @@ function SetAug( VMAugmentationInfo newAug ) {
 // GetItem()
 // ----------------------------------------------------------------------
 
-function VMAugmentationInfo GetAug() {
-    return aug;
-}
 function name GetAugName() {
     if ( aug != none ) {
         return aug.DefinitionClassName;

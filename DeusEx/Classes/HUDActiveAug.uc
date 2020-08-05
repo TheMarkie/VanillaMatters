@@ -19,41 +19,25 @@ var name DefinitionClassName;
 
 function SetObject(object newClientObject)
 {
-    if (newClientObject.IsA('Augmentation'))
-    {
-        // Get the function key and set the text
-        SetKeyNum(Augmentation(newClientObject).GetHotKey());
-        UpdateAugIconStatus();
-    }
-}
-
-// ----------------------------------------------------------------------
-// SetKeyNum()
-// ----------------------------------------------------------------------
-
-function SetKeyNum(int newNumber)
-{
-    // Get the function key and set the text
-    hotKeyNum    = newNumber;
-    hotKeyString = "F" $ String(hotKeyNum);
+    UpdateAugIconStatus();
 }
 
 // ----------------------------------------------------------------------
 // UpdateAugIconStatus()
 // ----------------------------------------------------------------------
-
+// Vanilla Matters
 function UpdateAugIconStatus()
 {
-    local Augmentation aug;
+    local VMAugmentationInfo aug;
 
-    aug = Augmentation(GetClientObject());
-
-    if (aug != None)
-    {
-        if (aug.IsActive())
+    aug = VMAugmentationInfo( GetClientObject() );
+    if ( aug != none ) {
+        if ( aug.IsActive ) {
             colItemIcon = colAugActive;
-        else
+        }
+        else {
             colItemIcon = colAugInactive;
+        }
     }
 }
 
