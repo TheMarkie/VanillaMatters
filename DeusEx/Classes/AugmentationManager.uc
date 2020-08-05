@@ -129,26 +129,7 @@ function AddDefaultAugmentations()
 
 simulated function RefreshAugDisplay()
 {
-    // Vanilla Matters
-    local int i;
-
-    if (player == None)
-        return;
-
-    // First make sure there are no augs visible in the display
-    player.ClearAugmentationDisplay();
-
-    // Vanilla Matters: Show only augs from the aug bar that are active.
-    // VM: Always show flash light first.
-    if ( VM_augSlots[10] != none ) {
-        player.AddAugmentationDisplay( VM_augSlots[10] );
-    }
-
-    for ( i = 0; i < 10; i++ ) {
-        if ( VM_augSlots[i] != none && ( VM_augSlots[i].bIsActive || player.bHUDShowAllAugs ) ) {
-            player.AddAugmentationDisplay( VM_augSlots[i] );
-        }
-    }
+    // Vanilla Matters: Unused.
 }
 
 // ----------------------------------------------------------------------

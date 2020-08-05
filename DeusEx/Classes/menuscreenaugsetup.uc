@@ -82,7 +82,7 @@ function CreateAugButtons()
    local AugmentationManager AugSys;
    local Augmentation CurAug;
 
-   AugSys = Player.AugmentationSystem;
+   // Vanilla Matters TODO: Fix mp aug setup screen.
 
    if (AugSys == None)
       return;
@@ -561,13 +561,8 @@ function Augmentation GetAugFromStringName(string AugStringName)
    if (AugStringName == "")
       return None;
 
-   anAug = player.AugmentationSystem.FirstAug;
-   while (anAug != None)
-   {
-      if (AugStringName == string(anAug.Class.Name))
-         break;
-      anAug = anAug.next;
-   }
+   // Vanilla Matters TODO: Fix this.
+
    return anAug;
 }
 

@@ -315,7 +315,7 @@ function InstallAugmentation()
     // the augmentation and that there's enough space were done when the
     // AugmentationAddButtons were created)
 
-    player.AugmentationSystem.GivePlayerAugmentation(aug.class);
+    // Vanilla Matters TODO: Add aug install support.
 
     // play a cool animation
     medBot.PlayAnim('Scan');

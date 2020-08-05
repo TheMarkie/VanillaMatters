@@ -7,15 +7,14 @@ state Active
 {
 Begin:
     // Vanilla Matters: BoostAugs is improved to only need to be run once at the start, reducing performance cost.
-    Player.AugmentationSystem.BoostAugs( true, self );
+    // Vanilla Maters TODO: Fix or replace this aug.
 }
 
 function Deactivate()
 {
     Super.Deactivate();
 
-    Player.AugmentationSystem.BoostAugs(False, Self);
-    //Player.AugmentationSystem.DeactivateAll();
+    // Vanilla Maters TODO: Fix or replace this aug.
 }
 
 defaultproperties

@@ -104,14 +104,7 @@ simulated function Augmentation GetAugmentation(int augIndex)
 
     if (player != None)
     {
-        anAug = player.AugmentationSystem.FirstAug;
-        while(anAug != None)
-        {
-            if (addAugs[augIndex] == anAug.Class.Name)
-                break;
-
-            anAug = anAug.next;
-        }
+        // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
     }
 
     return anAug;
@@ -181,30 +174,7 @@ auto state Pickup
          else
             AugOnePriority = -10;
 
-         if ((AugZeroPriority < 0) || (AugOnePriority < 0))
-         {
-            Pawn(Other).ClientMessage("No available augmentations found.");
-         }
-         else if (AugZeroPriority < 0)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugOne.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugOne.Class);
-         }
-         else if (AugOnePriority < 0)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugZero.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugZero.Class);
-         }
-         else if (AugZeroPriority < AugOnePriority)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugZero.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugZero.Class);
-         }
-         else
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugOne.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugOne.Class);
-         }
+         // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
 
          SetOwner(None);
       }

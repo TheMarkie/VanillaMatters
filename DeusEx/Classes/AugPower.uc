@@ -7,7 +7,7 @@ state Active
 {
 Begin:
      // Vanilla Matters: We added a variable to AugmentationManager instead.
-     Player.AugmentationSystem.VM_energyMult = LevelValues[CurrentLevel];
+     // Vanilla Maters TODO: Fix or replace this aug.
 }
 
 defaultproperties

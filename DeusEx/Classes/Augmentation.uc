@@ -131,38 +131,7 @@ auto state Inactive
 
 function Activate()
 {
-    // can't do anything if we don't have it
-    if (!bHasIt)
-        return;
-
-    if (IsInState('Inactive'))
-    {
-        // this block needs to be before bIsActive is set to True, otherwise
-        // NumAugsActive counts incorrectly and the sound won't work
-        Player.PlaySound(ActivateSound, SLOT_None);
-        if (Player.AugmentationSystem.NumAugsActive() == 0)
-            Player.AmbientSound = LoopSound;
-
-        bIsActive = True;
-
-        Player.ClientMessage(Sprintf(AugActivated, AugmentationName));
-
-        if (Player.bHUDShowAllAugs)
-            Player.UpdateAugmentationDisplayStatus(Self);
-        else
-            Player.AddAugmentationDisplay(Self);
-
-        GotoState('Active');
-    }
-}
-
-// Vanilla Matters: Pretend to activate the aug on the HUD.
-function FakeActivate() {
-    Player.PlaySound( ActivateSound, SLOT_None );
-
-    Player.ClientMessage( Sprintf( AugActivated, AugmentationName ) );
-
-    Player.AddAugmentationDisplay( self );
+    // Vanilla Matters: Unused.
 }
 
 // ----------------------------------------------------------------------
@@ -171,41 +140,7 @@ function FakeActivate() {
 
 function Deactivate()
 {
-    // can't do anything if we don't have it
-    if (!bHasIt)
-        return;
-
-    // If the 'bAlwaysActive' flag is set, this aug can't be
-    // deactivated
-    if (bAlwaysActive)
-        return;
-
-    if (IsInState('Active'))
-    {
-        bIsActive = False;
-
-        Player.ClientMessage(Sprintf(AugDeactivated, AugmentationName));
-
-        if (Player.bHUDShowAllAugs)
-            Player.UpdateAugmentationDisplayStatus(Self);
-        else
-            Player.RemoveAugmentationDisplay(Self);
-
-        if (Player.AugmentationSystem.NumAugsActive() == 0)
-            Player.AmbientSound = None;
-
-        Player.PlaySound(DeactivateSound, SLOT_None);
-        GotoState('Inactive');
-    }
-}
-
-// Vanilla Matters: Pretend to deactivate the aug on the HUD.
-function FakeDeactivate() {
-    Player.ClientMessage( Sprintf( AugDeactivated, AugmentationName ) );
-
-    Player.RemoveAugmentationDisplay( self );
-
-    Player.PlaySound( DeactivateSound, SLOT_None );
+    // Vanilla Matters: Unused.
 }
 
 // ----------------------------------------------------------------------

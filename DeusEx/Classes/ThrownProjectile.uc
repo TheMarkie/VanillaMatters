@@ -156,9 +156,6 @@ simulated function Tick(float deltaTime)
                                     // Pass on team member
                                     else if ( (TeamDMGame(Player.DXGame) != None) && (team == player.PlayerReplicationInfo.team) )
                                         pass = True;
-                                    // Pass if radar transparency on
-                                    else if ( Player.AugmentationSystem.GetClassLevel( class'AugRadarTrans' ) == 3 )
-                                        pass = True;
 
                                     // Finally, make sure we can see them (no exploding through thin walls)
                                     if ( !pass )

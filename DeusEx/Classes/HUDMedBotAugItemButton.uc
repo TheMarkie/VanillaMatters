@@ -56,7 +56,7 @@ function SetAugmentation(Augmentation newAug)
     bHasIt = newAug.bHasIt;
 
     // Now check to see if this augmentation slot is full
-    bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
+    // Vanilla Matters TODO: Add aug install support.
 }
 
 // ----------------------------------------------------------------------

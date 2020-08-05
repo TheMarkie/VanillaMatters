@@ -542,9 +542,6 @@ function Reward(pawn Rewardee)
         //      if (GlobalUpgradesPerKill > 0)
         //         PlayerToReward.ClientMessage("Raising all augmentations by "$GlobalUpgradesPerKill$".");
 
-        // Took this out because we are now always level 4 augs : MBCODE
-      // PlayerToReward.AugmentationSystem.IncreaseAllAugs(GlobalUpgradesPerKill);
-
       if ((AugsPerKill > 0) && (bAugsAllowed))
       {
         //         PlayerToReward.ClientMessage("Granting additional augmentations");

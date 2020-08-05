@@ -148,7 +148,8 @@ function Actor AcquireMultiplayerTarget()
          }
          else
          {
-            if ((DeusExPlayer(prevtarget).AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') == -1.0) && !DeusExPlayer(prevtarget).bHidden )
+             // Vanilla Matters
+            if ( !DeusExPlayer( prevtarget ).IsAugmentationActive( 'AugRadarTrans' ) && !DeusExPlayer( prevtarget ).bHidden )
             {
                     dist = DeusExPlayer(prevtarget).Location - gun.Location;
                     if (VSize(dist) < maxRange )
@@ -182,7 +183,8 @@ function Actor AcquireMultiplayerTarget()
                         if (! ( (TeamDMGame(aplayer.DXGame) != None) && (safeTarget != None) && (TeamDMGame(aplayer.DXGame).ArePlayersAllied( DeusExPlayer(safeTarget),aplayer)) ) )
                         {
                             // If the player's RadarTrans aug is off, the turret can see him
-                            if ((aplayer.AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') == -1.0) && !aplayer.bHidden )
+                            // Vanilla Matters
+                            if ( !aplayer.IsAugmentationActive( 'AugRadarTrans' ) && !aplayer.bHidden )
                             {
                                 curTarget = apawn;
                                 PlaySound(Sound'TurretLocked', SLOT_Interact, 1.0,, maxRange );
@@ -322,7 +324,8 @@ function Tick(float deltaTime)
                             if (pawn.IsA('DeusExPlayer'))
                             {
                                 // If the player's RadarTrans aug is off, the turret can see him
-                                if (DeusExPlayer(pawn).AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') == -1.0)
+                                // Vanilla Matters
+                                if ( !DeusExPlayer( pawn ).IsAugmentationActive( 'AugRadarTrans' ) )
                                 {
                                     curTarget = pawn;
                                     break;

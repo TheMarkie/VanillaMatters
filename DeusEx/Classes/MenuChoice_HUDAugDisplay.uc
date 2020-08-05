@@ -20,7 +20,8 @@ function LoadSetting()
 function SaveSetting()
 {
     player.bHUDShowAllAugs = bool(GetValue());
-    player.AugmentationSystem.RefreshAugDisplay();
+    // Vanilla Matters
+    player.RefreshAugmentationDisplay();
 }
 
 // ----------------------------------------------------------------------
