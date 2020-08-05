@@ -11,7 +11,7 @@ var() array<UpgradeCategory> CategoryValues;
 //==============================================
 // General info
 //==============================================
-static final function int GetMaxLevel() {
+static function int GetMaxLevel() {
     return #default.Costs;
 }
 
