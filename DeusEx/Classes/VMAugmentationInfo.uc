@@ -61,7 +61,7 @@ function Toggle( VMPlayer player, bool activate ) {
     IsActive = activate;
 }
 
-function Tick( float deltaTime ) {
+function Tick( VMPlayer player, float deltaTime ) {
     _definitionClass.static.Tick( player, self, deltaTime );
 }
 
