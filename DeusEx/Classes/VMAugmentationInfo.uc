@@ -12,8 +12,8 @@ function class<VMAugmentation> GetDefinitionClass() {
     return _definitionClass;
 }
 
-function Initialize( name name, int level ) {
-    super.Initialize( name, level );
+function Initialize( name name, int startingLevel ) {
+    super.Initialize( name, startingLevel );
     GetDefinitionClass();
 }
 
