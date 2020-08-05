@@ -29,16 +29,14 @@ static function int GetMaxLevel() {
 //==============================================
 // Behaviours
 //==============================================
-static final function Toggle( VMPlayer player, VMAugmentationInfo info, bool activate ) {
-    if ( activate ) {
-        player.PlaySound( ActivateSound, SLOT_None );
+static final function Toggle( VMPlayer player, VMAugmentationInfo info, bool on ) {
+    if ( on ) {
         player.PlaySound( default.ActivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( info, true );
 
         Activate( player, info );
     }
     else {
-        player.PlaySound( DeactivateSound, SLOT_None );
         player.PlaySound( default.DeactivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( info, false );
 

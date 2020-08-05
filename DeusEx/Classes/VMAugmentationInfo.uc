@@ -41,24 +41,24 @@ function bool CanUpgrade( optional int amount ) {
 }
 
 function bool IsPassive() {
-    return _definitionClass.static.IsPassive;
+    return _definitionClass.default.IsPassive;
 }
 function bool NeedsTick() {
-    return _definitionClass.static.NeedsTick;
+    return _definitionClass.default.NeedsTick;
 }
 
 //==============================================
 // Management
 //==============================================
-function Toggle( VMPlayer player, bool activate ) {
-    if ( IsActive == activate
-        || ( IsPassive() && !activate )
+function Toggle( VMPlayer player, bool on ) {
+    if ( IsActive == on
+        || ( IsPassive() && !on )
     ) {
         return;
     }
 
-    _definitionClass.static.Toggle( player, self, activate );
-    IsActive = activate;
+    _definitionClass.static.Toggle( player, self, on );
+    IsActive = on;
 }
 
 function Tick( VMPlayer player, float deltaTime ) {
@@ -87,5 +87,5 @@ function float GetCurrentRate() {
 // Values
 //==============================================
 function float GetValue() {
-    return _definitionClass.static.Values[Level];
+    return _definitionClass.default.Values[Level];
 }

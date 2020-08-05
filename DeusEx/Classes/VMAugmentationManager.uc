@@ -115,12 +115,12 @@ function IncreaseAllToMax() {
 //==============================================
 // Augmentation Activation/Deactivation
 //==============================================
-function Set( name name, bool activate ) {
+function Set( name name, bool active ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
     if ( info != none ) {
-        info.Toggle( Player, activate );
+        info.Toggle( Player, active );
     }
 }
 function Toggle( name name ) {
@@ -219,7 +219,7 @@ function Tick( float deltaTime ) {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         if ( info.IsActive && info.NeedsTick() ) {
-            info.Tick( deltaTime );
+            info.Tick( Player, deltaTime );
         }
 
         info = info.Next;
