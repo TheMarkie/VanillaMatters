@@ -539,20 +539,22 @@ function ResetToDefaults()
 // ----------------------------------------------------------------------
 // Vanilla Matters
 function CopySkills() {
-    local VMSkillInfo info;
+    local VMSkillInfo info, newInfo;
     local int i;
 
     info = player.GetFirstSkillInfo();
     while( info != none ) {
         i = #localSkills;
-        localSkills[i] = new class'VMSkillInfo';
-        localSkills[i].DefinitionClassName = info.DefinitionClassName;
+        newInfo = new class'VMSkillInfo';
+        newInfo.Initialize( info.DefinitionClassName, 0 );
 
         // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
         if ( info.DefinitionClassName == 'SkillWeaponPistol' ) {
-            player.SkillPointsAvail -= localSkills[i].GetNextLevelCost();
-            localSkills[i].Level += 1;
+            player.SkillPointsAvail -= newInfo.GetNextLevelCost();
+            newInfo.Level += 1;
         }
+
+        localSkills[i] = newInfo;
 
         info = info.Next;
     }
