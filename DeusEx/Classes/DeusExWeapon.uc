@@ -572,12 +572,12 @@ function float GetGlobalSkillValue( name category ) {
 }
 
 // Vanilla Matters: Get aug value.
-function float GetAugValue( class<Augmentation> class ) {
+function float GetAugmentationValue( name name ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return FMax( player.GetAugValue( class ), 0 );
+        return player.GetAugmentationValue( name );
     }
 
     return 0;
@@ -600,7 +600,7 @@ simulated function float CalculateAccuracy() {
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetAugValue( class'AugTarget' ) + GetSkillValue( 'Accuracy' );
+    weapskill = GetAugmentationValue( 'AugTarget' ) + GetSkillValue( 'Accuracy' );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
     accuracy = accuracy + ModBaseAccuracy;
@@ -669,7 +669,7 @@ simulated function float CalculateAccuracy() {
         // VM: AugMuscle helps with arm penalties.
         div = 1;
         if ( player != none ) {
-            div = player.AugmentationSystem.GetClassLevel( class'AugMuscle' );
+            div = player.GetAugmentationLevel( 'AugMuscle' );
             if ( div == -1 ) {
                 div = 1;
             }
@@ -2430,7 +2430,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
     local float inaccuracy, throwBonus;
     local DeusExPlayer player;
 
-    throwBonus = GetAugValue( class'AugMuscle' );
+    throwBonus = GetAugmentationValue( 'AugMuscle' );
     if ( throwBonus <= 0 ) {
         throwBonus = 1;
     }
@@ -2440,7 +2440,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
 
     mult = 1.0 + GetSkillValue( 'Damage' );
     if ( bHandToHand ) {
-        mult += GetAugValue( class'AugCombat' );
+        mult += GetAugmentationValue( 'AugCombat' );
     }
 
     inaccuracy = 1 - currentAccuracy;
@@ -2656,7 +2656,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         mult = 1.0 + GetSkillValue( 'Damage' );
         if ( bHandToHand ) {
             mult += GetGlobalSkillValue( 'MeleeWeaponDamage' );
-            mult += GetAugValue( class'AugCombat' );
+            mult += GetAugmentationValue( 'AugCombat' );
         }
 
         // Determine damage type
@@ -2979,7 +2979,7 @@ simulated function bool UpdateInfo(Object winObject)
         if ( bInstantHit ) {
             mod += GetGlobalSkillValue( 'MeleeWeaponDamage' );
         }
-        mod += GetAugValue( class'AugCombat' );
+        mod += GetAugmentationValue( 'AugCombat' );
     }
 
     if ( mod != 1.0 ) {
@@ -3005,7 +3005,7 @@ simulated function bool UpdateInfo(Object winObject)
     if ( !bHandToHand && default.ReloadCount > 0 ) {
         // Vanilla Matters: Accuracy.
         str = int( BaseAccuracy * 100 ) $ "%";
-        mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( 'Accuracy' );
+        mod = ModBaseAccuracy + GetAugmentationValue( 'AugTarget' ) + GetSkillValue( 'Accuracy' );
         if ( mod != 0.0 ) {
             str = str @ BuildPercentString( mod + 0.000003 );
             str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
@@ -3354,33 +3354,20 @@ state NormalFire {
     }
 
     function float GetShotTime() {
-        local float mult, sTime;
-        local ScriptedPawn sp;
-        local DeusExPlayer player;
+        local float mult;
 
-        sp = ScriptedPawn( Owner );
-
-        if ( sp != none ) {
-            return ShotTime;
-        }
-        else {
-            player = DeusExPlayer( Owner );
-            mult = 1.0;
-            if ( bHandToHand && player != none ) {
-                // Vanilla Matters: Tweak AugCombat bonus.
-                mult = player.AugmentationSystem.GetAugLevelValue( class'AugCombat' );
-                if ( mult == -1 ) {
-                    mult = 1.0;
-                }
-                else {
-                    mult = 1 - mult;
-                }
+        mult = 1.0;
+        if ( bHandToHand ) {
+            mult = GetAugmentationValue( 'AugCombat' );
+            if ( mult > 0 ) {
+                mult = 1 - mult;
             }
-
-            sTime = ShotTime * mult;
-
-            return ( sTime );
+            else {
+                mult = 1;
+            }
         }
+
+        return ShotTime * mult;
     }
 
     function HandleFire() {
@@ -3631,15 +3618,15 @@ simulated state ClientFiring
         else
         {
             // AugCombat decreases shot time
+            // Vanilla Matters
             mult = 1.0;
-            if (bHandToHand && DeusExPlayer(Owner) != None)
-            {
-                mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
-                if (mult == -1.0)
-                    mult = 1.0;
-                // Vanilla Matters: Compensate for reduced augcombat values.
+            if ( bHandToHand ) {
+                mult = GetAugmentationValue( 'AugCombat' );
+                if ( mult > 0 ) {
+                    mult = 1 - mult;
+                }
                 else {
-                    mult = mult / 10.0;
+                    mult = 1;
                 }
             }
             sTime = ShotTime * mult;
@@ -3866,23 +3853,6 @@ Begin:
 
 state FlameThrowerOn
 {
-    function float GetShotTime()
-    {
-        local float mult, sTime;
-
-        // AugCombat decreases shot time
-        mult = 1.0;
-        if (bHandToHand && DeusExPlayer(Owner) != None)
-        {
-            mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
-            if (mult == -1.0)
-                mult = 1.0;
-        }
-
-        sTime = ShotTime * mult;
-        return (sTime);
-    }
-
 Begin:
     if ( (DeusExPlayer(Owner).Health > 0) && bFlameOn && (ClipCount < ReloadCount))
     {
@@ -3896,7 +3866,8 @@ Begin:
         else
             flameShotCount--;
 
-        Sleep( GetShotTime() );
+        // Vanilla Matters
+        Sleep( ShotTime );
         GenerateBullet();
         goto('Begin');
     }
