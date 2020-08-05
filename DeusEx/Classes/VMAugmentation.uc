@@ -47,7 +47,7 @@ static function Activate( VMPlayer player, VMAugmentationInfo info );
 static function Deactivate( VMPlayer player, VMAugmentationInfo info );
 static function Tick( VMPlayer player, VMAugmentationInfo info, float deltaTime );
 static function float GetRate( VMAugmentationInfo info ) {
-    if ( info.Level < GetMaxLevel() ) {
+    if ( !IsPassive && info.Level < GetMaxLevel() ) {
         return default.Rates[info.Level];
     }
 }
