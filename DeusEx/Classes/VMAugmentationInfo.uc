@@ -66,6 +66,8 @@ function Tick( VMPlayer player, float deltaTime ) {
 }
 
 function Refresh( VMPlayer player, optional bool activate ) {
+    GetDefinitionClass();
+
     if ( IsActive ) {
         _definitionClass.static.Deactivate( player, self );
 

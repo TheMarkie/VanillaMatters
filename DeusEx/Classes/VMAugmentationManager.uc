@@ -1,6 +1,7 @@
 class VMAugmentationManager extends VMUpgradeManager;
 
 var travel VMAugmentationInfo FirstAugmentationInfo;
+var private transient bool _refreshed;
 
 //==============================================
 // Management
@@ -33,6 +34,8 @@ function Refresh( VMPlayer player ) {
 
         info = info.Next;
     }
+
+    _refreshed = true;
 }
 
 function Reset() {
@@ -205,6 +208,8 @@ function float GetTotalRate( float deltaTime ) {
         if ( info.IsActive ) {
             rate += info.GetCurrentRate();
         }
+
+        info = info.Next;
     }
 
     return ( ( rate / 60 ) * deltaTime );
@@ -215,6 +220,10 @@ function float GetTotalRate( float deltaTime ) {
 //==============================================
 function Tick( float deltaTime ) {
     local VMAugmentationInfo info;
+
+    if ( !_refreshed ) {
+        return;
+    }
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
