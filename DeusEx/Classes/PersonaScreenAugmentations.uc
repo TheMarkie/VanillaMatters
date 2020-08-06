@@ -411,7 +411,8 @@ function CreateAugmentationButtons()
     defaultCount = 0;
 
     // Iterate through the augmentations, creating a unique button for each
-    anAug = player.AugmentationSystem.FirstAug;
+    // Vanilla Matters TODO: Add aug screen support.
+    // anAug = player.AugmentationSystem.FirstAug;
     while(anAug != None)
     {
         if (( anAug.AugmentationName != "" ) && ( anAug.bHasIt ))
@@ -494,7 +495,7 @@ function CreateAugmentationBar() {
 
 // Vanilla Matters: Update the aug display on the HUD.
 function DestroyWindow() {
-    player.AugmentationSystem.RefreshAugDisplay();
+    player.RefreshAugmentationDisplay();
 
     super.DestroyWindow();
 }
@@ -788,16 +789,19 @@ function FinishButtonDrag() {
             slot = VM_augBar.GetSlot( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug );
 
             if ( slot != none ) {
-                VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
+                // Vanilla Matters TODO: Add aug screen drag support.
+                // VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
             }
             else {
-                VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
+                // Vanilla Matters TODO: Add aug screen drag support.
+                // VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
             }
         }
     }
     else {
         if ( dragSlot != none ) {
-            VM_augBar.RemoveAug( dragSlot.aug );
+            // Vanilla Matters TODO: Add aug screen drag support.
+            // VM_augBar.RemoveAug( dragSlot.aug );
         }
     }
 
