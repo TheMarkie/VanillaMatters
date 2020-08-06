@@ -77,7 +77,6 @@ function Timer()
     local JaimeReyes Jaime;
     local SecurityBot2 bot;
     local LAM lam;
-    local Skill aSkill;
 
     // Vanilla Matters
     local VMSkillManager skillSystem;

@@ -4,7 +4,6 @@
 class ChargedPickup extends DeusExPickup
     abstract;
 
-var() class<Skill> skillNeeded;
 var() bool bOneUseOnly;
 var() sound ActivateSound;
 var() sound DeactivateSound;

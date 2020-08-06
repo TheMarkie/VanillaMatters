@@ -8968,7 +8968,6 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
     local Augmentation anAug;
     local int augCnt;
     local DeusExWeapon w;
-    local Skill askill;
     local String wShortString;
 
     if ( killProfile == None )
@@ -10575,7 +10574,6 @@ exec function DXDumpInfo()
     local string userName, mapName, strCopies;
     local Inventory item, nextItem;
     local DeusExWeapon W;
-    local Skill skill;
     local Augmentation aug;
     local bool bHasAugs;
 

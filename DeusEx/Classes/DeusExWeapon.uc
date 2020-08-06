@@ -53,7 +53,6 @@ var bool                bReadyToFire;           // true if our bullets are loade
 var() int               LowAmmoWaterMark;       // critical low ammo count
 var travel int          ClipCount;              // number of bullets remaining in current clip
 
-var() class<Skill>      GoverningSkill;         // skill that affects this weapon
 var() travel float      NoiseLevel;             // amount of noise that weapon makes when fired
 var() EEnemyEffective   EnemyEffective;         // type of enemies that weapon is effective against
 var() EEnviroEffective  EnviroEffective;        // type of environment that weapon is effective in
