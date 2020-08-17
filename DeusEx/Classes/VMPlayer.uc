@@ -1413,6 +1413,17 @@ function int GetSkillLevel( name name ) {
 //==============================================
 // Aug Management
 //==============================================
+function VMAugmentationManager GetAugmentationSystem() {
+    return VMAugmentationSystem;
+}
+function VMAugmentationInfo GetFirstAugmentationInfo() {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.FirstAugmentationInfo;
+    }
+
+    return none;
+}
+
 function SetAugmentation( name name, bool activate ) {
     if ( VMAugmentationSystem != none ) {
         VMAugmentationSystem.Set( name, activate );
