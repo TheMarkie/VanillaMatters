@@ -1,6 +1,17 @@
 class VMAugmentation extends VMUpgrade
     abstract;
 
+enum EAugmentationLocation
+{
+    AugmentationLocationDefault,
+    AugmentationLocationCranial,
+    AugmentationLocationEye,
+    AugmentationLocationTorso,
+    AugmentationLocationArm,
+    AugmentationLocationLeg,
+    AugmentationLocationSubdermal
+};
+
 //==============================================
 // Description
 //==============================================
@@ -17,6 +28,7 @@ var() bool IsPassive;
 var() array<float> Values;
 var() array<float> Rates; // Energy cost per minute.
 
+var EAugmentationLocation InstallLocation;
 var bool NeedsTick;
 
 //==============================================

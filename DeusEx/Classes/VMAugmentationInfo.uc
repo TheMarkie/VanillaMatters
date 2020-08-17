@@ -43,6 +43,9 @@ function bool CanUpgrade( optional int amount ) {
 function bool IsPassive() {
     return _definitionClass.default.IsPassive;
 }
+function int GetInstallLocation() {
+    return _definitionClass.default.InstallLocation;
+}
 function bool NeedsTick() {
     return _definitionClass.default.NeedsTick;
 }
