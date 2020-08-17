@@ -12,7 +12,6 @@ class AugRadarTrans extends VMAugmentation;
 
 defaultproperties
 {
-     EnergyRate=300.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconRadarTrans'
      SmallIcon=Texture'DeusExUI.UserInterface.AugIconRadarTrans_Small'
      UpgradeName="Radar Transparency"

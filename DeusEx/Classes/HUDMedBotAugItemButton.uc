@@ -24,13 +24,15 @@ event DrawWindow(GC gc)
     // else
     //  colIcon = colIconNormal;
 
+    // Vanilla Matters TODO: Restore functionality.
+
     // Vanilla Matters: We can reinstall the same aug again to upgrade it so it shouldn't be grayed out.
-    if ( ( bSlotFull && !bHasIt ) || ( !Augmentation( GetClientObject() ).CanBeUpgraded() && Augmentation( GetClientObject() ).MaxLevel > 1 ) ) {
-        colIcon = colIconDisabled;
-    }
-    else {
-        colIcon = colIconNormal;
-    }
+    // if ( ( bSlotFull && !bHasIt ) || ( !DO_NOT_USE_AUGMENTATION_TYPE( GetClientObject() ).CanBeUpgraded() && DO_NOT_USE_AUGMENTATION_TYPE( GetClientObject() ).MaxLevel > 1 ) ) {
+    //     colIcon = colIconDisabled;
+    // }
+    // else {
+    //     colIcon = colIconNormal;
+    // }
 
     Super.DrawWindow(gc);
 
@@ -46,17 +48,17 @@ event DrawWindow(GC gc)
 // ----------------------------------------------------------------------
 // SetAugmentation()
 // ----------------------------------------------------------------------
-
-function SetAugmentation(Augmentation newAug)
+// Vanilla Matters TODO: Restore functionality.
+function SetAugmentation(VMAugmentationInfo newAug)
 {
-    SetClientObject(newAug);
-    SetIcon(newAug.smallIcon);
+    // SetClientObject(newAug);
+    // SetIcon(newAug.smallIcon);
 
-    // First check to see if the player already has this augmentation
-    bHasIt = newAug.bHasIt;
+    // // First check to see if the player already has this augmentation
+    // bHasIt = newAug.bHasIt;
 
-    // Now check to see if this augmentation slot is full
-    // Vanilla Matters TODO: Add aug install support.
+    // // Now check to see if this augmentation slot is full
+    // // Vanilla Matters TODO: Add aug install support.
 }
 
 // ----------------------------------------------------------------------
@@ -78,24 +80,17 @@ function AugmentationCannister GetAugCan()
 }
 
 // ----------------------------------------------------------------------
-// GetAugmentation()
-// ----------------------------------------------------------------------
-
-function Augmentation GetAugmentation()
-{
-    return Augmentation(GetClientObject());
-}
-
-// ----------------------------------------------------------------------
 // GetAugDesc()
 // ----------------------------------------------------------------------
 
 function String GetAugDesc()
 {
-    if (GetClientObject() != None)
-        return Augmentation(GetClientObject()).augmentationName;
-    else
-        return "";
+    // Vanilla Matters TODO: Restore functionality.
+
+    // if (GetClientObject() != None)
+    //     return DO_NOT_USE_AUGMENTATION_TYPE(GetClientObject()).augmentationName;
+    // else
+    //     return "";
 }
 
 // ----------------------------------------------------------------------

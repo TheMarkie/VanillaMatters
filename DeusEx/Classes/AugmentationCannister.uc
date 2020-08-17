@@ -45,69 +45,51 @@ function PostBeginPlay() {
 // ----------------------------------------------------------------------
 // UpdateInfo()
 // ----------------------------------------------------------------------
-
+// Vanilla Matters
 simulated function bool UpdateInfo(Object winObject)
 {
-    local PersonaInfoWindow winInfo;
-    local String outText;
-    local Int canIndex;
-    local Augmentation aug;
+    // Vanilla Matters TODO: Restore functionality.
 
-    winInfo = PersonaInfoWindow(winObject);
-    if (winInfo == None)
-        return False;
+    // local PersonaInfoWindow winInfo;
+    // local String outText;
+    // local Int canIndex;
+    // local DO_NOT_USE_AUGMENTATION_TYPE aug;
 
-    winInfo.Clear();
-    winInfo.SetTitle(itemName);
-    winInfo.SetText(Description);
+    // winInfo = PersonaInfoWindow(winObject);
+    // if (winInfo == None)
+    //     return False;
 
-    winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
-    winInfo.AppendText(winInfo.CR() $ winInfo.CR());
+    // winInfo.Clear();
+    // winInfo.SetTitle(itemName);
+    // winInfo.SetText(Description);
 
-    for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
-    {
-        if (AddAugs[canIndex] != '')
-        {
-            aug = GetAugmentation(canIndex);
+    // winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
+    // winInfo.AppendText(winInfo.CR() $ winInfo.CR());
 
-            if (aug != None)
-                winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
-        }
-    }
+    // for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
+    // {
+    //     if (AddAugs[canIndex] != '')
+    //     {
+    //         aug = GetAugmentation(canIndex);
 
-    winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
+    //         if (aug != None)
+    //             winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
+    //     }
+    // }
 
-    return True;
+    // winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
+
+    // return True;
 }
 
 // ----------------------------------------------------------------------
 // GetAugmentation()
 // ----------------------------------------------------------------------
 
-simulated function Augmentation GetAugmentation(int augIndex)
+simulated function class<VMAugmentation> GetAugmentation(int augIndex)
 {
-    local Augmentation anAug;
-    local DeusExPlayer player;
-
-    // First make sure we have a valid value
-    if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1)))
-        return None;
-
-    if (AddAugs[augIndex] == '')
-        return None;
-
-    // Loop through all the augmentation objects and look
-    // for the augName that matches the one stored in
-    // this object
-
-    player = DeusExPlayer(Owner);
-
-    if (player != None)
-    {
-        // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
-    }
-
-    return anAug;
+    // Vanilla Matters TODO: Restore functionality.
+    return none;
 }
 
 // ----------------------------------------------------------------------
@@ -138,52 +120,10 @@ auto state Pickup
 // function Frob()
 // For autoinstalling in deathmatch, we need to overload frob here
 // ----------------------------------------------------------------------
-   function Frob(Actor Other, Inventory frobWith)
-   {
-      local Inventory Copy;
-      local int AugZeroPriority;
-      local int AugOnePriority;
-      local Augmentation AugZero;
-      local Augmentation AugOne;
-      //If we aren't autoinstalling, just return.
-      if ( (Level.NetMode == NM_Standalone) || (DeusExMPGame(Level.Game) == None) || (DeusExMPGame(Level.Game).bAutoInstall == False) ||
-           (DeusExPlayer(Other) == None) )
-      {
-         Super.Frob(Other,frobWith);
-         return;
-      }
-      if ( ValidTouch(Other) )
-      {
-         if (Level.Game.LocalLog != None)
-            Level.Game.LocalLog.LogPickup(Self, Pawn(Other));
-         if (Level.Game.WorldLog != None)
-            Level.Game.WorldLog.LogPickup(Self, Pawn(Other));
-
-         SetOwner(DeusExPlayer(Other));
-
-         AugZero = GetAugmentation(0);
-         AugOne = GetAugmentation(1);
-
-         if (AugZero != None)
-            AugZeroPriority = DeusExPlayer(Other).GetAugPriority(AugZero);
-         else
-            AugZeroPriority = -10;
-
-         if (AugOne != None)
-            AugOnePriority = DeusExPlayer(Other).GetAugPriority(AugOne);
-         else
-            AugOnePriority = -10;
-
-         // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
-
-         SetOwner(None);
-      }
-   }
-
-   function BeginState()
-   {
-      Super.BeginState();
-   }
+    function Frob(Actor Other, Inventory frobWith)
+    {
+        // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
+    }
 }
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

@@ -239,57 +239,59 @@ function bool ButtonActivated(Window buttonPressed)
 
 function SelectAugmentation(PersonaItemButton buttonPressed)
 {
-    // Vanilla Matters
-    local HUDMedBotAugItemButton btn;
+    // Vanilla Matters TODO: Restore functionality.
 
-    // Don't do extra work.
-    if (selectedAugButton != buttonPressed)
-    {
-        // Deselect current button
-        if (selectedAugButton != None)
-            selectedAugButton.SelectButton(False);
+    // // Vanilla Matters
+    // local HUDMedBotAugItemButton btn;
 
-        selectedAugButton = buttonPressed;
-        selectedAug       = Augmentation(selectedAugButton.GetClientObject());
+    // // Don't do extra work.
+    // if (selectedAugButton != buttonPressed)
+    // {
+    //     // Deselect current button
+    //     if (selectedAugButton != None)
+    //         selectedAugButton.SelectButton(False);
 
-        // Check to see if this augmentation has already been installed
-        // Vanilla Matters: Allow reinstalling the same aug to upgrade it. If the aug can't be upgraded further, ignore it.
-        btn = HUDMedBotAugItemButton( buttonPressed );
-        if ( btn != none ) {
-            if ( btn.bHasIt && selectedAug != none && !selectedAug.CanBeUpgraded() ) {
-                winInfo.Clear();
-                winInfo.SetTitle( selectedAug.AugmentationName );
-                winInfo.SetText( VM_CantBeUpgradedText );
-                winInfo.SetText( SelectAnotherText );
+    //     selectedAugButton = buttonPressed;
+    //     selectedAug       = DO_NOT_USE_AUGMENTATION_TYPE(selectedAugButton.GetClientObject());
 
-                selectedAug = none;
-                selectedAugButton = none;
-            }
-            else if ( btn.bSlotFull && selectedAug != none ) {
-                winInfo.Clear();
-                winInfo.SetTitle( selectedAug.AugmentationName );
-                winInfo.SetText( SlotFullText );
-                winInfo.SetText( SelectAnotherText );
+    //     // Check to see if this augmentation has already been installed
+    //     // Vanilla Matters: Allow reinstalling the same aug to upgrade it. If the aug can't be upgraded further, ignore it.
+    //     btn = HUDMedBotAugItemButton( buttonPressed );
+    //     if ( btn != none ) {
+    //         if ( btn.bHasIt && selectedAug != none && !selectedAug.CanBeUpgraded() ) {
+    //             winInfo.Clear();
+    //             winInfo.SetTitle( selectedAug.AugmentationName );
+    //             winInfo.SetText( VM_CantBeUpgradedText );
+    //             winInfo.SetText( SelectAnotherText );
 
-                selectedAug = none;
-                selectedAugButton = none;
-            }
-            else {
-                selectedAug.UsingMedBot( true );
-                selectedAug.UpdateInfo( winInfo );
-                selectedAugButton.SelectButton( true );
+    //             selectedAug = none;
+    //             selectedAugButton = none;
+    //         }
+    //         else if ( btn.bSlotFull && selectedAug != none ) {
+    //             winInfo.Clear();
+    //             winInfo.SetTitle( selectedAug.AugmentationName );
+    //             winInfo.SetText( SlotFullText );
+    //             winInfo.SetText( SelectAnotherText );
 
-                if ( btn.bHasIt && selectedAug != none ) {
-                    btnInstall.SetButtonText( VM_upgradeLabelText );
-                }
-                else {
-                    btnInstall.SetButtonText( InstallButtonLabel );
-                }
-            }
-        }
+    //             selectedAug = none;
+    //             selectedAugButton = none;
+    //         }
+    //         else {
+    //             selectedAug.UsingMedBot( true );
+    //             selectedAug.UpdateInfo( winInfo );
+    //             selectedAugButton.SelectButton( true );
 
-        EnableButtons();
-    }
+    //             if ( btn.bHasIt && selectedAug != none ) {
+    //                 btnInstall.SetButtonText( VM_upgradeLabelText );
+    //             }
+    //             else {
+    //                 btnInstall.SetButtonText( InstallButtonLabel );
+    //             }
+    //         }
+    //     }
+
+    //     EnableButtons();
+    // }
 }
 
 // ----------------------------------------------------------------------
@@ -298,46 +300,48 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 
 function InstallAugmentation()
 {
-    local AugmentationCannister augCan;
-    local Augmentation aug;
+    // Vanilla Matters TODO: Restore functionality.
 
-    if (HUDMedBotAugItemButton(selectedAugButton) == None)
-        return;
+    // local AugmentationCannister augCan;
+    // local DO_NOT_USE_AUGMENTATION_TYPE aug;
 
-    // Get pointers to the AugmentationCannister and the
-    // Augmentation Class
+    // if (HUDMedBotAugItemButton(selectedAugButton) == None)
+    //     return;
 
-    augCan = HUDMedBotAugItemButton(selectedAugButton).GetAugCan();
-    aug    = HUDMedBotAugItemButton(selectedAugButton).GetAugmentation();
+    // // Get pointers to the AugmentationCannister and the
+    // // Augmentation Class
 
-    // Add this augmentation (if we can get this far, then the augmentation
-    // to be added is a valid one, as the checks to see if we already have
-    // the augmentation and that there's enough space were done when the
-    // AugmentationAddButtons were created)
+    // augCan = HUDMedBotAugItemButton(selectedAugButton).GetAugCan();
+    // aug    = HUDMedBotAugItemButton(selectedAugButton).GetAugmentation();
 
-    // Vanilla Matters TODO: Add aug install support.
+    // // Add this augmentation (if we can get this far, then the augmentation
+    // // to be added is a valid one, as the checks to see if we already have
+    // // the augmentation and that there's enough space were done when the
+    // // AugmentationAddButtons were created)
 
-    // play a cool animation
-    medBot.PlayAnim('Scan');
+    // // Vanilla Matters TODO: Add aug install support.
 
-    // Now Destroy the Augmentation cannister
-    player.DeleteInventory(augCan);
+    // // play a cool animation
+    // medBot.PlayAnim('Scan');
 
-    // Now remove the cannister from our list
-    selectedAugButton.GetParent().Destroy();
-    selectedAugButton = None;
-    selectedAug       = None;
+    // // Now Destroy the Augmentation cannister
+    // player.DeleteInventory(augCan);
 
-    // Update the Installed Augmentation Icons
-    DestroyAugmentationButtons();
-    CreateAugmentationButtons();
+    // // Now remove the cannister from our list
+    // selectedAugButton.GetParent().Destroy();
+    // selectedAugButton = None;
+    // selectedAug       = None;
 
-    // Need to update the aug list
-    PopulateAugCanList();
+    // // Update the Installed Augmentation Icons
+    // DestroyAugmentationButtons();
+    // CreateAugmentationButtons();
 
-    // Vanilla Matter: Clears stuff and redisables the Install button properly.
-    winInfo.Clear();
-    EnableButtons();
+    // // Need to update the aug list
+    // PopulateAugCanList();
+
+    // // Vanilla Matter: Clears stuff and redisables the Install button properly.
+    // winInfo.Clear();
+    // EnableButtons();
 }
 
 // ----------------------------------------------------------------------

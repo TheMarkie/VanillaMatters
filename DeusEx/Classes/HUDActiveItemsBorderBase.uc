@@ -90,7 +90,8 @@ function AddIcon(Texture newIcon, Object saveObject)
     if (++iconCount == 1)
         Show();
 
-    if (saveObject.IsA('Augmentation'))
+    // Vanilla Matters
+    if (saveObject.IsA('VMAugmentationInfo'))
         activeItem = HUDActiveItemBase(winIcons.NewChild(Class'HUDActiveAug'));
     else
         activeItem = HUDActiveItemBase(winIcons.NewChild(Class'HUDActiveItem'));

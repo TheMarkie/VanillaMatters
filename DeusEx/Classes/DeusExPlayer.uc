@@ -14,7 +14,7 @@ var travel int      PlayerSkin;
 var travel Float CombatDifficulty;
 
 // Augmentation system vars
-// var travel AugmentationManager AugmentationSystem;
+// var travel DO_NOT_USE_AUGMENTATIONMANAGER_TYPE AugmentationSystem;
 
 // Skill system vars
 var travel SkillManager SkillSystem;
@@ -2041,8 +2041,6 @@ function SaveSkillPoints()
 
 exec function AugAdd( name name )
 {
-    local Augmentation anAug;
-
     if (!bCheatsEnabled)
         return;
 
@@ -5427,9 +5425,6 @@ function PutCarriedDecorationInHand()
 {
     local vector lookDir, upDir;
 
-    // Vanilla Matters
-    local Augmentation aug;
-
     if (CarriedDecoration != None)
     {
         lookDir = Vector(Rotation);
@@ -5481,7 +5476,6 @@ function DropDecoration()
 
     // Vanilla Matters
     local DeusExDecoration deco;
-    local Augmentation aug;
     local float boost;
 
     deco = DeusExDecoration( CarriedDecoration );
@@ -8965,7 +8959,6 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
     local DeusExPlayer pkiller;
     local DeusExProjectile proj;
     local DeusExDecoration decProj;
-    local Augmentation anAug;
     local int augCnt;
     local DeusExWeapon w;
     local String wShortString;
@@ -10574,7 +10567,6 @@ exec function DXDumpInfo()
     local string userName, mapName, strCopies;
     local Inventory item, nextItem;
     local DeusExWeapon W;
-    local Augmentation aug;
     local bool bHasAugs;
 
     dumploc = CreateDumpLocationObject();
@@ -11220,38 +11212,6 @@ function NintendoImmunityEffect( bool on )
 }
 
 // ----------------------------------------------------------------------
-// GetAugPriority()
-// Returns -1 if the player has the aug.
-// Returns 0-8 (0 being higher priority) for the aug priority.
-// If the player doesn't list the aug as a priority, returns the first
-// unoccupied slot num (9 if all are filled).
-// ----------------------------------------------------------------------
-function int GetAugPriority( Augmentation AugToCheck)
-{
-   local Name AugName;
-   local int PriorityIndex;
-
-   AugName = AugToCheck.Class.Name;
-
-   if (AugToCheck.bHasIt)
-      return -1;
-
-   for (PriorityIndex = 0; PriorityIndex < ArrayCount(AugPrefs); PriorityIndex++)
-   {
-      if (AugPrefs[PriorityIndex] == AugName)
-      {
-         return PriorityIndex;
-      }
-      if (AugPrefs[PriorityIndex] == '')
-      {
-         return PriorityIndex;
-      }
-   }
-
-   return PriorityIndex;
-}
-
-// ----------------------------------------------------------------------
 // GrantAugs()
 // Grants augs in order of priority.
 // Sadly, we do this on the client because propagation of requested augs
@@ -11678,7 +11638,6 @@ function bool IsHolding( Inventory item ) { return false; }
 function ClearHold();
 
 function bool CanDrain( float drainAmount );
-function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) { return 0; }
 
 //==============================================
 // Skill interface

@@ -944,27 +944,6 @@ function bool CanDrain( float drainAmount ) {
     return Energy >= drainAmount;
 }
 
-// Override: Drain energy then return the amount that doesn't get drained properly if energy is depleted.
-function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) {
-    if ( efficiency > 0.0 ) {
-        // How much energy should be drained per unit of drainAmount.
-        drainAmount = drainAmount / efficiency;
-    }
-
-    augDraining.AddImmediateEnergyRate( drainAmount );
-
-    if ( !CanDrain( drainAmount ) ) {
-        drainAmount = drainAmount - Energy;
-    }
-
-    // Return the drainAmount to normal.
-    if ( efficiency > 0.0 ) {
-        drainAmount = drainAmount * efficiency;
-    }
-
-    return drainAmount;
-}
-
 // Override to optimize
 function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
     local int i;
