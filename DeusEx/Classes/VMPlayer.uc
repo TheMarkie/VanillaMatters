@@ -45,7 +45,7 @@ var() array< class<VMSKill> > StartingSkills;
 
 var travel VMAugmentationManager VMAugmentationSystem;
 var() array< class<VMAugmentation> > StartingAugmentations;
-var name AugmentationHotBar[10];
+var name AugmentationHotBar[11];
 
 //==============================================
 // Properties
@@ -1673,4 +1673,5 @@ defaultproperties
      MsgUseChargedPickup="You need to have the item in your inventory to activate it"
      SkillPointsTotal=4500
      SkillPointsAvail=4500
+     AugmentationHotBar(10)=AugLight
 }
