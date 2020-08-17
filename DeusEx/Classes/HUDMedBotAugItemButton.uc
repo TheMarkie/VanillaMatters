@@ -49,7 +49,7 @@ event DrawWindow(GC gc)
 // SetAugmentation()
 // ----------------------------------------------------------------------
 // Vanilla Matters TODO: Restore functionality.
-function SetAugmentation(VMAugmentationInfo newAug)
+function SetAugmentation(class<VMAugmentation> newAug)
 {
     // SetClientObject(newAug);
     // SetIcon(newAug.smallIcon);

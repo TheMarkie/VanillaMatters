@@ -245,17 +245,19 @@ function SetAugWnd( PersonaScreenAugmentations augWnd ) {
 // ----------------------------------------------------------------------
 
 function SelectAug( name name, bool bNewToggle ) {
+    local PersonaAugmentationBarSlot slot;
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug.DefinitionClassName == name ) {
-            if ( !augs[i].GetToggle() ) {
-                augs[i].SetToggle( bNewToggle );
+        slot = augs[i];
+        if ( slot.aug != none && slot.aug.DefinitionClassName == name ) {
+            if ( !slot.GetToggle() ) {
+                slot.SetToggle( bNewToggle );
             }
         }
         else {
-            augs[i].SetToggle( false );
-            augs[i].HighlightSelect( false );
+            slot.SetToggle( false );
+            slot.HighlightSelect( false );
         }
     }
 }
