@@ -196,11 +196,11 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
 // GetSlot()
 // ----------------------------------------------------------------------
 
-function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
+function PersonaAugmentationBarSlot GetSlot( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug == aug ) {
+        if ( augs[i].aug.DefinitionClassName == name ) {
             return augs[i];
         }
     }
@@ -244,11 +244,11 @@ function SetAugWnd( PersonaScreenAugmentations augWnd ) {
 // SelectAug()
 // ----------------------------------------------------------------------
 
-function SelectAug( Augmentation aug, bool bNewToggle ) {
+function SelectAug( name name, bool bNewToggle ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug == aug ) {
+        if ( augs[i].aug.DefinitionClassName == name ) {
             if ( !augs[i].GetToggle() ) {
                 augs[i].SetToggle( bNewToggle );
             }
