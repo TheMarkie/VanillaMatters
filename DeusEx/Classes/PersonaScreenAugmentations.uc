@@ -384,7 +384,6 @@ function CreateAugmentationButtons() {
     local int torsoCount, skinCount, defaultCount, augCount;
 
     // Iterate through the augmentations, creating a unique button for each
-    // Vanilla Matters TODO: Add aug screen support.
     info = player.GetFirstAugmentationInfo();
     while( info != none ) {
         i = 0;
@@ -719,18 +718,15 @@ function FinishButtonDrag() {
             slot = VM_augBar.GetSlot( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug.DefinitionClassName );
 
             if ( slot != none ) {
-                // Vanilla Matters TODO: Add aug screen drag support.
                 VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
             }
             else {
-                // Vanilla Matters TODO: Add aug screen drag support.
                 VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
             }
         }
     }
     else {
         if ( dragSlot != none ) {
-            // Vanilla Matters TODO: Add aug screen drag support.
             VM_augBar.RemoveAug( dragSlot.aug.DefinitionClassName );
         }
     }
