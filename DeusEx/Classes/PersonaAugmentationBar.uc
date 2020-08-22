@@ -124,7 +124,7 @@ function RemoveAug( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].GetAugName() == name ) {
+        if ( augs[i].aug != none && augs[i].aug.DefinitionClassName == name ) {
             augs[i].SetAug( none );
         }
     }
@@ -185,10 +185,10 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
         ClearPosition( pos2 );
     }
 
-    AddAug( aug1, pos2 );
+    augs[pos2].SetAug( aug1 );
 
     if ( aug2 != none ) {
-        AddAug( aug2, pos1 );
+        augs[pos1].SetAug( aug2 );
     }
 }
 
@@ -200,7 +200,7 @@ function PersonaAugmentationBarSlot GetSlot( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug.DefinitionClassName == name ) {
+        if ( augs[i].aug != none && augs[i].aug.DefinitionClassName == name ) {
             return augs[i];
         }
     }
@@ -270,7 +270,12 @@ function DestroyWindow() {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        player.AddAugmentationHotBar( i, augs[i].GetAugName() );
+        if ( augs[i].aug != none ) {
+            player.AddAugmentationHotBar( i, augs[i].aug.DefinitionClassName );
+        }
+        else {
+            player.AddAugmentationHotBar( i, '' );
+        }
     }
 
     super.DestroyWindow();

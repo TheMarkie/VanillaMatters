@@ -119,18 +119,6 @@ function SetAug( VMAugmentationInfo newAug ) {
 }
 
 // ----------------------------------------------------------------------
-// GetItem()
-// ----------------------------------------------------------------------
-
-function name GetAugName() {
-    if ( aug != none ) {
-        return aug.DefinitionClassName;
-    }
-
-    return '';
-}
-
-// ----------------------------------------------------------------------
 // DrawWindow()
 // ----------------------------------------------------------------------
 
@@ -244,7 +232,7 @@ function SetFillColor() {
 // ----------------------------------------------------------------------
 
 function bool MouseButtonPressed( float pointX, float pointY, EInputKey button, int numClicks ) {
-    if ( button == IK_LeftMouse ) {
+    if ( aug != none && button == IK_LeftMouse ) {
         dragStart = true;
         dragStartX = pointX;
         dragStartY = pointY;
