@@ -1,10 +1,14 @@
 class VMAugmentationManager extends VMUpgradeManager;
 
-var travel VMAugmentationInfo FirstAugmentationInfo;
 var private transient bool _refreshed;
 
+var travel VMAugmentationInfo FirstAugmentationInfo;
+
+var travel int InstallLocationCounts[7];
+var int InstallLocationMaxCounts[7];
+
 var localized string EnergyRateLabel;
-var localized string OccupiesSlotLabel;
+var localized string OccupiesLocationLabel;
 var localized string AlreadyAtMax;
 var localized string NowUpgraded;
 var localized string NowAtLevel;
@@ -12,6 +16,7 @@ var localized string PassiveLabel;
 var localized string CanUpgradeLabel;
 var localized string CurrentLevelLabel;
 var localized string MaximumLabel;
+var localized string AugmentationLocationLabels[7];
 
 //==============================================
 // Management
@@ -29,6 +34,7 @@ function bool Add( name name, optional int startingLevel ) {
 
     info.Next = FirstAugmentationInfo;
     FirstAugmentationInfo = info;
+    InstallLocationCounts[info.GetInstallLocation()] += 1;
 
     return true;
 }
@@ -84,6 +90,9 @@ function UpdateInfo( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
     winInfo.Clear();
     winInfo.SetTitle( info.GetName() );
     winInfo.SetText( info.GetDescription() );
+
+    // Install Location
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
     // Energy Rate
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetCurrentRate() ) ) );
@@ -271,6 +280,10 @@ function float GetTotalRate( float deltaTime ) {
     return ( ( rate / 60 ) * deltaTime );
 }
 
+function bool IsLocationFull( int loc ) {
+    return InstallLocationCounts[loc] >= default.InstallLocationMaxCounts[loc];
+}
+
 //==============================================
 // Callbacks
 //==============================================
@@ -293,8 +306,15 @@ function Tick( float deltaTime ) {
 
 defaultproperties
 {
+     InstallLocationMaxCounts(0)=1
+     InstallLocationMaxCounts(1)=1
+     InstallLocationMaxCounts(2)=3
+     InstallLocationMaxCounts(3)=1
+     InstallLocationMaxCounts(4)=1
+     InstallLocationMaxCounts(5)=2
+     InstallLocationMaxCounts(6)=3
      EnergyRateLabel="Energy Rate: %d Units/Minute"
-     OccupiesSlotLabel="Occupies Slot: %s"
+     OccupiesLocationLabel="Occupies Location: %s"
      AlreadyAtMax="You already have the %s at the maximum level"
      NowUpgraded="%s upgraded to level %d"
      NowAtLevel="Augmentation %s at level %d"
@@ -302,4 +322,11 @@ defaultproperties
      CanUpgradeLabel="(Can Upgrade)"
      CurrentLevelLabel="Current Level: %d"
      MaximumLabel="(Maximum)"
+     AugmentationLocationLabels(0)="Core"
+     AugmentationLocationLabels(1)="Cranial"
+     AugmentationLocationLabels(2)="Eyes"
+     AugmentationLocationLabels(3)="Torso"
+     AugmentationLocationLabels(4)="Arms"
+     AugmentationLocationLabels(5)="Legs"
+     AugmentationLocationLabels(6)="Subdermal"
 }
