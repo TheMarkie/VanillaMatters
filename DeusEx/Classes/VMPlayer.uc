@@ -44,8 +44,8 @@ var travel VMSkillManager VMSkillSystem;
 var() array< class<VMSKill> > StartingSkills;
 
 var travel VMAugmentationManager VMAugmentationSystem;
+var travel name AugmentationHotBar[11];
 var() array< class<VMAugmentation> > StartingAugmentations;
-var name AugmentationHotBar[11];
 
 //==============================================
 // Properties
