@@ -10,8 +10,8 @@ function Initialize( VMPlayer player ) {
     Player = player;
 }
 function bool Add( name name, optional int startingLevel ) { return false; }
-function Refresh( VMPlayer player ) {
-    Player = player;
+function Refresh( VMPlayer playerOwner ) {
+    Player = playerOwner;
 }
 function Reset();
 
