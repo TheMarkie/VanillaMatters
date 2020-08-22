@@ -17,79 +17,52 @@ var travel bool VM_augReplaced;
 
 replication
 {
-   //server to client variables
-   reliable if ((Role == ROLE_Authority) && (bNetOwner))
-      AddAugs;
-}
-
-// Vanilla Matters: Replace EMP Shield with Energy Shield.
-function PostBeginPlay() {
-    local int i;
-
-    super.PostBeginPlay();
-
-    if ( !VM_augReplaced ) {
-        for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
-            if ( AddAugs[i] == 'AugShield' ) {
-                AddAugs[i] = 'AugEnviro';
-            }
-            else if ( AddAugs[i] == 'AugEMP' ) {
-                AddAugs[i] = 'AugShield';
-            }
-        }
-
-        VM_augReplaced = true;
-    }
+    //server to client variables
+    reliable if ((Role == ROLE_Authority) && (bNetOwner))
+        AddAugs;
 }
 
 // ----------------------------------------------------------------------
 // UpdateInfo()
 // ----------------------------------------------------------------------
 // Vanilla Matters
-simulated function bool UpdateInfo(Object winObject)
-{
-    // Vanilla Matters TODO: Restore functionality.
+simulated function bool UpdateInfo( Object winObject ) {
+    local Int canIndex;
+    local PersonaInfoWindow winInfo;
+    local class<VMAugmentation> aug;
 
-    // local PersonaInfoWindow winInfo;
-    // local String outText;
-    // local Int canIndex;
-    // local DO_NOT_USE_AUGMENTATION_TYPE aug;
+    winInfo = PersonaInfoWindow( winObject );
+    if ( winInfo == none ) {
+        return false;
+    }
 
-    // winInfo = PersonaInfoWindow(winObject);
-    // if (winInfo == None)
-    //     return False;
+    winInfo.Clear();
+    winInfo.SetTitle( itemName );
+    winInfo.SetText( Description );
 
-    // winInfo.Clear();
-    // winInfo.SetTitle(itemName);
-    // winInfo.SetText(Description);
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ AugsAvailable );
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() );
 
-    // winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
-    // winInfo.AppendText(winInfo.CR() $ winInfo.CR());
+    for( canIndex = 0; canIndex < ArrayCount( AddAugs ); canIndex++ ) {
+        if ( AddAugs[canIndex] != '' ) {
+            aug = GetAugmentation( canIndex );
+            if ( aug != none ) {
+                winInfo.AppendText( aug.default.UpgradeName $ winInfo.CR() );
+            }
+        }
+    }
 
-    // for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
-    // {
-    //     if (AddAugs[canIndex] != '')
-    //     {
-    //         aug = GetAugmentation(canIndex);
+    winInfo.AppendText( winInfo.CR() $ MustBeUsedOn );
 
-    //         if (aug != None)
-    //             winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
-    //     }
-    // }
-
-    // winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
-
-    // return True;
+    return true;
 }
 
 // ----------------------------------------------------------------------
 // GetAugmentation()
 // ----------------------------------------------------------------------
-
-simulated function class<VMAugmentation> GetAugmentation(int augIndex)
-{
-    // Vanilla Matters TODO: Restore functionality.
-    return none;
+// Vanilla Matters
+function class<VMAugmentation> GetAugmentation( int augIndex ) {
+    return class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( AddAugs[augIndex] ), class'Class' ) );
 }
 
 // ----------------------------------------------------------------------
