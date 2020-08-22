@@ -54,7 +54,7 @@ var Localized string AugLocationTorso;
 var Localized string AugLocationSubdermal;
 
 // Vanilla Matters
-var VMAugmentationManager VM_augSystem;
+var VMAugmentationManager VM_AugSystem;
 
 var PersonaAugmentationBar VM_augBar;
 var PersonaAugmentationBarSlot VM_selectedSlot;
@@ -73,6 +73,9 @@ event InitWindow()
 {
     Super.InitWindow();
 
+    // Vanilla Matters
+    VM_AugSystem = Player.GetAugmentationSystem();
+
     EnableButtons();
 }
 
@@ -83,9 +86,6 @@ event InitWindow()
 function CreateControls()
 {
     Super.CreateControls();
-
-    // Vanilla Matters
-    VM_augSystem = Player.GetAugmentationSystem();
 
     CreateTitleWindow(9, 5, AugmentationsTitleText);
     CreateInfoWindow();
@@ -460,25 +460,20 @@ function DestroyWindow() {
 // ----------------------------------------------------------------------
 // ButtonActivated()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function bool ButtonActivated( Window buttonPressed ) {
+    local PersonaItemButton itemButton;
 
-function bool ButtonActivated(Window buttonPressed)
-{
-    local bool bHandled;
-
-    if (Super.ButtonActivated(buttonPressed))
-        return True;
-
-    bHandled   = True;
-
-    // Check if this is one of our Augmentation buttons
-    if (buttonPressed.IsA('PersonaItemButton'))
-    {
-        SelectAugmentation(PersonaItemButton(buttonPressed));
+    if ( super.ButtonActivated( buttonPressed ) ) {
+        return true;
     }
-    else
-    {
-        switch(buttonPressed)
-        {
+
+    itemButton = PersonaItemButton( buttonPressed );
+    if ( itemButton != none ) {
+        SelectAugmentation( itemButton );
+    }
+    else {
+        switch( buttonPressed ) {
             case btnUpgrade:
                 UpgradeAugmentation();
                 break;
@@ -492,12 +487,11 @@ function bool ButtonActivated(Window buttonPressed)
                 break;
 
             default:
-                bHandled = False;
-                break;
+                return false;
         }
     }
 
-    return bHandled;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -534,19 +528,15 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 // ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
-
-function SelectAugmentation(PersonaItemButton buttonPressed)
-{
-    // Don't do extra work.
-    if (selectedAugButton != buttonPressed)
-    {
+// Vanilla Matters
+function SelectAugmentation( PersonaItemButton buttonPressed ) {
+    if ( selectedAugButton != buttonPressed ) {
         // Deselect current button
-        if (selectedAugButton != None)
-            selectedAugButton.SelectButton(False);
+        if ( selectedAugButton != none ) {
+            selectedAugButton.SelectButton( false );
+        }
 
         selectedAugButton = buttonPressed;
-
-        // Vanilla Matters
         selectedAug = PersonaAugmentationItemButton( buttonPressed ).VM_aug;
 
         VM_AugSystem.UpdateInfo( selectedAug, winInfo );
@@ -578,7 +568,7 @@ function UpgradeAugmentation() {
         // the player's inventory
 
         selectedAug.IncreaseLevel();
-        VM_augSystem.UpdateInfo( selectedAug, winInfo );
+        VM_AugSystem.UpdateInfo( selectedAug, winInfo );
 
         augCan.UseOnce();
 
