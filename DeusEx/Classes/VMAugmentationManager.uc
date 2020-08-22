@@ -3,6 +3,16 @@ class VMAugmentationManager extends VMUpgradeManager;
 var travel VMAugmentationInfo FirstAugmentationInfo;
 var private transient bool _refreshed;
 
+var localized string EnergyRateLabel;
+var localized string OccupiesSlotLabel;
+var localized string AlreadyAtMax;
+var localized string NowUpgraded;
+var localized string NowAtLevel;
+var localized string PassiveLabel;
+var localized string CanUpgradeLabel;
+var localized string CurrentLevelLabel;
+var localized string MaximumLabel;
+
 //==============================================
 // Management
 //==============================================
@@ -23,14 +33,14 @@ function bool Add( name name, optional int startingLevel ) {
     return true;
 }
 
-function Refresh( VMPlayer player ) {
+function Refresh( VMPlayer playerOwner ) {
     local VMAugmentationInfo info;
 
-    super.Refresh( player );
+    super.Refresh( playerOwner );
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( player, info.IsActive );
+        info.Refresh( Player, info.IsActive );
 
         info = info.Next;
     }
@@ -64,11 +74,49 @@ function RefreshDisplay() {
     }
 }
 
+function UpdateInfo( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
+    local string str;
+
+    if ( winInfo == none ) {
+        return;
+    }
+
+    winInfo.Clear();
+    winInfo.SetTitle( info.GetName() );
+    winInfo.SetText( info.GetDescription() );
+
+    // Energy Rate
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetCurrentRate() ) ) );
+
+    // Current Level
+    str = Sprintf( CurrentLevelLabel, info.Level + 1 );
+
+    // Can Upgrade / Is Active
+    if ( info.CanUpgrade() ) {
+        str = str @ CanUpgradeLabel;
+    }
+    else if ( info.Level >= info.GetMaxLevel() ) {
+        str = str @ MaximumLabel;
+    }
+
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ str );
+
+    // Is Passive
+    if ( info.IsPassive() ) {
+        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
+    }
+}
+
+
 //==============================================
 // Augmentation Management
 //==============================================
 function VMAugmentationInfo GetInfo( name name ) {
     local VMAugmentationInfo info;
+
+    if ( name == '' ) {
+        return info;
+    }
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
@@ -121,6 +169,10 @@ function IncreaseAllToMax() {
 function Set( name name, bool active ) {
     local VMAugmentationInfo info;
 
+    if ( Player == none ) {
+        return;
+    }
+
     info = GetInfo( name );
     if ( info != none ) {
         info.Toggle( Player, active );
@@ -128,6 +180,10 @@ function Set( name name, bool active ) {
 }
 function Toggle( name name ) {
     local VMAugmentationInfo info;
+
+    if ( Player == none ) {
+        return;
+    }
 
     info = GetInfo( name );
     if ( info != none ) {
@@ -233,4 +289,17 @@ function Tick( float deltaTime ) {
 
         info = info.Next;
     }
+}
+
+defaultproperties
+{
+     EnergyRateLabel="Energy Rate: %d Units/Minute"
+     OccupiesSlotLabel="Occupies Slot: %s"
+     AlreadyAtMax="You already have the %s at the maximum level"
+     NowUpgraded="%s upgraded to level %d"
+     NowAtLevel="Augmentation %s at level %d"
+     PassiveLabel="[Passive]"
+     CanUpgradeLabel="(Can Upgrade)"
+     CurrentLevelLabel="Current Level: %d"
+     MaximumLabel="(Maximum)"
 }
