@@ -4,9 +4,6 @@
 
 class HUDActiveAugsBorder extends HUDActiveItemsBorderBase;
 
-var int FirstKeyNum;
-var int LastKeyNum;
-
 // ----------------------------------------------------------------------
 // ClearAugmentationDisplay()
 // ----------------------------------------------------------------------
@@ -102,7 +99,6 @@ function HUDActiveAug FindAugWindow( VMAugmentationInfo info ) {
 
 defaultproperties
 {
-     LastKeyNum=10
      texBorderTop=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Top'
      texBorderCenter=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Center'
      texBorderBottom=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Bottom'
