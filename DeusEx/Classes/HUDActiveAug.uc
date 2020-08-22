@@ -8,9 +8,6 @@ var Color colBlack;
 var Color colAugActive;
 var Color colAugInactive;
 
-// Vanilla Matters
-var name DefinitionClassName;
-
 // ----------------------------------------------------------------------
 // SetObject()
 //

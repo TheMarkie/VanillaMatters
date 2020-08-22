@@ -8,34 +8,6 @@ var int FirstKeyNum;
 var int LastKeyNum;
 
 // ----------------------------------------------------------------------
-// InitWindow()
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    // Create *ALL* the icons, but hide them.
-    CreateIcons();
-}
-
-// ----------------------------------------------------------------------
-// CreateIcons()
-// ----------------------------------------------------------------------
-
-function CreateIcons()
-{
-    local int keyIndex;
-    local HUDActiveAug iconWindow;
-
-    for(keyIndex=FirstKeyNum; keyIndex<=LastKeyNum; keyIndex++)
-    {
-        iconWindow = HUDActiveAug(winIcons.NewChild(Class'HUDActiveAug'));
-        iconWindow.Hide();
-    }
-}
-
-// ----------------------------------------------------------------------
 // ClearAugmentationDisplay()
 // ----------------------------------------------------------------------
 
@@ -51,7 +23,7 @@ function ClearAugmentationDisplay()
     while(currentWindow != None)
     {
         currentWindow.Hide();
-      currentWindow.SetClientObject(None);
+        currentWindow.SetClientObject(None);
         currentWindow = currentWindow.GetLowerSibling();
     }
 
@@ -67,7 +39,7 @@ function ClearAugmentationDisplay()
 function AddIcon( Texture newIcon, Object saveObject ) {
     local HUDActiveAug augItem;
 
-    augItem = FindAugWindow( VMAugmentationInfo( saveObject ) );
+    augItem = HUDActiveAug( winIcons.NewChild( Class'HUDActiveAug' ) );
     if ( augItem != none ) {
         augItem.SetIcon( newIcon );
         augItem.SetClientObject( saveObject );
@@ -92,8 +64,7 @@ function RemoveObject( Object removeObject ) {
 
     augItemWindow = FindAugWindow( VMAugmentationInfo( removeObject ) );
     if ( augItemWindow != none ) {
-        augItemWindow.Hide();
-        augItemWindow.SetClientObject( none );
+        augItemWindow.Destroy();
 
         // Hide if there are no icons visible
         if ( --iconCount == 0 ) {
@@ -116,7 +87,7 @@ function HUDActiveAug FindAugWindow( VMAugmentationInfo info ) {
 
     currentWindow = winIcons.GetTopChild( false );
     while( currentWindow != none ) {
-        if ( HUDActiveAug( currentWindow ).DefinitionClassName == info.DefinitionClassName ) {
+        if ( currentWindow.GetClientObject() == info ) {
             break;
         }
 
@@ -125,11 +96,6 @@ function HUDActiveAug FindAugWindow( VMAugmentationInfo info ) {
 
     return HUDActiveAug( currentWindow );
 }
-
-// ----------------------------------------------------------------------
-// UpdateAugIconStatus()
-// ----------------------------------------------------------------------
-// No longer used.
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
