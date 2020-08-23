@@ -5,12 +5,8 @@ class PersonaAugmentationItemButton extends PersonaItemButton;
 
 var PersonaLevelIconWindow winLevels;
 var bool  bActive;
-var int   hotkeyNumber;
 var Color colIconActive;
 var Color colIconNormal;
-
-// Vanilla Matters
-var VMAugmentationInfo VM_aug;
 
 var bool VM_draggable;
 var bool VM_dragStart;
@@ -44,16 +40,6 @@ event DrawWindow(GC gc)
     local String str;
 
     Super.DrawWindow(gc);
-
-    // Draw the hotkey info in lower-left corner
-    if (hotkeyNumber >= 3)
-    {
-        str = "F" $ hotkeyNumber;
-        gc.SetFont(Font'FontMenuSmall_DS');
-        gc.SetAlignments(HALIGN_Left, VALIGN_Top);
-        gc.SetTextColor(colHeaderText);
-        gc.DrawText(2, iconPosHeight - 9, iconPosWidth - 2, 10, str);
-    }
 }
 
 // ----------------------------------------------------------------------
@@ -65,15 +51,6 @@ function CreateControls()
     winLevels = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
     winLevels.SetPos(30, 54);
     winLevels.SetSelected(True);
-}
-
-// ----------------------------------------------------------------------
-// SetHotkeyNumber()
-// ----------------------------------------------------------------------
-
-function SetHotkeyNumber(int num)
-{
-    hotkeyNumber = num;
 }
 
 // ----------------------------------------------------------------------
