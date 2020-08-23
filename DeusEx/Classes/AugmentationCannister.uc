@@ -93,7 +93,7 @@ auto state Pickup
 // function Frob()
 // For autoinstalling in deathmatch, we need to overload frob here
 // ----------------------------------------------------------------------
-// Vanilla Matters TODO: Add multiplayer support for aug cannister install.
+// Vanilla Matters MPTODO: Add multiplayer support for aug cannister install.
 }
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

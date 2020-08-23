@@ -76,15 +76,13 @@ function CreateAugChosenHeader()
 
 function CreateAugButtons()
 {
-   // Vanilla Matters TODO: Restore functionality.
+   // Vanilla Matters MPTODO: Restore functionality.
 
    // local int iButtonIndex;
    // local MenuUIChoiceButton CurButton;
    // local bool bShiftRight;
    // local DO_NOT_USE_AUGMENTATIONMANAGER_TYPE AugSys;
    // local DO_NOT_USE_AUGMENTATION_TYPE CurAug;
-
-   // // Vanilla Matters TODO: Fix mp aug setup screen.
 
    // if (AugSys == None)
    //    return;
@@ -491,7 +489,7 @@ function ShiftAugmentation(int dir)
 
 function SaveSettings()
 {
-   // Vanilla Matters TODO: Restore functionality.
+   // Vanilla Matters MPTODO: Restore functionality.
 
    // local int AugIndex;
    // local DO_NOT_USE_AUGMENTATION_TYPE CurAug;
@@ -540,7 +538,7 @@ function ResetToDefaults()
 
 function string AugFamiliarName(string AugStringName)
 {
-   // Vanilla Matters TODO: Restore functionality.
+   // Vanilla Matters MPTODO: Restore functionality.
 
 //     local DO_NOT_USE_AUGMENTATION_TYPE anAug;
 
@@ -559,15 +557,13 @@ function string AugFamiliarName(string AugStringName)
 // ----------------------------------------------------------------------
 // GetAugFromStringName()
 // ----------------------------------------------------------------------
-// Vanilla Matters TODO: Restore functionality.
+// Vanilla Matters MPTODO: Restore functionality.
 // function DO_NOT_USE_AUGMENTATION_TYPE GetAugFromStringName(string AugStringName)
 // {
 //    local DO_NOT_USE_AUGMENTATION_TYPE anAug;
 
 //    if (AugStringName == "")
 //       return None;
-
-//    // Vanilla Matters TODO: Fix this.
 
 //    return anAug;
 // }
