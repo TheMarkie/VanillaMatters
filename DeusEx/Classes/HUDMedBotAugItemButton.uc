@@ -12,9 +12,6 @@ var Color colBorder;
 var Color colIconDisabled;
 var Color colIconNormal;
 
-// Vanilla Matters
-var name VM_AugClassName;
-
 // ----------------------------------------------------------------------
 // DrawWindow()
 // ----------------------------------------------------------------------
@@ -52,16 +49,17 @@ function SetAugmentation( class<VMAugmentation> newAug ) {
     augSystem = player.GetAugmentationSystem();
     if ( augSystem != none ) {
         info = augSystem.GetInfo( newAug.Name );
-        if ( info != none ) {
-            SetIcon( info.GetSmallIcon() );
-        }
-
-        SetClientObject( info );
     }
 
-    bSlotFull = augSystem.IsLocationFull( newAug.default.InstallLocation );
+    if ( info != none ) {
+        SetClientObject( info );
+    }
+    else {
+        SetClientObject( newAug );
+    }
+    SetIcon( newAug.default.SmallIcon );
 
-    VM_AugClassName = newAug.Name;
+    bSlotFull = augSystem.IsLocationFull( newAug.default.InstallLocation );
 }
 
 // ----------------------------------------------------------------------
