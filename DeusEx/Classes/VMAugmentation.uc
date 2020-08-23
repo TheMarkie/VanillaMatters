@@ -35,7 +35,7 @@ var bool NeedsTick;
 // General info
 //==============================================
 static function int GetMaxLevel() {
-    return #default.Rates;
+    return Max( #default.Rates - 1, 0 );
 }
 
 //==============================================
