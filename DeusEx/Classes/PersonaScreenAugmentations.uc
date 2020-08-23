@@ -380,13 +380,12 @@ function Window CreateHighlight(
 // Vanilla Matters
 function CreateAugmentationButtons() {
     local VMAugmentationInfo info;
-    local int i, slot, x, y;
+    local int slot, x, y;
     local int torsoCount, skinCount, defaultCount, augCount;
 
     // Iterate through the augmentations, creating a unique button for each
     info = player.GetFirstAugmentationInfo();
     while( info != none ) {
-        i = 0;
         slot = info.GetInstallLocation();
         x = augLocs[slot].x;
         y = augLocs[slot].y;
@@ -402,16 +401,14 @@ function CreateAugmentationButtons() {
 
         // Torso
         if ( slot == 3 ) {
-            i = torsoCount++;
-            y += torsoCount * augSlotSpacingY;
+            y += torsoCount++ * augSlotSpacingY;
         }
         // Subdermal
-        else if ( slot == 5 ) {
-            i = skinCount++;
-            y += skinCount * augSlotSpacingY;
+        else if ( slot == 6 ) {
+            y += skinCount++ * augSlotSpacingY;
         }
 
-        augItems[augCount] = CreateAugButton( info, x, y, i );
+        augItems[augCount] = CreateAugButton( info, x, y );
         augCount++;
 
         info = info.next;
@@ -422,7 +419,7 @@ function CreateAugmentationButtons() {
 // CreateAugButton
 // ----------------------------------------------------------------------
 // Vanilla Matters
-function PersonaAugmentationItemButton CreateAugButton( VMAugmentationInfo info, int x, int y, int i ) {
+function PersonaAugmentationItemButton CreateAugButton( VMAugmentationInfo info, int x, int y ) {
     local PersonaAugmentationItemButton newButton;
 
     newButton = PersonaAugmentationItemButton( winClient.NewChild( Class'PersonaAugmentationItemButton' ) );
@@ -435,7 +432,6 @@ function PersonaAugmentationItemButton CreateAugButton( VMAugmentationInfo info,
     newButton.SetActive( info.IsActive );
 
     // Vanilla Matters: Set up stuff for dragging.
-    newButton.VM_aug = info;
     newButton.VM_augWnd = self;
     newButton.VM_draggable = !( info.IsPassive() || info.DefinitionClassName == 'AugLight' );
     newButton.VM_dragIcon = info.GetSmallIcon();
@@ -537,13 +533,15 @@ function SelectAugmentation( PersonaItemButton buttonPressed ) {
         }
 
         selectedAugButton = buttonPressed;
-        selectedAug = PersonaAugmentationItemButton( buttonPressed ).VM_aug;
 
-        VM_AugSystem.UpdateInfo( selectedAug, winInfo );
-        selectedAugButton.SelectButton(True);
+        selectedAug = VMAugmentationInfo( buttonPressed.GetClientObject() );
+        if ( selectedAug != none ) {
+            VM_AugSystem.GetFullDescription( selectedAug, winInfo );
+            // Vanilla Matters: Highlight the slot that the aug is assigned to, if any.
+            VM_augBar.SelectAug( selectedAug.DefinitionClassName, true );
+        }
 
-        // Vanilla Matters: Highlight the slot that the aug is assigned to, if any.
-        VM_augBar.SelectAug( selectedAug.DefinitionClassName, true );
+        selectedAugButton.SelectButton( true );
 
         EnableButtons();
     }
@@ -568,7 +566,7 @@ function UpgradeAugmentation() {
         // the player's inventory
 
         selectedAug.IncreaseLevel();
-        VM_AugSystem.UpdateInfo( selectedAug, winInfo );
+        VM_AugSystem.GetFullDescription( selectedAug, winInfo );
 
         augCan.UseOnce();
 
@@ -600,7 +598,7 @@ function ActivateAugmentation() {
         PersonaAugmentationItemButton( selectedAugButton ).SetActive( selectedAug.IsActive );
     }
 
-    VM_AugSystem.UpdateInfo( selectedAug, winInfo );
+    VM_AugSystem.GetFullDescription( selectedAug, winInfo );
 
     EnableButtons();
 }
@@ -696,6 +694,7 @@ function UpdateDragMouse( float newX, float newY ) {
 
 function FinishButtonDrag() {
     local PersonaAugmentationBarSlot dragSlot, slot;
+    local VMAugmentationInfo info;
 
     dragSlot = PersonaAugmentationBarSlot( VM_dragBtn );
 
@@ -705,13 +704,14 @@ function FinishButtonDrag() {
             VM_lastDragOverSlot.SetToggle( true );
         }
         else {
-            slot = VM_augBar.GetSlot( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug.DefinitionClassName );
+            info = VMAugmentationInfo( VM_dragBtn.GetClientObject() );
+            slot = VM_augBar.GetSlot( info.DefinitionClassName );
 
             if ( slot != none ) {
                 VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
             }
             else {
-                VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
+                VM_augBar.AddAug( info, VM_lastDragOverSlot.slot );
             }
         }
     }
@@ -765,7 +765,7 @@ function bool ToggleChanged( Window button, bool bNewToggle ) {
 
             if ( slot.aug != selectedAug ) {
                 for ( i = 0; i < 12; i++ ) {
-                    if ( augItems[i].VM_aug.DefinitionClassName == slot.aug.DefinitionClassName ) {
+                    if ( VMAugmentationInfo( augItems[i].GetClientObject() ).DefinitionClassName == slot.aug.DefinitionClassName ) {
                         SelectAugmentation( augItems[i] );
 
                         break;
