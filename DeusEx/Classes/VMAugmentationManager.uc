@@ -74,18 +74,16 @@ function RefreshDisplay() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        player.UpdateAugmentationDisplay( info, info.IsActive );
+        if ( !info.IsPassive() ) {
+            player.UpdateAugmentationDisplay( info, info.IsActive );
+        }
 
         info = info.Next;
     }
 }
 
-function UpdateInfo( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
+function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
     local string str;
-
-    if ( winInfo == none ) {
-        return;
-    }
 
     winInfo.Clear();
     winInfo.SetTitle( info.GetName() );
@@ -116,6 +114,21 @@ function UpdateInfo( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
     }
 }
 
+function GetBaseDescription( class<VMAugmentation> augClass, PersonaInfoWindow winInfo ) {
+    local string str;
+
+    winInfo.Clear();
+    winInfo.SetTitle( augClass.default.UpgradeName );
+    winInfo.SetText( augClass.default.Description );
+
+    // Install Location
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[augClass.default.InstallLocation] ) );
+
+    // Is Passive
+    if ( augClass.default.IsPassive ) {
+        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
+    }
+}
 
 //==============================================
 // Augmentation Management
@@ -284,6 +297,14 @@ function bool IsLocationFull( int loc ) {
     return InstallLocationCounts[loc] >= default.InstallLocationMaxCounts[loc];
 }
 
+function class<VMAugmentation> GetAugmentationDefinition( name name ) {
+    if ( name == '' ) {
+        return none;
+    }
+
+    return class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( name ), class'Class' ) );
+}
+
 //==============================================
 // Callbacks
 //==============================================
@@ -306,13 +327,13 @@ function Tick( float deltaTime ) {
 
 defaultproperties
 {
-     InstallLocationMaxCounts(0)=1
+     InstallLocationMaxCounts(0)=3
      InstallLocationMaxCounts(1)=1
-     InstallLocationMaxCounts(2)=3
-     InstallLocationMaxCounts(3)=1
+     InstallLocationMaxCounts(2)=1
+     InstallLocationMaxCounts(3)=3
      InstallLocationMaxCounts(4)=1
-     InstallLocationMaxCounts(5)=2
-     InstallLocationMaxCounts(6)=3
+     InstallLocationMaxCounts(5)=1
+     InstallLocationMaxCounts(6)=2
      EnergyRateLabel="Energy Rate: %d Units/Minute"
      OccupiesLocationLabel="Occupies Location: %s"
      AlreadyAtMax="You already have the %s at the maximum level"
