@@ -93,17 +93,14 @@ auto state Pickup
 // function Frob()
 // For autoinstalling in deathmatch, we need to overload frob here
 // ----------------------------------------------------------------------
-    function Frob(Actor Other, Inventory frobWith)
-    {
-        // Vanilla Matters TODO: Add multiplayer support for aug cannister install.
-    }
+// Vanilla Matters TODO: Add multiplayer support for aug cannister install.
 }
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     AugsAvailable="Can Add:"
+     AugsAvailable="Can Install:"
      MustBeUsedOn="Can only be installed with the help of a MedBot."
      ItemName="Augmentation Canister"
      ItemArticle="an"
