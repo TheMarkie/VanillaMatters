@@ -4,6 +4,8 @@ class VMUpgradeInfo extends Object
 var travel name DefinitionClassName;
 var travel int Level;
 
+function LoadDefinition();
+
 function Initialize( name name, int startingLevel ) {
     DefinitionClassName = name;
     Level = startingLevel;

@@ -52,7 +52,6 @@ function Refresh( VMPlayer player ) {
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.GetDefinitionClass();
         info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
@@ -68,7 +67,6 @@ function Reset() {
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.GetDefinitionClass();
         info.RefreshValues( GlobalValues, CategoryValues );
 
         info = info.Next;
