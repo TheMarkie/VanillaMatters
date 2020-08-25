@@ -30,6 +30,7 @@ function bool Add( name name, optional int startingLevel ) {
 
     info = new class'VMAugmentationInfo';
     info.Initialize( name, startingLevel );
+    info.LoadBehaviour( self );
     info.Refresh( Player );
 
     info.Next = FirstAugmentationInfo;
@@ -93,7 +94,7 @@ function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo 
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
     // Energy Rate
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetCurrentRate() ) ) );
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate() ) ) );
 
     // Current Level
     str = Sprintf( CurrentLevelLabel, info.Level + 1 );
@@ -284,7 +285,7 @@ function float GetTotalRate( float deltaTime ) {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         if ( info.IsActive ) {
-            rate += info.GetCurrentRate();
+            rate += info.GetRate();
         }
 
         info = info.Next;
@@ -317,8 +318,8 @@ function Tick( float deltaTime ) {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        if ( info.IsActive && info.NeedsTick() ) {
-            info.Tick( Player, deltaTime );
+        if ( info.IsActive ) {
+            info.Tick( deltaTime );
         }
 
         info = info.Next;

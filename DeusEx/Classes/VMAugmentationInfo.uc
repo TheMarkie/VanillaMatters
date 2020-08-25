@@ -3,94 +3,141 @@ class VMAugmentationInfo extends VMUpgradeInfo;
 var travel VMAugmentationInfo Next;
 var travel bool IsActive;
 
-var private transient class<VMAugmentation> _definitionClass;
-function class<VMAugmentation> GetDefinitionClass() {
-    if ( _definitionClass == none ) {
-        _definitionClass = class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ), class'Class' ) );
-    }
+var travel VMAugmentationBehaviour Behaviour;
 
-    return _definitionClass;
+var transient class<VMAugmentation> Definition;
+
+function LoadDefinition() {
+    if ( Definition == none ) {
+        Definition = class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ), class'Class' ) );
+    }
 }
 
 function Initialize( name name, int startingLevel ) {
     super.Initialize( name, startingLevel );
-    GetDefinitionClass();
+    LoadDefinition();
+}
+
+function LoadBehaviour( VMAugmentationManager manager ) {
+    local class<VMAugmentationBehaviour> behaviourClass;
+
+    if ( Definition.default.HasBehaviour && Behaviour == none ) {
+        behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ) $ "Behaviour", class'Class' ) );
+        Behaviour = new behaviourClass;
+    }
 }
 
 //==============================================
 // General info
 //==============================================
 function string GetName() {
-    return _definitionClass.default.UpgradeName;
+    return Definition.default.UpgradeName;
 }
 function string GetDescription() {
-    return _definitionClass.default.Description;
+    return Definition.default.Description;
 }
 function Texture GetIcon() {
-    return _definitionClass.default.Icon;
+    return Definition.default.Icon;
 }
 function Texture GetSmallIcon() {
-    return _definitionClass.default.SmallIcon;
+    return Definition.default.SmallIcon;
 }
 
 function int GetMaxLevel() {
-    return _definitionClass.static.GetMaxLevel();
+    return Definition.static.GetMaxLevel();
 }
 function bool CanUpgrade( optional int amount ) {
     return Level < GetMaxLevel();
 }
 
 function bool IsPassive() {
-    return _definitionClass.default.IsPassive;
+    return Definition.default.IsPassive;
 }
 function int GetInstallLocation() {
-    return _definitionClass.default.InstallLocation;
-}
-function bool NeedsTick() {
-    return _definitionClass.default.NeedsTick;
+    return Definition.default.InstallLocation;
 }
 
 //==============================================
 // Management
 //==============================================
-function Toggle( VMPlayer player, bool on ) {
+function Refresh( VMPlayer player, optional bool active ) {
+    LoadDefinition();
+
+    if ( Definition.default.HasBehaviour ) {
+        Behaviour.Refresh( player, self );
+    }
+
+    if ( IsActive ) {
+        Deactivate();
+
+        IsActive = false;
+    }
+
+    if ( active || IsPassive() ) {
+        Activate();
+
+        IsActive = true;
+    }
+}
+
+final function Toggle( VMPlayer player, bool on ) {
     if ( IsActive == on
         || ( IsPassive() && !on )
     ) {
         return;
     }
 
-    _definitionClass.static.Toggle( player, self, on );
+    if ( on ) {
+        player.PlaySound( Definition.default.ActivateSound, SLOT_None );
+        player.UpdateAugmentationDisplay( self, true );
+
+        Activate();
+    }
+    else {
+        player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
+        player.UpdateAugmentationDisplay( self, false );
+
+        Deactivate();
+    }
+
     IsActive = on;
 }
 
-function Tick( VMPlayer player, float deltaTime ) {
-    _definitionClass.static.Tick( player, self, deltaTime );
-}
-
-function Refresh( VMPlayer player, optional bool activate ) {
-    GetDefinitionClass();
-
-    if ( IsActive ) {
-        _definitionClass.static.Deactivate( player, self );
-
-        IsActive = false;
-    }
-
-    if ( activate || IsPassive() ) {
-        _definitionClass.static.Activate( player, self );
-
-        IsActive = true;
+//==============================================
+// Behaviours
+//==============================================
+function Activate() {
+    if ( Definition.default.HasBehaviour ) {
+        Behaviour.Activate();
     }
 }
 
-function float GetCurrentRate() {
-    return _definitionClass.static.GetRate( self );
+function Deactivate() {
+    if ( Definition.default.HasBehaviour ) {
+        Behaviour.Deactivate();
+    }
+}
+
+function Tick( float deltaTime ) {
+    if ( Definition.default.HasBehaviour ) {
+        Behaviour.Tick( deltaTime );
+    }
+}
+
+function float GetRate() {
+    if ( Definition.default.HasBehaviour ) {
+        Behaviour.GetRate();
+    }
+    else if ( !definition.default.IsPassive && Level < #definition.default.Rates ) {
+        return definition.default.Rates[Level];
+    }
+
+    return 0;
 }
 
 //==============================================
 // Values
 //==============================================
 function float GetValue() {
-    return _definitionClass.default.Values[Level];
+    return Definition.default.Values[Min( Level, #Definition.default.Values )];
 }
