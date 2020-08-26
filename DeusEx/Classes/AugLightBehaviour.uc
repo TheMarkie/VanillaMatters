@@ -4,7 +4,7 @@ var Beam MainBeam;
 var Beam GlowBeam;
 
 // Behaviours
-function Activate() {
+function Activate( int level ) {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -14,7 +14,7 @@ function Activate() {
     MainBeam.LightSaturation = 140;
     MainBeam.LightBrightness = 192;
     MainBeam.LightType = LT_Steady;
-    SetBeamLocation( Info.GetValue() );
+    SetBeamLocation( Definition.default.Values[level] );
 
     if ( GlowBeam != none ) {
         GlowBeam.Destroy();
@@ -27,7 +27,7 @@ function Activate() {
     SetGlowLocation();
 }
 
-function Deactivate() {
+function Deactivate( int level ) {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -39,8 +39,8 @@ function Deactivate() {
     GlowBeam = none;
 }
 
-function Tick( float deltaTime ) {
-    SetBeamLocation( Info.GetValue() );
+function Tick( float deltaTime, int level ) {
+    SetBeamLocation( Definition.default.Values[level] );
     SetGlowLocation();
 }
 
@@ -79,3 +79,7 @@ function vector SetGlowLocation() {
     }
 }
 
+defaultproperties
+{
+     Definition=Class'AugLight'
+}

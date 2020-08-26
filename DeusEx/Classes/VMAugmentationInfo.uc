@@ -63,8 +63,8 @@ function int GetInstallLocation() {
 function Refresh( VMPlayer player, optional bool active ) {
     LoadDefinition();
 
-    if ( Definition.default.HasBehaviour ) {
-        Behaviour.Refresh( player, self );
+    if ( Behaviour != none ) {
+        Behaviour.Refresh( player );
     }
 
     if ( IsActive ) {
@@ -107,29 +107,29 @@ final function Toggle( VMPlayer player, bool on ) {
 // Behaviours
 //==============================================
 function Activate() {
-    if ( Definition.default.HasBehaviour ) {
-        Behaviour.Activate();
+    if ( Behaviour != none ) {
+        Behaviour.Activate( Level );
     }
 }
 
 function Deactivate() {
-    if ( Definition.default.HasBehaviour ) {
-        Behaviour.Deactivate();
+    if ( Behaviour != none ) {
+        Behaviour.Deactivate( Level );
     }
 }
 
 function Tick( float deltaTime ) {
-    if ( Definition.default.HasBehaviour ) {
-        Behaviour.Tick( deltaTime );
+    if ( Behaviour != none ) {
+        Behaviour.Tick( deltaTime, Level );
     }
 }
 
 function float GetRate() {
-    if ( Definition.default.HasBehaviour ) {
-        Behaviour.GetRate();
+    if ( Behaviour != none ) {
+        Behaviour.GetRate( Level );
     }
-    else if ( !definition.default.IsPassive && Level < #definition.default.Rates ) {
-        return definition.default.Rates[Level];
+    else if ( !Definition.default.IsPassive && Level < #Definition.default.Rates ) {
+        return Definition.default.Rates[Level];
     }
 
     return 0;
@@ -139,5 +139,9 @@ function float GetRate() {
 // Values
 //==============================================
 function float GetValue() {
+    if ( Behaviour != none ) {
+        Behaviour.GetValue( Level );
+    }
+
     return Definition.default.Values[Min( Level, #Definition.default.Values )];
 }
