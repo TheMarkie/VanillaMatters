@@ -249,17 +249,15 @@ function bool IsActive( name name ) {
 //==============================================
 // Values
 //==============================================
-function float GetValue( name name, optional float defaultValue ) {
+function float GetValue( name name, optional float baseValue ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
     if ( info != none ) {
-        if ( info.IsActive ) {
-            return info.GetValue();
-        }
+        return info.GetValue( baseValue );
     }
 
-    return -1;
+    return baseValue;
 }
 
 function int GetLevel( name name ) {

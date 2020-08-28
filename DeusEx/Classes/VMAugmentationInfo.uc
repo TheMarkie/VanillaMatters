@@ -138,10 +138,18 @@ function float GetRate() {
 //==============================================
 // Values
 //==============================================
-function float GetValue() {
+function float GetValue( optional float baseValue ) {
     if ( Behaviour != none ) {
-        Behaviour.GetValue( Level );
+        if ( IsActive ) {
+            return Behaviour.GetValueActive( Level, baseValue );
+        }
+
+        return Behaviour.GetValueInactive( Level, baseValue );
     }
 
-    return Definition.default.Values[Min( Level, #Definition.default.Values )];
+    if ( IsActive ) {
+        return Definition.default.Values[Min( Level, #Definition.default.Values )];
+    }
+
+    return baseValue;
 }
