@@ -1429,12 +1429,12 @@ function DeactivateAllAugmentations() {
     }
 }
 
-function float GetAugmentationValue( name name, optional float defaultValue ) {
+function float GetAugmentationValue( name name, optional float baseValue ) {
     if ( VMAugmentationSystem != none ) {
-        return VMAugmentationSystem.GetValue( name, defaultValue );
+        return VMAugmentationSystem.GetValue( name, baseValue );
     }
 
-    return defaultValue;
+    return baseValue;
 }
 function int GetAugmentationLevel( name name ) {
     if ( VMAugmentationSystem != none ) {
