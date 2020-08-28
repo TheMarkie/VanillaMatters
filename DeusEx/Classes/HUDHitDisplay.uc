@@ -60,9 +60,6 @@ var ProgressBarWindow VM_winFP;
 // var VMProgressBarWindow VM_winShield;
 // var Color VM_colShield;
 
-var localized string VM_ForwardPressureText;
-var localized string VM_ForwardPressureFullText;
-
 // ----------------------------------------------------------------------
 // InitWindow()
 // ----------------------------------------------------------------------
@@ -280,11 +277,6 @@ event DrawWindow(GC gc)
     if ( VM_winFP != none ) {
         gc.SetFont( Font'FontTiny' );
         gc.SetTextColor( VM_winFP.GetBarColor() );
-        //gc.DrawText( 1, 87, 8, 8, VM_ForwardPressureText );
-
-        if ( VM_winFP.currentValue >= 100 ) {
-            gc.DrawText( 60, 87, 8, 8, VM_ForwardPressureFullText );
-        }
     }
 }
 
@@ -420,6 +412,4 @@ defaultproperties
      texBorder=Texture'DeusExUI.UserInterface.HUDHitDisplayBorder_1'
      O2Text="O2"
      EnergyText="BE"
-     VM_ForwardPressureText="FP"
-     VM_ForwardPressureFullText="OK"
 }
