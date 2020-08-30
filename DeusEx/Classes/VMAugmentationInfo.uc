@@ -47,7 +47,7 @@ function int GetMaxLevel() {
     return Definition.static.GetMaxLevel();
 }
 function bool CanUpgrade( optional int amount ) {
-    return Level < GetMaxLevel();
+    return Level < Definition.static.GetMaxLevel();
 }
 
 function bool IsPassive() {
@@ -73,7 +73,7 @@ function Refresh( VMPlayer player, optional bool active ) {
         IsActive = false;
     }
 
-    if ( active || IsPassive() ) {
+    if ( active || Definition.default.IsPassive ) {
         Activate();
 
         IsActive = true;
@@ -82,7 +82,7 @@ function Refresh( VMPlayer player, optional bool active ) {
 
 final function Toggle( VMPlayer player, bool on ) {
     if ( IsActive == on
-        || ( IsPassive() && !on )
+        || ( Definition.default.IsPassive && !on )
     ) {
         return;
     }
@@ -148,7 +148,7 @@ function float GetValue( optional float baseValue ) {
     }
 
     if ( IsActive ) {
-        return Definition.default.Values[Min( Level, #Definition.default.Values )];
+        return Definition.default.Values[Level];
     }
 
     return baseValue;

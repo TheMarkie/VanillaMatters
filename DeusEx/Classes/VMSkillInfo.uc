@@ -32,7 +32,7 @@ function int GetMaxLevel() {
     return Definition.static.GetMaxLevel();
 }
 function int GetNextLevelCost() {
-    if ( Level < GetMaxLevel() ) {
+    if ( Level < Definition.static.GetMaxLevel() ) {
         return Definition.default.Costs[Level];
     }
     else {
@@ -40,7 +40,7 @@ function int GetNextLevelCost() {
     }
 }
 function bool CanUpgrade( optional int amount ) {
-    return ( Level < GetMaxLevel() && amount >= Definition.default.Costs[Level] );
+    return ( Level < Definition.static.GetMaxLevel() && amount >= Definition.default.Costs[Level] );
 }
 
 //==============================================
