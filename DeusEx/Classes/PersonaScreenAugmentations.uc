@@ -433,7 +433,7 @@ function PersonaAugmentationItemButton CreateAugButton( VMAugmentationInfo info,
 
     // Vanilla Matters: Set up stuff for dragging.
     newButton.VM_augWnd = self;
-    newButton.VM_draggable = !( info.IsPassive() || info.DefinitionClassName == 'AugLight' );
+    newButton.VM_draggable = !( info.IsPassive() || info.GetInstallLocation() <= 0 );
     newButton.VM_dragIcon = info.GetSmallIcon();
 
     return newButton;
