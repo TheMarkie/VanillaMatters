@@ -1253,33 +1253,19 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
             || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
         ) {
-            augValue = VMAugmentationSystem.GetValue( 'AugEnviro' );
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
-
-            if ( newDamage ~= 0.0 ) {
-                StopPoison();
-                drugEffectTimer = 0;
-            }
+            // Vanilla Matters TODO: Restore functionality.
         }
 
         // Add sabot to augballistic.
         if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
-            augValue = VMAugmentationSystem.GetValue( 'AugBallistic' );
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
+            // Vanilla Matters TODO: Restore functionality.
         }
 
         // Add EMP to augshield.
         if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
             damageType == 'Exploded' || damageType == 'Shocked'
         ) {
-            augValue = VMAugmentationSystem.GetValue( 'AugShield' );
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
+            // Vanilla Matters TODO: Restore functionality.
         }
     }
 
