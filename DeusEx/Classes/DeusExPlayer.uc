@@ -2784,91 +2784,6 @@ function Reloading(DeusExWeapon weapon, float reloadTime)
 function DoneReloading(DeusExWeapon weapon);
 
 // ----------------------------------------------------------------------
-// HealPlayer()
-// ----------------------------------------------------------------------
-
-function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
-{
-    local float mult;
-    local int adjustedHealAmount, aha2, tempaha;
-    local int origHealAmount;
-    local float dividedHealAmount;
-
-    if (bUseMedicineSkill)
-        adjustedHealAmount = CalculateSkillHealAmount(baseHealPoints);
-    else
-        adjustedHealAmount = baseHealPoints;
-
-    origHealAmount = adjustedHealAmount;
-
-    if (adjustedHealAmount > 0)
-    {
-        if (bUseMedicineSkill)
-            PlaySound(sound'MedicalHiss', SLOT_None,,, 256);
-
-        // Heal by 3 regions via multiplayer game
-        if (( Level.NetMode == NM_DedicatedServer ) || ( Level.NetMode == NM_ListenServer ))
-        {
-         // DEUS_EX AMSD If legs broken, heal them a little bit first
-         if (HealthLegLeft == 0)
-         {
-            aha2 = adjustedHealAmount;
-            if (aha2 >= 5)
-               aha2 = 5;
-            tempaha = aha2;
-            adjustedHealAmount = adjustedHealAmount - aha2;
-            HealPart(HealthLegLeft, aha2);
-            HealPart(HealthLegRight,tempaha);
-                mpMsgServerFlags = mpMsgServerFlags & (~MPSERVERFLAG_LostLegs);
-         }
-            HealPart(HealthHead, adjustedHealAmount);
-
-            if ( adjustedHealAmount > 0 )
-            {
-                aha2 = adjustedHealAmount;
-                HealPart(HealthTorso, aha2);
-                aha2 = adjustedHealAmount;
-                HealPart(HealthArmRight,aha2);
-                HealPart(HealthArmLeft, adjustedHealAmount);
-            }
-            if ( adjustedHealAmount > 0 )
-            {
-                aha2 = adjustedHealAmount;
-                HealPart(HealthLegRight, aha2);
-                HealPart(HealthLegLeft, adjustedHealAmount);
-            }
-        }
-        else
-        {
-            HealPart(HealthHead, adjustedHealAmount);
-            HealPart(HealthTorso, adjustedHealAmount);
-            HealPart(HealthLegRight, adjustedHealAmount);
-            HealPart(HealthLegLeft, adjustedHealAmount);
-            HealPart(HealthArmRight, adjustedHealAmount);
-            HealPart(HealthArmLeft, adjustedHealAmount);
-        }
-
-        GenerateTotalHealth();
-
-        adjustedHealAmount = origHealAmount - adjustedHealAmount;
-
-        if (origHealAmount == baseHealPoints)
-        {
-            if (adjustedHealAmount == 1)
-                ClientMessage(Sprintf(HealedPointLabel, adjustedHealAmount));
-            else
-                ClientMessage(Sprintf(HealedPointsLabel, adjustedHealAmount));
-        }
-        else
-        {
-            ClientMessage(Sprintf(HealedPointsLabel, adjustedHealAmount));
-        }
-    }
-
-    return adjustedHealAmount;
-}
-
-// ----------------------------------------------------------------------
 // ChargePlayer()
 // ----------------------------------------------------------------------
 
@@ -2884,45 +2799,6 @@ function int ChargePlayer(int baseChargePoints)
     AddForwardPressure( chargedPoints, 'Recharge' );
 
     return chargedPoints;
-}
-
-// ----------------------------------------------------------------------
-// CalculateSkillHealAmount()
-// ----------------------------------------------------------------------
-
-function int CalculateSkillHealAmount(int baseHealPoints)
-{
-    local float mult;
-    local int adjustedHealAmount;
-
-    // check skill use
-    mult = GetSkillValue( 'HealingBonus' );
-
-    // Vanilla Matters: Apply healing bonus in the new formula we want, which is additive.
-    adjustedHealAmount = baseHealPoints + mult;
-
-    return adjustedHealAmount;
-}
-
-// ----------------------------------------------------------------------
-// HealPart()
-// ----------------------------------------------------------------------
-
-function HealPart(out int points, out int amt)
-{
-    local int spill;
-
-    points += amt;
-    spill = points - 100;
-    if (spill > 0)
-        points = 100;
-    else
-        spill = 0;
-
-    // Vanilla Matters: Add in FP rate for health restored.
-    AddForwardPressure( amt - spill, 'Heal' );
-
-    amt = spill;
 }
 
 // ----------------------------------------------------------------------
@@ -11637,6 +11513,7 @@ function ClearLastPutAway();
 function bool IsHolding( Inventory item ) { return false; }
 function ClearHold();
 
+function int HealPlayer( int baseAmount, optional bool useSkill ) { return 0; }
 function bool CanDrain( float drainAmount );
 
 //==============================================

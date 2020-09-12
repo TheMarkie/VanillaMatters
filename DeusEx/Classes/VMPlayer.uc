@@ -1488,6 +1488,75 @@ function ClearAugmentationDisplay() {
 }
 
 //==============================================
+// Stats Management
+//==============================================
+function int HealPlayer( int baseAmount, optional bool useSkill ) {
+    local int totalHealAmount, healAmount, healedAmount;
+
+    if ( useSkill ) {
+        healAmount = baseAmount + GetSkillValue( 'HealingBonus' );
+    }
+
+    totalHealAmount = healAmount;
+
+    if ( healAmount > 0 ) {
+        if ( useSkill ) {
+            PlaySound( sound'MedicalHiss', SLOT_None,,, 256 );
+        }
+
+        // Prioritize crippled limbs.
+        if ( HealthLegLeft <= 0 ) {
+            HealPart( HealthLegLeft, healAmount, 10 );
+        }
+        if ( HealthLegRight <= 0 ) {
+            HealPart( HealthLegRight, healAmount, 10 );
+        }
+        if ( HealthArmLeft <= 0 ) {
+            HealPart( HealthArmLeft, healAmount, 10 );
+        }
+        if ( HealthArmRight <= 0 ) {
+            HealPart( HealthArmRight, healAmount, 10 );
+        }
+
+        HealPart( HealthHead, healAmount, healAmount );
+        HealPart( HealthTorso, healAmount, healAmount );
+        HealPart( HealthLegLeft, healAmount, healAmount );
+        HealPart( HealthLegRight, healAmount, healAmount );
+        HealPart( HealthArmLeft, healAmount, healAmount );
+        HealPart( HealthArmRight, healAmount, healAmount );
+
+        GenerateTotalHealth();
+
+        healedAmount = totalHealAmount - healAmount;
+        if ( healedAmount == 1 ) {
+            ClientMessage( Sprintf( HealedPointLabel, healedAmount ) );
+        }
+        else {
+            ClientMessage( Sprintf( HealedPointsLabel, healedAmount ) );
+        }
+    }
+
+    return healedAmount;
+}
+
+function HealPart( out int target, out int pool, int amount ) {
+    local int spill;
+
+    amount = Min( amount, pool );
+    target += amount;
+    spill = Max( target - 100, 0 );
+    if ( spill > 0 ) {
+        target = 100;
+    }
+
+    // Vanilla Matters: Add in FP rate for health restored.
+    AddForwardPressure( amount - spill, 'Heal' );
+
+    pool -= amount;
+    pool += spill;
+}
+
+//==============================================
 // Misc
 //==============================================
 function ActivateAugByKey( int keyNum ) {
