@@ -3005,10 +3005,7 @@ function float GetCurrentGroundSpeed()
     local float augValue, speed;
 
     // Vanilla Matters
-    augValue = GetAugmentationValue( 'AugSpeed' );
-
-    if (augValue == -1.0)
-        augValue = 1.0;
+    augValue = GetAugmentationValue( 'AugSpeed', 1.0 );
 
     // Vanilla Matters: Disable augspeed effects when crouching.
     if ( bIsCrouching || bForceDuck ) {
@@ -8993,10 +8990,19 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     if (damageType == 'NanoVirus')
         return;
 
+    // reduce our damage correctly
+    if (ReducedDamageType == damageType)
+        actualDamage = float(actualDamage) * (1.0 - ReducedDamagePct);
+
+    // check for augs or inventory items
+    bDamageGotReduced = DXReduceDamage(Damage, damageType, hitLocation, actualDamage, False);
+
     // handle poison
 
     // Vanilla Matters: Add rebreather behaviors to mp poisoning rules.
-    if ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) ) {
+    if ( actualDamage > 0
+        && ( damageType == 'Poison' || ( damageType == 'TearGas' && Level.NetMode != NM_Standalone && !UsingChargedPickup( class'Rebreather' ) ) )
+    ) {
         if ( Level.NetMode != NM_Standalone ) {
             ServerConditionalNotifyMsg( MPMSG_FirstPoison );
         }
@@ -9004,13 +9010,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         // Vanilla Matters: Reduce poison damage by half.
         StartPoison( instigatedBy, Damage * 0.5 );
     }
-
-    // reduce our damage correctly
-    if (ReducedDamageType == damageType)
-        actualDamage = float(actualDamage) * (1.0 - ReducedDamagePct);
-
-    // check for augs or inventory items
-    bDamageGotReduced = DXReduceDamage(Damage, damageType, hitLocation, actualDamage, False);
 
    // DEUS_EX AMSD Multiplayer shield
    if (Level.NetMode != NM_Standalone)
