@@ -48,19 +48,24 @@ var travel name AugmentationHotBar[11];
 var() array< class<VMAugmentation> > StartingAugmentations;
 
 //==============================================
+// Status
+//==============================================
+var travel Inventory LastPutAway;               // Last item in hand before PutInHand( None ).
+var travel Inventory HeldInHand;                // Item being held.
+var travel Inventory LastHeldInHand;            // Some temporary place to keep track of HeldInHand.
+
+var byte ChargedPickupStatus[5];
+
+var int EnemyInCombatCount;                     // Number of enemies targeting this player in combat.
+
+//==============================================
 // Properties
 //==============================================
 var travel float VisibilityNormal;
 var travel float VisibilityRobot;
 
-var travel Inventory LastPutAway;               // Last item in hand before PutInHand( None ).
-var travel Inventory HeldInHand;                // Item being held.
-var travel Inventory LastHeldInHand;            // Some temporary place to keep track of HeldInHand.
-
 var travel int LastMissionNumber;               // Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
-
-var byte ChargedPickupStatus[5];
 
 //==============================================
 // Initializing and Startup
@@ -929,21 +934,8 @@ exec function ParseRightClick() {
 }
 
 //==============================================
-// Stats Management
+// Status Management
 //==============================================
-function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
-    if ( Robot( P ) != none ) {
-        return VisibilityRobot;
-    }
-    else {
-        return VisibilityNormal;
-    }
-}
-
-function bool CanDrain( float drainAmount ) {
-    return Energy >= drainAmount;
-}
-
 // Override to optimize
 function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
     local int i;
@@ -981,6 +973,17 @@ function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) 
     }
 
     return None;
+}
+
+// Combat status
+function AddEnemyInCombat( ScriptedPawn sp ) {
+    EnemyInCombatCount++;
+}
+function RemoveEnemyInCombat( ScriptedPawn sp ) {
+    EnemyInCombatCount--;
+}
+function bool IsInCombat() {
+    return EnemyInCombatCount > 0;
 }
 
 //==============================================
@@ -1540,6 +1543,19 @@ function HealPart( out int target, out int pool, int amount ) {
 
     pool -= amount;
     pool += spill;
+}
+
+function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
+    if ( Robot( P ) != none ) {
+        return VisibilityRobot;
+    }
+    else {
+        return VisibilityNormal;
+    }
+}
+
+function bool CanDrain( float drainAmount ) {
+    return Energy >= drainAmount;
 }
 
 //==============================================

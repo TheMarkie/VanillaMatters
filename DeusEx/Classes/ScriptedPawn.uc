@@ -715,12 +715,27 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
     // Vanilla Matters
     local DeusExPlayer player;
 
+    if ( Enemy == newEnemy ) {
+        return true;
+    }
+
     if (bForce || IsValidEnemy(newEnemy))
     {
-        // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
-        player = DeusExPlayer( Enemy );
-        if ( newEnemy == None && player != None ) {
-            player.AddForwardPressure( 10, 'Stealth' );
+        // Vanilla Matters
+        player = DeusExPlayer( newEnemy );
+        if ( player != none ) {
+            player.AddEnemyInCombat( self );
+        }
+        else {
+            player = DeusExPlayer( Enemy );
+            if ( player != none ) {
+                player.RemoveEnemyInCombat( self );
+
+                // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
+                if ( newEnemy == none ) {
+                    player.AddForwardPressure( 10, 'Stealth' );
+                }
+            }
         }
 
         if (newEnemy != Enemy)

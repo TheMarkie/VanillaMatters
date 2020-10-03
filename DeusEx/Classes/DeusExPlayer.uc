@@ -11518,6 +11518,10 @@ function ClearHold();
 function int HealPlayer( int baseAmount, optional bool useSkill ) { return 0; }
 function bool CanDrain( float drainAmount );
 
+function AddEnemyInCombat( ScriptedPawn sp );
+function RemoveEnemyInCombat( ScriptedPawn sp );
+function bool IsInCombat() { return false; }
+
 //==============================================
 // Skill interface
 //==============================================
