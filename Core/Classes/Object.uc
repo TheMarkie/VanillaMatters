@@ -394,8 +394,14 @@ final function string Sprintf   (string fmt,
 //============================================================================================
 // Vanilla Matters
 //============================================================================================
-final function string GetStringClassName() {
+final function string GetClassNameString() {
     return string( Class.Name );
+}
+final function name GetPackageName() {
+    return Class.Outer.Name;
+}
+final function string GetPackageNameString() {
+    return string ( Class.Outer.Name );
 }
 
 //==============================================
