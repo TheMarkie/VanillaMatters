@@ -29,11 +29,11 @@ function Initialize( VMPlayer player ) {
     CategoryValues = new class'TableTableFloat';
 }
 
-function bool Add( name name, optional int startingLevel ) {
+function bool Add( name className, name packageName, optional int startingLevel ) {
     local VMSkillInfo info;
 
     info = new class'VMSkillInfo';
-    info.Initialize( name, startingLevel );
+    info.Initialize( className, packageName, startingLevel );
     info.RefreshValues( GlobalValues, CategoryValues );
 
     info.Next = FirstSkillInfo;

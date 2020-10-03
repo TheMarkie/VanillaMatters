@@ -195,7 +195,7 @@ function InitializeSkillSystem() {
 
     // Start in reverse because we're adding to a linked list.
     for ( i = #StartingSkills - 1; i >= 0; i-- ) {
-        VMSkillSystem.Add( StartingSkills[i].Name );
+        VMSkillSystem.Add( StartingSkills[i].Name, StartingSkills[i].Outer.Name );
     }
 }
 
@@ -208,7 +208,7 @@ function InitializeAugmentationSystem() {
 
     // Start in reverse because we're adding to a linked list.
     for ( i = #StartingAugmentations - 1; i >= 0; i-- ) {
-        VMAugmentationSystem.Add( StartingAugmentations[i].Name );
+        VMAugmentationSystem.Add( StartingAugmentations[i].Name, StartingAugmentations[i].Outer.Name );
     }
 }
 

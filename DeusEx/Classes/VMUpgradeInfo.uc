@@ -2,13 +2,17 @@ class VMUpgradeInfo extends Object
     abstract;
 
 var travel name DefinitionClassName;
+var travel name DefinitionPackageName;
 var travel int Level;
 
 function LoadDefinition();
 
-function Initialize( name name, int startingLevel ) {
-    DefinitionClassName = name;
+function Initialize( name className, name packageName, int startingLevel ) {
+    DefinitionClassName = className;
+    DefinitionPackageName = packageName;
     Level = startingLevel;
+
+    LoadDefinition();
 }
 
 //==============================================

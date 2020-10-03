@@ -546,7 +546,7 @@ function CopySkills() {
     while( info != none ) {
         i = #localSkills;
         newInfo = new class'VMSkillInfo';
-        newInfo.Initialize( info.DefinitionClassName, 0 );
+        newInfo.Initialize( info.DefinitionClassName, info.DefinitionPackageName, 0 );
 
         // Vanilla Matters: Make Weapons: Ballistic start out trained on the character creation screen.
         if ( info.DefinitionClassName == 'SkillWeaponPistol' ) {

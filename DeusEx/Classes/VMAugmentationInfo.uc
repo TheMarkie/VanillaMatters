@@ -9,13 +9,8 @@ var transient class<VMAugmentation> Definition;
 
 function LoadDefinition() {
     if ( Definition == none ) {
-        Definition = class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ), class'Class' ) );
+        Definition = class<VMAugmentation>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ), class'Class' ) );
     }
-}
-
-function Initialize( name name, int startingLevel ) {
-    super.Initialize( name, startingLevel );
-    LoadDefinition();
 }
 
 function LoadBehaviour( VMAugmentationManager manager ) {

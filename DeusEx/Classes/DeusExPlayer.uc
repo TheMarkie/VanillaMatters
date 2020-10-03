@@ -2038,14 +2038,17 @@ function SaveSkillPoints()
 // Augmentation system functions
 // exec functions for command line for demo
 // ----------------------------------------------------------------------
-
-exec function AugAdd( name name )
-{
-    if (!bCheatsEnabled)
+// Vanilla Matters
+exec function AugAdd( name className, optional name packageName ) {
+    if ( !bCheatsEnabled ) {
         return;
+    }
 
-    // Vanilla Matters
-    GetAugmentationSystem().Add( name );
+    if ( packageName == '' ) {
+        packageName = GetPackageName();
+    }
+
+    GetAugmentationSystem().Add( className, packageName );
 }
 
 // ----------------------------------------------------------------------

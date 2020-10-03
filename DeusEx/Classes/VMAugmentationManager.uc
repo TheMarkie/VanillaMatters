@@ -21,7 +21,7 @@ var localized string AugmentationLocationLabels[7];
 //==============================================
 // Management
 //==============================================
-function bool Add( name name, optional int startingLevel ) {
+function bool Add( name className, name packageName, optional int startingLevel ) {
     local VMAugmentationInfo info;
 
     if ( GetInfo( name ) != none ) {
@@ -29,7 +29,7 @@ function bool Add( name name, optional int startingLevel ) {
     }
 
     info = new class'VMAugmentationInfo';
-    info.Initialize( name, startingLevel );
+    info.Initialize( className, packageName, startingLevel );
     info.LoadBehaviour( self );
     info.Refresh( Player );
 

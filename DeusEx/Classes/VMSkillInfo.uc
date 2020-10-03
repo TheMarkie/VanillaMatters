@@ -6,13 +6,8 @@ var transient class<VMSkill> Definition;
 
 function LoadDefinition() {
     if ( Definition == none ) {
-        Definition = class<VMSkill>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ), class'Class' ) );
+        Definition = class<VMSkill>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ), class'Class' ) );
     }
-}
-
-function Initialize( name name, int startingLevel ) {
-    super.Initialize( name, startingLevel );
-    LoadDefinition();
 }
 
 //==============================================
