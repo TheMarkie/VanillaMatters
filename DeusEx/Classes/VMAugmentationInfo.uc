@@ -135,6 +135,14 @@ function float GetRate() {
     return 0;
 }
 
+function float IsOnCooldown() {
+    if ( Behaviour != none ) {
+        return Behaviour.IsOnCooldown( Level );
+    }
+
+    return 0;
+}
+
 //==============================================
 // Values
 //==============================================
