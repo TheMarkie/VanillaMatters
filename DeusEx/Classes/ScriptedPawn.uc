@@ -8635,6 +8635,11 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 
     if (player != None)
     {
+        // Vanilla Matters
+        if ( player == Enemy ) {
+            player.RemoveEnemyInCombat( self );
+        }
+
         // Abort any conversation we may have been having with the NPC
         if (bInConversation)
             player.AbortConversation();

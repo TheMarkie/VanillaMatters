@@ -990,7 +990,7 @@ function AddEnemyInCombat( ScriptedPawn sp ) {
     EnemyInCombatCount++;
 }
 function RemoveEnemyInCombat( ScriptedPawn sp ) {
-    EnemyInCombatCount--;
+    EnemyInCombatCount = Max( EnemyInCombatCount - 1, 0 );
 }
 function bool IsInCombat() {
     return EnemyInCombatCount > 0;
