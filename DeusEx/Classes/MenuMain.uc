@@ -34,11 +34,12 @@ function UpdateButtonStatus()
     local DeusExLevelInfo info;
 
     // Vanilla Matters
-    local bool shouldSave;
+    local bool shouldSave, isInMainMenu;
 
     info = player.GetLevelInfo();
 
-    shouldSave = player.ShouldSave( info );
+    isInMainMenu = player.IsInMainMenu( info );
+    shouldSave = !isInMainMenu && player.dataLinkPlay == none && player.HasFullForwardPressure();
 
     // Disable the "Save Game" and "Back to Game" menu choices
     // if the player's dead or we're on the logo map.
@@ -48,19 +49,18 @@ function UpdateButtonStatus()
     // Vanilla Matters
     if ( Player.Level.NetMode == NM_Standalone )
     {
-        winButtons[1].SetSensitivity( shouldSave && Player.HasFullForwardPressure() );
-        winButtons[6].SetSensitivity( shouldSave );
+        winButtons[1].SetSensitivity( shouldSave );
+        winButtons[6].SetSensitivity( !isInMainMenu );
     }
 
-   // Disable the "Save Game", "New Game", "Intro", "Training" and "Load Game" menu choices if in multiplayer
-   if (player.Level.Netmode != NM_Standalone)
-   {
-      winButtons[0].SetSensitivity(False);
-      winButtons[1].SetSensitivity(False);
-      winButtons[2].SetSensitivity(False);
-      winButtons[4].SetSensitivity(False);
-      winButtons[5].SetSensitivity(False);
-   }
+    if (player.Level.Netmode != NM_Standalone)
+    {
+        winButtons[0].SetSensitivity(False);
+        winButtons[1].SetSensitivity(False);
+        winButtons[2].SetSensitivity(False);
+        winButtons[4].SetSensitivity(False);
+        winButtons[5].SetSensitivity(False);
+    }
 }
 
 // ----------------------------------------------------------------------
