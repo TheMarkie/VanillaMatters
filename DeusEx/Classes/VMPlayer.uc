@@ -421,8 +421,7 @@ function AutoSave() {
 }
 
 function bool ShouldSave( DeusExLevelInfo info ) {
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
-        || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
+    if ( IsInMainMenu( info )
         || dataLinkPlay != none
         || Level.NetMode != NM_Standalone
     ) {
@@ -440,6 +439,17 @@ exec function QuickLoad() {
     }
 
     LoadGame( CurrentQSIndex );
+}
+
+function bool IsInMainMenu( DeusExLevelInfo info ) {
+    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
+        || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
+    ) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 //==============================================
