@@ -1644,6 +1644,110 @@ function DeusExLevelInfo FindLevelInfo() {
 }
 
 //==============================================
+// Presentation
+//==============================================
+function UpdateDynamicMusic( float deltaTime ) {
+    local DeusExLevelInfo info;
+
+    if ( Level.Song == none ) {
+        return;
+    }
+
+    // DEUS_EX AMSD In singleplayer, do the old thing.
+    // In multiplayer, we can come out of dying.
+    if ( !PlayerIsClient() ) {
+        if ( musicMode == MUS_Dying || musicMode == MUS_Outro ) {
+            return;
+        }
+    }
+    else {
+        if ( musicMode == MUS_Outro ) {
+            return;
+        }
+    }
+
+    musicCheckTimer += deltaTime;
+    musicChangeTimer += deltaTime;
+
+    if ( IsInState( 'Interpolating' ) ) {
+        // don't mess with the music on any of the intro maps
+        if ( LevelInfo != none && LevelInfo.MissionNumber < 0 ) {
+            musicMode = MUS_Outro;
+            return;
+        }
+
+        if ( musicMode != MUS_Outro ) {
+            ClientSetMusic( Level.Song, 5, 255, MTRAN_FastFade );
+            musicMode = MUS_Outro;
+        }
+    }
+    else if ( IsInState( 'Conversation' ) ) {
+        if ( musicMode != MUS_Conversation ) {
+            // save our place in the ambient track
+            if ( musicMode == MUS_Ambient ) {
+                savedSection = SongSection;
+            }
+            else {
+                savedSection = 255;
+            }
+
+            ClientSetMusic( Level.Song, 4, 255, MTRAN_Fade );
+            musicMode = MUS_Conversation;
+        }
+    }
+    else if ( IsInState( 'Dying' ) ) {
+        if ( musicMode != MUS_Dying ) {
+            ClientSetMusic( Level.Song, 1, 255, MTRAN_Fade );
+            musicMode = MUS_Dying;
+        }
+    }
+    else {
+        // only check for combat music every second
+        if ( musicCheckTimer > 1 ) {
+            musicCheckTimer -= 1;
+
+            if ( IsInCombat() ) {
+                musicChangeTimer = 0.0;
+
+                if ( musicMode != MUS_Combat ) {
+                    // save our place in the ambient track
+                    if ( musicMode == MUS_Ambient ) {
+                        savedSection = SongSection;
+                    }
+                    else {
+                        savedSection = 255;
+                    }
+
+                    ClientSetMusic( Level.Song, 3, 255, MTRAN_FastFade );
+                    musicMode = MUS_Combat;
+                }
+            }
+            else if ( musicMode != MUS_Ambient ) {
+                // wait until we've been out of combat for 5 seconds before switching music
+                if ( musicChangeTimer > 5.0 ) {
+                    // use the default ambient section for this map
+                    if ( savedSection == 255 ) {
+                        savedSection = Level.SongSection;
+                    }
+
+                    // fade slower for combat transitions
+                    if ( musicMode == MUS_Combat ) {
+                        ClientSetMusic( Level.Song, savedSection, 255, MTRAN_SlowFade );
+                    }
+                    else {
+                        ClientSetMusic( Level.Song, savedSection, 255, MTRAN_Fade );
+                    }
+
+                    savedSection = 255;
+                    musicMode = MUS_Ambient;
+                    musicChangeTimer = 0.0;
+                }
+            }
+        }
+    }
+}
+
+//==============================================
 // Config
 //==============================================
 // Override
