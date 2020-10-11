@@ -82,7 +82,7 @@ function PreTravel() {
 
     // Save current mission number and marks this as a normal map transition.
     if ( LevelInfo != None ) {
-        LastMissionNumber = info.MissionNumber;
+        LastMissionNumber = LevelInfo.MissionNumber;
     }
     else {
         LastMissionNumber = -3;
@@ -148,7 +148,7 @@ event TravelPostAccept() {
 
     // If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
     // Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
-    if ( LastMissionNumber != -3 && info.MissionNumber > LastMissionNumber ) {
+    if ( LastMissionNumber != -3 && LevelInfo.MissionNumber > LastMissionNumber ) {
         AddForwardPressure( 1, 'Critical' );
     }
 
@@ -384,7 +384,7 @@ exec function QuickSave() {
         CurrentQSIndex = 9997;
     }
 
-    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ info.MissionLocation );
+    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ LevelInfo.MissionLocation );
 }
 
 // Override
@@ -408,7 +408,7 @@ function AutoSave() {
     IsAutoSaving = false;
     AutoSaveTimer = 0;
 
-    SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ info.MissionLocation );
+    SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ LevelInfo.MissionLocation );
 }
 
 function bool ShouldSave() {
