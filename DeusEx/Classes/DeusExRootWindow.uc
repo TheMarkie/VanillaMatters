@@ -492,33 +492,6 @@ function MenuUIMessageBoxWindow MessageBox
 }
 
 // ----------------------------------------------------------------------
-// ConfirmQuickLoad()
-// ----------------------------------------------------------------------
-
-function ConfirmQuickLoad()
-{
-    local MenuUIMessageBoxWindow msgBox;
-
-    msgBox = MessageBox(QuickLoadTitle, QuickLoadMessage, 0, False, Self);
-    msgBox.SetDeferredKeyPress(True);
-}
-
-// ----------------------------------------------------------------------
-// BoxOptionSelected()
-// ----------------------------------------------------------------------
-
-event bool BoxOptionSelected(Window button, int buttonNumber)
-{
-    // Destroy the msgbox!
-    PopWindow();
-
-    if (buttonNumber == 0)
-        DeusExPlayer(parentPawn).QuickLoadConfirmed();
-
-    return true;
-}
-
-// ----------------------------------------------------------------------
 // ToolMessageBox()
 //
 // Displays a Message box

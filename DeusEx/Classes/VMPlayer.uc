@@ -95,11 +95,12 @@ function PreTravel() {
 event TravelPostAccept() {
     local int missionNumber;
 
+    LevelInfo = FindLevelInfo();
+
     super.TravelPostAccept();
 
     DXRootWindow = DeusExRootWindow( rootWindow );
 
-    LevelInfo = FindLevelInfo();
     if ( LevelInfo != none ) {
         missionNumber = LevelInfo.MissionNumber;
     }
