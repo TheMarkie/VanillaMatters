@@ -434,7 +434,7 @@ exec function QuickLoad() {
 }
 
 function bool IsInMainMenu() {
-    if ( ( LevelInfo != none && ( LevelInfo.MissionNumber < 0 || LevelInfo.MissionLocation == "" ) )
+    if ( LevelInfo == none || LevelInfo.MissionNumber < 0 || LevelInfo.MissionLocation == ""
         || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
     ) {
         return true;
