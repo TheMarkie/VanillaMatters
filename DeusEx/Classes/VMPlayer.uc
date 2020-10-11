@@ -36,6 +36,7 @@ var float AutoSaveTimer;
 //==============================================
 // Systems
 //==============================================
+var transient DeusExLevelInfo LevelInfo;
 var transient DeusExRootWindow DXRootWindow;
 
 var travel ForwardPressure FPSystem;
@@ -72,8 +73,6 @@ var travel bool IsMapTravel;                    // Denote if a travel is a norma
 //==============================================
 // Override
 function PreTravel() {
-    local DeusExLevelInfo info;
-
     super.PreTravel();
 
     // Gotta do this to keep the held item from being added to the inventory.
@@ -82,8 +81,7 @@ function PreTravel() {
     }
 
     // Save current mission number and marks this as a normal map transition.
-    info = GetLevelInfo();
-    if ( info != None ) {
+    if ( LevelInfo != None ) {
         LastMissionNumber = info.MissionNumber;
     }
     else {
@@ -95,16 +93,15 @@ function PreTravel() {
 
 // Override
 event TravelPostAccept() {
-    local DeusExLevelInfo info;
     local int missionNumber;
 
     super.TravelPostAccept();
 
     DXRootWindow = DeusExRootWindow( rootWindow );
 
-    info = GetLevelInfo();
-    if ( info != none ) {
-        missionNumber = info.MissionNumber;
+    LevelInfo = FindLevelInfo();
+    if ( LevelInfo != none ) {
+        missionNumber = LevelInfo.MissionNumber;
     }
     else {
         missionNumber = -3;
@@ -356,8 +353,6 @@ state PlayerSwimming {
 //==============================================
 // Override
 exec function QuickSave() {
-    local DeusExLevelInfo info;
-
     // Don't allow saving if:
     // 1) The player is dead
     // 2) We're on the logo map
@@ -365,8 +360,7 @@ exec function QuickSave() {
     // 3) A datalink is playing
     // 4) We're in a multiplayer game
 
-    info = GetLevelInfo();
-    if ( !ShouldSave( info ) ) {
+    if ( !ShouldSave() ) {
         return;
     }
 
@@ -400,10 +394,7 @@ function RequestAutoSave( optional float delay ) {
 }
 // Handle auto save.
 function AutoSave() {
-    local DeusExLevelInfo info;
-
-    info = GetLevelInfo();
-    if ( !ShouldSave( info ) ) {
+    if ( !ShouldSave() ) {
         return;
     }
 
@@ -420,8 +411,8 @@ function AutoSave() {
     SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ info.MissionLocation );
 }
 
-function bool ShouldSave( DeusExLevelInfo info ) {
-    if ( IsInMainMenu( info )
+function bool ShouldSave() {
+    if ( IsInMainMenu()
         || dataLinkPlay != none
         || Level.NetMode != NM_Standalone
     ) {
@@ -441,8 +432,8 @@ exec function QuickLoad() {
     LoadGame( CurrentQSIndex );
 }
 
-function bool IsInMainMenu( DeusExLevelInfo info ) {
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
+function bool IsInMainMenu() {
+    if ( ( LevelInfo != none && ( LevelInfo.MissionNumber < 0 || LevelInfo.MissionLocation == "" ) )
         || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
     ) {
         return true;
@@ -1637,6 +1628,19 @@ function DroneExplode()
         SetAugmentation( 'AugDrone', false );
         // TODO: Add support for AugDrone detonation.
     }
+}
+
+function DeusExLevelInfo GetLevelInfo() {
+    return LevelInfo;
+}
+function DeusExLevelInfo FindLevelInfo() {
+    local DeusExLevelInfo info;
+
+    foreach AllActors( class'DeusExLevelInfo', info ) {
+        break;
+    }
+
+    return info;
 }
 
 //==============================================

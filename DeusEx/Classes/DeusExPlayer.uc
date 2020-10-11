@@ -763,21 +763,6 @@ function UpdatePlayerSkin()
         jc.SetSkin(Self);
 }
 
-
-// ----------------------------------------------------------------------
-// GetLevelInfo()
-// ----------------------------------------------------------------------
-
-function DeusExLevelInfo GetLevelInfo()
-{
-    local DeusExLevelInfo info;
-
-    foreach AllActors(class'DeusExLevelInfo', info)
-        break;
-
-    return info;
-}
-
 //
 // Team Say
 //
@@ -11497,6 +11482,8 @@ function ForceDisconnect(string Message)
 function SetFeatureEnabled( name featureName, bool enabled );
 function bool IsFeatureEnabled( name featureName ) { return false; }
 function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
+
+function DeusExLevelInfo GetLevelInfo() { return none; }
 
 function RequestAutoSave( optional float delay );
 function bool ShouldSave( DeusExLevelInfo info ) { return true; }
