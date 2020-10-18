@@ -108,19 +108,7 @@ event TravelPostAccept() {
         missionNumber = -3;
     }
 
-    if ( VMSkillSystem == none ) {
-        InitializeSkillSystem();
-    }
-    else {
-        VMSkillSystem.Refresh( self );
-    }
-
-    if ( VMAugmentationSystem == none ) {
-        InitializeAugmentationSystem();
-    }
-    else {
-        VMAugmentationSystem.Refresh( self );
-    }
+    RefreshSubSystems();
 
     // Repair the held item since it's fucked up by vanilla coding.
     if ( HeldInHand != None ) {
@@ -212,6 +200,22 @@ function InitializeAugmentationSystem() {
     // Start in reverse because we're adding to a linked list.
     for ( i = #StartingAugmentations - 1; i >= 0; i-- ) {
         VMAugmentationSystem.Add( StartingAugmentations[i].Name, StartingAugmentations[i].Outer.Name );
+    }
+}
+
+function RefreshSubSystems() {
+    if ( VMSkillSystem == none ) {
+        InitializeSkillSystem();
+    }
+    else {
+        VMSkillSystem.Refresh( self );
+    }
+
+    if ( VMAugmentationSystem == none ) {
+        InitializeAugmentationSystem();
+    }
+    else {
+        VMAugmentationSystem.Refresh( self );
     }
 }
 
