@@ -45,8 +45,8 @@ var travel VMSkillManager VMSkillSystem;
 var() array< class<VMSKill> > StartingSkills;
 
 var travel VMAugmentationManager VMAugmentationSystem;
-var travel name AugmentationHotBar[11];
 var() array< class<VMAugmentation> > StartingAugmentations;
+var travel name AugmentationHotBar[11];
 
 //==============================================
 // Status
@@ -978,12 +978,15 @@ function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) 
 }
 
 // Combat status
+// Override
 function AddEnemyInCombat( ScriptedPawn sp ) {
     EnemyInCombatCount++;
 }
+// Override
 function RemoveEnemyInCombat( ScriptedPawn sp ) {
     EnemyInCombatCount = Max( EnemyInCombatCount - 1, 0 );
 }
+// Override
 function bool IsInCombat() {
     return EnemyInCombatCount > 0;
 }
@@ -1481,6 +1484,7 @@ function ClearAugmentationDisplay() {
 //==============================================
 // Stats Management
 //==============================================
+// Override
 function int HealPlayer( int baseAmount, optional bool useSkill ) {
     local int totalHealAmount, healAmount, healedAmount;
 
@@ -1530,6 +1534,7 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
     return healedAmount;
 }
 
+
 function HealPart( out int target, out int pool, int amount ) {
     local int spill;
 
@@ -1547,6 +1552,7 @@ function HealPart( out int target, out int pool, int amount ) {
     pool += spill;
 }
 
+// Override
 function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
     if ( Robot( P ) != none ) {
         return VisibilityRobot;
@@ -1556,6 +1562,7 @@ function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
     }
 }
 
+// Override
 function bool CanDrain( float drainAmount ) {
     return Energy >= drainAmount;
 }
@@ -1568,6 +1575,7 @@ function ActivateAugByKey( int keyNum ) {
 }
 
 // Replace CatchFire to have burn damage depend on initial damage taken.
+// Override
 function StartBurning( Pawn burner, float burnDamage ) {
     local Fire f;
     local int i;
@@ -1631,6 +1639,7 @@ function DroneExplode()
     }
 }
 
+// Override
 function DeusExLevelInfo GetLevelInfo() {
     return LevelInfo;
 }
@@ -1647,6 +1656,7 @@ function DeusExLevelInfo FindLevelInfo() {
 //==============================================
 // Presentation
 //==============================================
+// Override
 function UpdateDynamicMusic( float deltaTime ) {
     local DeusExLevelInfo info;
 
