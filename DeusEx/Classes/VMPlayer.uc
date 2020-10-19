@@ -163,21 +163,6 @@ event TravelPostAccept() {
 }
 
 // Override
-function InitializeSubSystems() {
-    super.InitializeSubSystems();
-
-    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
-    if ( FPSystem == none ) {
-        FPSystem = Spawn( class'ForwardPressure', self );
-        FPSystem.Initialize( self );
-    }
-    else {
-        FPSystem.SetPlayer( self );
-    }
-    FPSystem.SetOwner( self );
-}
-
-// Override
 function InitializeSkillSystem() {
     local int i;
 
@@ -204,6 +189,16 @@ function InitializeAugmentationSystem() {
 }
 
 function RefreshSubSystems() {
+    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
+    if ( FPSystem == none ) {
+        FPSystem = Spawn( class'ForwardPressure', self );
+        FPSystem.Initialize( self );
+    }
+    else {
+        FPSystem.SetPlayer( self );
+    }
+    FPSystem.SetOwner( self );
+
     if ( VMSkillSystem == none ) {
         InitializeSkillSystem();
     }
