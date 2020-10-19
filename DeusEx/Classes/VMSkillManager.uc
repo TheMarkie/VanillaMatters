@@ -22,8 +22,8 @@ static function string GetLevelName( int level, int maxLevel ) {
 //==============================================
 // Management
 //==============================================
-function Initialize( VMPlayer player ) {
-    super.Initialize( player );
+function Initialize( VMPlayer playerOwner ) {
+    super.Initialize( playerOwner );
 
     GlobalValues = new class'TableFloat';
     CategoryValues = new class'TableTableFloat';
