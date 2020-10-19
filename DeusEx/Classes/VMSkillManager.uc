@@ -42,10 +42,10 @@ function bool Add( name className, name packageName, optional int startingLevel 
     return true;
 }
 
-function Refresh( VMPlayer player ) {
+function Refresh( VMPlayer playerOwner ) {
     local VMSkillInfo info;
 
-    super.Refresh( player );
+    super.Refresh( playerOwner );
 
     GlobalValues.Clear();
     CategoryValues.Clear();
