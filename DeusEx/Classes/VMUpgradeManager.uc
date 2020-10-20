@@ -25,7 +25,6 @@ function IncreaseAllToMax();
 //==============================================
 // Values
 //==============================================
-function float GetValue( name name, optional float defaultValue ) { return defaultValue; }
 function int GetLevel( name name ) { return -1; }
 
 defaultproperties

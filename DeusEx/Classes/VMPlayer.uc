@@ -41,6 +41,9 @@ var transient DeusExRootWindow DXRootWindow;
 
 var travel ForwardPressure FPSystem;
 
+var TableFloat GlobalModifiers;
+var TableTableFloat CategoryModifiers;
+
 var travel VMSkillManager VMSkillSystem;
 var() array< class<VMSKill> > StartingSkills;
 
@@ -189,6 +192,15 @@ function InitializeAugmentationSystem() {
 }
 
 function RefreshSubSystems() {
+    if ( GlobalModifiers == none ) {
+        GlobalModifiers = new class'TableFloat';
+    }
+    GlobalModifiers.Clear();
+    if ( CategoryModifiers == none ) {
+        CategoryModifiers = new class'TableTableFloat';
+    }
+    CategoryModifiers.Clear();
+
     if ( FPSystem == none ) {
         FPSystem = Spawn( class'ForwardPressure', self );
         FPSystem.Initialize( self );
@@ -214,6 +226,15 @@ function RefreshSubSystems() {
 }
 
 function ResetSubSystems() {
+    if ( GlobalModifiers == none ) {
+        GlobalModifiers = new class'TableFloat';
+    }
+    GlobalModifiers.Clear();
+    if ( CategoryModifiers == none ) {
+        CategoryModifiers = new class'TableTableFloat';
+    }
+    CategoryModifiers.Clear();
+
     if ( FPSystem == none ) {
         FPSystem = Spawn( class'ForwardPressure', self );
         FPSystem.Initialize( self );
@@ -1354,6 +1375,32 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
 }
 
 //==============================================
+// Modifiers Management
+//==============================================
+function float GetValue( name name, optional float defaultValue ) {
+    local float value;
+
+    if ( GlobalModifiers.TryGetValue( name, value ) ) {
+        return value;
+    }
+
+    return defaultValue;
+}
+
+function float GetCategoryValue( name category, name name, optional float defaultValue ) {
+    local float value;
+    local TableFloat table;
+
+    if ( CategoryModifiers.TryGetValue( category, table ) ) {
+        if ( table.TryGetValue( name, value ) ) {
+            return value;
+        }
+    }
+
+    return defaultValue;
+}
+
+//==============================================
 // Skill Management
 //==============================================
 // Override
@@ -1378,24 +1425,6 @@ function bool DecreaseSkillLevel( name name ) {
     return VMSkillSystem.DecreaseLevel( name );
 }
 
-// Override
-function float GetSkillValue( name name, optional float defaultValue ) {
-    if ( VMSkillSystem != none ) {
-        return VMSkillSystem.GetValue( name, defaultValue );
-    }
-    else {
-        return defaultValue;
-    }
-}
-// Override
-function float GetSkillCategoryValue( name category, name name, optional float defaultValue ) {
-    if ( VMSkillSystem != none ) {
-        return VMSkillSystem.GetCategoryValue( category, name, defaultValue );
-    }
-    else {
-        return defaultValue;
-    }
-}
 // Override
 function int GetSkillLevel( name name ) {
     if ( VMSkillSystem != none ) {
@@ -1445,13 +1474,6 @@ function DeactivateAllAugmentations() {
     }
 }
 
-function float GetAugmentationValue( name name, optional float baseValue ) {
-    if ( VMAugmentationSystem != none ) {
-        return VMAugmentationSystem.GetValue( name, baseValue );
-    }
-
-    return baseValue;
-}
 function int GetAugmentationLevel( name name ) {
     if ( VMAugmentationSystem != none ) {
         return VMAugmentationSystem.GetLevel( name );

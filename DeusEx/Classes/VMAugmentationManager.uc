@@ -249,15 +249,20 @@ function bool IsActive( name name ) {
 //==============================================
 // Values
 //==============================================
-function float GetValue( name name, optional float baseValue ) {
+function float GetTotalRate( float deltaTime ) {
     local VMAugmentationInfo info;
+    local float rate;
 
-    info = GetInfo( name );
-    if ( info != none ) {
-        return info.GetValue( baseValue );
+    info = FirstAugmentationInfo;
+    while ( info != none ) {
+        if ( info.IsActive ) {
+            rate += info.GetRate();
+        }
+
+        info = info.Next;
     }
 
-    return baseValue;
+    return ( ( rate / 60 ) * deltaTime );
 }
 
 function int GetLevel( name name ) {
@@ -276,22 +281,6 @@ function int GetLevel( name name ) {
 //==============================================
 // Misc
 //==============================================
-function float GetTotalRate( float deltaTime ) {
-    local VMAugmentationInfo info;
-    local float rate;
-
-    info = FirstAugmentationInfo;
-    while ( info != none ) {
-        if ( info.IsActive ) {
-            rate += info.GetRate();
-        }
-
-        info = info.Next;
-    }
-
-    return ( ( rate / 60 ) * deltaTime );
-}
-
 function bool IsLocationFull( int loc ) {
     return InstallLocationCounts[loc] >= default.InstallLocationMaxCounts[loc];
 }

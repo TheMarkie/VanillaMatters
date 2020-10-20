@@ -11333,6 +11333,12 @@ function bool IsInCombat() { return false; }
 function ResetSubSystems();
 
 //==============================================
+// Modifiers interface
+//==============================================
+function float GetValue( name name, optional float defaultValue ) { return defaultValue; }
+function float GetCategoryValue( name category, name name, optional float defaultValue ) { return defaultValue; }
+
+//==============================================
 // Skill interface
 //==============================================
 function InitializeSkillSystem();
@@ -11342,8 +11348,6 @@ function VMSkillInfo GetFirstSkillInfo() { return none; }
 function bool IncreaseSkillLevel( name name ) { return false; }
 function bool DecreaseSkillLevel( name name ) { return false; }
 
-function float GetSkillValue( name name, optional float defaultValue ) { return defaultValue; }
-function float GetSkillCategoryValue( name category, name name, optional float defaultValue ) { return defaultValue; }
 function int GetSkillLevel( name name ) { return -1; }
 
 //==============================================
@@ -11361,7 +11365,6 @@ function DeactivateAllAugmentations();
 function AddAugmentationHotBar( int slot, name name );
 function RemoveAugmentationHotBar( int slot );
 
-function float GetAugmentationValue( name name, optional float defaultValue ) { return defaultValue; }
 function int GetAugmentationLevel( name name ) { return -1; }
 
 function float GetTotalAugmentationRate( float deltaTime ) { return 0; }

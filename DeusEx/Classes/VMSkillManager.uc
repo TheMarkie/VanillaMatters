@@ -8,8 +8,6 @@ var() localized string LevelNames[4];
 //==============================================
 // Data
 //==============================================
-var travel TableFloat GlobalValues;
-var travel TableTableFloat CategoryValues;
 var travel VMSkillInfo FirstSkillInfo;
 
 //==============================================
@@ -24,9 +22,6 @@ static function string GetLevelName( int level, int maxLevel ) {
 //==============================================
 function Initialize( VMPlayer playerOwner ) {
     super.Initialize( playerOwner );
-
-    GlobalValues = new class'TableFloat';
-    CategoryValues = new class'TableTableFloat';
 }
 
 function bool Add( name className, name packageName, optional int startingLevel ) {
@@ -34,7 +29,7 @@ function bool Add( name className, name packageName, optional int startingLevel 
 
     info = new class'VMSkillInfo';
     info.Initialize( className, packageName, startingLevel );
-    info.RefreshValues( GlobalValues, CategoryValues );
+    info.RefreshValues( Player.GlobalModifiers, CategoryModifiers );
 
     info.Next = FirstSkillInfo;
     FirstSkillInfo = info;
@@ -47,12 +42,9 @@ function Refresh( VMPlayer playerOwner ) {
 
     super.Refresh( playerOwner );
 
-    GlobalValues.Clear();
-    CategoryValues.Clear();
-
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.RefreshValues( GlobalValues, CategoryValues );
+        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
 
         info = info.Next;
     }
@@ -61,13 +53,10 @@ function Refresh( VMPlayer playerOwner ) {
 function Reset() {
     local VMSkillInfo info;
 
-    GlobalValues.Clear();
-    CategoryValues.Clear();
-
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.RefreshValues( GlobalValues, CategoryValues );
+        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
 
         info = info.Next;
     }
@@ -98,7 +87,7 @@ function bool IncreaseLevel( name name ) {
     if ( info != none && info.CanUpgrade( Player.SkillPointsAvail ) ) {
         Player.SkillPointsAvail -= info.GetNextLevelCost();
         info.IncreaseLevel();
-        info.UpdateValues( GlobalValues, CategoryValues, info.Level - 1, info.Level );
+        info.UpdateValues( Player.GlobalModifiers, Player.CategoryModifiers, info.Level - 1, info.Level );
 
         return true;
     }
@@ -111,7 +100,7 @@ function bool DecreaseLevel( name name ) {
     info = GetInfo( name );
     if ( info != none && info.DecreaseLevel() ) {
         Player.SkillPointsAvail += info.GetNextLevelCost();
-        info.UpdateValues( GlobalValues, CategoryValues, info.Level + 1, info.Level );
+        info.UpdateValues( Player.GlobalModifiers, Player.CategoryModifiers, info.Level + 1, info.Level );
 
         return true;
     }
@@ -122,13 +111,10 @@ function bool DecreaseLevel( name name ) {
 function IncreaseAllToMax() {
     local VMSkillInfo info;
 
-    GlobalValues.Clear();
-    CategoryValues.Clear();
-
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.RefreshValues( GlobalValues, CategoryValues );
+        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
 
         info = info.Next;
     }
@@ -137,29 +123,6 @@ function IncreaseAllToMax() {
 //==============================================
 // Values
 //==============================================
-function float GetValue( name name, optional float defaultValue ) {
-    local float value;
-
-    if ( GlobalValues.TryGetValue( name, value ) ) {
-        return value;
-    }
-
-    return defaultValue;
-}
-
-function float GetCategoryValue( name category, name name, optional float defaultValue ) {
-    local float value;
-    local TableFloat table;
-
-    if ( CategoryValues.TryGetValue( category, table ) ) {
-        if ( table.TryGetValue( name, value ) ) {
-            return value;
-        }
-    }
-
-    return defaultValue;
-}
-
 function int GetLevel( name name ) {
     local VMSkillInfo info;
 
