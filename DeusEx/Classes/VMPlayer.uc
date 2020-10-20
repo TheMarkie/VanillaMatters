@@ -189,7 +189,6 @@ function InitializeAugmentationSystem() {
 }
 
 function RefreshSubSystems() {
-    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
     if ( FPSystem == none ) {
         FPSystem = Spawn( class'ForwardPressure', self );
         FPSystem.Initialize( self );
@@ -211,6 +210,30 @@ function RefreshSubSystems() {
     }
     else {
         VMAugmentationSystem.Refresh( self );
+    }
+}
+
+function ResetSubSystems() {
+    if ( FPSystem == none ) {
+        FPSystem = Spawn( class'ForwardPressure', self );
+        FPSystem.Initialize( self );
+    }
+    else {
+        FPSystem.Reset();
+    }
+
+    if ( VMSkillSystem == none ) {
+        InitializeSkillSystem();
+    }
+    else {
+        VMSkillSystem.Reset();
+    }
+
+    if ( VMAugmentationSystem == none ) {
+        InitializeAugmentationSystem();
+    }
+    else {
+        VMAugmentationSystem.Reset();
     }
 }
 
