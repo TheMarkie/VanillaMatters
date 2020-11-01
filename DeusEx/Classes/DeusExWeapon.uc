@@ -553,7 +553,7 @@ function float GetSkillValue( name category ) {
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return player.GetSkillCategoryValue( category, Class.Name );
+        return player.GetCategoryValue( category, Class.Name );
     }
 
     return 0;
@@ -564,7 +564,7 @@ function float GetGlobalSkillValue( name category ) {
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return player.GetSkillValue( category );
+        return player.GetValue( category );
     }
 
     return 0;

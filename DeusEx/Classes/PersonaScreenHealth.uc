@@ -411,7 +411,7 @@ function int GetMedKitHealPoints() {
     medKit = MedKit( player.FindInventoryType( class'MedKit' ) );
 
     if ( medKit != None ) {
-        return ( medkit.NumCopies * ( medkit.healAmount + player.GetSkillValue( 'HealingBonus' ) ) );
+        return ( medkit.NumCopies * ( medkit.healAmount + player.GetValue( 'HealingBonus' ) ) );
     }
     else {
         return 0;
@@ -430,7 +430,7 @@ function RemoveMedKits(int healPointsUsed)
 
     healPointsRemaining = healPointsUsed;
     medkit = MedKit( player.FindInventoryType( class'MedKit' ) );
-    bonus = player.GetSkillValue( 'HealingBonus' );
+    bonus = player.GetValue( 'HealingBonus' );
 
     while( medkit != none && healPointsRemaining > 0 ) {
         healPointsRemaining -= medkit.healAmount + bonus;
@@ -463,7 +463,7 @@ function int HealPart(PersonaHealthRegionWindow region, optional float pointsToH
 
     // Vanilla Matters
     if ( pointsToHeal == 0 ) {
-        pointsToHeal = medKit.healAmount + player.GetSkillValue( 'HealingBonus' );
+        pointsToHeal = medKit.healAmount + player.GetValue( 'HealingBonus' );
     }
 
     // Heal the selected body part by the number of

@@ -94,8 +94,7 @@ simulated function bool UpdateInfo(Object winObject)
 function UpdateCharge( DeusExPlayer player ) {
     local int newCharge;
 
-    newCharge = Default.Charge * ( 1 + Player.GetSkillValue( 'EquipmentChargeMult' ) );
-    // newCharge = newCharge * ( 1 + Player.GetSkillValue( GetStringClassName() $ "ChargeMult" ) );
+    newCharge = Default.Charge * ( 1 + Player.GetValue( 'EquipmentChargeMult' ) );
 
     // VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
     if ( newCharge > VM_actualCharge ) {
