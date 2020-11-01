@@ -2812,7 +2812,7 @@ function float GetCurrentGroundSpeed()
     local float augValue, speed;
 
     // Vanilla Matters
-    augValue = GetAugmentationValue( 'AugSpeed', 1.0 );
+    augValue = GetValue( 'MovementSpeedBonus', 1.0 );
 
     // Vanilla Matters: Disable augspeed effects when crouching.
     if ( bIsCrouching || bForceDuck ) {
@@ -3040,7 +3040,7 @@ state PlayerWalking
         // Vanilla Matters: Change heavy weapon penalty check to apply a direct penalty instead of level check
         if ( Weapon != none && Weapon.Mass > 30 )
         {
-            newSpeed = defSpeed * ( 0.5 + GetSkillValue( 'HeavyWeaponMovementSpeedBonus' ) );
+            newSpeed = defSpeed * ( 0.5 + GetValue( 'HeavyWeaponMovementSpeedBonus' ) );
         }
 
         // Multiplayer movement adjusters
@@ -3275,16 +3275,11 @@ state PlayerFlying
 
 event HeadZoneChange(ZoneInfo newHeadZone)
 {
-    local float augLevel;
-
     // hack to get the zone's ambientsound working until Tim fixes it
     if (newHeadZone.AmbientSound != None)
         newHeadZone.SoundRadius = 255;
     if (HeadRegion.Zone.AmbientSound != None)
         HeadRegion.Zone.SoundRadius = 0;
-
-    // Vanilla Matters
-    augLevel = GetAugmentationValue( 'AugAqualung' );
 
     if (newHeadZone.bWaterZone && !HeadRegion.Zone.bWaterZone)
     {
@@ -3298,9 +3293,9 @@ event HeadZoneChange(ZoneInfo newHeadZone)
         Acceleration = vect(0,0,0);
 
         // Vanilla Matters
-        swimDuration = UnderWaterTime + GetSkillValue( 'LungCapacity' ) + augLevel;
+        swimDuration = UnderWaterTime + GetValue( 'LungCapacity' );
         swimTimer = swimDuration;
-        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( 'SwimmingSpeedMult' ) );
+        WaterSpeed = default.WaterSpeed * ( 1 + GetValue( 'SwimmingSpeedMult' ) );
     }
 
     Super.HeadZoneChange(newHeadZone);
@@ -3400,18 +3395,13 @@ state PlayerSwimming
 
     function BeginState()
     {
-        local float mult, augLevel;
-
         // set us to be two feet high
         SetBasedPawnSize(Default.CollisionRadius, 16);
 
         // Vanilla Matters
-        augLevel = GetAugmentationValue( 'AugAqualung' );
-
-        // Vanilla Matters
-        swimDuration = UnderWaterTime + GetSkillValue( 'LungCapacity' ) + augLevel;
+        swimDuration = UnderWaterTime + GetValue( 'LungCapacity' );
         swimTimer = swimDuration;
-        WaterSpeed = default.WaterSpeed * ( 1 + GetSkillValue( 'SwimmingSpeedMult' ) );
+        WaterSpeed = default.WaterSpeed * ( 1 + GetValue( 'SwimmingSpeedMult' ) );
         swimBubbleTimer = 0;
 
         Super.BeginState();
@@ -5186,7 +5176,7 @@ function DropDecoration()
 
             // Vanilla Matters: Add some more boost if the deco is powerthrown.
             if ( deco != none && deco.VM_bPowerthrown ) {
-                mult = GetAugmentationValue( 'AugMuscle', 1 );
+                mult = GetValue( 'ThrowVelocityBonus', 1 );
                 boost = boost + ( boost * mult ) + ( 1000 * ( GetAugmentationLevel( 'AugMuscle' ) + 1 ) );
             }
 
@@ -5432,7 +5422,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
             boost = 300;
 
             // Vanilla Matters: Calculate the velocity boost from AugMuscle.
-            mult = GetAugmentationValue( 'AugMuscle', 1 );
+            mult = GetValue( 'ThrowVelocityBonus', 1 );
             boost = boost + ( boost * mult );
 
             if (bDrop)

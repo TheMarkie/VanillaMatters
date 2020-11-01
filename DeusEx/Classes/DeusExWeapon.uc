@@ -569,19 +569,6 @@ function float GetGlobalModifierValue( name category ) {
     return 0;
 }
 
-// Vanilla Matters: Get aug value.
-function float GetAugmentationValue( name name ) {
-    local DeusExPlayer player;
-
-    player = DeusExPlayer( Owner );
-    if ( player != None ) {
-        return player.GetAugmentationValue( name );
-    }
-
-    return 0;
-}
-
-
 // calculate the accuracy for this weapon and the owner's damage
 // Vanilla Matters: Rewrite because why not.
 simulated function float CalculateAccuracy() {
@@ -598,7 +585,7 @@ simulated function float CalculateAccuracy() {
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetAugmentationValue( 'AugTarget' ) + GetModifierValue( 'Accuracy' );
+    weapskill = GetModifierValue( 'Accuracy' );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
     accuracy = accuracy + ModBaseAccuracy;
@@ -2428,7 +2415,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
     local float inaccuracy, throwBonus;
     local DeusExPlayer player;
 
-    throwBonus = GetAugmentationValue( 'AugMuscle' );
+    throwBonus = GetGlobalModifierValue( 'ThrowVelocityBonus' );
     if ( throwBonus <= 0 ) {
         throwBonus = 1;
     }
@@ -2438,7 +2425,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
 
     mult = 1.0 + GetModifierValue( 'Damage' );
     if ( bHandToHand ) {
-        mult += GetAugmentationValue( 'AugCombat' );
+        mult += GetGlobalModifierValue( 'ThrowDamageBonus' );
     }
 
     inaccuracy = 1 - currentAccuracy;
@@ -2654,7 +2641,6 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         mult = 1.0 + GetModifierValue( 'Damage' );
         if ( bHandToHand ) {
             mult += GetGlobalModifierValue( 'MeleeWeaponDamage' );
-            mult += GetAugmentationValue( 'AugCombat' );
         }
 
         // Determine damage type
@@ -2977,7 +2963,7 @@ simulated function bool UpdateInfo(Object winObject)
         if ( bInstantHit ) {
             mod += GetGlobalModifierValue( 'MeleeWeaponDamage' );
         }
-        mod += GetAugmentationValue( 'AugCombat' );
+        mod += GetGlobalModifierValue( 'ThrowDamageBonus' );
     }
 
     if ( mod != 1.0 ) {
@@ -3003,7 +2989,7 @@ simulated function bool UpdateInfo(Object winObject)
     if ( !bHandToHand && default.ReloadCount > 0 ) {
         // Vanilla Matters: Accuracy.
         str = int( BaseAccuracy * 100 ) $ "%";
-        mod = ModBaseAccuracy + GetAugmentationValue( 'AugTarget' ) + GetModifierValue( 'Accuracy' );
+        mod = ModBaseAccuracy + GetModifierValue( 'Accuracy' );
         if ( mod != 0.0 ) {
             str = str @ BuildPercentString( mod + 0.000003 );
             str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
@@ -3356,7 +3342,7 @@ state NormalFire {
 
         mult = 1.0;
         if ( bHandToHand ) {
-            mult = GetAugmentationValue( 'AugCombat' );
+            mult = GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
             if ( mult > 0 ) {
                 mult = 1 - mult;
             }
@@ -3619,7 +3605,7 @@ simulated state ClientFiring
             // Vanilla Matters
             mult = 1.0;
             if ( bHandToHand ) {
-                mult = GetAugmentationValue( 'AugCombat' );
+                mult = GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
                 if ( mult > 0 ) {
                     mult = 1 - mult;
                 }

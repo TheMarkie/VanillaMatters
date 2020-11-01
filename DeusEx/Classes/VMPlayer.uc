@@ -1533,7 +1533,7 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
     local int totalHealAmount, healAmount, healedAmount;
 
     if ( useSkill ) {
-        healAmount = baseAmount + GetSkillValue( 'HealingBonus' );
+        healAmount = baseAmount + GetValue( 'HealingBonus' );
     }
 
     totalHealAmount = healAmount;
