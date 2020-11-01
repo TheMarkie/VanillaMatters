@@ -20,16 +20,12 @@ static function string GetLevelName( int level, int maxLevel ) {
 //==============================================
 // Management
 //==============================================
-function Initialize( VMPlayer playerOwner ) {
-    super.Initialize( playerOwner );
-}
-
 function bool Add( name className, name packageName, optional int startingLevel ) {
     local VMSkillInfo info;
 
     info = new class'VMSkillInfo';
     info.Initialize( className, packageName, startingLevel );
-    info.RefreshValues( Player.GlobalModifiers, CategoryModifiers );
+    info.RefreshValues( Player );
 
     info.Next = FirstSkillInfo;
     FirstSkillInfo = info;
@@ -44,7 +40,7 @@ function Refresh( VMPlayer playerOwner ) {
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
+        info.RefreshValues( Player );
 
         info = info.Next;
     }
@@ -56,7 +52,7 @@ function Reset() {
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
+        info.RefreshValues( Player );
 
         info = info.Next;
     }
@@ -87,7 +83,7 @@ function bool IncreaseLevel( name name ) {
     if ( info != none && info.CanUpgrade( Player.SkillPointsAvail ) ) {
         Player.SkillPointsAvail -= info.GetNextLevelCost();
         info.IncreaseLevel();
-        info.UpdateValues( Player.GlobalModifiers, Player.CategoryModifiers, info.Level - 1, info.Level );
+        info.UpdateValues( Player, info.Level - 1, info.Level );
 
         return true;
     }
@@ -100,7 +96,7 @@ function bool DecreaseLevel( name name ) {
     info = GetInfo( name );
     if ( info != none && info.DecreaseLevel() ) {
         Player.SkillPointsAvail += info.GetNextLevelCost();
-        info.UpdateValues( Player.GlobalModifiers, Player.CategoryModifiers, info.Level + 1, info.Level );
+        info.UpdateValues( Player, info.Level + 1, info.Level );
 
         return true;
     }
@@ -114,7 +110,7 @@ function IncreaseAllToMax() {
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.RefreshValues( Player.GlobalModifiers, Player.CategoryModifiers );
+        info.RefreshValues( Player );
 
         info = info.Next;
     }

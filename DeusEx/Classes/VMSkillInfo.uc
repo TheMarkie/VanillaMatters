@@ -41,16 +41,16 @@ function bool CanUpgrade( optional int amount ) {
 //==============================================
 // Management
 //==============================================
-function RefreshValues( TableFloat globalTable, TableTableFloat categoryTable ) {
+function RefreshValues( VMPlayer player ) {
     LoadDefinition();
 
-    Definition.static.UpdateValues( globalTable, -1, Level );
-    Definition.static.UpdateCategoryValues( categoryTable, -1, Level );
+    Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
+    Definition.static.UpdateCategoryValues( player.CategoryModifiers, -1, Level );
 }
 
-function UpdateValues( TableFloat globalTable, TableTableFloat categoryTable, int oldLevel, int newLevel ) {
-    Definition.static.UpdateValues( globalTable, oldLevel, newLevel );
-    Definition.static.UpdateCategoryValues( categoryTable, oldLevel, newLevel );
+function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
+    Definition.static.UpdateValues( player.GlobalModifiers, oldLevel, newLevel );
+    Definition.static.UpdateCategoryValues( player.CategoryModifiers, oldLevel, newLevel );
 }
 
 defaultproperties
