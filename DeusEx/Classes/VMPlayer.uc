@@ -1533,7 +1533,7 @@ function float GetCurrentGroundSpeed() {
     local float augValue;
 
     // Disable movement speed bonus when crouching.
-    if ( !bIsCrouching && !!bForceDuck ) {
+    if ( !bIsCrouching && !bForceDuck ) {
         augValue = GetValue( 'MovementSpeedBonusMultiplier' );
     }
 
