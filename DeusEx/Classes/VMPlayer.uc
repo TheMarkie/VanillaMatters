@@ -1529,6 +1529,18 @@ function ClearAugmentationDisplay() {
 // Stats Management
 //==============================================
 // Override
+function float GetCurrentGroundSpeed() {
+    local float augValue;
+
+    // Disable movement speed bonus when crouching.
+    if ( !bIsCrouching && !!bForceDuck ) {
+        augValue = GetValue( 'MovementSpeedBonusMultiplier' );
+    }
+
+    return Default.GroundSpeed * ( 1 + augValue );
+}
+
+// Override
 function int HealPlayer( int baseAmount, optional bool useSkill ) {
     local int totalHealAmount, healAmount, healedAmount;
 

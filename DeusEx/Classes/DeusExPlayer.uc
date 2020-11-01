@@ -2804,30 +2804,6 @@ function float GetDefaultCollisionHeight()
 }
 
 // ----------------------------------------------------------------------
-// GetCurrentGroundSpeed()
-// ----------------------------------------------------------------------
-
-function float GetCurrentGroundSpeed()
-{
-    local float augValue, speed;
-
-    // Vanilla Matters
-    augValue = GetValue( 'MovementSpeedBonus', 1.0 );
-
-    // Vanilla Matters: Disable augspeed effects when crouching.
-    if ( bIsCrouching || bForceDuck ) {
-        augValue = 1.0;
-    }
-
-    if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-        speed = Human(Self).mpGroundSpeed * augValue;
-    else
-        speed = Default.GroundSpeed * augValue;
-
-    return speed;
-}
-
-// ----------------------------------------------------------------------
 // CreateDrone
 // ----------------------------------------------------------------------
 function CreateDrone()
@@ -11295,9 +11271,9 @@ function bool IsFeatureEnabledByDefault( name featureName ) { return false; }
 function DeusExLevelInfo GetLevelInfo() { return none; }
 
 function RequestAutoSave( optional float delay );
-function bool ShouldSave() { return true; }
+function bool ShouldSave() { return false; }
 
-function bool IsInMainMenu() { return true; }
+function bool IsInMainMenu() { return false; }
 
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
 function ResetSkinStyle();
@@ -11313,6 +11289,7 @@ function ClearLastPutAway();
 function bool IsHolding( Inventory item ) { return false; }
 function ClearHold();
 
+function float GetCurrentGroundSpeed() { return 0; }
 function int HealPlayer( int baseAmount, optional bool useSkill ) { return 0; }
 function bool CanDrain( float drainAmount );
 
