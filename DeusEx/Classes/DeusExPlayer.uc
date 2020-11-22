@@ -1852,7 +1852,12 @@ exec function AugAdd( name className, optional name packageName ) {
         packageName = GetPackageName();
     }
 
-    GetAugmentationSystem().Add( className, packageName );
+    if ( GetAugmentationSystem().GetLevel( className ) < 0 ) {
+        GetAugmentationSystem().Add( className, packageName );
+    }
+    else {
+        GetAugmentationSystem().IncreaseLevel( className );
+    }
 }
 
 // ----------------------------------------------------------------------
