@@ -23,11 +23,3 @@ function float GetRate( int level ) {
 
     return 0;
 }
-
-function float GetValueActive( int level, optional float baseValue ) {
-    return Definition.default.Values[level];
-}
-
-function float GetValueInactive( int level, optional float baseValue ) {
-    return baseValue;
-}

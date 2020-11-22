@@ -75,6 +75,8 @@ function Refresh( VMPlayer player, optional bool active ) {
 
         IsActive = true;
     }
+
+    Definition.static.UpdateValues( player.GlobalModifiers, Level, IsActive );
 }
 
 final function Toggle( VMPlayer player, bool on ) {
@@ -98,6 +100,8 @@ final function Toggle( VMPlayer player, bool on ) {
     }
 
     IsActive = on;
+
+    Definition.static.UpdateValues( player.GlobalModifiers, Level, IsActive );
 }
 
 //==============================================
@@ -138,23 +142,4 @@ function float IsOnCooldown() {
     }
 
     return 0;
-}
-
-//==============================================
-// Values
-//==============================================
-function float GetValue( optional float baseValue ) {
-    if ( Behaviour != none ) {
-        if ( IsActive ) {
-            return Behaviour.GetValueActive( Level, baseValue );
-        }
-
-        return Behaviour.GetValueInactive( Level, baseValue );
-    }
-
-    if ( IsActive ) {
-        return Definition.default.Values[Level];
-    }
-
-    return baseValue;
 }
