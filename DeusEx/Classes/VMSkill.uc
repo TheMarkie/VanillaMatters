@@ -6,7 +6,6 @@ class VMSkill extends VMUpgrade
 //==============================================
 var() array<int> Costs;
 var() array<UpgradeValue> GlobalValues;
-var() array<UpgradeCategory> CategoryValues;
 
 //==============================================
 // General info
