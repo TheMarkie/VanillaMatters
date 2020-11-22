@@ -1,4 +1,4 @@
-class SkillWeaponRifle extends VMSkill;
+class SkillWeaponRifle extends VMSkillAdvanced;
 
 defaultproperties
 {
