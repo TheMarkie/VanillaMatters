@@ -41,12 +41,12 @@ static function int GetMaxLevel() {
 //==============================================
 // Values
 //==============================================
-static function UpdateValues( TableFloat table, int level, bool active ) {
+static function UpdateValues( TableFloat table, int oldLevel, int newLevel ) {
     local int i, count, valueCount;
     local UpgradeValue augValue;
     local float value;
 
-    if ( table == none ) {
+    if ( table == none || oldLevel == newLevel ) {
         return;
     }
 
@@ -56,11 +56,11 @@ static function UpdateValues( TableFloat table, int level, bool active ) {
         valueCount = #augValue.Values;
 
         table.TryGetValue( augValue.Name, value );
-        if ( active ) {
-            value += augValue.Values[Min( level, valueCount - 1 )];
+        if ( oldLevel >= 0 ) {
+            value -= augValue.Values[Min( oldLevel, valueCount - 1 )];
         }
-        else {
-            value -= augValue.Values[Min( level, valueCount - 1 )];
+        if ( newLevel >= 0 ) {
+            value += augValue.Values[Min( newLevel, valueCount - 1 )];
         }
 
         table.Set( augValue.Name, value );

@@ -65,21 +65,21 @@ function Refresh( VMPlayer player, optional bool active ) {
     }
 
     if ( IsActive ) {
+        Definition.static.UpdateValues( player.GlobalModifiers, Level, -1 );
         Deactivate();
 
         IsActive = false;
     }
 
     if ( active || Definition.default.IsPassive ) {
+        Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
         Activate();
 
         IsActive = true;
     }
-
-    Definition.static.UpdateValues( player.GlobalModifiers, Level, IsActive );
 }
 
-final function Toggle( VMPlayer player, bool on ) {
+function Toggle( VMPlayer player, bool on ) {
     if ( IsActive == on
         || ( Definition.default.IsPassive && !on )
     ) {
@@ -90,18 +90,18 @@ final function Toggle( VMPlayer player, bool on ) {
         player.PlaySound( Definition.default.ActivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( self, true );
 
+        Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
         Activate();
     }
     else {
         player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( self, false );
 
+        Definition.static.UpdateValues( player.GlobalModifiers, Level, -1 );
         Deactivate();
     }
 
     IsActive = on;
-
-    Definition.static.UpdateValues( player.GlobalModifiers, Level, IsActive );
 }
 
 //==============================================
@@ -142,4 +142,11 @@ function float IsOnCooldown() {
     }
 
     return 0;
+}
+
+//==============================================
+// Values
+//==============================================
+function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
+    Definition.static.UpdateValues( player.GlobalModifiers, oldLevel, newLevel );
 }

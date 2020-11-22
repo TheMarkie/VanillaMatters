@@ -157,8 +157,14 @@ function bool IncreaseLevel( name name ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
-    if ( info != none ) {
-        return info.IncreaseLevel();
+    if ( info != none && info.IncreaseLevel() ) {
+        if ( info.IsActive ) {
+            info.UpdateValues( Player, info.Level - 1, info.Level );
+            info.Deactivate();
+            info.Activate();
+        }
+
+        return true;
     }
 
     return false;
@@ -167,8 +173,14 @@ function bool DecreaseLevel( name name ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
-    if ( info != none ) {
-        return info.DecreaseLevel();
+    if ( info != none && info.DecreaseLevel() ) {
+        if ( info.IsActive ) {
+            info.UpdateValues( Player, info.Level + 1, info.Level );
+            info.Deactivate();
+            info.Activate();
+        }
+
+        return true;
     }
 
     return false;
@@ -233,6 +245,8 @@ function DeactivateAll() {
 
         info = info.Next;
     }
+
+    Player.ClearAugmentationDisplay();
 }
 
 function bool IsActive( name name ) {
@@ -270,9 +284,7 @@ function int GetLevel( name name ) {
 
     info = GetInfo( name );
     if ( info != none ) {
-        if ( info.IsActive ) {
-            return info.Level;
-        }
+        return info.Level;
     }
 
     return -1;
