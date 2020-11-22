@@ -3,6 +3,8 @@ class AugLightBehaviour extends VMAugmentationBehaviour;
 var Beam MainBeam;
 var Beam GlowBeam;
 
+var() int Length;
+
 // Behaviours
 function Activate( int level ) {
     if ( MainBeam != none ) {
@@ -14,7 +16,7 @@ function Activate( int level ) {
     MainBeam.LightSaturation = 140;
     MainBeam.LightBrightness = 192;
     MainBeam.LightType = LT_Steady;
-    SetBeamLocation( Definition.default.Values[level] );
+    SetBeamLocation();
 
     if ( GlowBeam != none ) {
         GlowBeam.Destroy();
@@ -40,19 +42,19 @@ function Deactivate( int level ) {
 }
 
 function Tick( float deltaTime, int level ) {
-    SetBeamLocation( Definition.default.Values[level] );
+    SetBeamLocation();
     SetGlowLocation();
 }
 
 // Beam Management
-function SetBeamLocation( int length ) {
+function SetBeamLocation() {
     local float dist, size, radius;
     local Vector HitNormal, HitLocation, StartTrace, EndTrace;
 
     if ( MainBeam != none ) {
         StartTrace = Player.Location;
         StartTrace.Z += Player.BaseEyeHeight;
-        EndTrace = StartTrace + ( length * Vector( Player.ViewRotation ) );
+        EndTrace = StartTrace + ( Length * Vector( Player.ViewRotation ) );
 
         Player.Trace( HitLocation, HitNormal, EndTrace, StartTrace, True );
         if ( HitLocation == vect( 0, 0, 0 ) ) {
@@ -60,7 +62,7 @@ function SetBeamLocation( int length ) {
         }
 
         dist = VSize( HitLocation - StartTrace );
-        size = FClamp( dist / length, 0, 1 );
+        size = FClamp( dist / Length, 0, 1 );
         radius = ( size * 5.12 ) + 4.0;
         MainBeam.SetLocation( HitLocation - ( Vector( Player.ViewRotation ) * 64 ) );
         MainBeam.LightRadius = byte( radius );
@@ -81,5 +83,5 @@ function vector SetGlowLocation() {
 
 defaultproperties
 {
-     Definition=Class'AugLight'
+    Length=1024
 }
