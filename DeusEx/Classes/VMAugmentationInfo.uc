@@ -17,7 +17,7 @@ function LoadBehaviour( VMAugmentationManager manager ) {
     local class<VMAugmentationBehaviour> behaviourClass;
 
     if ( Definition.default.HasBehaviour && Behaviour == none ) {
-        behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( "DeusEx." $ string( DefinitionClassName ) $ "Behaviour", class'Class' ) );
+        behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ) $ "Behaviour", class'Class' ) );
         Behaviour = new behaviourClass;
     }
 }
