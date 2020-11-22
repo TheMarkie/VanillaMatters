@@ -1852,11 +1852,11 @@ exec function AugAdd( name className, optional name packageName ) {
         packageName = GetPackageName();
     }
 
-    if ( GetAugmentationSystem().GetLevel( className ) < 0 ) {
+    if ( GetAugmentationLevel( className ) < 0 ) {
         GetAugmentationSystem().Add( className, packageName );
     }
     else {
-        GetAugmentationSystem().IncreaseLevel( className );
+        IncreaseAugmentationLevel( className );
     }
 }
 
@@ -11318,7 +11318,6 @@ function VMSkillManager GetSkillSystem() { return none; }
 function VMSkillInfo GetFirstSkillInfo() { return none; }
 
 function bool IncreaseSkillLevel( name name ) { return false; }
-function bool DecreaseSkillLevel( name name ) { return false; }
 
 function int GetSkillLevel( name name ) { return -1; }
 
@@ -11328,6 +11327,9 @@ function int GetSkillLevel( name name ) { return -1; }
 function InitializeAugmentationSystem();
 function VMAugmentationManager GetAugmentationSystem() { return none; }
 function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
+
+function bool AddAugmentation( class<VMAugmentation> augClass ) { return false; }
+function bool IncreaseAugmentationLevel( name name ) { return false; }
 
 function SetAugmentation( name name, bool activate );
 function bool IsAugmentationActive( name name ) { return false; }

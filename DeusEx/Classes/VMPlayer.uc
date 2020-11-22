@@ -676,23 +676,6 @@ function Timer() {
 //==============================================
 // Inputs
 //==============================================
-// Rewrite aug activativation functions to be clearer.
-exec function AugSlot1() { ActivateAugByKey( 0 ); }
-exec function AugSlot2() { ActivateAugByKey( 1 ); }
-exec function AugSlot3() { ActivateAugByKey( 2 ); }
-exec function AugSlot4() { ActivateAugByKey( 3 ); }
-exec function AugSlot5() { ActivateAugByKey( 4 ); }
-exec function AugSlot6() { ActivateAugByKey( 5 ); }
-exec function AugSlot7() { ActivateAugByKey( 6 ); }
-exec function AugSlot8() { ActivateAugByKey( 7 ); }
-exec function AugSlot9() { ActivateAugByKey( 8 ); }
-exec function AugSlot10() { ActivateAugByKey( 9 ); }
-
-// Flashlight now has its own key and function.
-exec function ToggleFlashlight() {
-    ActivateAugByKey( 10 );
-}
-
 // Override
 exec function ParseLeftClick() {
     local Inventory item;
@@ -977,6 +960,27 @@ exec function ParseRightClick() {
         PlayPickupAnim( loc );
     }
 }
+
+// Rewrite aug activativation functions to be clearer.
+exec function AugSlot1() { ActivateAugByKey( 0 ); }
+exec function AugSlot2() { ActivateAugByKey( 1 ); }
+exec function AugSlot3() { ActivateAugByKey( 2 ); }
+exec function AugSlot4() { ActivateAugByKey( 3 ); }
+exec function AugSlot5() { ActivateAugByKey( 4 ); }
+exec function AugSlot6() { ActivateAugByKey( 5 ); }
+exec function AugSlot7() { ActivateAugByKey( 6 ); }
+exec function AugSlot8() { ActivateAugByKey( 7 ); }
+exec function AugSlot9() { ActivateAugByKey( 8 ); }
+exec function AugSlot10() { ActivateAugByKey( 9 ); }
+
+// Flashlight now has its own key and function.
+exec function ToggleFlashlight() {
+    ActivateAugByKey( 10 );
+}
+
+//==============================================
+// Actions
+//==============================================
 
 //==============================================
 // Status Management
@@ -1420,10 +1424,6 @@ function VMSkillInfo GetFirstSkillInfo() {
 function bool IncreaseSkillLevel( name name ) {
     return VMSkillSystem.IncreaseLevel( name );
 }
-// Override
-function bool DecreaseSkillLevel( name name ) {
-    return VMSkillSystem.DecreaseLevel( name );
-}
 
 // Override
 function int GetSkillLevel( name name ) {
@@ -1446,6 +1446,31 @@ function VMAugmentationInfo GetFirstAugmentationInfo() {
     }
 
     return none;
+}
+
+function bool AddAugmentation( class<VMAugmentation> augClass ) {
+    local int i;
+
+    if ( VMAugmentationSystem != none ) {
+        if ( VMAugmentationSystem.Add( augClass.Name, augClass.Outer.Name ) ) {
+            for ( i = 0; i < 10; i++ ) {
+                if ( AugmentationHotBar[i] == '' ) {
+                    AugmentationHotBar[i] = augClass.Name;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    return false;
+}
+function bool IncreaseAugmentationLevel( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.IncreaseLevel( name );
+    }
+
+    return false;
 }
 
 function SetAugmentation( name name, bool activate ) {
