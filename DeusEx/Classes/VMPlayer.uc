@@ -641,20 +641,19 @@ function Landed( vector HitNormal ) {
                     }
                 }
 
-                // Don't call TakeDamage if it's fully reduced.
                 dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( -1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
 
                     legLocation = Location + vect( 1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
                 }
 
                 dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( 0, 0, 1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
                 }
             }
         }

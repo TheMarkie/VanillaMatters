@@ -14176,11 +14176,11 @@ state FallingState
             if (Velocity.Z < -700)
             {
                 legLocation = Location + vect(-1,0,-1);         // damage left leg
-                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
                 legLocation = Location + vect(1,0,-1);          // damage right leg
-                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
                 legLocation = Location + vect(0,0,1);           // damage torso
-                TakeDamage(-0.04 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.04 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
             }
             landVol = Velocity.Z/JumpZ;
             landVol = 0.005 * Mass * FMin(5, landVol * landVol);

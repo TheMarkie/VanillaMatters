@@ -230,12 +230,12 @@ function Landed(vector HitNormal)
     if ( Level.NetMode != NM_Standalone )
     {
         if ((bExplosive && (VSize(Velocity) > 478)) || (!bExplosive && (Velocity.Z < -500)))
-            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'Fell');
     }
     else
     {
         if ((bExplosive && (VSize(Velocity) > 425)) || (!bExplosive && (Velocity.Z < -500)))
-            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'Fell');
     }
 }
 
