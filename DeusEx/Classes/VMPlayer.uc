@@ -626,22 +626,7 @@ function Landed( vector HitNormal ) {
 
         if ( Velocity.Z < -700 && ReducedDamageType != 'All' ) {
             if ( Role == ROLE_Authority ) {
-                augReduce = 0;
-                if ( VMAugmentationSystem != none ) {
-                    // Make AugStealth also reduce a smaller amount of fall damage, while AugSpeed reduce more.
-                    augLevel = VMAugmentationSystem.GetLevel( 'AugSpeed' );
-                    if ( augLevel >= 0 ) {
-                        augReduce = 20 * ( augLevel + 1 );
-                    }
-                    else {
-                        augLevel = VMAugmentationSystem.GetLevel( 'AugStealth' );
-                        if ( augLevel >= 0 ) {
-                            augReduce = 4 + ( 4 * ( augLevel + 1 ) );
-                        }
-                    }
-                }
-
-                dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+                dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ), 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( -1, 0, -1 );
                     TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
@@ -650,7 +635,7 @@ function Landed( vector HitNormal ) {
                     TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
                 }
 
-                dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+                dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ), 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( 0, 0, 1 );
                     TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
@@ -658,8 +643,8 @@ function Landed( vector HitNormal ) {
             }
         }
     }
-    else if ( Level.Game != none && Level.Game.Difficulty > 1 && Velocity.Z > 0.5 * JumpZ ) {
-        MakeNoise( 0.1 * Level.Game.Difficulty );
+    else if ( Velocity.Z > 0.5 * JumpZ ) {
+        MakeNoise( 0.1 * CombatDifficulty );
     }
 
     bJustLanded = true;
@@ -980,6 +965,30 @@ exec function ToggleFlashlight() {
 //==============================================
 // Actions
 //==============================================
+function DoJump( optional float F ) {
+    if ( ( CarriedDecoration != none  && CarriedDecoration.Mass > 20 )
+        || ( bForceDuck || IsLeaning() )
+        || Physics != PHYS_Walking
+    ) {
+        return;
+    }
+
+    if ( Role == ROLE_Authority ) {
+        PlaySound( JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2 * FRand() );
+    }
+
+    MakeNoise( 0.1 * CombatDifficulty );
+
+    PlayInAir();
+
+    Velocity.Z = JumpZ * ( 1 + GetValue( 'JumpVelocityBonusMultiplier' ) );
+
+    if ( Base != Level ) {
+        Velocity.Z += Base.Velocity.Z;
+    }
+
+    SetPhysics( PHYS_Falling );
+}
 
 //==============================================
 // Status Management
@@ -1554,14 +1563,14 @@ function ClearAugmentationDisplay() {
 //==============================================
 // Override
 function float GetCurrentGroundSpeed() {
-    local float augValue;
+    local float bonus;
 
     // Disable movement speed bonus when crouching.
     if ( !bIsCrouching && !bForceDuck ) {
-        augValue = GetValue( 'MovementSpeedBonusMultiplier' );
+        bonus = GetValue( 'MovementSpeedBonusMultiplier' );
     }
 
-    return Default.GroundSpeed * ( 1 + augValue );
+    return Default.GroundSpeed * ( 1 + bonus );
 }
 
 // Override
