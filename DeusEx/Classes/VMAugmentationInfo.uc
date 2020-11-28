@@ -65,14 +65,14 @@ function Refresh( VMPlayer player, optional bool active ) {
     }
 
     if ( IsActive ) {
-        Definition.static.UpdateValues( player.GlobalModifiers, Level, -1 );
+        Definition.static.UpdateValues( player, Level, -1 );
         Deactivate();
 
         IsActive = false;
     }
 
     if ( active || Definition.default.IsPassive ) {
-        Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
+        Definition.static.UpdateValues( player, -1, Level );
         Activate();
 
         IsActive = true;
@@ -90,14 +90,14 @@ function Toggle( VMPlayer player, bool on ) {
         player.PlaySound( Definition.default.ActivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( self, true );
 
-        Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
+        Definition.static.UpdateValues( player, -1, Level );
         Activate();
     }
     else {
         player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
         player.UpdateAugmentationDisplay( self, false );
 
-        Definition.static.UpdateValues( player.GlobalModifiers, Level, -1 );
+        Definition.static.UpdateValues( player, Level, -1 );
         Deactivate();
     }
 
@@ -148,5 +148,5 @@ function float IsOnCooldown() {
 // Values
 //==============================================
 function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
-    Definition.static.UpdateValues( player.GlobalModifiers, oldLevel, newLevel );
+    Definition.static.UpdateValues( player, oldLevel, newLevel );
 }

@@ -47,6 +47,11 @@ function bool DecreaseLevel() {
     return false;
 }
 
+//==============================================
+// Values
+//==============================================
+function UpdateValues( VMPlayer player, int oldLevel, int newLevel );
+
 defaultproperties
 {
 }

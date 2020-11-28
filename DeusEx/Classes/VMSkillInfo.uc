@@ -44,13 +44,11 @@ function bool CanUpgrade( optional int amount ) {
 function RefreshValues( VMPlayer player ) {
     LoadDefinition();
 
-    Definition.static.UpdateValues( player.GlobalModifiers, -1, Level );
-    Definition.static.UpdateCategoryValues( player.CategoryModifiers, -1, Level );
+    Definition.static.UpdateValues( player, -1, Level );
 }
 
 function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
-    Definition.static.UpdateValues( player.GlobalModifiers, oldLevel, newLevel );
-    Definition.static.UpdateCategoryValues( player.CategoryModifiers, oldLevel, newLevel );
+    Definition.static.UpdateValues( player, oldLevel, newLevel );
 }
 
 defaultproperties

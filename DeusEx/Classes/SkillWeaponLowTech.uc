@@ -1,4 +1,4 @@
-class SkillWeaponLowTech extends VMSkillAdvanced;
+class SkillWeaponLowTech extends VMSkill;
 
 defaultproperties
 {

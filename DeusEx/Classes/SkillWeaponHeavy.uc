@@ -1,4 +1,4 @@
-class SkillWeaponHeavy extends VMSkillAdvanced;
+class SkillWeaponHeavy extends VMSkill;
 
 defaultproperties
 {
