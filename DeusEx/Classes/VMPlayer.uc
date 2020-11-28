@@ -981,7 +981,7 @@ function DoJump( optional float F ) {
 
     PlayInAir();
 
-    Velocity.Z = JumpZ * ( 1 + GetValue( 'JumpVelocityBonusMultiplier' ) );
+    Velocity.Z = JumpZ * ( 1 + GetValue( 'JumpVelocityBonusMult' ) );
 
     if ( Base != Level ) {
         Velocity.Z += Base.Velocity.Z;
@@ -1297,40 +1297,14 @@ exec function bool DropItem( optional Inventory item, optional bool drop ) {
 // Damage Management
 //==============================================
 // Override
-function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool checkOnly ) {
+function bool GetModifiedDamage( int damage, name damageType, vector hitLocation, out int adjustedDamage ) {
     local float newDamage;
-    local float augValue;
-    local float pct;
-    local bool reduced;
     local ChargedPickup cpickup;
 
-    newDamage = float( Damage );
+    newDamage = float( damage );
 
-    if ( damageType == 'HalonGas' ) {
-        if ( bOnFire && !checkOnly ) {
-            ExtinguishFire();
-        }
-    }
-
-    if ( VMAugmentationSystem != none ) {
-        if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
-            || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
-        ) {
-            // Vanilla Matters TODO: Restore functionality.
-        }
-
-        // Add sabot to augballistic.
-        if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
-            // Vanilla Matters TODO: Restore functionality.
-        }
-
-        // Add EMP to augshield.
-        if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
-            damageType == 'Exploded' || damageType == 'Shocked'
-        ) {
-            // Vanilla Matters TODO: Restore functionality.
-        }
-    }
+    newDamage = newDamage - GetCategoryValue( 'DamageResistanceFlat', damageType );
+    newDamage *= 1 - GetCategoryValue( 'DamageResistanceMult', damageType );
 
     // Nullify all damage of the gas type if you have a Rebreather.
     if ( UsingChargedPickup( class'Rebreather' )
@@ -1360,30 +1334,19 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
     // Allow full damage resistance.
     if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
         newDamage *= CombatDifficulty;
-        Damage *= CombatDifficulty;
+        damage *= CombatDifficulty;
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
     else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
         || damageType == 'PoisonGas'
     ) {
         newDamage *= ( CombatDifficulty / 2 ) + 0.5;
-        Damage *= ( CombatDifficulty / 2 ) + 0.5;
+        damage *= ( CombatDifficulty / 2 ) + 0.5;
     }
 
-    if ( newDamage < Damage ) {
-        if ( !checkOnly ) {
-            pct = 1.0 - ( newDamage / Damage );
+    adjustedDamage = Max( int( newDamage ), 0 );
 
-            SetDamagePercent( pct );
-            ClientFlash( 0.01, vect( 0, 0, 50 ) );
-        }
-
-        reduced = true;
-    }
-
-    adjustedDamage = int( newDamage );
-
-    return reduced;
+    return newDamage < damage;
 }
 
 //==============================================
@@ -1567,7 +1530,7 @@ function float GetCurrentGroundSpeed() {
 
     // Disable movement speed bonus when crouching.
     if ( !bIsCrouching && !bForceDuck ) {
-        bonus = GetValue( 'MovementSpeedBonusMultiplier' );
+        bonus = GetValue( 'MovementSpeedBonusMult' );
     }
 
     return Default.GroundSpeed * ( 1 + bonus );

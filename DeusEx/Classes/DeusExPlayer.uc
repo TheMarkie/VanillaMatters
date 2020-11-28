@@ -8732,8 +8732,22 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     if (ReducedDamageType == damageType)
         actualDamage = float(actualDamage) * (1.0 - ReducedDamagePct);
 
+    // Vanilla Matters
+    if ( damageType == 'HalonGas' ) {
+        if ( bOnFire ) {
+            ExtinguishFire();
+        }
+    }
+
     // check for augs or inventory items
-    bDamageGotReduced = DXReduceDamage(Damage, damageType, hitLocation, actualDamage, False);
+    // Vanilla Matters
+    bDamageGotReduced = GetModifiedDamage(Damage, damageType, hitLocation, actualDamage);
+
+    // Vanilla Matters
+    if ( bDamageGotReduced ) {
+        SetDamagePercent( 1 - ( float( actualDamage ) / Damage ) );
+        ClientFlash( 0.01, vect( 0, 0, 50 ) );
+    }
 
     // handle poison
 
@@ -8759,9 +8773,6 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     if (ReducedDamageType == 'All') //God mode
         actualDamage = 0;
-
-    // Vanilla Matters: Prevent damage from being negative.
-    actualDamage = Max( actualDamage, 0 );
 
     // Multiplayer only code
     if ( Level.NetMode != NM_Standalone )
@@ -9111,18 +9122,6 @@ simulated function int GetMPHitLocation(Vector HitLocation)
         }
     }
     return 0;
-}
-
-// ----------------------------------------------------------------------
-// DXReduceDamage()
-//
-// Calculates reduced damage from augmentations and from inventory items
-// Also calculates a scalar damage reduction based on the mission number
-// ----------------------------------------------------------------------
-function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
-{
-    // Vanilla Matters: Handled in VMPlayer.
-    return false;
 }
 
 // ----------------------------------------------------------------------
@@ -11269,6 +11268,8 @@ function ResetSubSystems();
 //==============================================
 function float GetValue( name name, optional float defaultValue ) { return defaultValue; }
 function float GetCategoryValue( name category, name name, optional float defaultValue ) { return defaultValue; }
+
+function bool GetModifiedDamage( int damage, name damageType, vector hitLocation, out int adjustedDamage ) { return false; }
 
 //==============================================
 // Skill interface
