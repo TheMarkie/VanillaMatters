@@ -80,6 +80,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
 
         if ( !categories.TryGetValue( category.Name, categoryTable ) ) {
             categoryTable = new class'TableFloat';
+            categories.Set( category.Name, categoryTable );
         }
 
         count = #category.Values;
@@ -97,8 +98,6 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
 
             categoryTable.Set( valueData.Name, value );
         }
-
-        categories.Set( category.Name, categoryTable );
     }
 }
 
