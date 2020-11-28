@@ -2658,46 +2658,6 @@ function HandleWalking()
     }
 }
 
-// ----------------------------------------------------------------------
-// DoJump()
-//
-// copied from Engine.PlayerPawn
-// Modified to let you jump if you are carrying something rather light
-// You can also jump if you are crouching, just at a much lower height
-// ----------------------------------------------------------------------
-
-function DoJump( optional float F )
-{
-    local DeusExWeapon w;
-    local float scaleFactor, augLevel;
-
-    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
-        return;
-    else if (bForceDuck || IsLeaning())
-        return;
-
-    if (Physics == PHYS_Walking)
-    {
-        if ( Role == ROLE_Authority )
-            PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand() );
-        if ( (Level.Game != None) && (Level.Game.Difficulty > 0) )
-            MakeNoise(0.1 * Level.Game.Difficulty);
-        PlayInAir();
-
-        Velocity.Z = JumpZ;
-
-        // reduce the jump velocity if you are crouching
-//      if (bIsCrouching)
-//          Velocity.Z *= 0.9;
-
-        if ( Base != Level )
-            Velocity.Z += Base.Velocity.Z;
-        SetPhysics(PHYS_Falling);
-        if ( bCountJumps && (Role == ROLE_Authority) )
-            Inventory.OwnerJumped();
-    }
-}
-
 function bool IsLeaning()
 {
     return (curLeanDist != 0);
