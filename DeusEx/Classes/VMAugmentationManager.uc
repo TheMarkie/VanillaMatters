@@ -159,7 +159,6 @@ function bool IncreaseLevel( name name ) {
     info = GetInfo( name );
     if ( info != none && info.IncreaseLevel() ) {
         if ( info.IsActive ) {
-            info.UpdateValues( Player, info.Level - 1, info.Level );
             info.Deactivate();
             info.Activate();
         }
@@ -175,7 +174,6 @@ function bool DecreaseLevel( name name ) {
     info = GetInfo( name );
     if ( info != none && info.DecreaseLevel() ) {
         if ( info.IsActive ) {
-            info.UpdateValues( Player, info.Level + 1, info.Level );
             info.Deactivate();
             info.Activate();
         }
