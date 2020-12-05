@@ -41,8 +41,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <ue1launcherProjectDir>D:\_Dev\C++\ue1launcher\ue1launcher\</ue1launcherProjectDir>
-    <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
