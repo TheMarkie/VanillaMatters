@@ -28,7 +28,6 @@ var() bool IsPassive;
 var() array<float> Rates; // Energy cost per minute.
 
 var EAugmentationLocation InstallLocation;
-var bool HasBehaviour;
 
 //==============================================
 // General info

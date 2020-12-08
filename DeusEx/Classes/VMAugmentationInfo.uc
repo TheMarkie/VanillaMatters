@@ -16,10 +16,12 @@ function LoadDefinition() {
 function LoadBehaviour( VMAugmentationManager manager ) {
     local class<VMAugmentationBehaviour> behaviourClass;
 
-    if ( Definition.default.HasBehaviour && Behaviour == none ) {
+    if ( Behaviour == none ) {
         behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ) $ "Behaviour", class'Class' ) );
-        Behaviour = new behaviourClass;
-        Behaviour.Definition = Definition;
+        if ( behaviourClass != none ) {
+            Behaviour = new behaviourClass;
+            Behaviour.Definition = Definition;
+        }
     }
 }
 
