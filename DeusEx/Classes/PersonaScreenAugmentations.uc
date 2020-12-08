@@ -448,6 +448,27 @@ function DestroyWindow() {
 }
 
 // ----------------------------------------------------------------------
+// ButtonActivated()
+// ----------------------------------------------------------------------
+// Vanilla Matters
+function bool ButtonActivated( Window buttonPressed ) {
+    local PersonaItemButton itemButton;
+
+    if ( super.ButtonActivated( buttonPressed ) ) {
+        return true;
+    }
+
+    itemButton = PersonaItemButton( buttonPressed );
+    if ( itemButton != none ) {
+        SelectAugmentation( itemButton );
+
+        return true;
+    }
+
+    return false;
+}
+
+// ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
 // Vanilla Matters
