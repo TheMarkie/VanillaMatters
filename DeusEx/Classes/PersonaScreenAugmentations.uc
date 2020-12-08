@@ -6,7 +6,6 @@ class PersonaScreenAugmentations extends PersonaScreenBaseWindow;
 
 #exec TEXTURE IMPORT FILE="Textures\AugmentationsBorder_6.bmp"      NAME="AugmentationsBorder_6"        GROUP="VMUI" MIPS=Off
 
-var PersonaActionButtonWindow           btnActivate;
 var PersonaActionButtonWindow           btnUpgrade;
 var PersonaActionButtonWindow           btnUseCell;
 var PersonaInfoWindow                   winInfo;
@@ -39,8 +38,6 @@ var Color colBarBack;
 
 var localized String AugmentationsTitleText;
 var localized String UpgradeButtonLabel;
-var localized String ActivateButtonLabel;
-var localized String DeactivateButtonLabel;
 var localized String UseCellButtonLabel;
 var localized String AugCanUseText;
 var localized String BioCellUseText;
@@ -131,9 +128,6 @@ function CreateButtons()
 
     btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnUpgrade.SetButtonText(UpgradeButtonLabel);
-
-    btnActivate = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    btnActivate.SetButtonText(ActivateButtonLabel);
 
     winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
     winActionButtons.SetPos(346, 387);
@@ -454,74 +448,6 @@ function DestroyWindow() {
 }
 
 // ----------------------------------------------------------------------
-// ButtonActivated()
-// ----------------------------------------------------------------------
-// Vanilla Matters
-function bool ButtonActivated( Window buttonPressed ) {
-    local PersonaItemButton itemButton;
-
-    if ( super.ButtonActivated( buttonPressed ) ) {
-        return true;
-    }
-
-    itemButton = PersonaItemButton( buttonPressed );
-    if ( itemButton != none ) {
-        SelectAugmentation( itemButton );
-    }
-    else {
-        switch( buttonPressed ) {
-            case btnUpgrade:
-                UpgradeAugmentation();
-                break;
-
-            case btnActivate:
-                ActivateAugmentation();
-                break;
-
-            case btnUseCell:
-                UseCell();
-                break;
-
-            default:
-                return false;
-        }
-    }
-
-    return true;
-}
-
-// ----------------------------------------------------------------------
-// VirtualKeyPressed()
-//
-// Called when a key is pressed; provides a virtual key value
-// ----------------------------------------------------------------------
-
-event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
-{
-    local bool bKeyHandled;
-    bKeyHandled = True;
-
-    if (Super.VirtualKeyPressed(key, bRepeat))
-        return True;
-
-    switch( key )
-    {
-        // Vanilla Matters: Disable the F hotkeys because aug keys aren't hardcoded anymore.
-
-        // Enter will toggle an aug on/off
-        case IK_Enter:
-            ActivateAugmentation();
-            break;
-
-        default:
-            bKeyHandled = False;
-            break;
-    }
-
-    return bKeyHandled;
-}
-
-// ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
 // Vanilla Matters
@@ -581,29 +507,6 @@ function UpgradeAugmentation() {
 }
 
 // ----------------------------------------------------------------------
-// ActivateAugmentation()
-// ----------------------------------------------------------------------
-// Vanilla Matters
-function ActivateAugmentation() {
-    if ( selectedAug == none ) {
-        return;
-    }
-
-    selectedAug.Toggle( VMPlayer( player ), !selectedAug.IsActive );
-
-    // If the augmentation activated or deactivated, set the
-    // button appropriately.
-
-    if (selectedAugButton != None) {
-        PersonaAugmentationItemButton( selectedAugButton ).SetActive( selectedAug.IsActive );
-    }
-
-    VM_AugSystem.GetFullDescription( selectedAug, winInfo );
-
-    EnableButtons();
-}
-
-// ----------------------------------------------------------------------
 // UseCell()
 // ----------------------------------------------------------------------
 
@@ -636,23 +539,6 @@ function EnableButtons()
     }
     else {
         btnUpgrade.EnableWindow( false );
-    }
-
-    // Only allow btnActivate to be active if
-    //
-    // 1.  We have a selected augmentation
-    // 2.  The player's energy is above 0
-    // 3.  This augmentation isn't "AlwaysActive"
-
-    // Vanilla Matters
-    btnActivate.EnableWindow( selectedAug != none && player.Energy > 0 && !selectedAug.IsPassive() );
-
-    if ( selectedAug != None )
-    {
-        if ( selectedAug.IsActive )
-            btnActivate.SetButtonText(DeactivateButtonLabel);
-        else
-            btnActivate.SetButtonText(ActivateButtonLabel);
     }
 
     // Use Cell button
@@ -805,8 +691,6 @@ defaultproperties
      augSlotSpacingY=59
      AugmentationsTitleText="Augmentations"
      UpgradeButtonLabel="|&Upgrade"
-     ActivateButtonLabel="Acti|&vate"
-     DeactivateButtonLabel="Deac|&tivate"
      UseCellButtonLabel="Us|&e Cell"
      AugCanUseText="To upgrade an Augmentation, click on the Augmentation you wish to upgrade, then on the Upgrade button."
      BioCellUseText="To replenish Bioelectric Energy for your Augmentations, click on the Use Cell button."
