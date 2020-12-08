@@ -9,5 +9,4 @@ class HUDActiveAug extends HUDActiveItemBase;
 
 defaultproperties
 {
-     colItemIcon=(R=0,G=255,B=0)
 }

@@ -1853,7 +1853,7 @@ exec function AugAdd( name className, optional name packageName ) {
     }
 
     if ( GetAugmentationLevel( className ) < 0 ) {
-        GetAugmentationSystem().Add( className, packageName );
+        AddAugmentation( className, packageName );
     }
     else {
         IncreaseAugmentationLevel( className );
@@ -11289,7 +11289,7 @@ function InitializeAugmentationSystem();
 function VMAugmentationManager GetAugmentationSystem() { return none; }
 function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
 
-function bool AddAugmentation( class<VMAugmentation> augClass ) { return false; }
+function bool AddAugmentation( name className, name packageName ) { return false; }
 function bool IncreaseAugmentationLevel( name name ) { return false; }
 
 function SetAugmentation( name name, bool activate );

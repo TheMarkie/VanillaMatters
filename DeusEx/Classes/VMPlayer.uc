@@ -1419,16 +1419,19 @@ function VMAugmentationInfo GetFirstAugmentationInfo() {
     return none;
 }
 
-function bool AddAugmentation( class<VMAugmentation> augClass ) {
+function bool AddAugmentation( name className, name packageName ) {
     local int i;
 
     if ( VMAugmentationSystem != none ) {
-        if ( VMAugmentationSystem.Add( augClass.Name, augClass.Outer.Name ) ) {
+        if ( VMAugmentationSystem.Add( className, packageName ) ) {
             for ( i = 0; i < 10; i++ ) {
                 if ( AugmentationHotBar[i] == '' ) {
-                    AugmentationHotBar[i] = augClass.Name;
+                    AugmentationHotBar[i] = className;
+                    break;
                 }
             }
+
+            RefreshAugmentationDisplay();
 
             return true;
         }
@@ -1510,9 +1513,22 @@ function UpdateAugmentationDisplay( VMAugmentationInfo info, bool show ) {
     }
 }
 function RefreshAugmentationDisplay() {
-    ClearAugmentationDisplay();
-    if ( VMAugmentationSystem != none ) {
-        VMAugmentationSystem.RefreshDisplay();
+    local int i;
+    local VMAugmentationInfo info;
+
+    if ( DXRootWindow != none && DXRootWindow.hud != none ) {
+        DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
+
+        if ( VMAugmentationSystem != none ) {
+            for ( i = 0; i < 10; i++ ) {
+                if ( AugmentationHotBar[i] != '' ) {
+                    info = VMAugmentationSystem.GetInfo( AugmentationHotBar[i] );
+                    if ( info != none ) {
+                        DXRootWindow.hud.activeItems.AddIcon( info.GetSmallIcon(), info );
+                    }
+                }
+            }
+        }
     }
 }
 function ClearAugmentationDisplay() {

@@ -70,19 +70,6 @@ function Reset() {
 //==============================================
 // Augmentation Display
 //==============================================
-function RefreshDisplay() {
-    local VMAugmentationInfo info;
-
-    info = FirstAugmentationInfo;
-    while ( info != none ) {
-        if ( !info.IsPassive() ) {
-            player.UpdateAugmentationDisplay( info, info.IsActive );
-        }
-
-        info = info.Next;
-    }
-}
-
 function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
     local string str;
 

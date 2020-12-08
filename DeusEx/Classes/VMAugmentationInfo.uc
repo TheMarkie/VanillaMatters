@@ -86,13 +86,11 @@ function Toggle( VMPlayer player, bool on ) {
 
     if ( on ) {
         player.PlaySound( Definition.default.ActivateSound, SLOT_None );
-        player.UpdateAugmentationDisplay( self, true );
 
         Activate();
     }
     else {
         player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
-        player.UpdateAugmentationDisplay( self, false );
 
         Deactivate();
     }
