@@ -946,20 +946,20 @@ exec function ParseRightClick() {
 }
 
 // Rewrite aug activativation functions to be clearer.
-exec function AugSlot1() { ActivateAugByKey( 0 ); }
-exec function AugSlot2() { ActivateAugByKey( 1 ); }
-exec function AugSlot3() { ActivateAugByKey( 2 ); }
-exec function AugSlot4() { ActivateAugByKey( 3 ); }
-exec function AugSlot5() { ActivateAugByKey( 4 ); }
-exec function AugSlot6() { ActivateAugByKey( 5 ); }
-exec function AugSlot7() { ActivateAugByKey( 6 ); }
-exec function AugSlot8() { ActivateAugByKey( 7 ); }
-exec function AugSlot9() { ActivateAugByKey( 8 ); }
-exec function AugSlot10() { ActivateAugByKey( 9 ); }
+exec function AugSlot1() { ToggleAugmentation( AugmentationHotBar[0] ); }
+exec function AugSlot2() { ToggleAugmentation( AugmentationHotBar[1] ); }
+exec function AugSlot3() { ToggleAugmentation( AugmentationHotBar[2] ); }
+exec function AugSlot4() { ToggleAugmentation( AugmentationHotBar[3] ); }
+exec function AugSlot5() { ToggleAugmentation( AugmentationHotBar[4] ); }
+exec function AugSlot6() { ToggleAugmentation( AugmentationHotBar[5] ); }
+exec function AugSlot7() { ToggleAugmentation( AugmentationHotBar[6] ); }
+exec function AugSlot8() { ToggleAugmentation( AugmentationHotBar[7] ); }
+exec function AugSlot9() { ToggleAugmentation( AugmentationHotBar[8] ); }
+exec function AugSlot10() { ToggleAugmentation( AugmentationHotBar[9] ); }
 
 // Flashlight now has its own key and function.
 exec function ToggleFlashlight() {
-    ActivateAugByKey( 10 );
+    ToggleAugmentation( AugmentationHotBar[10] );
 }
 
 //==============================================
@@ -1638,10 +1638,6 @@ function bool CanDrain( float drainAmount ) {
 //==============================================
 // Misc
 //==============================================
-function ActivateAugByKey( int keyNum ) {
-    ToggleAugmentation( AugmentationHotBar[keyNum] );
-}
-
 // Replace CatchFire to have burn damage depend on initial damage taken.
 // Override
 function StartBurning( Pawn burner, float burnDamage ) {
