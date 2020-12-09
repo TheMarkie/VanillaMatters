@@ -52,6 +52,15 @@ void UTable##name::execSet( FFrame& Stack, RESULT_DECL ) { \
         Count++; \
     } \
 } \
+void UTable##name::execModify( FFrame& Stack, RESULT_DECL ) { \
+    P_GET_NAME( name ) \
+    P_GET_##type( value ) \
+    P_FINISH \
+    INT key = name.GetIndex(); \
+    if ( _map.contains( key ) ) { \
+        _map[key] += value; \
+    } \
+} \
 void UTable##name::execTryGetValue( FFrame& Stack, RESULT_DECL ) { \
     P_GET_NAME( name ) \
     P_GET_##type##_REF( value ) \

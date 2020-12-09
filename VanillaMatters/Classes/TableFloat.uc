@@ -7,6 +7,7 @@ native final function Remove( name key );
 native final function Clear();
 
 native final function Set( name key, float value );
+native final function Modify( name key, float value );
 native final function bool TryGetValue( name key, out float value );
 
 defaultproperties

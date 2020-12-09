@@ -8,6 +8,7 @@ public: \
     DECLARE_FUNCTION( execRemove ) \
     DECLARE_FUNCTION( execClear ) \
     DECLARE_FUNCTION( execSet ) \
+    DECLARE_FUNCTION( execModify ) \
     DECLARE_FUNCTION( execTryGetValue ) \
     DECLARE_CLASS( UTable##name, UTable, 0 ) \
 protected: \
