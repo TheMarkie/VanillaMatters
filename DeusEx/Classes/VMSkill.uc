@@ -40,7 +40,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
         valueData = default.GlobalValues[i];
         valueCount = #valueData.Values;
 
-        globalTable.TryGetValue( valueData.Name, value );
+        value = 0;
         if ( oldLevel >= 0 ) {
             value -= valueData.Values[Min( oldLevel, valueCount - 1 )];
         }
@@ -48,7 +48,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
             value += valueData.Values[Min( newLevel, valueCount - 1 )];
         }
 
-        globalTable.Set( valueData.Name, value );
+        globalTable.Modify( valueData.Name, value );
     }
 
     categories = player.CategoryModifiers;
@@ -67,7 +67,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
             valueData = category.Values[j];
             valueCount = #valueData.Values;
 
-            categoryTable.TryGetValue( valueData.Name, value );
+            value = 0;
             if ( oldLevel >= 0 ) {
                 value -= valueData.Values[Min( oldLevel, valueCount - 1 )];
             }
@@ -75,7 +75,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
                 value += valueData.Values[Min( newLevel, valueCount - 1 )];
             }
 
-            categoryTable.Set( valueData.Name, value );
+            categoryTable.Modify( valueData.Name, value );
         }
     }
 }
