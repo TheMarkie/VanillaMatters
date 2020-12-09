@@ -201,21 +201,15 @@ function ClearFunction()
 
         if (MenuValues2[rowIndex] != "")
         {
-            if (CanRemapKey(MenuValues2[rowIndex]))
-            {
-                AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[rowIndex]));
-                MenuValues2[rowIndex] = "";
-            }
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[rowIndex]));
+            MenuValues2[rowIndex] = "";
         }
 
         if (MenuValues1[rowIndex] != "")
         {
-            if (CanRemapKey(MenuValues1[rowIndex]))
-            {
-                AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[rowIndex]));
-                MenuValues1[rowIndex] = MenuValues2[rowIndex];
-                MenuValues2[rowIndex] = "";
-            }
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[rowIndex]));
+            MenuValues1[rowIndex] = MenuValues2[rowIndex];
+            MenuValues2[rowIndex] = "";
         }
 
         // Update the buttons
@@ -361,18 +355,6 @@ function String GetKeyDisplayNameFromKeyName(string keyName)
 }
 
 // ----------------------------------------------------------------------
-// CanRemapKey()
-// ----------------------------------------------------------------------
-
-function bool CanRemapKey(string KeyName)
-{
-    if ((KeyName == "F1") || (KeyName == "F2"))  // hack - DEUS_EX STM
-        return false;
-    else
-        return true;
-}
-
-// ----------------------------------------------------------------------
 // ProcessKeySelection()
 // ----------------------------------------------------------------------
 
@@ -439,22 +421,11 @@ function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
     }
     else
     {
-        if (CanRemapKey(MenuValues1[Selection]))
-        {
-            // Undo first key assignment
-            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[Selection]));
+        // Undo first key assignment
+        AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[Selection]));
 
-            MenuValues1[Selection] = MenuValues2[Selection];
-            MenuValues2[Selection] = keyDisplayName;
-        }
-        else if (CanRemapKey(MenuValues2[Selection]))
-        {
-            // Undo second key assignment
-            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[Selection]));
-
-            MenuValues2[Selection] = keyDisplayName;
-        }
-
+        MenuValues1[Selection] = MenuValues2[Selection];
+        MenuValues2[Selection] = keyDisplayName;
     }
 
     // Vanilla Matters
