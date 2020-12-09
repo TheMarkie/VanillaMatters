@@ -5,19 +5,20 @@ var travel bool IsActive;
 
 var travel VMAugmentationBehaviour Behaviour;
 
+var transient VMPlayer Player;
 var transient class<VMAugmentation> Definition;
 
 function LoadDefinition() {
     if ( Definition == none ) {
-        Definition = class<VMAugmentation>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ), class'Class' ) );
+        Definition = class<VMAugmentation>( DynamicLoadObject( DefinitionPackageName $ "." $ DefinitionClassName, class'Class' ) );
     }
 }
 
 function LoadBehaviour( VMAugmentationManager manager ) {
     local class<VMAugmentationBehaviour> behaviourClass;
 
-    if ( Behaviour == none ) {
-        behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ) $ "Behaviour", class'Class' ) );
+    if ( Definition.default.BehaviourClassName != '' ) {
+        behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( DefinitionPackageName $ "." $ Definition.default.BehaviourClassName, class'Class' ) );
         if ( behaviourClass != none ) {
             Behaviour = new behaviourClass;
             Behaviour.Definition = Definition;
@@ -58,8 +59,10 @@ function int GetInstallLocation() {
 //==============================================
 // Management
 //==============================================
-function Refresh( VMPlayer player, optional bool active ) {
+function Refresh( VMPlayer playerOwner, optional bool active ) {
     LoadDefinition();
+
+    Player = playerOwner;
 
     if ( Behaviour != none ) {
         Behaviour.Definition = Definition;
@@ -79,7 +82,7 @@ function Refresh( VMPlayer player, optional bool active ) {
     }
 }
 
-function Toggle( VMPlayer player, bool on ) {
+function Toggle( bool on ) {
     if ( IsActive == on
         || ( Definition.default.IsPassive && !on )
     ) {
@@ -87,12 +90,12 @@ function Toggle( VMPlayer player, bool on ) {
     }
 
     if ( on ) {
-        player.PlaySound( Definition.default.ActivateSound, SLOT_None );
+        Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
 
         Activate();
     }
     else {
-        player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
+        Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
 
         Deactivate();
     }
@@ -107,11 +110,17 @@ function Activate() {
     if ( Behaviour != none ) {
         Behaviour.Activate( Level );
     }
+    else {
+        Definition.static.Activate( Player, Level );
+    }
 }
 
 function Deactivate() {
     if ( Behaviour != none ) {
         Behaviour.Deactivate( Level );
+    }
+    else {
+        Definition.static.Deactivate( Player, Level );
     }
 }
 
@@ -125,7 +134,7 @@ function float GetRate() {
     if ( Behaviour != none ) {
         Behaviour.GetRate( Level );
     }
-    else if ( !Definition.default.IsPassive && Level < #Definition.default.Rates ) {
+    else if ( Level < #Definition.default.Rates ) {
         return Definition.default.Rates[Level];
     }
 

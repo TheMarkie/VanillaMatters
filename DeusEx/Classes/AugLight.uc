@@ -8,4 +8,5 @@ defaultproperties
      Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.|n|nNO UPGRADES"
      Rates=(6.000000)
      InstallLocation=AugmentationLocationDefault
+     BehaviourClassName=AugLightBehaviour
 }

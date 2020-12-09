@@ -195,7 +195,7 @@ function Set( name name, bool active ) {
 
     info = GetInfo( name );
     if ( info != none ) {
-        info.Toggle( Player, active );
+        info.Toggle( active );
     }
 }
 function Toggle( name name ) {
@@ -207,7 +207,7 @@ function Toggle( name name ) {
 
     info = GetInfo( name );
     if ( info != none ) {
-        info.Toggle( Player, !info.IsActive );
+        info.Toggle( !info.IsActive );
     }
 }
 

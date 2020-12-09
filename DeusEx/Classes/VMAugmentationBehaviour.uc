@@ -1,8 +1,8 @@
 class VMAugmentationBehaviour extends Object
     abstract;
 
-var VMPlayer Player;
-var class<VMAugmentation> Definition;
+var transient VMPlayer Player;
+var transient class<VMAugmentation> Definition;
 
 function Refresh( VMPlayer p ) {
     Player = p;
