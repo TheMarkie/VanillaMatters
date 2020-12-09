@@ -132,13 +132,10 @@ function Tick( float deltaTime ) {
 
 function float GetRate() {
     if ( Behaviour != none ) {
-        Behaviour.GetRate( Level );
-    }
-    else if ( Level < #Definition.default.Rates ) {
-        return Definition.default.Rates[Level];
+        return Behaviour.GetRate( Level );
     }
 
-    return 0;
+    return Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )];
 }
 
 function float IsOnCooldown() {
