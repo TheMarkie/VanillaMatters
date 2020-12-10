@@ -12,8 +12,8 @@ function Activate( int level );
 function Tick( float deltaTime, int level );
 function Deactivate( int level );
 
-function float GetRate( int level ) {
-    return Definition.default.Rates[Level];
+function float GetRate( float time, int level ) {
+    return ( Definition.default.Rates[Min( level, #Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
 function float IsOnCooldown( int level );

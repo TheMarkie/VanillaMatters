@@ -81,7 +81,7 @@ function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo 
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
     // Energy Rate
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate() ) ) );
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate( 60 ) ) ) );
 
     // Current Level
     str = Sprintf( CurrentLevelLabel, info.Level + 1 );
@@ -245,13 +245,13 @@ function float GetTotalRate( float deltaTime ) {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         if ( info.IsActive ) {
-            rate += info.GetRate();
+            rate += info.GetRate( deltaTime );
         }
 
         info = info.Next;
     }
 
-    return ( ( rate / 60 ) * deltaTime );
+    return rate;
 }
 
 function int GetLevel( name name ) {

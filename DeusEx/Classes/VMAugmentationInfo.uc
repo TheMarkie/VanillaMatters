@@ -162,12 +162,12 @@ function Tick( float deltaTime ) {
     }
 }
 
-function float GetRate() {
+function float GetRate( float time ) {
     if ( Behaviour != none ) {
-        return Behaviour.GetRate( Level );
+        return Behaviour.GetRate( time, Level );
     }
 
-    return Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )];
+    return ( Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
 function float IsOnCooldown() {
