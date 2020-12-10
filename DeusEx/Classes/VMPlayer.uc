@@ -1563,6 +1563,9 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
     if ( useSkill ) {
         healAmount = baseAmount + GetValue( 'HealingBonus' );
     }
+    else {
+        healAmount = baseAmount;
+    }
 
     totalHealAmount = healAmount;
 
