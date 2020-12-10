@@ -144,13 +144,8 @@ function bool IncreaseLevel( name name ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
-    if ( info != none && info.IncreaseLevel() ) {
-        if ( info.IsActive ) {
-            info.Deactivate();
-            info.Activate();
-        }
-
-        return true;
+    if ( info != none ) {
+        return info.IncreaseLevel();
     }
 
     return false;
@@ -159,13 +154,8 @@ function bool DecreaseLevel( name name ) {
     local VMAugmentationInfo info;
 
     info = GetInfo( name );
-    if ( info != none && info.DecreaseLevel() ) {
-        if ( info.IsActive ) {
-            info.Deactivate();
-            info.Activate();
-        }
-
-        return true;
+    if ( info != none ) {
+        return info.DecreaseLevel();
     }
 
     return false;
