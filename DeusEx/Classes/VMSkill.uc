@@ -23,8 +23,8 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
     local int i, j, count, categoryCount, valueCount;
     local float value;
 
-    local TableFloat globalTable, categoryTable;
-    local TableTableFloat categories;
+    local TableFloat globalTable;
+    local TableTableFloat categoryTable;
 
     local UpgradeCategory category;
     local UpgradeValue valueData;
@@ -51,16 +51,11 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
         globalTable.Modify( valueData.Name, value );
     }
 
-    categories = player.CategoryModifiers;
+    categoryTable = player.CategoryModifiers;
 
     categoryCount = #default.CategoryValues;
     for ( i = 0; i < categoryCount; i++ ) {
         category = default.CategoryValues[i];
-
-        if ( !categories.TryGetValue( category.Name, categoryTable ) ) {
-            categoryTable = new class'TableFloat';
-            categories.Set( category.Name, categoryTable );
-        }
 
         count = #category.Values;
         for ( j = 0; j < count; j++ ) {
@@ -75,7 +70,7 @@ static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
                 value += valueData.Values[Min( newLevel, valueCount - 1 )];
             }
 
-            categoryTable.Modify( valueData.Name, value );
+            categoryTable.Modify( category.Name, valueData.Name, value );
         }
     }
 }
