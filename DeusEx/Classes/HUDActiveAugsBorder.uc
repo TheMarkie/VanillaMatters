@@ -4,93 +4,22 @@
 
 class HUDActiveAugsBorder extends HUDActiveItemsBorderBase;
 
-// ----------------------------------------------------------------------
-// ClearAugmentationDisplay()
-// ----------------------------------------------------------------------
-
-function ClearAugmentationDisplay()
-{
-    local Window currentWindow;
-    local Window foundWindow;
-
-    // Loop through all our children and check to see if
-    // we have a match.
-
-    currentWindow = winIcons.GetTopChild();
-    while(currentWindow != None)
-    {
-        currentWindow.Hide();
-        currentWindow.SetClientObject(None);
-        currentWindow = currentWindow.GetLowerSibling();
-    }
-
-    iconCount = 0;
-}
-
-// ----------------------------------------------------------------------
-// AddIcon()
-//
-// Find the appropriate
-// ----------------------------------------------------------------------
 // Vanilla Matters
 function AddIcon( Texture newIcon, Object saveObject ) {
     local HUDActiveAug augItem;
 
     augItem = HUDActiveAug( winIcons.NewChild( Class'HUDActiveAug' ) );
-    if ( augItem != none ) {
-        augItem.SetIcon( newIcon );
-        augItem.SetClientObject( saveObject );
-        augItem.Show();
+    augItem.SetIcon( newIcon );
+    augItem.SetClientObject( saveObject );
+    augItem.Info = VMAugmentationInfo( saveObject );
+    augItem.Show();
 
-        // Hide if there are no icons visible
-        if ( ++iconCount == 1 ) {
-            Show();
-        }
-
-        AskParentForReconfigure();
-    }
-}
-
-// ----------------------------------------------------------------------
-// RemoveObject()
-// ----------------------------------------------------------------------
-
-function RemoveObject( Object removeObject ) {
-    local HUDActiveAug augItemWindow;
-
-    augItemWindow = FindAugWindow( VMAugmentationInfo( removeObject ) );
-    if ( augItemWindow != none ) {
-        augItemWindow.Destroy();
-
-        // Hide if there are no icons visible
-        if ( --iconCount == 0 ) {
-            Hide();
-        }
-
-        AskParentForReconfigure();
-    }
-}
-
-// ----------------------------------------------------------------------
-// FindAugWindowByKey()
-// ----------------------------------------------------------------------
-// Vanilla Matters
-function HUDActiveAug FindAugWindow( VMAugmentationInfo info ) {
-    local Window currentWindow;
-
-    // Loop through all our children and check to see if
-    // we have a match.
-
-    currentWindow = winIcons.GetTopChild( false );
-    while( currentWindow != none ) {
-        if ( currentWindow.GetClientObject() == info ) {
-            break;
-        }
-
-        currentWindow = currentWindow.GetLowerSibling( false );
+    // Hide if there are no icons visible
+    if ( ++iconCount == 1 ) {
+        Show();
     }
 
-    return HUDActiveAug( currentWindow );
+    AskParentForReconfigure();
 }
 
 // ----------------------------------------------------------------------

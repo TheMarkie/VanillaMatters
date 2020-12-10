@@ -81,7 +81,7 @@ function RemoveIcon( Object removeObject ) {
 
 function ClearAugmentationDisplay()
 {
-    winAugsContainer.ClearAugmentationDisplay();
+    winAugsContainer.RemoveAllIcons();
 }
 
 // ----------------------------------------------------------------------
