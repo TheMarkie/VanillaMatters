@@ -11,9 +11,9 @@ static function Activate( VMPlayer player, int level ) {
 }
 
 static function Deactivate( VMPlayer player, int level ) {
-    player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', - default.MovementSpeedBonusMult[level] );
-    player.GlobalModifiers.Modify( 'JumpVelocityBonusMult', - default.JumpVelocityBonusMult[level] );
-    player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', - default.FellDamageResistanceFlat[level] );
+    player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', -default.MovementSpeedBonusMult[level] );
+    player.GlobalModifiers.Modify( 'JumpVelocityBonusMult', -default.JumpVelocityBonusMult[level] );
+    player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', -default.FellDamageResistanceFlat[level] );
 }
 
 defaultproperties
