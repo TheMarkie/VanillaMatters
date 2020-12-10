@@ -1854,9 +1854,14 @@ exec function AugAdd( name className, optional name packageName ) {
 
     if ( GetAugmentationLevel( className ) < 0 ) {
         AddAugmentation( className, packageName );
+        ClientMessage( "Augmentation" @ className @ "added." );
+    }
+    else if ( IncreaseAugmentationLevel( className ) ) {
+        ClientMessage( "Augmentation" @ className @ "increased to level" @ GetAugmentationLevel( className ) + 1 );
     }
     else {
-        IncreaseAugmentationLevel( className );
+        ClientMessage( "Augmentation" @ className @ "is already at max level." );
+
     }
 }
 
