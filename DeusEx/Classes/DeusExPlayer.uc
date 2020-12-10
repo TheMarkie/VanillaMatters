@@ -2345,7 +2345,7 @@ simulated function PlayFootStep()
     massFactor  = Mass/150.0;
 
     // Vanilla Matters: Make speed enhancement broadcast sounds over a much wider range.
-    radius = 375.0 * ( GetAugmentationLevel( 'AugSpeed' ) + 2 );
+    radius = 375.0 * ( 1 + ( GetValue( 'MovementSpeedBonusMult' ) * 2 ) );
 
     volume      = (speedFactor+0.2) * massFactor;
     range       = radius * volume;
@@ -2355,7 +2355,7 @@ simulated function PlayFootStep()
     pitch       = FClamp(pitch, 1.0, 1.5);
 
     // AugStealth decreases our footstep volume
-    volume *= RunSilentValue;
+    volume *= 1 - RunSilentValue;
 
     PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
     AISendEvent('LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
