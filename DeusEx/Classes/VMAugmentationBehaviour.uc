@@ -9,17 +9,11 @@ function Refresh( VMPlayer p ) {
 }
 
 function Activate( int level );
-
+function Tick( float deltaTime, int level );
 function Deactivate( int level );
 
-function Tick( float deltaTime, int level );
+function float GetRate( int level ) {
+    return Definition.default.Rates[Level];
+}
 
 function float IsOnCooldown( int level );
-
-function float GetRate( int level ) {
-    if ( !Definition.default.IsPassive ) {
-        return Definition.default.Rates[Level];
-    }
-
-    return 0;
-}
