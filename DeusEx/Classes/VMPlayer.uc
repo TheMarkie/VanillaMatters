@@ -66,7 +66,7 @@ var int EnemyInCombatCount;                     // Number of enemies targeting t
 // Properties
 //==============================================
 var travel float VisibilityNormal;
-var travel float VisibilityRobot;
+var travel float VisibilityRadar;
 
 var travel int LastMissionNumber;               // Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
@@ -289,19 +289,23 @@ function UpdateVisibility() {
 
     adaptiveOn = UsingChargedPickup( class'AdaptiveArmor' );
 
-    if ( IsAugmentationActive( 'AugRadarTrans' ) || adaptiveOn ) {
-        VisibilityRobot = 0;
+    if ( adaptiveOn ) {
+        VisibilityRadar = 0;
     }
     else {
-        VisibilityRobot = AIVisibility();
+        VisibilityRadar = AIVisibility();
     }
 
-    if ( IsAugmentationActive( 'AugCloak' ) || adaptiveOn ) {
+    VisibilityRadar *= FMax( 1 - GetValue( 'RadarVisibilityReductionMult' ), 0 );
+
+    if ( adaptiveOn ) {
         VisibilityNormal = 0;
     }
     else {
         VisibilityNormal = AIVisibility();
     }
+
+    VisibilityNormal *= FMax( 1 - GetValue( 'NormalVisibilityReductionMult' ), 0 );
 }
 
 // Vanilla Matters: Update the activation status of every type of charged pickups.
@@ -1623,7 +1627,7 @@ function HealPart( out int target, out int pool, int amount ) {
 // Override
 function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
     if ( Robot( P ) != none ) {
-        return VisibilityRobot;
+        return VisibilityRadar;
     }
     else {
         return VisibilityNormal;
