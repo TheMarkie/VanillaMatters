@@ -27,7 +27,7 @@ function Tick( float deltaTime, int level ) {
 function float GetRate( float time, int level ) {
     local float rate;
 
-    rate = Cost + super.GetRate( time, level );
+    rate = Cost;
     Cost = 0;
 
     return rate;
