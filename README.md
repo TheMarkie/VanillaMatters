@@ -2,7 +2,7 @@
 ## A Mod for the Original Deus Ex
 
 ### Installation
-If you intend to use the mod for playing purposes, get it from the [official site](https://www.nexusmods.com/deusex/mods/56).
+If you intend to use the mod for playing purposes, get it from the [release page](https://github.com/TheMarkie/VanillaMatters/releases).
 
 To install and use the code: 
 1. Follow the [setup guide here](https://github.com/TheMarkie/VanillaMatters/wiki/Setting-Up-Deus-Ex-for-modding). Make sure to get the utility scripts in the [Utilities section](https://github.com/TheMarkie/VanillaMatters/wiki/Setting-Up-Deus-Ex-for-modding#utilities).
