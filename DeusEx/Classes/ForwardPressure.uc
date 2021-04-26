@@ -10,7 +10,7 @@ var DeusExPlayer player;
 //==============================================
 // Rates
 //==============================================
-var private travel float _forwardPressure;           // The forward pressure meter.
+var private travel float forwardPressure;           // The forward pressure meter.
 
 var() float MaxForwardPressure;
 
@@ -44,15 +44,15 @@ var travel float HackingBonusScaled;
 var() float ZoneRadius;                     // How large these zones are.
 var() float StealthRadius;                  // How large the stealth radius is, to check for enemy pawns that the player is sneaking around.
 
-var private Vector _lastLocation;                    // Used for building forward pressure through movement.
-var private Vector _zone1;
-var private Vector _zone2;
+var private Vector lastLocation;                    // Used for building forward pressure through movement.
+var private Vector zone1;
+var private Vector zone2;
 
-var private bool _isLastLocationEmpty;                 // Used to know if any of the 3 vectors above is empty.
-var private bool _isZone1Empty;
-var private bool _isZone2Empty;
-var private float _zoneDeposit1;                     // How much pressure you can harvest out of the current zones.
-var private float _zoneDeposit2;
+var private bool isLastLocationEmpty;                 // Used to know if any of the 3 vectors above is empty.
+var private bool isZone1Empty;
+var private bool isZone2Empty;
+var private float zoneDeposit1;                     // How much pressure you can harvest out of the current zones.
+var private float zoneDeposit2;
 
 //==============================================
 // Management
@@ -74,17 +74,17 @@ function SetPlayer( DeusExPlayer newPlayer ) {
 }
 
 function Add( float amount ) {
-    _forwardPressure = FClamp( _forwardPressure + amount, 0, 100 );
+    forwardPressure = FClamp( forwardPressure + amount, 0, 100 );
 }
 function Reset() {
-    _forwardPressure = 0;
+    forwardPressure = 0;
 }
 function float GetForwardPressure() {
-    return _forwardPressure;
+    return forwardPressure;
 }
 
 function bool IsFull() {
-    return _forwardPressure >= MaxForwardPressure;
+    return forwardPressure >= MaxForwardPressure;
 }
 
 //==============================================
@@ -152,19 +152,19 @@ function BuildForwardPressure( float deltaTime ) {
     }
 
     // There's no way to check if a vector is "empty" or hasn't been set so we use bools.
-    if ( _isLastLocationEmpty ) {
-        _lastLocation = player.Location;
-        _isLastLocationEmpty = false;
+    if ( isLastLocationEmpty ) {
+        lastLocation = player.Location;
+        isLastLocationEmpty = false;
 
         return;
     }
 
-    if ( _isZone1Empty ) {
-        _zone1 = player.Location;
-        _isZone1Empty = false;
+    if ( isZone1Empty ) {
+        zone1 = player.Location;
+        isZone1Empty = false;
     }
 
-    diff = VSize( player.Location - _lastLocation );
+    diff = VSize( player.Location - lastLocation );
 
     // Here's how the whole travelling FP gain thing works:
     // We set up an "initial" zone right at the player's location when they spawn into a map, it's basically a circle.
@@ -172,45 +172,45 @@ function BuildForwardPressure( float deltaTime ) {
     // If the player walks out of the first circle, a second zone is established at the player's location, allowing the player to now harvest FP from up to TWO zones.
     // If both zones are established, and the player walks into a position that's outside of BOTH current zones, then the first zone disappears and is replaced by this new zone.
     // This mechanics is designed to prevent walking back and forth to reap free FP.
-    dist = VSize( player.Location - _zone1 );
+    dist = VSize( player.Location - zone1 );
     if ( dist > ZoneRadius ) {
         if ( !_isZone2Empty ) {
-            _zone1 = _zone2;
-            _zoneDeposit1 = _zoneDeposit2;
+            zone1 = zone2;
+            zoneDeposit1 = zoneDeposit2;
         }
 
-        _zone2 = player.Location;
-        _zoneDeposit2 = ( ZoneRadius / 160 ) * TravelingRate;
-        _isZone2Empty = false;
+        zone2 = player.Location;
+        zoneDeposit2 = ( ZoneRadius / 160 ) * TravelingRate;
+        isZone2Empty = false;
     }
     else {
-        dist = VSize( _lastLocation - _zone1 );
+        dist = VSize( lastLocation - zone1 );
         if ( dist <= ZoneRadius ) {
-            pressure = FMin( ( diff / 160 ) * TravelingRate, _zoneDeposit1 );
+            pressure = FMin( ( diff / 160 ) * TravelingRate, zoneDeposit1 );
 
             Add( pressure );
 
-            _zoneDeposit1 = _zoneDeposit1 - pressure;
+            zoneDeposit1 = zoneDeposit1 - pressure;
         }
     }
 
     if ( !_isZone2Empty ) {
-        dist = VSize( player.Location - _zone2 );
+        dist = VSize( player.Location - zone2 );
         if ( dist > ZoneRadius ) {
-            _zone1 = _zone2;
-            _zoneDeposit1 = _zoneDeposit2;
+            zone1 = zone2;
+            zoneDeposit1 = zoneDeposit2;
 
-            _zone2 = player.Location;
-            _zoneDeposit2 = ( ZoneRadius / 160 ) * TravelingRate;
+            zone2 = player.Location;
+            zoneDeposit2 = ( ZoneRadius / 160 ) * TravelingRate;
         }
         else {
-            dist = VSize( _lastLocation - _zone2 );
+            dist = VSize( lastLocation - zone2 );
             if ( dist <= ZoneRadius ) {
-                pressure = FMin( ( diff / 160 ) * TravelingRate, _zoneDeposit2 );
+                pressure = FMin( ( diff / 160 ) * TravelingRate, zoneDeposit2 );
 
                 Add( pressure );
 
-                _zoneDeposit2 = _zoneDeposit2 - pressure;
+                zoneDeposit2 = zoneDeposit2 - pressure;
             }
         }
     }
@@ -231,14 +231,14 @@ function BuildForwardPressure( float deltaTime ) {
 
     Add( pressure );
 
-    _lastLocation = player.Location;
+    lastLocation = player.Location;
 }
 
 // Mark all zone related vectors "empty".
 function ResetZoneInfo() {
-    _isLastLocationEmpty = true;
-    _isZone1Empty = true;
-    _isZone2Empty = true;
+    isLastLocationEmpty = true;
+    isZone1Empty = true;
+    isZone2Empty = true;
 }
 
 defaultproperties

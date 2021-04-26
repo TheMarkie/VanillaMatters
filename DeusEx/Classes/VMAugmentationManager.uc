@@ -1,6 +1,6 @@
 class VMAugmentationManager extends VMUpgradeManager;
 
-var private transient bool _refreshed;
+var private transient bool refreshed;
 
 var travel VMAugmentationInfo FirstAugmentationInfo;
 
@@ -52,7 +52,7 @@ function Refresh( VMPlayer playerOwner ) {
         info = info.Next;
     }
 
-    _refreshed = true;
+    refreshed = true;
 }
 
 function Reset() {
