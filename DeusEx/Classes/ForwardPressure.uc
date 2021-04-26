@@ -174,7 +174,7 @@ function BuildForwardPressure( float deltaTime ) {
     // This mechanics is designed to prevent walking back and forth to reap free FP.
     dist = VSize( player.Location - zone1 );
     if ( dist > ZoneRadius ) {
-        if ( !_isZone2Empty ) {
+        if ( isZone2Empty ) {
             zone1 = zone2;
             zoneDeposit1 = zoneDeposit2;
         }
@@ -194,7 +194,7 @@ function BuildForwardPressure( float deltaTime ) {
         }
     }
 
-    if ( !_isZone2Empty ) {
+    if ( !isZone2Empty ) {
         dist = VSize( player.Location - zone2 );
         if ( dist > ZoneRadius ) {
             zone1 = zone2;

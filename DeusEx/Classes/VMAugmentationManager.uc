@@ -286,7 +286,7 @@ function class<VMAugmentation> GetAugmentationDefinition( name name ) {
 function Tick( float deltaTime ) {
     local VMAugmentationInfo info;
 
-    if ( !_refreshed ) {
+    if ( !refreshed ) {
         return;
     }
 
