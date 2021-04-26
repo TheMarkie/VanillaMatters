@@ -8,6 +8,7 @@ function Refresh( VMPlayer p ) {
     Player = p;
 }
 
+// Functionality
 function Activate( int level );
 function Tick( float deltaTime, int level );
 function Deactivate( int level );
@@ -17,3 +18,6 @@ function float GetRate( float time, int level ) {
 }
 
 function float IsOnCooldown( int level );
+
+// Display
+function Draw( AugmentationDisplayWindow displayWindow, GC gc );

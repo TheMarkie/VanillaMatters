@@ -11312,6 +11312,7 @@ function float GetTotalAugmentationRate( float deltaTime ) { return 0; }
 function UpdateAugmentationDisplay( VMAugmentationInfo aug, bool show );
 function RefreshAugmentationDisplay();
 function ClearAugmentationDisplay();
+function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc );
 
 //==============================================
 // ForwardPressure interface

@@ -1540,6 +1540,11 @@ function ClearAugmentationDisplay() {
         DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
     }
 }
+function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc ) {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.DrawAugmentations( displayWindow, gc );
+    }
+}
 
 //==============================================
 // Stats Management

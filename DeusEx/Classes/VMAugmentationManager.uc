@@ -118,6 +118,23 @@ function GetBaseDescription( class<VMAugmentation> augClass, PersonaInfoWindow w
     }
 }
 
+function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc ) {
+    local VMAugmentationInfo info;
+
+    if ( !refreshed ) {
+        return;
+    }
+
+    info = FirstAugmentationInfo;
+    while ( info != none ) {
+        if ( info.IsActive ) {
+            info.DrawAugmentation( displayWindow, gc );
+        }
+
+        info = info.Next;
+    }
+}
+
 //==============================================
 // Augmentation Management
 //==============================================
