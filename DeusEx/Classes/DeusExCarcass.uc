@@ -547,7 +547,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                                         P.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
                                     }
                                     else {
-                                        P.ClientMessage( AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName @ DeusExAmmo( AmmoType ).VM_msgFromWeapon @ tempW.ItemName, 'Pickup' );
+                                        P.ClientMessage( AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName @ tempW.VM_msgFromWeapon @ tempW.ItemName, 'Pickup' );
                                     }
 
                                     tempW.AmmoType.AmmoAmount = 0;

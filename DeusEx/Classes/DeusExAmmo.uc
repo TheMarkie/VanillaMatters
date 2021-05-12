@@ -15,8 +15,6 @@ var int MPMaxAmmo; //Max Ammo in multiplayer.
 // Vanilla Matters
 var() bool VM_isGrenade;
 
-var localized string VM_msgFromWeapon;
-
 // ----------------------------------------------------------------------
 // PostBeginPlay()
 // ----------------------------------------------------------------------
@@ -74,7 +72,6 @@ function PlayLandingSound()
 defaultproperties
 {
      msgInfoRounds="%d Rounds remaining"
-     VM_msgFromWeapon="from the"
      bDisplayableInv=False
      PickupMessage="You found"
      ItemName="DEFAULT AMMO NAME - REPORT THIS AS A BUG"

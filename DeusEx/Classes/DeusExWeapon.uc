@@ -233,6 +233,7 @@ var localized string VM_msgInfoStability;
 var localized string VM_msgInfoDefault;
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
+var localized string VM_msgFromWeapon;
 
 //
 // network replication
@@ -4007,6 +4008,7 @@ defaultproperties
      VM_msgInfoDefault="Default"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"
+     VM_msgFromWeapon="from the"
      ReloadCount=10
      shakevert=10.000000
      Misc1Sound=Sound'DeusExSounds.Generic.DryFire'
