@@ -72,6 +72,14 @@ var travel int LastMissionNumber;               // Keep track of the last missio
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
 
 //==============================================
+// Replication
+//==============================================
+replication {
+    reliable if ( Role < ROLE_Authority )
+        ParseLeftClick, ParseRightClick;
+}
+
+//==============================================
 // Initializing and Startup
 //==============================================
 // Override
