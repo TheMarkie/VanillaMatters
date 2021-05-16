@@ -5105,19 +5105,6 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
                             carc.itemName = corpse.CorpseItemName;
                             carc.CarcassName = corpse.CarcassName;
                             carc.VM_name = corpse.VM_name;
-
-                            // Vanilla Matters: Pass the inventory back in to allow recollecting the items.
-                            corpseInv = corpse.VM_corpseInventory;
-                            while ( corpseInv != None ) {
-                                nextCorpseInv = corpseInv.Inventory;
-
-                                carc.AddInventory( corpseInv );
-
-                                corpseInv = nextCorpseInv;
-                            }
-
-                            carc.VM_bSearchedOnce = corpse.VM_bSearchedOnce;
-
                             carc.Velocity = item.Velocity * 0.5;
                             item.Velocity = vect( 0,0,0 );
                             carc.bHidden = False;

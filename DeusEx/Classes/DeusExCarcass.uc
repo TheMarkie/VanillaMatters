@@ -770,7 +770,7 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
         }
 
         corpse = Spawn( class'POVCorpse' );
-        if (corpse != None) {
+        if ( corpse != none ) {
             corpse.carcClassString = String( Class );
             corpse.KillerAlliance = KillerAlliance;
             corpse.KillerBindName = KillerBindName;
@@ -783,22 +783,13 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
             corpse.CarcassName = CarcassName;
             corpse.VM_name = VM_name;
 
-            // Vanilla Matters: Save inventory information in case the frob ignores inventory.
             item = Inventory;
-
             while ( item != None ) {
                 nextItem = item.Inventory;
-
                 DeleteInventory( item );
-
-                item.Inventory = corpse.VM_corpseInventory;
-
-                corpse.VM_corpseInventory = item;
-
+                item.DropFrom( Location );
                 item = nextItem;
             }
-
-            corpse.VM_bSearchedOnce = VM_bSearchedOnce;
 
             corpse.Frob( player, None );
             corpse.SetBase( player );
