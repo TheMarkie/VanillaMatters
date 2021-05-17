@@ -5105,6 +5105,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
                             carc.itemName = corpse.CorpseItemName;
                             carc.CarcassName = corpse.CarcassName;
                             carc.VM_name = corpse.VM_name;
+                            carc.VM_bSearchedOnce = corpse.VM_bSearchedOnce;
                             carc.Velocity = item.Velocity * 0.5;
                             item.Velocity = vect( 0,0,0 );
                             carc.bHidden = False;

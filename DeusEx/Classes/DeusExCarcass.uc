@@ -782,6 +782,7 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
             corpse.CorpseItemName = itemName;
             corpse.CarcassName = CarcassName;
             corpse.VM_name = VM_name;
+            corpse.VM_bSearchedOnce = VM_bSearchedOnce;
 
             item = Inventory;
             while ( item != None ) {

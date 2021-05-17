@@ -16,6 +16,7 @@ var travel Name   CarcassName;
 
 // Vanilla Matters
 var travel string VM_name;
+var travel bool VM_bSearchedOnce;
 
 defaultproperties
 {
