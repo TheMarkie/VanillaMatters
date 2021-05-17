@@ -399,89 +399,42 @@ singular function BaseChange()
         SetPhysics(PHYS_Falling);
 }
 
-function bool HandlePickupQuery(Inventory Item)
-{
-    local DeusExWeapon W;
-    local DeusExPlayer player;
-    local bool bResult;
-    local class<Ammo> defAmmoClass;
-    local Ammo defAmmo;
+// Vanilla Matters
+function bool HandlePickupQuery( Inventory item ) {
+    local DeusExWeapon w;
 
-    // make sure that if you pick up a modded weapon that you
-    // already have, you get the mods
-    W = DeusExWeapon(Item);
-    if ((W != None) && (W.Class == Class))
-    {
-        if (W.ModBaseAccuracy > ModBaseAccuracy)
-            ModBaseAccuracy = W.ModBaseAccuracy;
-        if (W.ModReloadCount > ModReloadCount)
+    if ( item.Class == Class ) {
+        w = DeusExWeapon( item );
+
+        if ( w.ModBaseAccuracy > ModBaseAccuracy ) {
+            ModBaseAccuracy = w.ModBaseAccuracy;
+        }
+        if ( w.ModReloadCount > ModReloadCount) {
             ModReloadCount = W.ModReloadCount;
-        if (W.ModMaxRange > ModMaxRange)
-            ModMaxRange = W.ModMaxRange;
+        }
+        if ( w.ModMaxRange > ModMaxRange) {
+            ModMaxRange = w.ModMaxRange;
+        }
 
-        // these are negative
-        if (W.ModReloadTime < ModReloadTime)
-            ModReloadTime = W.ModReloadTime;
-        if (W.ModStability > ModStability)
+        if ( w.ModReloadTime < ModReloadTime ) {
+            ModReloadTime = w.ModReloadTime;
+        }
+        if ( W.ModStability > ModStability ) {
             ModStability = W.ModStability;
+        }
 
-        if (W.bHasLaser)
-            bHasLaser = True;
-        if (W.bHasSilencer)
-            bHasSilencer = True;
-        if (W.bHasScope)
-            bHasScope = True;
-
-        // copy the actual stats as well
-        if (W.ReloadCount > ReloadCount)
-            ReloadCount = W.ReloadCount;
-
-        // these are negative
-        if (W.BaseAccuracy < BaseAccuracy)
-            BaseAccuracy = W.BaseAccuracy;
-        if (W.ReloadTime < ReloadTime)
-            ReloadTime = W.ReloadTime;
-        if (W.RecoilStrength < RecoilStrength)
-            RecoilStrength = W.RecoilStrength;
-    }
-    player = DeusExPlayer(Owner);
-
-    if (Item.Class == Class)
-    {
-      if (!( (Weapon(item).bWeaponStay && (Level.NetMode == NM_Standalone)) && (!Weapon(item).bHeldItem || Weapon(item).bTossedOut)))
-        {
-            // Only add ammo of the default type
-            // There was an easy way to get 32 20mm shells, buy picking up another assault rifle with 20mm ammo selected
-            if ( AmmoType != None )
-            {
-                // Add to default ammo only
-                if ( AmmoNames[0] == None )
-                    defAmmoClass = AmmoName;
-                else
-                    defAmmoClass = AmmoNames[0];
-
-                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
-                defAmmo.AddAmmo( Weapon(Item).PickupAmmoCount );
-
-                if ( Level.NetMode != NM_Standalone )
-                {
-                    if (( player != None ) && ( player.InHand != None ))
-                    {
-                        if ( DeusExWeapon(item).class == DeusExWeapon(player.InHand).class )
-                            ReadyToFire();
-                    }
-                }
-            }
+        if ( w.bHasLaser ) {
+            bHasLaser = true;
+        }
+        if ( w.bHasSilencer ) {
+            bHasSilencer = true;
+        }
+        if ( w.bHasScope ) {
+            bHasScope = true;
         }
     }
 
-    bResult = Super.HandlePickupQuery(Item);
-
-    // Notify the object belt of the new ammo
-    if (player != None)
-        player.UpdateBeltText(Self);
-
-    return bResult;
+    return Inventory.HandlePickupQuery( item );
 }
 
 function BringUp()
@@ -524,21 +477,18 @@ function ReloadAmmo( optional bool bForce ) {
 
     if ( ReloadCount == 0 ) {
         p.ClientMessage( msgCannotBeReloaded );
-
         return;
     }
 
     // Vanilla Matters: Fix the bug where player can reload with a full clip. Also the exploit where triggering a reload animation can quicken equip animation.
     if ( !bForce && ClipCount <= 0 ) {
         p.ClientMessage( VM_msgFullClip );
-
         return;
     }
 
     // Vanilla Matters: Fix the bug where player can reload with no ammo left in storage.
     if ( !bForce && ( AmmoType.AmmoAmount - ( ReloadCount - ClipCount ) ) <= 0 ) {
         p.ClientMessage( VM_msgNoAmmo );
-
         return;
     }
 
