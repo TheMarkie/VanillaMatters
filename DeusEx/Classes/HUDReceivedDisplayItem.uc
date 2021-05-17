@@ -55,7 +55,7 @@ event SetItem(Inventory invItem, int count)
     labelText = invItem.beltDescription;
     // Vanilla Matters
     if ( count > 1 ) {
-        labelText = labelText $ string( count );
+        labelText = labelText @ string( count );
     }
 
     winLabel.SetText(labelText);
