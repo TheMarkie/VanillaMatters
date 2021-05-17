@@ -26,9 +26,6 @@ var bool            bQueuedDestroy; // For multiplayer, semaphore so you can't d
 
 var bool            bInit;
 
-// Used for Received Items window
-var bool bSearchMsgPrinted;
-
 var localized string msgSearching;
 var localized string msgEmpty;
 var localized string msgNotDead;
@@ -378,394 +375,116 @@ function SetScaleGlow()
 //
 // search the body for inventory items and give them to the frobber
 // ----------------------------------------------------------------------
-
-function Frob(Actor Frobber, Inventory frobWith)
-{
-    local Inventory item, nextItem, startItem;
-    local Pawn P;
-    local DeusExWeapon W;
-    local bool bFoundSomething;
-    local ammo AmmoType;
-    local bool bPickedItemUp;
-    //local POVCorpse corpse;
-    local DeusExPickup invItem;
-    local int itemCount;
-
-    // Vanilla Matters
+// Vanilla Matters
+function Frob( Actor frobber, Inventory frobWith ) {
+    local Vector loc;
     local VMPlayer player;
-    local bool bHeldAlready;        // Just something to make sure no two pickups are taken held in the same search.
-    local DeusExWeapon tempW;
-    local bool ammoPicked;
+    local Inventory item, nextItem;
+    local Ammo ammo;
+    local NanoKey key;
+    local Credits credits;
 
-//log("DeusExCarcass::Frob()--------------------------------");
-
-    // Can we assume only the *PLAYER* would actually be frobbing carci?
-    // Vanilla Matters
-    player = VMPlayer( Frobber );
-
-    // No doublefrobbing in multiplayer.
-    if (bQueuedDestroy)
-        return;
-
-    // Vanilla Matters: We have our own function to handle corpse spawning.
-    if ( SpawnPOVCorpse( Frobber, frobWith ) ) {
+    if ( bQueuedDestroy ) {
         return;
     }
 
-    bFoundSomething = False;
-    bSearchMsgPrinted = False;
-    P = Pawn(Frobber);
-    if (P != None)
-    {
-        // Make sure the "Received Items" display is cleared
-      // DEUS_EX AMSD Don't bother displaying in multiplayer.  For propagation
-      // reasons it is a lot more of a hassle than it is worth.
-        if ( (player != None) && (Level.NetMode == NM_Standalone) )
-         DeusExRootWindow(player.rootWindow).hud.receivedItems.RemoveItems();
+    player = VMPlayer( frobber );
+    if ( player == none ) {
+        return;
+    }
 
-        if (Inventory != None)
-        {
+    if ( Level.NetMode == NM_Standalone ) {
+        DeusExRootWindow( player.rootWindow ).hud.receivedItems.RemoveItems();
+    }
 
-            item = Inventory;
-            startItem = item;
+    item = Inventory;
+    while ( item != none ) {
+        nextItem = item.Inventory;
+        DeleteInventory( item );
 
-            do
-            {
-//              log("===>DeusExCarcass:item="$item );
+        ammo = Ammo( item );
+        if ( ammo != none ) {
+            if ( !Level.Game.PickupQuery( player, item ) ) {
+                item.SpawnCopy( player );
+            }
+            AddReceivedItem( player, item, ammo.AmmoAmount );
 
-                nextItem = item.Inventory;
+            item.Destroy();
+            item = nextItem;
+            continue;
+        }
 
-                bPickedItemUp = False;
+        key = NanoKey( item );
+        if ( key != none ) {
+            player.PickupNanoKey( key );
+            AddReceivedItem( player, item, 1 );
 
-                if (item.IsA('Ammo'))
-                {
-                    // Only let the player pick up ammo that's already in a weapon
-                    DeleteInventory(item);
-                    item.Destroy();
-                    item = None;
-                }
-                else if ( (item.IsA('DeusExWeapon')) )
-                {
-                    // Any weapons have their ammo set to a random number of rounds (1-4)
-                    // unless it's a grenade, in which case we only want to dole out one.
-                    // DEUS_EX AMSD In multiplayer, give everything away.
-                    W = DeusExWeapon(item);
+            item.Destroy();
+            item = nextItem;
+            continue;
+        }
 
-                    // Grenades and LAMs always pickup 1
-                    // Vanilla Matters: Prevent giving weapons more ammo after repeated loot attempts.
-                    if ( W.VM_isGrenade ) {
-                        W.PickupAmmoCount = 1;
-                    }
-                    else if ( Level.NetMode == NM_Standalone && !VM_bSearchedOnce ) {
-                        // Vanilla Matters: Make the count scale with the weapon's default amount.
-                        if ( W.default.PickUpAmmoCount > 10 ) {
-                            W.PickupAmmoCount = FMax( FClamp( FRand(), 0.2, 0.4 ) * W.default.PickUpAmmoCount, 4 );
-                        }
-                        else {
-                            W.PickUpAmmoCount = Rand( W.default.PickUpAmmoCount / 2 ) + 2;
-                        }
-                    }
-                }
+        credits = Credits( item );
+        if ( credits != none ) {
+            player.Credits += credits.numCredits;
+            AddReceivedItem( player, item, credits.numCredits );
+            player.ClientMessage( Sprintf( credits.msgCreditsAdded, credits.numCredits ) );
 
-                if (item != None)
-                {
-                    bFoundSomething = True;
+            item.Destroy();
+            item = nextItem;
+            continue;
+        }
 
-                    if (item.IsA('NanoKey'))
-                    {
-                        if (player != None)
-                        {
-                            player.PickupNanoKey(NanoKey(item));
-                            AddReceivedItem(player, item, 1);
-                            DeleteInventory(item);
-                            item.Destroy();
-                            item = None;
-                        }
-                        bPickedItemUp = True;
-                    }
-                    else if (item.IsA('Credits'))       // I hate special cases
-                    {
-                        if (player != None)
-                        {
-                            AddReceivedItem(player, item, Credits(item).numCredits);
-                            player.Credits += Credits(item).numCredits;
-                            P.ClientMessage(Sprintf(Credits(item).msgCreditsAdded, Credits(item).numCredits));
-                            DeleteInventory(item);
-                            item.Destroy();
-                            item = None;
-                        }
-                        bPickedItemUp = True;
-                    }
-                    else if (item.IsA('DeusExWeapon'))   // I *really* hate special cases
-                    {
-                        // Okay, check to see if the player already has this weapon.  If so,
-                        // then just give the ammo and not the weapon.  Otherwise give
-                        // the weapon normally.
-                        W = DeusExWeapon(player.FindInventoryType(item.Class));
-
-                        // If the player already has this item in his inventory, piece of cake,
-                        // we just give him the ammo.  However, if the Weapon is *not* in the
-                        // player's inventory, first check to see if there's room for it.  If so,
-                        // then we'll give it to him normally.  If there's *NO* room, then we
-                        // want to give the player the AMMO only (as if the player already had
-                        // the weapon).
-
-                        // Vanilla Matters: Rewrite because it's really bad.
-                        if ( W != None || ( W == None && !player.FindInventorySlot( item, true ) ) ) {
-                            // Vanilla Matters: Fix the bug where the player isn't able to pick up ammo properly due to hacky vanilla coding.
-                            tempW = DeusExWeapon( item );
-                            if ( tempW.AmmoType == None && tempW.AmmoName != None && tempW.AmmoName != class'AmmoNone' ) {
-                                tempW.AmmoType = Spawn( tempW.AmmoName );
-                                if ( tempW.AmmoType != none ) {
-                                    AddInventory( tempW.AmmoType );
-                                    tempW.AmmoType.BecomeItem();
-                                    tempW.AmmoType.AmmoAmount = tempW.PickUpAmmoCount;
-                                    tempW.AmmoType.GotoState( 'Idle2' );
-                                }
-                            }
-
-                            // Don't bother with this is there's no ammo
-                            if ( tempW.AmmoType != None && tempW.AmmoType.AmmoAmount > 0 ) {
-                                AmmoType = Ammo( player.FindInventoryType( tempW.AmmoName ) );
-                                if ( AmmoType == none ) {
-                                    AmmoType = Spawn( tempW.AmmoName );
-                                    if ( AmmoType != none ) {
-                                        P.AddInventory( AmmoType );
-                                        AmmoType.BecomeItem();
-                                        AmmoType.AmmoAmount = 0;
-                                        AmmoType.GotoState( 'Idle2' );
-                                    }
-                                }
-
-                                if ( AmmoType != None && AmmoType.AmmoAmount < AmmoType.MaxAmmo && !( AmmoType.PickupViewMesh == Mesh'TestBox' && W == none ) ) {
-                                    AmmoType.AddAmmo( tempW.PickupAmmoCount );
-                                    AddReceivedItem( player, AmmoType, tempW.PickupAmmoCount );
-
-                                    player.UpdateAmmoBeltText( AmmoType );
-
-                                    if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
-                                        P.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
-                                    }
-                                    else {
-                                        P.ClientMessage( AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName @ tempW.VM_msgFromWeapon @ tempW.ItemName, 'Pickup' );
-                                    }
-
-                                    tempW.AmmoType.AmmoAmount = 0;
-                                    tempW.PickUpAmmoCount = 0;
-
-                                    bPickedItemUp = true;
-                                }
-
-                                // Vanilla Matters: Let the player know if they can't have anymore of something.
-                                if ( !bPickedItemUp ) {
-                                    if ( AmmoType != none ) {
-                                        if ( AmmoType.PickupViewMesh == Mesh'TestBox' ) {
-                                            if ( W != None ) {
-                                                P.ClientMessage( Sprintf( player.MsgTooMuchAmmo, item.itemName ) );
-                                            }
-                                            else {
-                                                P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
-                                            }
-                                        }
-                                        else {
-                                            P.ClientMessage( Sprintf( player.MsgTooMuchAmmo, AmmoType.itemName ) );
-                                        }
-                                    }
-                                    else {
-                                        if ( W == none ) {
-                                            P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
-                                        }
-                                    }
-                                }
-                            }
-                            // Vanilla Matters: Report empty weapons so the player gets the proper feedback.
-                            else {
-                                if ( tempW.AmmoName != none && tempW.AmmoName != class'AmmoNone' ) {
-                                    P.ClientMessage( Sprintf( VM_msgNoAmmo, item.itemName ) );
-                                }
-                                else {
-                                    if ( W != none ) {
-                                        P.ClientMessage( Sprintf( Player.CanCarryOnlyOne, item.itemName ) );
-                                    }
-                                    else {
-                                        P.ClientMessage( Sprintf( Player.InventoryFull, item.itemName ) );
-                                    }
-                                }
-                            }
-
-                            // Vanilla Matters: Get rid of the grenade weapon if its ammo's been looted.
-                            if ( ( tempW != none && tempW.VM_isGrenade && tempW.PickUpAmmoCount <= 0 ) || ( W != none && ( bPickedItemUp || tempW.AmmoName == none || tempW.AmmoName == class'AmmoNone' ) ) ) {
-                                DeleteInventory( item );
-                                item.Destroy();
-
-                                item = none;
-                            }
-
-                            // Print a message "Cannot pickup blah blah blah" if inventory is full
-                            // and the player can't pickup this weapon, so the player at least knows
-                            // if he empties some inventory he can get something potentially cooler
-                            // than he already has.
-
-                            // Vanilla Matters: If the player can't pick it up on their second try, they're to grab the corpse instead.
-                            if ( !bPickedItemUp && VM_bSearchedOnce && nextItem == none ) {
-                                SpawnPOVCorpse( Frobber, frobWith, true );
-
-                                return;
-                            }
-
-                            bPickedItemUp = True;
-                        }
-                    }
-
-                    else if (item.IsA('DeusExAmmo'))
-                    {
-                        if (DeusExAmmo(item).AmmoAmount == 0)
-                            bPickedItemUp = True;
-                    }
-
-                    if (!bPickedItemUp)
-                    {
-                        // Special case if this is a DeusExPickup(), it can have multiple copies
-                        // and the player already has it.
-
-                        if ((item.IsA('DeusExPickup')) && (DeusExPickup(item).bCanHaveMultipleCopies) && (player.FindInventoryType(item.class) != None))
-                        {
-                            invItem   = DeusExPickup(player.FindInventoryType(item.class));
-                            itemCount = DeusExPickup(item).numCopies;
-
-                            // Make sure the player doesn't have too many copies
-                            if ((invItem.MaxCopies > 0) && (DeusExPickup(item).numCopies + invItem.numCopies > invItem.MaxCopies))
-                            {
-                                // Give the player the max #
-                                if ((invItem.MaxCopies - invItem.numCopies) > 0)
-                                {
-                                    itemCount = (invItem.MaxCopies - invItem.numCopies);
-                                    DeusExPickup(item).numCopies -= itemCount;
-                                    invItem.numCopies = invItem.MaxCopies;
-                                    P.ClientMessage(invItem.PickupMessage @ invItem.itemArticle @ invItem.itemName, 'Pickup');
-                                    AddReceivedItem(player, invItem, itemCount);
-                                }
-                                else
-                                {
-                                    // Vanilla Matters: Let the player grab the corpse on second try, while saving the inventory info, if the item still can't be picked up.
-                                    if ( !bHeldAlready && player.TakeHold( item ) ) {
-                                        P.ClientMessage( Sprintf( msgCannotPickup, item.itemName ) );
-
-                                        DeleteInventory( item );
-
-                                        AddReceivedItem( player, item, itemCount );
-
-                                        bHeldAlready = true;
-                                    }
-                                    else if ( VM_bSearchedOnce ) {
-                                        if ( nextItem == None && !bHeldAlready ) {
-                                            SpawnPOVCorpse( Frobber, frobWith, true );
-
-                                            return;
-                                        }
-                                    }
-                                    else {
-                                        P.ClientMessage( Sprintf( msgCannotPickup, item.itemName ) );
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                invItem.numCopies += itemCount;
-                                DeleteInventory(item);
-
-                                P.ClientMessage(invItem.PickupMessage @ invItem.itemArticle @ invItem.itemName, 'Pickup');
-                                AddReceivedItem(player, invItem, itemCount);
-                            }
-                        }
-                        else
-                        {
-                            // check if the pawn is allowed to pick this up
-
-                            // Vanilla Matters: Clean up all this part to fit in with the quick use functionality.
-                            if ( P.Inventory == None || Level.Game.PickupQuery( P, item ) ) {
-                                player.FrobTarget = item;
-
-                                if ( player.HandleItemPickup( item ) ) {
-                                    DeleteInventory( item );
-
-                                    item.bInObjectBelt= false;
-                                    item.BeltPos= -1;
-
-                                    item.SpawnCopy( P );
-
-                                    AddReceivedItem( player, item, 1 );
-
-                                    player.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
-                                    PlaySound( item.PickupSound );
-                                }
-                                else if ( !bHeldAlready && player.TakeHold( item ) ) {
-                                    DeleteInventory( item );
-
-                                    AddReceivedItem( player, item, 1 );
-
-                                    bHeldAlready = true;
-                                }
-                            }
-                            else {
-                                DeleteInventory( item );
-                                item.Destroy();
-                                item = None;
-                            }
-                        }
-                    }
-                }
+        if ( Level.Game.PickupQuery( player, item ) ) {
+            player.FrobTarget = item;
+            if ( player.HandleItemPickup( item ) ) {
+                item.SpawnCopy( player );
+                AddReceivedItem( player, item, 1 );
+                player.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
 
                 item = nextItem;
+                continue;
             }
-            until ((item == None) || (item == startItem));
         }
 
-        // Vanilla Matters
-        if ( !bFoundSomething && !VM_bSearchedOnce ) {
-            P.ClientMessage( msgEmpty );
+        loc = Vect( 0, 0, 0 );
+        loc.x = ( FRand() - FRand() ) * CollisionRadius;
+        loc.y = CollisionRadius;
+        if ( FRand() > 0.5 ) {
+            loc.y *= -1;
         }
+        loc = loc >> Rotation;
+        item.DropFrom( Location + loc );
 
-        // Vanilla Matters: Search finished so the body has been searched at least once.
-        if ( !VM_bSearchedOnce ) {
-            VM_bSearchedOnce = true;
-        }
+        item = nextItem;
     }
 
-    if ((player != None) && (Level.Netmode != NM_Standalone))
-    {
-        player.ClientMessage(Sprintf(msgRecharged, 25));
+    if ( Level.Netmode != NM_Standalone ) {
+        player.ClientMessage( Sprintf( msgRecharged, 25 ) );
+        PlaySound( sound'BioElectricHiss', SLOT_None,,, 256 );
+        player.Energy = FMin( player.Energy + 25, player.EnergyMax );
 
-        PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
-
-        player.Energy += 25;
-        if (player.Energy > player.EnergyMax)
-            player.Energy = player.EnergyMax;
-    }
-
-        Super.Frob(Frobber, frobWith);
-
-    if ((Level.Netmode != NM_Standalone) && (Player != None))
-    {
         bQueuedDestroy = true;
         Destroy();
     }
+    else {
+        if ( !VM_bSearchedOnce ) {
+            VM_bSearchedOnce = true;
+        }
+        else {
+            SpawnPOVCorpse( player );
+        }
+    }
 }
 
-// Vanilla Matters: Move the POVCorpse spawning out of Frob() to have better control over it.
-function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool bIgnoresInventory ) {
-    local DeusExPlayer player;
+// Vanilla Matters
+function bool SpawnPOVCorpse( DeusExPlayer player ) {
     local POVCorpse corpse;
-    local Inventory item;
-    local Inventory nextItem;
-
-    player = DeusExPlayer( Frobber );
 
     // VM: Even if the body is empty, the player still has to go through the searching phase at least once.
-    if ( !bAnimalCarcass && ( ( VM_bSearchedOnce && Inventory == None ) || bIgnoresInventory ) && player != None && Level.NetMode == NM_Standalone && !bInvincible ) {
+    if ( !bAnimalCarcass && player != none && Level.NetMode == NM_Standalone && !bInvincible ) {
         if ( player.inHand != None ) {
             player.ClientMessage( player.HandsFull );
-
             return false;
         }
 
@@ -784,22 +503,12 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
             corpse.VM_name = VM_name;
             corpse.VM_bSearchedOnce = VM_bSearchedOnce;
 
-            item = Inventory;
-            while ( item != None ) {
-                nextItem = item.Inventory;
-                DeleteInventory( item );
-                item.DropFrom( Location );
-                item = nextItem;
-            }
-
-            corpse.Frob( player, None );
+            corpse.Frob( player, none );
             corpse.SetBase( player );
             player.PutInHand( corpse );
 
             bQueuedDestroy=True;
-
             Destroy();
-
             return true;
         }
     }
@@ -811,38 +520,19 @@ function bool SpawnPOVCorpse( Actor Frobber, Inventory frobWith, optional bool b
 // ----------------------------------------------------------------------
 // AddReceivedItem()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function AddReceivedItem( DeusExPlayer player, Inventory item, int count ) {
+    local Ammo ammo;
 
-function AddReceivedItem(DeusExPlayer player, Inventory item, int count)
-{
-    local DeusExWeapon w;
-    local Inventory altAmmo;
-
-    // Vanilla Matters: Omit the message because it's pretty useless anyhow.
-
-   DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
+   DeusExRootWindow( player.rootWindow ).hud.receivedItems.AddItem( item, count );
 
     // Make sure the object belt is updated
-    if (item.IsA('Ammo'))
-        player.UpdateAmmoBeltText(Ammo(item));
-    else
-        player.UpdateBeltText(item);
-
-    // Deny 20mm and WP rockets off of bodies in multiplayer
-    if ( Level.NetMode != NM_Standalone )
-    {
-        if ( item.IsA('WeaponAssaultGun') || item.IsA('WeaponGEPGun') )
-        {
-            w = DeusExWeapon(player.FindInventoryType(item.Class));
-            if (( Ammo20mm(w.AmmoType) != None ) || ( AmmoRocketWP(w.AmmoType) != None ))
-            {
-                altAmmo = Spawn( w.AmmoNames[0] );
-                DeusExAmmo(altAmmo).AmmoAmount = w.PickupAmmoCount;
-                altAmmo.Frob(player,None);
-                altAmmo.Destroy();
-                w.AmmoType.Destroy();
-                w.LoadAmmo( 0 );
-            }
-        }
+    ammo = Ammo( item );
+    if ( ammo != none ) {
+        player.UpdateAmmoBeltText( ammo );
+    }
+    else {
+        player.UpdateBeltText( item );
     }
 }
 
