@@ -52,10 +52,10 @@ event SetItem(Inventory invItem, int count)
     winLabel.SetTextColor(colText);
     winLabel.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 
-    labelText = invItem.beltDescription;
+    labelText = invItem.default.beltDescription;
     // Vanilla Matters
     if ( count > 1 ) {
-        labelText = labelText @ string( count );
+        labelText = labelText @ "(" $ string( count ) $ ")";
     }
 
     winLabel.SetText(labelText);

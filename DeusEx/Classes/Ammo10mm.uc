@@ -63,7 +63,7 @@ defaultproperties
      largeIconWidth=44
      largeIconHeight=31
      Description="With their combination of high stopping power and low recoil, pistols chambered for the 10mm round have become the sidearms of choice for paramilitary forces around the world."
-     beltDescription="10MM AMMO"
+     beltDescription="10MM"
      Mesh=LodMesh'DeusExItems.Ammo10mm'
      CollisionRadius=8.500000
      CollisionHeight=3.770000
