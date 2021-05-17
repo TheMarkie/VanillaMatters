@@ -118,7 +118,7 @@ function GetBaseDescription( class<VMAugmentation> augClass, PersonaInfoWindow w
     }
 }
 
-function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc ) {
+function DrawAugmentations( GC gc ) {
     local VMAugmentationInfo info;
 
     if ( !refreshed ) {
@@ -128,7 +128,7 @@ function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc ) {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         if ( info.IsActive ) {
-            info.DrawAugmentation( displayWindow, gc );
+            info.DrawAugmentation( gc );
         }
 
         info = info.Next;

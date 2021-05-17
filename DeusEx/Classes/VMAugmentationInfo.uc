@@ -178,8 +178,8 @@ function float IsOnCooldown() {
     return 0;
 }
 
-function DrawAugmentation( AugmentationDisplayWindow displayWindow, GC gc ) {
+function DrawAugmentation( GC gc ) {
     if ( Behaviour != none ) {
-        Behaviour.Draw( displayWindow, gc );
+        Behaviour.Draw( gc );
     }
 }

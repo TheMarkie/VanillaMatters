@@ -20,4 +20,4 @@ function float GetRate( float time, int level ) {
 function float IsOnCooldown( int level );
 
 // Display
-function Draw( AugmentationDisplayWindow displayWindow, GC gc );
+function Draw( GC gc );

@@ -1539,9 +1539,9 @@ function ClearAugmentationDisplay() {
         DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
     }
 }
-function DrawAugmentations( AugmentationDisplayWindow displayWindow, GC gc ) {
+function DrawAugmentations( GC gc ) {
     if ( VMAugmentationSystem != none ) {
-        VMAugmentationSystem.DrawAugmentations( displayWindow, gc );
+        VMAugmentationSystem.DrawAugmentations( gc );
     }
 }
 
