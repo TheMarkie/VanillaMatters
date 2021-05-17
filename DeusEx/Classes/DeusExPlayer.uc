@@ -3798,7 +3798,7 @@ function PlayPickupAnim(Vector locPickup)
 // HandleItemPickup()
 // ----------------------------------------------------------------------
 // Vanilla Matters: Handled in VMPlayer
-function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly);
+function bool HandleItemPickup( Inventory item, optional bool bSearchOnly );
 
 // ----------------------------------------------------------------------
 // CreateNanoKeyInfo()

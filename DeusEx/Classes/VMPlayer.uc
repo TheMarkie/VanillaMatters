@@ -797,8 +797,7 @@ exec function ParseRightClick() {
     local AutoTurret turret;
     local int viewIndex;
     local bool ownedByPlayer;
-    local Inventory oldFirstItem;
-    local Inventory oldInHand;
+    local Inventory item, oldFirstItem, oldInHand;
     local Decoration oldCarriedDecoration;
     local Vector loc;
     local bool needKey;
@@ -811,6 +810,7 @@ exec function ParseRightClick() {
         return;
     }
 
+    item = Inventory( FrobTarget );
     oldFirstItem = Inventory;
     oldInHand = inHand;
     oldCarriedDecoration = CarriedDecoration;
@@ -841,11 +841,11 @@ exec function ParseRightClick() {
 
             return;
         }
-        else if ( Inventory( FrobTarget ) != none ) {
+        else if ( item != none ) {
             // Allow taking hold of an item if the player can't pick it up.
-            if ( !HandleItemPickup( FrobTarget, true ) ) {
-                if ( TakeHold( Inventory( FrobTarget ) ) ) {
-                    if ( WasHolding( Inventory( FrobTarget ) ) ) {
+            if ( !HandleItemPickup( item, true ) ) {
+                if ( TakeHold( item ) ) {
+                    if ( WasHolding( item ) ) {
                         LastHeldInHand = None;
                     }
                 }
@@ -860,7 +860,7 @@ exec function ParseRightClick() {
                 )
             ) {
                 if ( Level.NetMode == NM_Standalone ) {
-                    FindInventorySlot( Inventory( FrobTarget ) );
+                    FindInventorySlot( item );
                 }
                 else {
                     FindInventorySlot( Inventory );
@@ -1193,7 +1193,7 @@ function bool BringUpItem( name itemName ) {
 // Inventory Management
 //==============================================
 // Override
-function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
+function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
     local bool canPickup;
     local bool slotSearchNeeded;
     local Inventory foundItem;
@@ -1203,16 +1203,16 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
     canPickup = true;
     slotSearchNeeded = true;
 
-    if ( DataVaultImage( FrobTarget ) != none || NanoKey( FrobTarget ) != none || Credits( FrobTarget ) != none ) {
+    if ( DataVaultImage( item ) != none || NanoKey( item ) != none || Credits( item ) != none ) {
         slotSearchNeeded = False;
     }
-    else if ( DeusExPickup( FrobTarget ) != none ) {
-        if ( FindInventoryType( FrobTarget.Class ) != none ) {
-            slotSearchNeeded = !DeusExPickup( FrobTarget ).bCanHaveMultipleCopies;
+    else if ( DeusExPickup( item ) != none ) {
+        if ( FindInventoryType( item.Class ) != none ) {
+            slotSearchNeeded = !DeusExPickup( item ).bCanHaveMultipleCopies;
         }
     }
     else {
-        foundItem = GetWeaponOrAmmo( Inventory( FrobTarget ) );
+        foundItem = GetWeaponOrAmmo( item );
 
         if ( foundItem != none ) {
             slotSearchNeeded = false;
@@ -1235,32 +1235,23 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
                 }
             }
             else if ( weapon != none ) {
-                if ( weapon.AmmoName == none
-                    || weapon.AmmoName == class'AmmoNone'
-                    || weapon.PickupAmmoCount <= 0
-                ) {
-                    ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
-                    canPickup = false;
-                }
-                else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
-                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.ItemName ) );
-                    canPickup = false;
-                }
+                ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
+                canPickup = false;
             }
         }
     }
 
     if ( slotSearchNeeded && canPickup ) {
-        if ( !FindInventorySlot( Inventory( FrobTarget ), searchOnly ) ) {
-            ClientMessage( Sprintf( InventoryFull, Inventory( FrobTarget ).itemName ) );
+        if ( !FindInventorySlot( item, searchOnly ) ) {
+            ClientMessage( Sprintf( InventoryFull, item.itemName ) );
             canPickup = False;
             ServerConditionalNotifyMsg( MPMSG_DropItem );
         }
     }
 
     if ( canPickup ) {
-        weapon = DeusExWeapon( FrobTarget );
-        if ( Level.NetMode != NM_Standalone && ( weapon != none || DeusExAmmo( FrobTarget ) != none ) ) {
+        weapon = DeusExWeapon( item );
+        if ( Level.NetMode != NM_Standalone && ( weapon != none || DeusExAmmo( item ) != none ) ) {
             PlaySound( Sound'WeaponPickup', SLOT_Interact, 0.5 + FRand() * 0.25, , 256, 0.95 + FRand() * 0.1 );
         }
 
