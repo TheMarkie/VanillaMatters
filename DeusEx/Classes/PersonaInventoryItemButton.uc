@@ -43,8 +43,6 @@ var Color       fillColor;
 var Texture     fillTexture;
 
 var localized String CountLabel;
-var localized String RoundLabel;
-var localized String RoundsLabel;
 
 // ----------------------------------------------------------------------
 // DrawWindow()
@@ -107,18 +105,10 @@ event DrawWindow(GC gc)
             if ((weapon != None) && weapon.bHandToHand && (weapon.AmmoType != None) && (weapon.AmmoName != class'AmmoNone'))
             {
                 str = String(weapon.AmmoType.AmmoAmount);
-                if (str == "1")
-                    str = Sprintf(RoundLabel, str);
-                else
-                    str = Sprintf(RoundsLabel, str);
             }
             else if (anItem.IsA('DeusExAmmo'))
             {
                 str = String(DeusExAmmo(anItem).AmmoAmount);
-                if (str == "1")
-                    str = Sprintf(RoundLabel, str);
-                else
-                    str = Sprintf(RoundsLabel, str);
             }
             else if ((weapon != None) && (!weapon.bHandToHand))
             {
@@ -427,6 +417,4 @@ defaultproperties
      colDropBad=(R=128,G=32,B=32)
      fillTexture=Texture'Extension.Solid'
      CountLabel="Count: %s"
-     RoundLabel="%s Rd"
-     RoundsLabel="%s Rds"
 }

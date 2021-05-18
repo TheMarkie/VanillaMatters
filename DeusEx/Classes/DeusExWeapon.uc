@@ -184,8 +184,6 @@ var localized String msgInfoYes;
 var localized String msgInfoNo;
 var localized String msgInfoAuto;
 var localized String msgInfoSingle;
-var localized String msgInfoRounds;
-var localized String msgInfoRoundsPerSec;
 var localized String msgInfoSkill;
 var localized String msgInfoWeaponStats;
 
@@ -231,6 +229,7 @@ var localized string VM_msgInfoStun;                // Label for stunning weapon
 var localized String VM_msgInfoHeadshot;            // Label the headshot multipler section.
 var localized string VM_msgInfoStability;
 var localized string VM_msgInfoDefault;
+var localized string VM_msgInfoRPM;
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
 var localized string VM_msgFromWeapon;
@@ -2960,10 +2959,10 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( VM_msgInfoStability, str, mod != 0 );
 
         // Vanilla Matters: Clip Size.
-        str = Default.ReloadCount @ msgInfoRounds;
+        str = string( default.ReloadCount );
         if ( HasClipMod() ) {
             str = str @ BuildPercentString( ModReloadCount );
-            str = str @ "=" @ ReloadCount @ msgInfoRounds;
+            str = str @ "=" @ ReloadCount;
         }
 
         winInfo.AddInfoItem( msgInfoClip, str, HasClipMod() );
@@ -2975,7 +2974,7 @@ simulated function bool UpdateInfo(Object winObject)
         else {
             str = msgInfoSingle;
         }
-        str = str $ "," @ FormatFloatString( 1.0 / default.ShotTime, 0.1 ) @ msgInfoRoundsPerSec;
+        str = str $ "," @ FormatFloatString( ( 1.0 / default.ShotTime ) * 60, 0.1 ) @ VM_msgInfoRPM;
 
         winInfo.AddInfoItem( msgInfoROF, str );
 
@@ -3940,8 +3939,6 @@ defaultproperties
      msgInfoNo="NO"
      msgInfoAuto="AUTO"
      msgInfoSingle="SINGLE"
-     msgInfoRounds="RDS"
-     msgInfoRoundsPerSec="RDS/SEC"
      msgInfoSkill="Skill:"
      msgInfoWeaponStats="Weapon Stats:"
      VM_ShotCount=1
@@ -3956,6 +3953,7 @@ defaultproperties
      VM_msgInfoHeadshot="Headshot:"
      VM_msgInfoStability="Stability:"
      VM_msgInfoDefault="Default"
+     VM_msgInfoRPM="RPM"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"
      VM_msgFromWeapon="from the"
