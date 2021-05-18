@@ -328,72 +328,12 @@ event BeginState();
 //
 event EndState();
 
-//
-// DEUS_EX CNN - Sprintf function for simple string formatting
-// mostly useful for localized strings
-//
-// Format specifiers are - %s for string and %d for integer
-// (Though, really, %any_single_character will work)
-// Use %% to actually print the percent sign
-//
-
-final function string Sprintf   (string fmt,
-                                optional coerce string s0,
-                                optional coerce string s1,
-                                optional coerce string s2,
-                                optional coerce string s3)
-{
-    local string str, s[4];
-    local int pos, index;
-
-    // init the parameters since we can't pass in parms in arrays
-    s[0] = s0;
-    s[1] = s1;
-    s[2] = s2;
-    s[3] = s3;
-
-    // init the counters
-    index = 0;
-    pos = 0;
-    str = "";
-
-    // parse the string
-    do
-    {
-        pos = InStr(fmt, "%");
-
-        // end of string?
-        if (pos == -1)
-        {
-            str = str $ fmt;
-            fmt = "";
-        }
-        else    // else, parse the parameter
-        {
-            str = str $ Left(fmt, pos);
-
-            // check for %% special case
-            if ((pos < Len(fmt)) && (Mid(fmt, pos+1, 1) == "%"))
-                str = str $ "%";
-            else
-                str = str $ s[index++];
-
-            // trim the format string including the parameter
-            fmt = Right(fmt, Len(fmt) - pos - 2);
-        }
-    }
-    until ((pos == -1) || (index == 4));
-
-    // if there's anything left
-    if (fmt != "")
-        str = str $ fmt;
-
-    return str;
-}
-
 //============================================================================================
 // Vanilla Matters
 //============================================================================================
+//==============================================
+// Object functionality
+//==============================================
 final function string GetClassNameString() {
     return string( Class.Name );
 }
@@ -408,12 +348,12 @@ final function string GetPackageNameString() {
 // Utilities
 //==============================================
 // A replacement for Sprintf that's more performant
-native(2300) static final function string SFormat(
+native(2300) static final function string Sprintf(
     string format,
-    coerce string s1,
+    coerce string s0,
+    optional coerce string s1,
     optional coerce string s2,
-    optional coerce string s3,
-    optional coerce string s4
+    optional coerce string s3
 );
 
 //==============================================
