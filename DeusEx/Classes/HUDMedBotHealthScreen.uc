@@ -329,12 +329,12 @@ function SkipAnimation(bool bNewSkipAnimation)
 defaultproperties
 {
      MedbotInterfaceText="MEDBOT INTERFACE"
-     HealthInfoTextLabel="The MedBot will heal up to %d units, which are distributed evenly among your damaged body regions."
+     HealthInfoTextLabel="The MedBot will heal up to %s units, which are distributed evenly among your damaged body regions."
      MedBotRechargingLabel="|nThe MedBot is currently Recharging.  Please Wait."
      MedBotReadyLabel="|nThe MedBot is Ready, you may now be Healed."
      MedBotYouAreHealed="|nYou are currently in Full Health."
-     SecondsPluralLabel="Recharging: %d seconds"
-     SecondsSingularLabel="Recharging: %d second"
+     SecondsPluralLabel="Recharging: %s seconds"
+     SecondsSingularLabel="Recharging: %s second"
      ReadyLabel="Ready!"
      bShowHealButtons=False
      HealAllButtonLabel="  H|&eal All  "

@@ -178,8 +178,8 @@ defaultproperties
 {
      bDisabledByDefault=True
      colSelectionBorderHalf=(R=128,G=128,B=128)
-     RoundLabel="%d Round"
-     RoundsLabel="%d Rounds"
+     RoundLabel="%s Round"
+     RoundsLabel="%s Rounds"
      iconPosWidth=42
      iconPosHeight=37
      buttonWidth=44

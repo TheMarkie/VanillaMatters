@@ -71,7 +71,7 @@ function PlayLandingSound()
 
 defaultproperties
 {
-     msgInfoRounds="%d Rounds remaining"
+     msgInfoRounds="%s Rounds remaining"
      bDisplayableInv=False
      PickupMessage="You found"
      ItemName="DEFAULT AMMO NAME - REPORT THIS AS A BUG"

@@ -176,7 +176,7 @@ defaultproperties
 {
      lockoutDelay=60.000000
      lastHackTime=-9999.000000
-     msgLockedOut="Terminal is locked out for %d more seconds"
+     msgLockedOut="Terminal is locked out for %s more seconds"
      ItemName="Public Banking Terminal"
      Physics=PHYS_None
      Mesh=LodMesh'DeusExDeco.ATM'

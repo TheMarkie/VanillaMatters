@@ -426,7 +426,7 @@ defaultproperties
      colDropGood=(R=32,G=128,B=32)
      colDropBad=(R=128,G=32,B=32)
      fillTexture=Texture'Extension.Solid'
-     CountLabel="Count: %d"
-     RoundLabel="%d Rd"
-     RoundsLabel="%d Rds"
+     CountLabel="Count: %s"
+     RoundLabel="%s Rd"
+     RoundsLabel="%s Rds"
 }

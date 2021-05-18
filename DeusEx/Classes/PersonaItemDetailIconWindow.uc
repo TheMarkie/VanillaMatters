@@ -113,5 +113,5 @@ defaultproperties
      IconWidth=42
      IconHeight=37
      colIcon=(R=255,G=255,B=255)
-     CountLabel="Count: %d"
+     CountLabel="Count: %s"
 }

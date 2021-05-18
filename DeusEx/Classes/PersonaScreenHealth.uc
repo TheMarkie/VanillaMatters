@@ -649,7 +649,7 @@ defaultproperties
      HealthLocationLeftArm="Left Arm"
      HealthLocationRightLeg="Right Leg"
      HealthLocationLeftLeg="Left Leg"
-     PointsHealedLabel="%d points healed"
+     PointsHealedLabel="%s points healed"
      clientBorderOffsetY=32
      ClientWidth=596
      ClientHeight=427

@@ -453,7 +453,7 @@ defaultproperties
      bOn=True
      lockoutDelay=30.000000
      lastHackTime=-9999.000000
-     msgLockedOut="Terminal is locked out for %d more seconds"
+     msgLockedOut="Terminal is locked out for %s more seconds"
      nodeName="UNATCO"
      titleString="United Nations Anti-Terrorist Coalition (UNATCO)"
      titleTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoUNATCO'

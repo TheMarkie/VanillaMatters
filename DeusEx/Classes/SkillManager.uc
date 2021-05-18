@@ -263,7 +263,7 @@ defaultproperties
      NoToolMessage="You need the %s"
      NoSkillMessage="%s skill level insufficient to use the %s"
      SuccessMessage="Success!"
-     YourSkillLevelAt="Your skill level at %s is now %d"
+     YourSkillLevelAt="Your skill level at %s is now %s"
      bHidden=True
      bTravel=True
 }

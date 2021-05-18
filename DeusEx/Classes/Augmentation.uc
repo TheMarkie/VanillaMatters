@@ -341,7 +341,7 @@ defaultproperties
      IconWidth=52
      IconHeight=52
      HotKeyNum=-1
-     EnergyRateLabel="Energy Rate: %d Units/Minute"
+     EnergyRateLabel="Energy Rate: %s Units/Minute"
      OccupiesSlotLabel="Occupies Slot: %s"
      AugLocsText(0)="Cranial"
      AugLocsText(1)="Eyes"
@@ -354,11 +354,11 @@ defaultproperties
      AugDeactivated="%s deactivated"
      MPInfo="DEFAULT AUG MP INFO - REPORT THIS AS A BUG"
      AugAlreadyHave="You already have the %s at the maximum level"
-     AugNowHave="%s upgraded to level %d"
-     AugNowHaveAtLevel="Augmentation %s at level %d"
+     AugNowHave="%s upgraded to level %s"
+     AugNowHaveAtLevel="Augmentation %s at level %s"
      AlwaysActiveLabel="[Always Active]"
      CanUpgradeLabel="(Can Upgrade)"
-     CurrentLevelLabel="Current Level: %d"
+     CurrentLevelLabel="Current Level: %s"
      MaximumLabel="(Maximum)"
      ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
      DeActivateSound=Sound'DeusExSounds.Augmentation.AugDeactivate'

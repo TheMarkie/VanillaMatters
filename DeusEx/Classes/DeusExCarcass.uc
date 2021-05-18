@@ -669,7 +669,7 @@ defaultproperties
      msgNotDead="Unconscious"
      msgAnimalCarcass="Animal Carcass"
      msgCannotPickup="You cannot pickup the %s"
-     msgRecharged="Recharged %d points"
+     msgRecharged="Recharged %s points"
      ItemName="Dead"
      VM_msgDrowned="Drowned"
      VM_msgNoAmmo="You don't find anything useful from the %s"
