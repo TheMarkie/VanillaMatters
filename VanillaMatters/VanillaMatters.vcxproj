@@ -41,11 +41,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
+    <ModDir>Release\</ModDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(ue1launcherProjectDir)Core\Inc;$(ue1launcherProjectDir)Engine\Inc;$(ue1launcherProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ue1launcherProjectDir)Core\Lib;$(ue1launcherProjectDir)Engine\Lib;$(ue1launcherProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
