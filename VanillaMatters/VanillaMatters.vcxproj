@@ -72,9 +72,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
     <Delete Files="$(ModDir)$(TargetFileName).old" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(ModDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(TargetFileName).old" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(ModDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(TargetFileName).old" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
     <Delete Files="$(ModDir)$(TargetFileName)" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFolder="$(ModDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFolder="$(ModDir)" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
   </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
