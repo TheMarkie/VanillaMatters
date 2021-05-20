@@ -64,7 +64,7 @@ simulated function bool UpdateInfo(Object winObject)
 
         // Vanilla Matters: Add in damage resistance value if there's any.
         if ( default.VM_DamageResistance != 0.0 ) {
-            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - default.VM_DamageResistance ) * 100, 0.1 ) $ "% " );
+            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ FormatFloat( ( 1 - default.VM_DamageResistance ) * 100 ) $ "% " );
         }
 
         // Vanilla Matters: Add in whether the charged pickup is toggleable.

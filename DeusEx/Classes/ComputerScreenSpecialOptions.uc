@@ -133,7 +133,7 @@ function CreateOptionButtons()
                         str = str @ "(" $ int( VM_timeCost ) $ ")";
                     }
                     else {
-                        str = str @ "(" $ class'DeusExWeapon'.static.FormatFloatString( VM_timeCost, 0.1 ) $ ")";
+                        str = str @ "(" $ FormatFloat( VM_timeCost ) $ ")";
                     }
                 }
                 winButton.SetButtonText( str );

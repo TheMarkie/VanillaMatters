@@ -2918,7 +2918,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     if ( mod != 1.0 ) {
         str = str @ BuildPercentString( mod - 1 );
-        str = str @ "=" @ FormatFloatString( dmg * mod, 0.1 );
+        str = str @ "=" @ FormatFloat( dmg * mod );
 
         // Vanilla Matters: Display the same number of shots afterwards.
         if ( Default.VM_ShotCount > 1 ) {
@@ -2950,7 +2950,7 @@ simulated function bool UpdateInfo(Object winObject)
         // Vanilla Matters: Stability.
         mod = GetModifierValue( 'Stability' ) + ModStability;
         if ( mod != 0 ) {
-            str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
+            str = "+" $ FormatFloat( mod * 100, 2 ) $ "%";
         }
         else {
             str = VM_msgInfoDefault;
@@ -2974,16 +2974,16 @@ simulated function bool UpdateInfo(Object winObject)
         else {
             str = msgInfoSingle;
         }
-        str = str $ "," @ FormatFloatString( ( 1.0 / default.ShotTime ) * 60, 0.1 ) @ VM_msgInfoRPM;
+        str = str $ "," @ FormatFloat( ( 1.0 / default.ShotTime ) * 60 ) @ VM_msgInfoRPM;
 
         winInfo.AddInfoItem( msgInfoROF, str );
 
         //  Vanilla Matters: Reload Time.
-        str = FormatFloatString( default.ReloadTime, 0.1 );
+        str = FormatFloat( default.ReloadTime );
         mod = ModReloadTime + GetModifierValue( 'ReloadTime' );
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
-            str = str @ "=" @ FormatFloatString( default.ReloadTime + ( mod * default.ReloadTime ), 0.1 );
+            str = str @ "=" @ FormatFloat( default.ReloadTime + ( mod * default.ReloadTime ) );
         }
         str = str @ msgTimeUnit;
 
@@ -2997,20 +2997,20 @@ simulated function bool UpdateInfo(Object winObject)
     else {
         dmg = default.MaxRange;
     }
-    str = FormatFloatString( dmg / 16.0, 1.0 ) @ msgRangeUnit;
+    str = FormatFloat( dmg / 16.0, 1.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
         str = str @ BuildPercentString( ModMaxRange );
-        str = str @ "=" @ FormatFloatString( ( dmg * ( 1 + ModMaxRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
+        str = str @ "=" @ FormatFloat( ( dmg * ( 1 + ModMaxRange ) ) / 16.0, 0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
 
     // Vanilla Matters: Headshot Multiplier.
-    str = "x" $ FormatFloatString( default.VM_HeadshotMult, 0.1 );
+    str = "x" $ FormatFloat( default.VM_HeadshotMult );
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
     // mass
-    winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
+    winInfo.AddInfoItem(msgInfoMass, FormatFloat( Default.Mass, 0 ) @ msgMassUnit);
 
     // laser mod
     if (bCanHaveLaser)
@@ -3100,7 +3100,7 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 simulated static final function String BuildPercentString( float value ) {
     local string str;
 
-    str = FormatFloatString( Abs( value * 100.0 ), 0.1 );
+    str = FormatFloat( Abs( value * 100.0 ) );
 
     if ( value < 0 ) {
         str = "-" $ str;
@@ -3112,37 +3112,6 @@ simulated static final function String BuildPercentString( float value ) {
     str = "(" $ str $ "%)";
 
     return str;
-}
-
-// ----------------------------------------------------------------------
-// FormatFloatString()
-// ----------------------------------------------------------------------
-
-// Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static function String FormatFloatString( float value, float precision ) {
-    local string str;
-
-    if ( precision <= 0 ) {
-        return "ERR";
-    }
-
-    str = string( int( value ) );
-
-    value = value - int( value );
-    if ( precision < 1.0 && value >= precision ) {
-        str = str $ "." $ string( int( ( 0.5 * precision ) + ( value * ( 1.0 / precision ) ) ) );
-    }
-
-    return str;
-}
-
-// ----------------------------------------------------------------------
-// CR()
-// ----------------------------------------------------------------------
-
-simulated function String CR()
-{
-    return Chr(13) $ Chr(10);
 }
 
 // ----------------------------------------------------------------------
