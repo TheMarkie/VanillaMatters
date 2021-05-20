@@ -2918,7 +2918,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     if ( mod != 1.0 ) {
         str = str @ BuildPercentString( mod - 1 );
-        str = str @ "=" @ FormatFloat( dmg * mod );
+        str = str @ "=" @ int( dmg * mod );
 
         // Vanilla Matters: Display the same number of shots afterwards.
         if ( Default.VM_ShotCount > 1 ) {
@@ -2941,8 +2941,8 @@ simulated function bool UpdateInfo(Object winObject)
         str = int( BaseAccuracy * 100 ) $ "%";
         mod = ModBaseAccuracy + GetModifierValue( 'Accuracy' );
         if ( mod != 0.0 ) {
-            str = str @ BuildPercentString( mod + 0.000003 );
-            str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
+            str = str @ BuildPercentString( mod );
+            str = str @ "=" @ Min( ( BaseAccuracy + mod ) * 100, 100 ) $ "%";
         }
 
         winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
@@ -2950,7 +2950,7 @@ simulated function bool UpdateInfo(Object winObject)
         // Vanilla Matters: Stability.
         mod = GetModifierValue( 'Stability' ) + ModStability;
         if ( mod != 0 ) {
-            str = "+" $ FormatFloat( mod * 100, 2 ) $ "%";
+            str = "+" $ int( mod * 100 ) $ "%";
         }
         else {
             str = VM_msgInfoDefault;
@@ -2974,7 +2974,7 @@ simulated function bool UpdateInfo(Object winObject)
         else {
             str = msgInfoSingle;
         }
-        str = str $ "," @ FormatFloat( ( 1.0 / default.ShotTime ) * 60 ) @ VM_msgInfoRPM;
+        str = str $ "," @ int( ( 1.0 / default.ShotTime ) * 60 ) @ VM_msgInfoRPM;
 
         winInfo.AddInfoItem( msgInfoROF, str );
 
@@ -2997,10 +2997,10 @@ simulated function bool UpdateInfo(Object winObject)
     else {
         dmg = default.MaxRange;
     }
-    str = FormatFloat( dmg / 16.0, 1.0 ) @ msgRangeUnit;
+    str = int( dmg / 16.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
         str = str @ BuildPercentString( ModMaxRange );
-        str = str @ "=" @ FormatFloat( ( dmg * ( 1 + ModMaxRange ) ) / 16.0, 0 ) @ msgRangeUnit;
+        str = str @ "=" @ int( ( dmg * ( 1 + ModMaxRange ) ) / 16.0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
@@ -3010,7 +3010,7 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
     // mass
-    winInfo.AddInfoItem(msgInfoMass, FormatFloat( Default.Mass, 0 ) @ msgMassUnit);
+    winInfo.AddInfoItem(msgInfoMass, int( Default.Mass ) @ msgMassUnit);
 
     // laser mod
     if (bCanHaveLaser)
@@ -3096,20 +3096,11 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 // BuildPercentString()
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static final function String BuildPercentString( float value ) {
+// Vanilla Matters
+simulated final function String BuildPercentString( float value ) {
     local string str;
 
-    str = FormatFloat( Abs( value * 100.0 ) );
-
-    if ( value < 0 ) {
-        str = "-" $ str;
-    }
-    else {
-        str = "+" $ str;
-    }
-
-    str = "(" $ str $ "%)";
+    str = "(" $ int( value * 100 ) $ "%)";
 
     return str;
 }
