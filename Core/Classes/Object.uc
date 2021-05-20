@@ -348,13 +348,16 @@ final function string GetPackageNameString() {
 // Utilities
 //==============================================
 // A replacement for Sprintf that's more performant
-native(2300) static final function string Sprintf(
+native(2400) static final function string Sprintf(
     string format,
     coerce string s0,
     optional coerce string s1,
     optional coerce string s2,
     optional coerce string s3
 );
+
+// Format float with custom precision. Default precision is 1 digit after decimal point.
+native(2401) static final function string FormatFloat( float value, optional int precision );
 
 //==============================================
 // Dynamic Array
