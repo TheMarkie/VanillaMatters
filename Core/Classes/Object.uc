@@ -414,13 +414,13 @@ native(2300) static final function string SFormat(
 // Dynamic Array
 //==============================================
 // Count the number of elements in the array
-native(3200) static final function int IntArrayCount( array<int> A );
-native(3200) static final function int ByteArrayCount( array<byte> A );
-native(3200) static final function int FloatArrayCount( array<float> A );
-native(3200) static final function int StringArrayCount( array<string> A );
-native(3200) static final function int NameArrayCount( array<name> A );
-native(3200) static final function int ObjectArrayCount( array<Object> A );
-native(3200) static final function int VectorArrayCount( array<Vector> A );
+native(2300) static final function int IntArrayCount( array<int> A );
+native(2300) static final function int ByteArrayCount( array<byte> A );
+native(2300) static final function int FloatArrayCount( array<float> A );
+native(2300) static final function int StringArrayCount( array<string> A );
+native(2300) static final function int NameArrayCount( array<name> A );
+native(2300) static final function int ObjectArrayCount( array<Object> A );
+native(2300) static final function int VectorArrayCount( array<Vector> A );
 
 // Shorthand to get array count
 static final preoperator int #( out array<int> A ) { return IntArrayCount( A ); }
