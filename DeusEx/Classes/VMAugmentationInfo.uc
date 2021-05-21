@@ -105,13 +105,7 @@ function Toggle( bool on ) {
 
 function bool IncreaseLevel() {
     if ( Level < GetMaxLevel() ) {
-        if ( IsActive ) {
-            Deactivate();
-        }
         Level += 1;
-        if ( IsActive ) {
-            Activate();
-        }
 
         return true;
     }
@@ -121,13 +115,7 @@ function bool IncreaseLevel() {
 
 function bool DecreaseLevel() {
     if ( Level > 0 ) {
-        if ( IsActive ) {
-            Deactivate();
-        }
         Level -= 1;
-        if ( IsActive ) {
-            Activate();
-        }
 
         return true;
     }
