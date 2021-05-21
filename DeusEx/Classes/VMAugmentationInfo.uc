@@ -158,9 +158,9 @@ function float GetRate( float time ) {
     return ( Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
-function float IsOnCooldown() {
+function float GetCooldown() {
     if ( Behaviour != none ) {
-        return Behaviour.IsOnCooldown( Level );
+        return Behaviour.GetCooldown( Level );
     }
 
     return 0;

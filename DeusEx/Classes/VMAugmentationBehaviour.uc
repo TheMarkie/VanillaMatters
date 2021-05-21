@@ -17,7 +17,7 @@ function float GetRate( float time, int level ) {
     return ( Definition.default.Rates[Min( level, #Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
-function float IsOnCooldown( int level );
+function float GetCooldown( int level );
 
 // Display
 function Draw( GC gc );
