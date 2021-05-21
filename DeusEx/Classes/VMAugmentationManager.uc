@@ -31,7 +31,7 @@ function bool Add( name className, name packageName, optional int startingLevel 
     info = new class'VMAugmentationInfo';
     info.Initialize( className, packageName, startingLevel );
     info.LoadBehaviour( self );
-    info.Refresh( Player );
+    info.Refresh( self, Player );
 
     info.Next = FirstAugmentationInfo;
     FirstAugmentationInfo = info;
@@ -47,7 +47,7 @@ function Refresh( VMPlayer playerOwner ) {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( Player, info.IsActive );
+        info.Refresh( self, Player, info.IsActive );
 
         info = info.Next;
     }
@@ -61,7 +61,7 @@ function Reset() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = 0;
-        info.Refresh( Player );
+        info.Refresh( self, Player );
 
         info = info.Next;
     }
@@ -184,7 +184,7 @@ function IncreaseAllToMax() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.Refresh( Player );
+        info.Refresh( self, Player );
 
         info = info.Next;
     }
@@ -223,7 +223,7 @@ function ActivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( Player, true );
+        info.Refresh( self, Player, true );
 
         info = info.Next;
     }
@@ -233,7 +233,7 @@ function DeactivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( Player );
+        info.Refresh( self, Player );
 
         info = info.Next;
     }
@@ -287,14 +287,6 @@ function int GetLevel( name name ) {
 //==============================================
 function bool IsLocationFull( int loc ) {
     return InstallLocationCounts[loc] >= default.InstallLocationMaxCounts[loc];
-}
-
-function class<VMAugmentation> GetAugmentationDefinition( name name ) {
-    if ( name == '' ) {
-        return none;
-    }
-
-    return class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( name ), class'Class' ) );
 }
 
 //==============================================

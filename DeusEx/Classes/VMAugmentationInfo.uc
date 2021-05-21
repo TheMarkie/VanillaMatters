@@ -66,7 +66,7 @@ function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional 
 
     if ( Behaviour != none ) {
         Behaviour.Definition = Definition;
-        Behaviour.Refresh( player );
+        Behaviour.Refresh( manager, player );
     }
 
     if ( IsActive ) {
