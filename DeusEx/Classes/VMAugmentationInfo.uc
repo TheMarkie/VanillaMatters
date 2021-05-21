@@ -59,7 +59,7 @@ function int GetInstallLocation() {
 //==============================================
 // Management
 //==============================================
-function Refresh( VMPlayer playerOwner, optional bool active ) {
+function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional bool active ) {
     LoadDefinition();
 
     Player = playerOwner;

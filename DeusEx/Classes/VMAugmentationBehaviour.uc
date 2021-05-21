@@ -4,7 +4,7 @@ class VMAugmentationBehaviour extends Object
 var transient VMPlayer Player;
 var transient class<VMAugmentation> Definition;
 
-function Refresh( VMPlayer p ) {
+function Refresh( VMAugmentationManager manager, VMPlayer p ) {
     Player = p;
 }
 
