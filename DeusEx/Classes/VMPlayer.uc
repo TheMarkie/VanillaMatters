@@ -384,6 +384,198 @@ state PlayerWalking {
 
         super.PlayerTick( deltaTime );
     }
+
+    // lets us affect the player's movement
+    function ProcessMove ( float deltaTime, vector newAccel, eDodgeDir dodgeMove, rotator deltaRot ) {
+        local int newSpeed, defaultSpeed;
+        local vector HitLocation, HitNormal, checkpoint, downcheck;
+        local Actor HitActor, HitActorDown;
+        local bool bCantStandUp;
+        local Vector loc, traceSize;
+        local float alpha, maxLeanDist;
+
+        defaultSpeed = GetCurrentGroundSpeed();
+
+        if ( bIsCrouching || bForceDuck ) {
+            SetBasedPawnSize( default.CollisionRadius, 16 );
+
+            // check to see if we could stand up if we wanted to
+            checkpoint = Location;
+            // check normal standing height
+            checkpoint.Z = checkpoint.Z - CollisionHeight + 2 * GetDefaultCollisionHeight();
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = 1;
+            HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+            bCantStandUp = HitActor != none;
+        }
+        else {
+            GroundSpeed = defaultSpeed;
+            if ( !IsLeaning() ) {
+                ResetBasedPawnSize();
+            }
+        }
+
+        bForceDuck = bCantStandUp;
+
+        // if the player's legs are damaged, then reduce our speed accordingly
+        newSpeed = defaultSpeed;
+
+        if ( Level.NetMode == NM_Standalone ) {
+            if ( HealthLegLeft < 1 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.2;
+            }
+            else if ( HealthLegLeft < 34 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.15;
+            }
+            else if ( HealthLegLeft < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.10;
+            }
+
+            if ( HealthLegRight < 1 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.2;
+            }
+            else if ( HealthLegRight < 34 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.15;
+            }
+            else if ( HealthLegRight < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.10;
+            }
+
+            if ( HealthTorso < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.05;
+            }
+        }
+
+        // let the player pull themselves along with their hands even if both of
+        // their legs are blown off
+        if ( HealthLegLeft < 1 && HealthLegRight < 1 ) {
+            bIsWalking = true;
+            bForceDuck = true;
+        }
+        else if ( bIsCrouching || bForceDuck ) {
+            bIsWalking = true;
+        }
+
+        // slow the player down if he's carrying something heavy
+        // Like a DEAD BODY!  AHHHHHH!!!
+        if ( CarriedDecoration != none ) {
+            newSpeed -= CarriedDecoration.Mass * 2;
+        }
+        else if ( inHand != none && inHand.IsA( 'POVCorpse' ) ) {
+            newSpeed -= inHand.Mass * 3;
+        }
+
+        // Vanilla Matters: Change heavy weapon penalty check to apply a direct penalty instead of level check
+        if ( Weapon != none && Weapon.Mass > 30 ) {
+            newSpeed = defaultSpeed * ( 0.5 + GetValue( 'HeavyWeaponMovementSpeedBonus' ) );
+        }
+
+        // if we are moving really slow, force us to walking
+        // Vanilla Matters: Change walking to start at half running speed
+        if ( newSpeed <= ( defaultSpeed / 2 ) && !bForceDuck ) {
+            bIsWalking = true;
+            newSpeed = defaultSpeed;
+        }
+
+        GroundSpeed = FMax( newSpeed, 100 );
+
+        // if we are moving or crouching, we can't lean
+        // uncomment below line to disallow leaning during crouch
+
+        if ( VSize( Velocity ) < 10 && aForward == 0 ) {
+            bCanLean = true;
+        }
+        else {
+            bCanLean = false;
+        }
+
+        // check leaning buttons (axis aExtra0 is used for leaning)
+        maxLeanDist = 40;
+
+        if ( IsLeaning() ) {
+            if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                ViewRotation.Roll = curLeanDist * 20;
+            }
+
+            if ( !bIsCrouching && !bForceDuck ) {
+                SetBasedPawnSize( CollisionRadius, GetDefaultCollisionHeight() - Abs( curLeanDist ) / 3.0 );
+            }
+        }
+
+        if ( bCanLean && aExtra0 != 0 ) {
+            DropDecoration();
+            if ( AnimSequence != 'CrouchWalk' ) {
+                PlayCrawling();
+            }
+
+            alpha = maxLeanDist * aExtra0 * 2.0 * deltaTime;
+
+            loc = vect( 0,0,0 );
+            loc.Y = alpha;
+            if ( Abs( curLeanDist + alpha ) < maxLeanDist ) {
+                // check to make sure the destination not blocked
+                checkpoint = ( loc >> Rotation ) + Location;
+                traceSize.X = CollisionRadius;
+                traceSize.Y = CollisionRadius;
+                traceSize.Z = CollisionHeight;
+                HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+
+                // check down as well to make sure there's a floor there
+                downcheck = checkpoint - vect( 0, 0, 1 ) * CollisionHeight;
+                HitActorDown = Trace( HitLocation, HitNormal, downcheck, checkpoint, true, traceSize );
+                if ( HitActor == none && HitActorDown != none ) {
+                    if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                        SetLocation( checkpoint );
+                        ServerUpdateLean( checkpoint );
+                        curLeanDist += alpha;
+                    }
+                }
+            }
+            else {
+                if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                    curLeanDist = aExtra0 * maxLeanDist;
+                }
+            }
+        }
+        else if ( IsLeaning() ) {
+            if ( AnimSequence == 'CrouchWalk' ) {
+                PlayRising();
+            }
+
+            if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                prevLeanDist = curLeanDist;
+                alpha = FClamp( 7.0 * DeltaTime, 0.001, 0.9 );
+                curLeanDist *= 1.0 - alpha;
+                if ( Abs( curLeanDist ) < 1.0 ) {
+                    curLeanDist = 0;
+                }
+            }
+
+            loc = vect( 0,0,0 );
+            loc.Y = -( prevLeanDist - curLeanDist );
+
+            // check to make sure the destination not blocked
+            checkpoint = ( loc >> Rotation ) + Location;
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = CollisionHeight;
+            HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+
+            // check down as well to make sure there's a floor there
+            downcheck = checkpoint - vect( 0,0,1 ) * CollisionHeight;
+            HitActorDown = Trace( HitLocation, HitNormal, downcheck, checkpoint, true, traceSize );
+            if ( HitActor == none && HitActorDown != none )
+            {
+                if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                    SetLocation( checkpoint );
+                    ServerUpdateLean( checkpoint );
+                }
+            }
+        }
+
+        super.ProcessMove( deltaTime, newAccel, dodgeMove, deltaRot );
+    }
 }
 
 state PlayerFlying {
