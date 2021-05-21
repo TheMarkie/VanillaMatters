@@ -10979,7 +10979,7 @@ function VMAugmentationInfo GetFirstAugmentationInfo() { return none; }
 function bool AddAugmentation( name className, name packageName ) { return false; }
 function bool IncreaseAugmentationLevel( name name ) { return false; }
 
-function SetAugmentation( name name, bool activate );
+function bool SetAugmentation( name name, bool activate );
 function bool IsAugmentationActive( name name ) { return false; }
 function ActivateAllAugmentations();
 function DeactivateAllAugmentations();

@@ -5,7 +5,7 @@ var() Name VisibilityModifierName;
 // Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory LastInHand;
 
-function Activate( int level ) {
+function bool Activate( int level ) {
     Player.PlaySound( Sound'CloakUp', SLOT_Interact, 0.85,, 768, 1.0 );
 
     Player.SetSkinStyle( STY_Translucent, Texture'WhiteStatic', 0.05 );
@@ -14,6 +14,8 @@ function Activate( int level ) {
     Player.MultiSkins[7] = Texture'BlackMaskTex';
 
     Player.GlobalModifiers.Modify( VisibilityModifierName, 1 );
+
+    return true;
 }
 
 function Tick( float deltaTime, int level ) {
@@ -38,7 +40,7 @@ function Tick( float deltaTime, int level ) {
     }
 }
 
-function Deactivate( int level ) {
+function bool Deactivate( int level ) {
     Player.PlaySound( Sound'CloakDown', SLOT_Interact, 0.85,, 768, 1.0 );
 
     ToggleTransparency( LastInHand, false );
@@ -48,6 +50,8 @@ function Deactivate( int level ) {
     Player.CreateShadow();
 
     Player.GlobalModifiers.Modify( VisibilityModifierName, -1 );
+
+    return true;
 }
 
 // Set and reset item transparency.

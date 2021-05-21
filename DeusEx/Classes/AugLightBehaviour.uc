@@ -6,7 +6,7 @@ var Beam GlowBeam;
 var() int Length;
 
 // Behaviours
-function Activate( int level ) {
+function bool Activate( int level ) {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -27,9 +27,11 @@ function Activate( int level ) {
     GlowBeam.LightSaturation = 140;
     GlowBeam.LightBrightness = 220;
     SetGlowLocation();
+
+    return true;
 }
 
-function Deactivate( int level ) {
+function bool Deactivate( int level ) {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -39,6 +41,8 @@ function Deactivate( int level ) {
         GlowBeam.Destroy();
     }
     GlowBeam = none;
+
+    return true;
 }
 
 function Tick( float deltaTime, int level ) {

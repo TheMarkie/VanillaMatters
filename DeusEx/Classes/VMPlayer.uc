@@ -1450,14 +1450,14 @@ function bool IncreaseAugmentationLevel( name name ) {
     return false;
 }
 
-function SetAugmentation( name name, bool activate ) {
+function bool SetAugmentation( name name, bool activate ) {
     if ( VMAugmentationSystem != none ) {
-        VMAugmentationSystem.Set( name, activate );
+        return VMAugmentationSystem.Set( name, activate );
     }
 }
-function ToggleAugmentation( name name ) {
+function bool ToggleAugmentation( name name ) {
     if ( VMAugmentationSystem != none ) {
-        VMAugmentationSystem.Toggle( name );
+        return VMAugmentationSystem.Toggle( name );
     }
 }
 function bool IsAugmentationActive( name name ) {

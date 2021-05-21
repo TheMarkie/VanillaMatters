@@ -9,9 +9,9 @@ function Refresh( VMAugmentationManager manager, VMPlayer p ) {
 }
 
 // Functionality
-function Activate( int level );
+function bool Activate( int level );
 function Tick( float deltaTime, int level );
-function Deactivate( int level );
+function bool Deactivate( int level );
 
 function float GetRate( float time, int level ) {
     return ( Definition.default.Rates[Min( level, #Definition.default.Rates - 1 )] / 60 ) * time;

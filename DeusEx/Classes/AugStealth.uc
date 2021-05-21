@@ -3,12 +3,16 @@ class AugStealth extends VMAugmentation;
 var() array<float> RunSilentBonus;
 var() array<float> FellDamageResistanceFlat;
 
-static function Activate( VMPlayer player, int level ) {
+static function bool Activate( VMPlayer player, int level ) {
     player.RunSilentValue += default.RunSilentBonus[level];
+
+    return true;
 }
 
-static function Deactivate( VMPlayer player, int level ) {
+static function bool Deactivate( VMPlayer player, int level ) {
     player.RunSilentValue -= default.RunSilentBonus[level];
+
+    return true;
 }
 
 defaultproperties

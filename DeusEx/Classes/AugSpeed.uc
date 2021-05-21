@@ -4,16 +4,20 @@ var() array<float> MovementSpeedBonusMult;
 var() array<float> JumpVelocityBonusMult;
 var() array<float> FellDamageResistanceFlat;
 
-static function Activate( VMPlayer player, int level ) {
+static function bool Activate( VMPlayer player, int level ) {
     player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', default.MovementSpeedBonusMult[level] );
     player.GlobalModifiers.Modify( 'JumpVelocityBonusMult', default.JumpVelocityBonusMult[level] );
     player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', default.FellDamageResistanceFlat[level] );
+
+    return true;
 }
 
-static function Deactivate( VMPlayer player, int level ) {
+static function bool Deactivate( VMPlayer player, int level ) {
     player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', -default.MovementSpeedBonusMult[level] );
     player.GlobalModifiers.Modify( 'JumpVelocityBonusMult', -default.JumpVelocityBonusMult[level] );
     player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', -default.FellDamageResistanceFlat[level] );
+
+    return true;
 }
 
 defaultproperties

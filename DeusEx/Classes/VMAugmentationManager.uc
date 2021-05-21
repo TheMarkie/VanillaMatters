@@ -184,7 +184,6 @@ function IncreaseAllToMax() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.Refresh( self, Player );
 
         info = info.Next;
     }
@@ -193,7 +192,7 @@ function IncreaseAllToMax() {
 //==============================================
 // Augmentation Activation/Deactivation
 //==============================================
-function Set( name name, bool active ) {
+function bool Set( name name, bool active ) {
     local VMAugmentationInfo info;
 
     if ( Player == none ) {

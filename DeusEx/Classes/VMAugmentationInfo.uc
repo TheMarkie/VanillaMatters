@@ -82,25 +82,27 @@ function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional 
     }
 }
 
-function Toggle( bool on ) {
+function bool Toggle( bool on ) {
     if ( IsActive == on
         || ( Definition.default.IsPassive && !on )
     ) {
-        return;
+        return IsActive;
     }
 
     if ( on ) {
-        Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
-
-        Activate();
+        if ( Activate() ) {
+            Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
+            IsActive = true;
+        }
     }
     else {
-        Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
-
-        Deactivate();
+        if ( Deactivate() ) {
+            Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
+            IsActive = false;
+        }
     }
 
-    IsActive = on;
+    return IsActive;
 }
 
 function bool IncreaseLevel() {
@@ -126,21 +128,21 @@ function bool DecreaseLevel() {
 //==============================================
 // Behaviours
 //==============================================
-function Activate() {
+function bool Activate() {
     if ( Behaviour != none ) {
-        Behaviour.Activate( Level );
+        return Behaviour.Activate( Level );
     }
     else {
-        Definition.static.Activate( Player, Level );
+        return Definition.static.Activate( Player, Level );
     }
 }
 
-function Deactivate() {
+function bool Deactivate() {
     if ( Behaviour != none ) {
-        Behaviour.Deactivate( Level );
+        return Behaviour.Deactivate( Level );
     }
     else {
-        Definition.static.Deactivate( Player, Level );
+        return Definition.static.Deactivate( Player, Level );
     }
 }
 
