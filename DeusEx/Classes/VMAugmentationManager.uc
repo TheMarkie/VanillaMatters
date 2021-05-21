@@ -196,24 +196,24 @@ function bool Set( name name, bool active ) {
     local VMAugmentationInfo info;
 
     if ( Player == none ) {
-        return;
+        return false;
     }
 
     info = GetInfo( name );
     if ( info != none ) {
-        info.Toggle( active );
+        return info.Toggle( active );
     }
 }
-function Toggle( name name ) {
+function bool Toggle( name name ) {
     local VMAugmentationInfo info;
 
     if ( Player == none ) {
-        return;
+        return false;
     }
 
     info = GetInfo( name );
     if ( info != none ) {
-        info.Toggle( !info.IsActive );
+        return info.Toggle( !info.IsActive );
     }
 }
 
@@ -222,7 +222,7 @@ function ActivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( self, Player, true );
+        info.Activate();
 
         info = info.Next;
     }
@@ -232,7 +232,7 @@ function DeactivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Refresh( self, Player );
+        info.Deactivate();
 
         info = info.Next;
     }
