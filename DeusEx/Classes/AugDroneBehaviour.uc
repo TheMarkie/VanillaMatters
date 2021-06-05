@@ -8,12 +8,12 @@ var bool isMinimized;
 
 var() array<int> DroneSpeed;
 
-function bool Activate( int level ) {
+function bool Activate() {
     Initialize();
     return true;
 }
 
-function bool Deactivate( int level ) {
+function bool Deactivate() {
     if ( drone != none ) {
         ToggleViewport();
         return false;

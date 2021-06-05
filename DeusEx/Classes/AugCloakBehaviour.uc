@@ -5,7 +5,7 @@ var() Name VisibilityModifierName;
 // Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory LastInHand;
 
-function bool Activate( int level ) {
+function bool Activate() {
     Player.PlaySound( Sound'CloakUp', SLOT_Interact, 0.85,, 768, 1.0 );
 
     Player.SetSkinStyle( STY_Translucent, Texture'WhiteStatic', 0.05 );
@@ -18,7 +18,7 @@ function bool Activate( int level ) {
     return true;
 }
 
-function Tick( float deltaTime, int level ) {
+function Tick( float deltaTime ) {
     if ( LastInHand == None ) {
         if ( Player.inHand != None ) {
             LastInHand = Player.inHand;
@@ -40,7 +40,7 @@ function Tick( float deltaTime, int level ) {
     }
 }
 
-function bool Deactivate( int level ) {
+function bool Deactivate() {
     Player.PlaySound( Sound'CloakDown', SLOT_Interact, 0.85,, 768, 1.0 );
 
     ToggleTransparency( LastInHand, false );

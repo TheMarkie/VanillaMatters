@@ -6,7 +6,7 @@ var Beam GlowBeam;
 var() int Length;
 
 // Behaviours
-function bool Activate( int level ) {
+function bool Activate() {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -31,7 +31,7 @@ function bool Activate( int level ) {
     return true;
 }
 
-function bool Deactivate( int level ) {
+function bool Deactivate() {
     if ( MainBeam != none ) {
         MainBeam.Destroy();
     }
@@ -45,7 +45,7 @@ function bool Deactivate( int level ) {
     return true;
 }
 
-function Tick( float deltaTime, int level ) {
+function Tick( float deltaTime ) {
     SetBeamLocation();
     SetGlowLocation();
 }
