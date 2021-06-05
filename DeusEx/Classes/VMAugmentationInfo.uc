@@ -83,13 +83,17 @@ function bool Toggle( bool on ) {
 
     if ( on ) {
         if ( Activate() ) {
-            Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
+            if ( Definition.default.ActivateSound != none ) {
+                Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
+            }
             IsActive = true;
         }
     }
     else {
         if ( Deactivate() ) {
-            Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
+            if ( Definition.default.DeactivateSound != none ) {
+                Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
+            }
             IsActive = false;
         }
     }

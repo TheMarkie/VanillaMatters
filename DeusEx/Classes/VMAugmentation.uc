@@ -42,9 +42,3 @@ static function int GetMaxLevel() {
 //==============================================
 static function bool Activate( VMPlayer player, int level );
 static function bool Deactivate( VMPlayer player, int level );
-
-defaultproperties
-{
-     ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
-     DeactivateSound=Sound'DeusExSounds.Augmentation.AugDeactivate'
-}
