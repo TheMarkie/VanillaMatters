@@ -126,31 +126,31 @@ function bool DecreaseLevel() {
 //==============================================
 function bool Activate() {
     if ( Behaviour != none ) {
-        return Behaviour.Activate( Level );
+        return Behaviour.Activate();
     }
     else {
-        return Definition.static.Activate( Player, Level );
+        return Definition.static.Activate( Player );
     }
 }
 
 function bool Deactivate() {
     if ( Behaviour != none ) {
-        return Behaviour.Deactivate( Level );
+        return Behaviour.Deactivate();
     }
     else {
-        return Definition.static.Deactivate( Player, Level );
+        return Definition.static.Deactivate( Player );
     }
 }
 
 function Tick( float deltaTime ) {
     if ( Behaviour != none ) {
-        Behaviour.Tick( deltaTime, Level );
+        Behaviour.Tick( deltaTime );
     }
 }
 
 function float GetRate( float time ) {
     if ( Behaviour != none ) {
-        return Behaviour.GetRate( time, Level );
+        return Behaviour.GetRate( time );
     }
 
     return ( Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] / 60 ) * time;
@@ -158,7 +158,7 @@ function float GetRate( float time ) {
 
 function float GetCooldown() {
     if ( Behaviour != none ) {
-        return Behaviour.GetCooldown( Level );
+        return Behaviour.GetCooldown();
     }
 
     return 0;

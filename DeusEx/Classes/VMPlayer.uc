@@ -394,6 +394,12 @@ state PlayerWalking {
         local Vector loc, traceSize;
         local float alpha, maxLeanDist;
 
+        if ( VMAugmentationSystem != none ) {
+            if ( VMAugmentationSystem.ProcessMove( deltaTime ) ) {
+                return;
+            }
+        }
+
         defaultSpeed = GetCurrentGroundSpeed();
 
         if ( bIsCrouching || bForceDuck ) {

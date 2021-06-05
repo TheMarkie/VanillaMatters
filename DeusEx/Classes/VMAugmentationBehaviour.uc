@@ -10,15 +10,17 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 // Functionality
-function bool Activate( int level );
-function Tick( float deltaTime, int level );
-function bool Deactivate( int level );
+function bool Activate();
+function bool Deactivate();
 
-function float GetRate( float time, int level ) {
-    return ( Info.Definition.default.Rates[Min( level, #Info.Definition.default.Rates - 1 )] / 60 ) * time;
+function float GetRate( float time ) {
+    return ( Info.Definition.default.Rates[Min( Info.Level, #Info.Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
-function float GetCooldown( int level );
+function float GetCooldown();
+
+// Events
+event Tick( float deltaTime );
 
 // Display
 function Draw( GC gc );
