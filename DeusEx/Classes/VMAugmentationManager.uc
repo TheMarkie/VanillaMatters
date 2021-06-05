@@ -68,72 +68,7 @@ function Reset() {
     }
 }
 
-//==============================================
-// Augmentation Display
-//==============================================
-function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
-    local string str;
 
-    winInfo.Clear();
-    winInfo.SetTitle( info.GetName() );
-    winInfo.SetText( info.GetDescription() );
-
-    // Install Location
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
-
-    // Energy Rate
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate( 60 ) ) ) );
-
-    // Current Level
-    str = Sprintf( CurrentLevelLabel, info.Level + 1 );
-
-    // Can Upgrade / Is Active
-    if ( info.CanUpgrade() ) {
-        str = str @ CanUpgradeLabel;
-    }
-    else if ( info.Level >= info.GetMaxLevel() ) {
-        str = str @ MaximumLabel;
-    }
-
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ str );
-
-    // Is Passive
-    if ( info.IsPassive() ) {
-        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
-    }
-}
-
-function GetBaseDescription( class<VMAugmentation> augClass, PersonaInfoWindow winInfo ) {
-    local string str;
-
-    winInfo.Clear();
-    winInfo.SetTitle( augClass.default.UpgradeName );
-    winInfo.SetText( augClass.default.Description );
-
-    // Install Location
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[augClass.default.InstallLocation] ) );
-
-    // Is Passive
-    if ( augClass.default.IsPassive ) {
-        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
-    }
-}
-
-function DrawAugmentations( GC gc ) {
-    local VMAugmentationInfo info;
-
-    if ( !refreshed ) {
-        return;
-    }
-
-    info = FirstAugmentationInfo;
-    while ( info != none ) {
-        if ( info.IsActive ) {
-            info.DrawAugmentation( gc );
-        }
-
-        info = info.Next;
-    }
 }
 
 //==============================================
@@ -280,6 +215,74 @@ function int GetLevel( name name ) {
     }
 
     return -1;
+}
+
+//==============================================
+// Augmentation Display
+//==============================================
+function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo ) {
+    local string str;
+
+    winInfo.Clear();
+    winInfo.SetTitle( info.GetName() );
+    winInfo.SetText( info.GetDescription() );
+
+    // Install Location
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
+
+    // Energy Rate
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate( 60 ) ) ) );
+
+    // Current Level
+    str = Sprintf( CurrentLevelLabel, info.Level + 1 );
+
+    // Can Upgrade / Is Active
+    if ( info.CanUpgrade() ) {
+        str = str @ CanUpgradeLabel;
+    }
+    else if ( info.Level >= info.GetMaxLevel() ) {
+        str = str @ MaximumLabel;
+    }
+
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ str );
+
+    // Is Passive
+    if ( info.IsPassive() ) {
+        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
+    }
+}
+
+function GetBaseDescription( class<VMAugmentation> augClass, PersonaInfoWindow winInfo ) {
+    local string str;
+
+    winInfo.Clear();
+    winInfo.SetTitle( augClass.default.UpgradeName );
+    winInfo.SetText( augClass.default.Description );
+
+    // Install Location
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[augClass.default.InstallLocation] ) );
+
+    // Is Passive
+    if ( augClass.default.IsPassive ) {
+        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ PassiveLabel );
+    }
+}
+
+function DrawAugmentations( GC gc ) {
+    local VMAugmentationInfo info;
+
+    if ( !refreshed ) {
+        return;
+    }
+
+    info = FirstAugmentationInfo;
+    while ( info != none ) {
+        if ( info.IsActive ) {
+            info.DrawAugmentation( gc );
+        }
+
+        info = info.Next;
+    }
 }
 
 //==============================================
