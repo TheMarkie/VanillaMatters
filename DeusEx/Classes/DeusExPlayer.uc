@@ -3638,36 +3638,8 @@ function DoFrob(Actor Frobber, Inventory frobWith)
 //
 // put the object in the player's hand and draw it in front of the player
 // ----------------------------------------------------------------------
-
-exec function PutInHand(optional Inventory inv)
-{
-    if (RestrictInput())
-        return;
-
-    // can't put anything in hand if you're using a spy drone
-    if ((inHand == None) && bSpyDroneActive)
-        return;
-
-    // can't do anything if you're carrying a corpse
-    if ((inHand != None) && inHand.IsA('POVCorpse'))
-        return;
-
-    if (inv != None)
-    {
-        // can't put ammo in hand
-        if (inv.IsA('Ammo'))
-            return;
-
-        // Can't put an active charged item in hand
-        if ((inv.IsA('ChargedPickup')) && (ChargedPickup(inv).IsActive()))
-            return;
-    }
-
-    if (CarriedDecoration != None)
-        DropDecoration();
-
-    SetInHandPending(inv);
-}
+// Vanilla Matters: Handled in VMPlayer
+exec function PutInHand( optional Inventory inv );
 
 // ----------------------------------------------------------------------
 // UpdateBeltText()
