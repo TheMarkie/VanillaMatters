@@ -6165,19 +6165,6 @@ event UpdateEyeHeight(float DeltaTime)
 
 event PlayerCalcView( out actor ViewActor, out vector CameraLocation, out rotator CameraRotation )
 {
-    // check for spy drone and freeze player's view
-    if (bSpyDroneActive)
-    {
-        if (aDrone != None)
-        {
-            // First-person view.
-            CameraLocation = Location;
-            CameraLocation.Z += EyeHeight;
-            CameraLocation += WalkBob;
-            return;
-        }
-    }
-
     // Check if we're in first-person view or third-person.  If we're in first-person then
     // we'll just render the normal camera view.  Otherwise we want to place the camera
     // as directed by the conPlay.cameraInfo object.

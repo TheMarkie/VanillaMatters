@@ -21,6 +21,7 @@ function float GetCooldown();
 
 // Events
 event Tick( float deltaTime );
+event bool ProcessMove( float deltaTime );
 
 // Display
 function Draw( GC gc );

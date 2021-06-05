@@ -4,6 +4,9 @@ var private transient bool refreshed;
 
 var travel VMAugmentationInfo FirstAugmentationInfo;
 
+// Event handlers
+var array<VMAugmentationBehaviour> ProcessMoveHandlers;
+
 var travel int InstallLocationCounts[7];
 var int InstallLocationMaxCounts[7];
 
@@ -43,6 +46,8 @@ function bool Add( name className, name packageName, optional int startingLevel 
 function Refresh( VMPlayer playerOwner ) {
     local VMAugmentationInfo info;
 
+    ResetEvents();
+
     super.Refresh( playerOwner );
 
     info = FirstAugmentationInfo;
@@ -58,6 +63,8 @@ function Refresh( VMPlayer playerOwner ) {
 function Reset() {
     local VMAugmentationInfo info;
 
+    ResetEvents();
+
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = 0;
@@ -68,7 +75,23 @@ function Reset() {
     }
 }
 
+//==============================================
+// Augmentation Events
+//==============================================
+function bool ProcessMove( float deltaTime ) {
+    local bool handled;
+    local int i, count;
 
+    count = #ProcessMoveHandlers;
+    for ( i = 0; i < count; i++ ) {
+        handled = handled || ProcessMoveHandlers[i].ProcessMove( deltaTime );
+    }
+
+    return handled;
+}
+
+function ResetEvents() {
+    ProcessMoveHandlers[-2] = none;
 }
 
 //==============================================
