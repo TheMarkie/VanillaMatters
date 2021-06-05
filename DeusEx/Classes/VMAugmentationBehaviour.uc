@@ -2,10 +2,11 @@ class VMAugmentationBehaviour extends Object
     abstract;
 
 var transient VMPlayer Player;
-var transient class<VMAugmentation> Definition;
+var transient VMAugmentationInfo Info;
 
-function Refresh( VMAugmentationManager manager, VMPlayer p ) {
+function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
     Player = p;
+    Info = i;
 }
 
 // Functionality
@@ -14,7 +15,7 @@ function Tick( float deltaTime, int level );
 function bool Deactivate( int level );
 
 function float GetRate( float time, int level ) {
-    return ( Definition.default.Rates[Min( level, #Definition.default.Rates - 1 )] / 60 ) * time;
+    return ( Info.Definition.default.Rates[Min( level, #Info.Definition.default.Rates - 1 )] / 60 ) * time;
 }
 
 function float GetCooldown( int level );

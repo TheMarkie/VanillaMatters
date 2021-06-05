@@ -21,7 +21,6 @@ function LoadBehaviour( VMAugmentationManager manager ) {
         behaviourClass = class<VMAugmentationBehaviour>( DynamicLoadObject( DefinitionPackageName $ "." $ Definition.default.BehaviourClassName, class'Class' ) );
         if ( behaviourClass != none ) {
             Behaviour = new behaviourClass;
-            Behaviour.Definition = Definition;
         }
     }
 }
@@ -65,8 +64,7 @@ function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional 
     Player = playerOwner;
 
     if ( Behaviour != none ) {
-        Behaviour.Definition = Definition;
-        Behaviour.Refresh( manager, player );
+        Behaviour.Refresh( player, self, manager );
     }
 
     if ( active || Definition.default.IsPassive ) {
