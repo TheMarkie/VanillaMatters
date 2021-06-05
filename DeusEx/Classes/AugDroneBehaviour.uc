@@ -150,9 +150,11 @@ function CleanUp() {
     }
     if ( droneViewport != none ) {
         droneViewport.Destroy();
+        droneViewport = none;
     }
     if ( playerViewport != none ) {
         playerViewport.Destroy();
+        playerViewport = none;
     }
 }
 
