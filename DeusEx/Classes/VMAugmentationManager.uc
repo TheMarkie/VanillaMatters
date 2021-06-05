@@ -61,6 +61,7 @@ function Reset() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = 0;
+        info.Deactivate();
         info.Refresh( self, Player );
 
         info = info.Next;
