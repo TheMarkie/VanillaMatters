@@ -129,7 +129,7 @@ function bool Activate() {
         return Behaviour.Activate();
     }
     else {
-        return Definition.static.Activate( Player );
+        return Definition.static.Activate( Player, Level );
     }
 }
 
@@ -138,7 +138,7 @@ function bool Deactivate() {
         return Behaviour.Deactivate();
     }
     else {
-        return Definition.static.Deactivate( Player );
+        return Definition.static.Deactivate( Player, Level );
     }
 }
 
