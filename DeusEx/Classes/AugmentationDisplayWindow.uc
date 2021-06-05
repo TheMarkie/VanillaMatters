@@ -10,12 +10,6 @@ var float corner;
 var bool bDefenseActive;
 var int defenseLevel;
 
-var ViewportWindow winDrone;
-var bool bDroneCreated;
-var bool bDroneReferenced;
-//var SpyDrone aDrone;      // MBCODE: Took this out and moved it to DeusExPlayer since the server
-                                    // has no idea about these windows or the drone (needed for multiplayer).
-
 var bool bTargetActive;
 var int targetLevel;
 var Actor lastTarget;
@@ -47,7 +41,6 @@ var localized String msgScanning2;
 var localized String msgADSTracking;
 var localized String msgADSDetonating;
 var localized String msgBehind;
-var localized String msgDroneActive;
 var localized String msgEnergyLow;
 var localized String msgCantLaunch;
 var localized String msgLightAmpActive;
@@ -114,8 +107,6 @@ var Color   colRed, colGreen, colWhite;
 var Actor defenseTarget;                // AugDefense now deals with more than projectiles.
 var bool VM_bDefenseEnoughEnergy;       // AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
 var bool VM_bDefenseEnoughDistance;     // Shows if we're in range to detonate.
-
-var ViewportWindow VM_playerWnd;        // Holds the player perspective when AugDrone is on.
 
 var bool VM_recticleDrawn;              // True if we're drawing the weapon recticle.
 
@@ -227,46 +218,6 @@ function Interpolate(GC gc, float fromX, float fromY, float toX, float toY, int 
 }
 
 // ----------------------------------------------------------------------
-// ConfigurationChanged()
-// ----------------------------------------------------------------------
-
-function ConfigurationChanged()
-{
-    local float x, y, w, h, cx, cy;
-
-    // Vanilla Matters: Tweak the locations of the windows.
-    if ( winDrone != none ) {
-        winDrone.ConfigureChild( 0, 0, width, height );
-    }
-
-    x = margin;
-    y = height * 0.375;
-    w = width / 4;
-    h = height / 4;
-
-    if ( VM_playerWnd != none ) {
-        VM_playerWnd.ConfigureChild( x, y, w, h );
-    }
-
-    x = width - ( width / 4 ) - margin;
-
-    if ( winZoom != none ) {
-        winZoom.ConfigureChild( x, y, w, h );
-    }
-}
-
-// ----------------------------------------------------------------------
-// ChildRequestedReconfiguration()
-// ----------------------------------------------------------------------
-
-function bool ChildRequestedReconfiguration(Window childWin)
-{
-    ConfigurationChanged();
-
-    return True;
-}
-
-// ----------------------------------------------------------------------
 // RefreshMultiplayerKeys()
 // ----------------------------------------------------------------------
 function RefreshMultiplayerKeys()
@@ -303,42 +254,6 @@ function RefreshMultiplayerKeys()
 
 function Tick(float deltaTime)
 {
-    // check for the drone ViewportWindow being constructed
-
-    // Vanilla Matters: When AugDrone is active, make the spy drone's perspective the main one and shift the player's down to a smaller window.
-    if ( player.bSpyDroneActive && player.aDrone != none && ( player.PlayerIsClient() || player.Level.NetMode == NM_Standalone ) ) {
-        if ( VM_playerWnd == none ) {
-            VM_playerWnd = ViewportWindow( NewChild( class'ViewportWindow' ) );
-            VM_playerWnd.AskParentForReconfigure();
-            VM_playerWnd.Lower();
-            VM_playerWnd.SetViewportActor( player );
-        }
-        if ( winDrone == none ) {
-            winDrone = ViewportWindow( NewChild( class'ViewportWindow' ) );
-            winDrone.AskParentForReconfigure();
-            winDrone.Lower();
-            winDrone.SetViewportActor( player.aDrone );
-        }
-    }
-
-    if ( !player.bSpyDroneActive ) {
-        if ( winDrone != none ) {
-            winDrone.Destroy();
-            winDrone = none;
-        }
-        if ( VM_playerWnd != none ) {
-            VM_playerWnd.Destroy();
-            VM_playerWnd = none;
-        }
-
-        if ( player.aDrone != none && IsActorValid( player.aDrone ) ) {
-            RemoveActorRef( player.aDrone );
-            bDroneReferenced = false;
-        }
-
-        bDroneCreated = false;
-    }
-
     // check for the target ViewportWindow being constructed
     if (bTargetActive && (targetLevel > 2) && (winZoom == None) && (lastTarget != None) && (Player.Level.NetMode == NM_Standalone))
     {
@@ -370,22 +285,23 @@ function PostDrawWindow(GC gc)
 
     pp = Player.GetPlayerPawn();
 
-   //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
+    //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
 
+    // TODO: Restore aug drawing
     // Vanilla Matters: Handle active status in the function itself.
-    DrawVisionAugmentation( gc );
+    // DrawVisionAugmentation( gc );
 
-    if ( Player.Level.NetMode != NM_Standalone )
-        DrawMiscStatusMessages( gc );
+    // if ( Player.Level.NetMode != NM_Standalone )
+    //     DrawMiscStatusMessages( gc );
 
-    if (bDefenseActive)
-        DrawDefenseAugmentation(gc);
+    // if (bDefenseActive)
+    //     DrawDefenseAugmentation(gc);
 
-    if (Player.bSpyDroneActive)
-        DrawSpyDroneAugmentation(gc);
+    // if (Player.bSpyDroneActive)
+    //     DrawSpyDroneAugmentation(gc);
 
-   // draw IFF and accuracy information all the time, return False if target aug is not active
-    DrawTargetAugmentation(gc);
+    // draw IFF and accuracy information all the time, return False if target aug is not active
+    // DrawTargetAugmentation(gc);
 
     gc.SetFont(Font'FontMenuSmall_DS');
     gc.SetTextColor(colHeaderText);
@@ -493,65 +409,7 @@ function DrawDefenseAugmentation(GC gc)
 // ----------------------------------------------------------------------
 // DrawSpyDroneAugmentation()
 // ----------------------------------------------------------------------
-
-function DrawSpyDroneAugmentation(GC gc)
-{
-    local String str;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-    local float x, y, w, h, mult;
-    local Vector loc;
-
-    // set the coords of the drone window
-    boxW = width/4;
-    boxH = height/4;
-    boxCX = width/8 + margin;
-    boxCY = height/2;
-    boxTLX = boxCX - boxW/2;
-    boxTLY = boxCY - boxH/2;
-    boxBRX = boxCX + boxW/2;
-    boxBRY = boxCY + boxH/2;
-
-    if (winDrone != None)
-    {
-        DrawDropShadowBox(gc, boxTLX, boxTLY, boxW, boxH);
-
-        str = msgDroneActive;
-        gc.GetTextExtent(0, w, h, str);
-        x = boxCX - w/2;
-        y = boxTLY - h - margin;
-        gc.DrawText(x, y, w, h, str);
-
-        // print a low energy warning message
-        if ((Player.Energy / Player.Default.Energy) < 0.2)
-        {
-            str = msgEnergyLow;
-            gc.GetTextExtent(0, w, h, str);
-            x = boxCX - w/2;
-            y = boxTLY + margin;
-            gc.SetTextColorRGB(255,0,0);
-            gc.DrawText(x, y, w, h, str);
-            gc.SetTextColor(colHeaderText);
-        }
-    }
-    // Since drone is created on server, they is a delay in when it will actually show up on the client
-    // the flags dronecreated and drone referenced negotiate this timing
-    if ( !bDroneCreated )
-    {
-        if (Player.aDrone == None)
-        {
-            bDroneCreated = true;
-            Player.CreateDrone();
-        }
-    }
-    else if ( !bDroneReferenced )
-    {
-        if ( Player.aDrone != None )
-        {
-            bDroneReferenced = true;
-            AddActorRef( Player.aDrone );
-        }
-    }
-}
+// Vanilla Matters: Handled in behaviour class.
 
 //-------------------------------------------------------------------------------------------------
 // TopCentralMessage()
@@ -1596,7 +1454,6 @@ defaultproperties
      msgADSTracking="* ADS Tracking *"
      msgADSDetonating="* ADS Detonating *"
      msgBehind="BEHIND"
-     msgDroneActive="Remote SpyDrone Active"
      msgEnergyLow="BioElectric energy low!"
      msgCantLaunch="ERROR - No room for SpyDrone construction!"
      msgLightAmpActive="LightAmp Active"

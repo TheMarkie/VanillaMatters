@@ -1259,10 +1259,6 @@ exec function PutInHand( optional Inventory inv ) {
         return;
     }
 
-    if ( inHand == none && bSpyDroneActive ) {
-        return;
-    }
-
     if ( inHand != none && inHand.IsA( 'POVCorpse' ) ) {
         return;
     }

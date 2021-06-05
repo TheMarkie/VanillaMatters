@@ -394,7 +394,7 @@ replication
         DoFrob, ReloadWeapon, PlaceItemInSlot, RemoveItemFromSlot, ClearInventorySlots,
         SetInvSlots, FindInventorySlot, ActivateBelt, DropItem, SetInHand, AugAdd, ExtinguishFire, CatchFire,
         AllEnergy, ClearPosition, ClearBelt, AddObjectToBelt, RemoveObjectFromBelt, TeamSay,
-        KeypadRunUntriggers, KeypadRunEvents, KeypadToggleLocks, ReceiveFirstOptionSync, ReceiveSecondOptionSync,CreateDrone, MoveDrone,
+        KeypadRunUntriggers, KeypadRunEvents, KeypadToggleLocks, ReceiveFirstOptionSync, ReceiveSecondOptionSync,
         CloseComputerScreen, SetComputerHackTime, UpdateCameraRotation, ToggleCameraState,
         SetTurretTrackMode, SetTurretState, NewMultiplayerMatch, PopHealth, ServerUpdateLean, BuySkills, PutInHand,
         MakeCameraAlly, PunishDetection, ServerSetAutoReload, FailRootWindowCheck, FailConsoleCheck, ClientPossessed;
@@ -2776,45 +2776,12 @@ function float GetDefaultCollisionHeight()
 // ----------------------------------------------------------------------
 // CreateDrone
 // ----------------------------------------------------------------------
-function CreateDrone()
-{
-    local Vector loc;
-
-    loc = (2.0 + class'SpyDrone'.Default.CollisionRadius + CollisionRadius) * Vector(ViewRotation);
-    loc.Z = BaseEyeHeight;
-    loc += Location;
-    aDrone = Spawn(class'SpyDrone', Self,, loc, ViewRotation);
-    if (aDrone != None)
-    {
-        // Vanilla Matters: Rescale everything.
-        aDrone.Speed = 75 + ( 25 * spyDroneLevel );
-        aDrone.MaxSpeed = aDrone.Speed;
-        aDrone.Damage = spyDroneLevelValue;
-        aDrone.blastRadius = 160 + ( 80 * spyDroneLevel );
-    }
-}
+// Vanilla Matters: Handled in behaviour class.
 
 // ----------------------------------------------------------------------
 // MoveDrone
 // ----------------------------------------------------------------------
-
-simulated function MoveDrone( float DeltaTime, Vector loc )
-{
-    // if the wanted velocity is zero, apply drag so we slow down gradually
-    if (VSize(loc) == 0)
-   {
-      aDrone.Velocity *= 0.9;
-   }
-    else
-   {
-      aDrone.Velocity += deltaTime * aDrone.MaxSpeed * loc;
-   }
-
-    // add slight bobbing
-   // DEUS_EX AMSD Only do the bobbing in singleplayer, we want stationary drones stationary.
-   if (Level.Netmode == NM_Standalone)
-      aDrone.Velocity += deltaTime * Sin(Level.TimeSeconds * 2.0) * vect(0,0,1);
-}
+// Vanilla Matters: Handled in behaviour class.
 
 function ServerUpdateLean( Vector desiredLoc )
 {
@@ -3450,15 +3417,6 @@ function bool RestrictInput()
         return True;
 
     return False;
-}
-
-
-// ----------------------------------------------------------------------
-// DroneExplode
-// ----------------------------------------------------------------------
-function DroneExplode()
-{
-    // Vanilla Matters: Handled in VMPlayer.
 }
 
 // ----------------------------------------------------------------------
