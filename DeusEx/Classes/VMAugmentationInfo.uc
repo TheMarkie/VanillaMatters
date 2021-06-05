@@ -69,12 +69,6 @@ function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional 
         Behaviour.Refresh( manager, player );
     }
 
-    if ( IsActive ) {
-        Deactivate();
-
-        IsActive = false;
-    }
-
     if ( active || Definition.default.IsPassive ) {
         Activate();
 
