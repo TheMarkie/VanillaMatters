@@ -1618,9 +1618,11 @@ function VMAugmentationInfo GetFirstAugmentationInfo() {
 
 function bool AddAugmentation( name className, name packageName ) {
     local int i;
+    local VMAugmentationInfo info;
 
     if ( VMAugmentationSystem != none ) {
-        if ( VMAugmentationSystem.Add( className, packageName ) ) {
+        info = VMAugmentationSystem.Add( className, packageName );
+        if ( info != none && !info.IsPassive() ) {
             for ( i = 0; i < 10; i++ ) {
                 if ( AugmentationHotBar[i] == '' ) {
                     AugmentationHotBar[i] = className;
