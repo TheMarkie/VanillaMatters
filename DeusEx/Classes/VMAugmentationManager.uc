@@ -181,7 +181,9 @@ function ActivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Activate();
+        if ( !info.IsPassive() ) {
+            info.IsActive = info.Activate();
+        }
 
         info = info.Next;
     }
@@ -191,7 +193,9 @@ function DeactivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        info.Deactivate();
+        if ( !info.IsPassive() ) {
+            info.IsActive = info.Deactivate();
+        }
 
         info = info.Next;
     }
