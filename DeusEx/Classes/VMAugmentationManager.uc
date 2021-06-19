@@ -24,11 +24,11 @@ var localized string AugmentationLocationLabels[7];
 //==============================================
 // Management
 //==============================================
-function bool Add( name className, name packageName, optional int startingLevel ) {
+function VMAugmentationInfo Add( name className, name packageName, optional int startingLevel ) {
     local VMAugmentationInfo info;
 
     if ( GetInfo( name ) != none ) {
-        return false;
+        return none;
     }
 
     info = new class'VMAugmentationInfo';
@@ -40,7 +40,7 @@ function bool Add( name className, name packageName, optional int startingLevel 
     FirstAugmentationInfo = info;
     InstallLocationCounts[info.GetInstallLocation()] += 1;
 
-    return true;
+    return info;
 }
 
 function Refresh( VMPlayer playerOwner ) {

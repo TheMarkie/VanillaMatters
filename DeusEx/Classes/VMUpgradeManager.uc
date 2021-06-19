@@ -9,7 +9,6 @@ var VMPlayer Player;
 function Initialize( VMPlayer playerOwner ) {
     Player = playerOwner;
 }
-function bool Add( name className, name packageName, optional int startingLevel ) { return false; }
 function Refresh( VMPlayer playerOwner ) {
     Player = playerOwner;
 }

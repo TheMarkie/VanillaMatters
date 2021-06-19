@@ -20,7 +20,7 @@ static function string GetLevelName( int level, int maxLevel ) {
 //==============================================
 // Management
 //==============================================
-function bool Add( name className, name packageName, optional int startingLevel ) {
+function Add( name className, name packageName, optional int startingLevel ) {
     local VMSkillInfo info;
 
     info = new class'VMSkillInfo';
@@ -29,8 +29,6 @@ function bool Add( name className, name packageName, optional int startingLevel 
 
     info.Next = FirstSkillInfo;
     FirstSkillInfo = info;
-
-    return true;
 }
 
 function Refresh( VMPlayer playerOwner ) {
