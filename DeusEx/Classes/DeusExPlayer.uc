@@ -4325,7 +4325,7 @@ exec function ToggleLaser()
 // into account his muscle augs
 function bool CanBeLifted(Decoration deco)
 {
-    local int augLevel, augMult;
+    local int augMult;
     local float maxLift;
 
     maxLift = 50;
@@ -4333,10 +4333,7 @@ function bool CanBeLifted(Decoration deco)
     // Vanilla Matters: Check if energy is depleted before using the aug, since it's always active.
     if ( Energy > 0 )
     {
-        augLevel = GetAugmentationLevel( 'AugMuscle' );
-        augMult = 1;
-        if (augLevel >= 0)
-            augMult = augLevel+2;
+        augMult = 1 + GetValue( 'LiftStrengthBonus' );
         maxLift *= augMult;
     }
 

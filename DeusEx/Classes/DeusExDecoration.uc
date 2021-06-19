@@ -434,8 +434,7 @@ function float GetPowerThrowMaterialMult() {
 
 function Bump(actor Other)
 {
-    local int augLevel, augMult;
-    local float maxPush, velscale;
+    local float maxPush, velscale, augMult;
     local DeusExPlayer player;
     local Rotator rot;
 
@@ -510,11 +509,8 @@ function Bump(actor Other)
             if (player != None)
             {
                 // Vanilla Matters
-                augLevel = player.GetAugmentationLevel( 'AugMuscle' );
-                if ( augLevel >= 0 ) {
-                    augMult = augLevel + 2.5;
-                    maxPush = maxPush * ( augLevel + 2 );
-                }
+                augMult = 1 + player.GetAugmentationLevel( 'LiftStrengthBonus' );
+                maxPush = maxPush * augMult;
             }
 
             if (Mass <= maxPush)
@@ -522,7 +518,7 @@ function Bump(actor Other)
                 // slow it down based on how heavy it is and what level my augmentation is
 
                 // Vanilla Matters: Tweak the formula to promote augmuscle.
-                velscale = FClamp( ( 50 * augMult ) / ( Mass * 2 ), 0, 1.0 );
+                velscale = FClamp( ( 50 * augMult ) / Mass, 0, 1.0 );
                 if ( velscale <= 0.25 ) {
                     velscale = 0;
                 }

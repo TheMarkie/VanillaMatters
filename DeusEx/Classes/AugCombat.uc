@@ -1,6 +1,6 @@
 class AugCombat extends VMAugmentation;
 
-// Vanilla Matters TODO: Restore functionality.
+// Vanilla Matters: Is combined with AugMuscle.
 
 defaultproperties
 {

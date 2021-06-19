@@ -576,9 +576,6 @@ simulated function float CalculateAccuracy() {
             accuracy += 0.2;
         }
     }
-    else {
-        checkit = false;
-    }
 
     // Disabled accuracy mods based on health in multiplayer
     if ( Level.NetMode != NM_Standalone ) {
@@ -604,13 +601,7 @@ simulated function float CalculateAccuracy() {
         // VM: AugMuscle helps with arm penalties.
         div = 1;
         if ( player != none ) {
-            div = player.GetAugmentationLevel( 'AugMuscle' );
-            if ( div == -1 ) {
-                div = 1;
-            }
-            else {
-                div = 1 - ( div * 0.1 );
-            }
+            div = FMax( 1 - player.GetValue( 'InjuryAccuracyPenaltyReduction' ), 0 );
         }
 
         accuracy -= ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.2 * div;
