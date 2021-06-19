@@ -10,8 +10,8 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 // Functionality
-function bool Activate();
-function bool Deactivate();
+function bool Activate() { return false; }
+function bool Deactivate() { return false; }
 
 function float GetRate( float time ) {
     return ( Info.Definition.default.Rates[Min( Info.Level, #Info.Definition.default.Rates - 1 )] / 60 ) * time;

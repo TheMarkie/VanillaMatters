@@ -11,9 +11,7 @@ const AutoSaveDelay = 180;
 //==============================================
 var localized string MsgFullHealth;
 var localized string MsgFullEnergy;
-var localized string MsgDroneCost;
 var localized string MsgTooMuchAmmo;
-var localized string MsgMuscleCost;
 var localized string MsgChargedPickupAlready;
 var localized string MsgUseChargedPickup;
 
@@ -2127,9 +2125,7 @@ defaultproperties
 {
      MsgFullHealth="You already have full health"
      MsgFullEnergy="You already have full energy"
-     MsgDroneCost="You don't have enough energy to detonate a drone"
      MsgTooMuchAmmo="You already have enough %s"
-     MsgMuscleCost="You don't have enough energy to do a powerthrow"
      MsgChargedPickupAlready="You are already using that type of equipment"
      MsgUseChargedPickup="You need to have the item in your inventory to activate it"
      SkillPointsTotal=4500

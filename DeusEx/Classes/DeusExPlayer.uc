@@ -1343,15 +1343,9 @@ function MaintainEnergy(float deltaTime)
             Energy = 0;
             EnergyDrain = 0;
             EnergyDrainTotal = 0;
+
             // Vanilla Matters
             DeactivateAllAugmentations();
-
-            // Vanilla Matters: Make the player drop a big decoration since AugMuscle shouldn't be working.
-            if ( CarriedDecoration != None ) {
-                if ( !CanBeLifted( CarriedDecoration ) ) {
-                    DropDecoration();
-                }
-            }
         }
 
         // If all augs are off, then start regenerating in multiplayer,
@@ -4330,12 +4324,9 @@ function bool CanBeLifted(Decoration deco)
 
     maxLift = 50;
 
-    // Vanilla Matters: Check if energy is depleted before using the aug, since it's always active.
-    if ( Energy > 0 )
-    {
-        augMult = 1 + GetValue( 'LiftStrengthBonus' );
-        maxLift *= augMult;
-    }
+    // Vanilla Matters
+    augMult = 1 + GetValue( 'LiftStrengthBonus' );
+    maxLift *= augMult;
 
     // Vanilla Matters: Allow lifting decos with things on them.
     if ( !deco.bPushable || deco.Mass > maxLift )
@@ -4409,11 +4400,6 @@ function PutCarriedDecorationInHand()
             CarriedDecoration.bUnlit = True;
 
             FrobTarget = None;
-
-            // Vanilla Matters: Hacky way to start draining energy on picking up a heavy object.
-            if ( CarriedDecoration.Mass > 50 ) {
-                SetAugmentation( 'AugMuscle', true );
-            }
         }
         else
         {
@@ -4522,10 +4508,6 @@ function DropDecoration()
             CarriedDecoration.bUnlit = CarriedDecoration.Default.bUnlit;
             if (CarriedDecoration.IsA('DeusExDecoration'))
                 DeusExDecoration(CarriedDecoration).ResetScaleGlow();
-
-            // Vanilla Matters: Handle AugMuscle stuff.
-            // Vanilla Matters TODO: Add support for powerthrow drain.
-            SetAugmentation( 'AugMuscle', false );
 
             CarriedDecoration = None;
         }
