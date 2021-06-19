@@ -101,7 +101,15 @@ function bool Toggle( bool on ) {
 
 function bool IncreaseLevel() {
     if ( Level < GetMaxLevel() ) {
+        if ( Definition.default.IsPassive ) {
+            Deactivate();
+        }
+
         Level += 1;
+
+        if ( Definition.default.IsPassive ) {
+            Activate();
+        }
 
         return true;
     }
@@ -111,7 +119,15 @@ function bool IncreaseLevel() {
 
 function bool DecreaseLevel() {
     if ( Level > 0 ) {
+        if ( Definition.default.IsPassive ) {
+            Deactivate();
+        }
+
         Level -= 1;
+
+        if ( Definition.default.IsPassive ) {
+            Activate();
+        }
 
         return true;
     }
