@@ -4418,112 +4418,7 @@ function PutCarriedDecorationInHand()
 
 function DropDecoration()
 {
-    local Vector X, Y, Z, dropVect, origLoc, HitLocation, HitNormal, extent;
-    local float velscale, size, mult;
-    local bool bSuccess;
-    local Actor hitActor;
-
-    // Vanilla Matters
-    local DeusExDecoration deco;
-    local float boost;
-
-    deco = DeusExDecoration( CarriedDecoration );
-
-    bSuccess = False;
-
-    if (CarriedDecoration != None)
-    {
-        origLoc = CarriedDecoration.Location;
-        GetAxes(Rotation, X, Y, Z);
-
-        // if we are highlighting something, try to place the object on the target
-        if ((FrobTarget != None) && !FrobTarget.IsA('Pawn'))
-        {
-            CarriedDecoration.Velocity = vect(0,0,0);
-
-            // try to drop the object about one foot above the target
-            size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
-            dropVect.X = size/2 - FRand() * size;
-            dropVect.Y = size/2 - FRand() * size;
-            dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
-            dropVect += FrobTarget.Location;
-        }
-        else
-        {
-            // Vanilla Matters: Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
-            boost = 500;
-
-            // Vanilla Matters: Add some more boost if the deco is powerthrown.
-            if ( deco != none && deco.VM_bPowerthrown ) {
-                mult = GetValue( 'ThrowVelocityBonus', 1 );
-                boost = boost + ( boost * mult ) + ( 1000 * ( GetAugmentationLevel( 'AugMuscle' ) + 1 ) );
-            }
-
-            if (IsLeaning())
-                CarriedDecoration.Velocity = vect(0,0,0);
-            // Vanilla Matters: We're gonna remove the RNG from throwing to have some consistency to powerthrow damage and just because.
-            else {
-                CarriedDecoration.Velocity = ( Normal( Vector( ViewRotation ) ) * boost ) + vect( 0, 0, 220 );
-            }
-
-            // scale it based on the mass
-            velscale = FClamp(CarriedDecoration.Mass / 20.0, 1.0, 40.0);
-
-            CarriedDecoration.Velocity /= velscale;
-            dropVect = Location + (CarriedDecoration.CollisionRadius + CollisionRadius + 4) * X;
-            dropVect.Z += BaseEyeHeight;
-        }
-
-        // is anything blocking the drop point? (like thin doors)
-        if (FastTrace(dropVect))
-        {
-            CarriedDecoration.SetCollision(True, True, True);
-            CarriedDecoration.bCollideWorld = True;
-
-            // check to see if there's space there
-            extent.X = CarriedDecoration.CollisionRadius;
-            extent.Y = CarriedDecoration.CollisionRadius;
-            extent.Z = 1;
-            hitActor = Trace(HitLocation, HitNormal, dropVect, CarriedDecoration.Location, True, extent);
-
-            if ((hitActor == None) && CarriedDecoration.SetLocation(dropVect))
-                bSuccess = True;
-            else
-            {
-                CarriedDecoration.SetCollision(False, False, False);
-                CarriedDecoration.bCollideWorld = False;
-            }
-        }
-
-        // if we can drop it here, then drop it
-        if (bSuccess)
-        {
-            CarriedDecoration.bWasCarried = True;
-            CarriedDecoration.SetBase(None);
-            CarriedDecoration.SetPhysics(PHYS_Falling);
-            CarriedDecoration.Instigator = Self;
-
-            // turn off translucency
-            CarriedDecoration.Style = CarriedDecoration.Default.Style;
-            CarriedDecoration.bUnlit = CarriedDecoration.Default.bUnlit;
-            if (CarriedDecoration.IsA('DeusExDecoration'))
-                DeusExDecoration(CarriedDecoration).ResetScaleGlow();
-
-            CarriedDecoration = None;
-        }
-        else
-        {
-            // otherwise, don't drop it and display a message
-            CarriedDecoration.SetLocation(origLoc);
-            ClientMessage(CannotDropHere);
-
-            // Vanilla Matters: Reset bPowerthrown.
-            if ( DeusExDecoration( CarriedDecoration ) != None ) {
-                DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = false;
-                DeusExDecoration( CarriedDecoration ).VM_powerThrower = None;
-            }
-        }
-    }
+    // Vanilla Matters: Handled in VMPlayer.
 }
 
 // ----------------------------------------------------------------------
@@ -10588,7 +10483,6 @@ function VMSkillManager GetSkillSystem() { return none; }
 function VMSkillInfo GetFirstSkillInfo() { return none; }
 
 function bool IncreaseSkillLevel( name name ) { return false; }
-
 function int GetSkillLevel( name name ) { return -1; }
 
 //==============================================

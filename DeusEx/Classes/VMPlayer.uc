@@ -957,29 +957,10 @@ exec function ParseLeftClick() {
             }
         }
     }
-    // Allow holding pickups in hands or doing powerthrows.
+    // Allow holding pickups in hands.
     else if ( inHand == None ) {
         if ( FrobTarget != None ) {
             TakeHold( Inventory( FrobTarget ), true );
-        }
-        else if ( CarriedDecoration != None && VMAugmentationSystem != None ) {
-            aug = VMAugmentationSystem.GetInfo( 'AugMuscle' );
-
-            if ( aug != None && aug.IsActive ) {
-                // TODO: Add support for powerthrow.
-                // if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
-                //     ClientMessage( MsgMuscleCost );
-                // }
-                // else if ( DeusExDecoration( CarriedDecoration ) != None ) {
-                //     DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = true;
-                //     DeusExDecoration( CarriedDecoration ).VM_powerThrower = self;
-
-                //     PlaySound( JumpSound, SLOT_None );
-                //     PlaySound( aug.ActivateSound, SLOT_None );
-
-                //     DropDecoration();
-                // }
-            }
         }
         else if ( LastPutAway != None ) {
             PutInHand( LastPutAway );
@@ -1378,6 +1359,92 @@ function bool BringUpItem( name itemName ) {
     }
 
     return false;
+}
+
+// Override
+function DropDecoration() {
+    local float velscale, size, mult, boost;
+    local bool success;
+    local Vector X, Y, Z, dropVect, origLoc, HitLocation, HitNormal, extent;
+    local Actor hitActor;
+
+    if ( CarriedDecoration != None ) {
+        origLoc = CarriedDecoration.Location;
+        GetAxes( Rotation, X, Y, Z );
+
+        // if we are highlighting something, try to place the object on the target
+        if ( FrobTarget != none && !FrobTarget.IsA( 'Pawn' ) ) {
+            CarriedDecoration.Velocity = vect( 0, 0, 0 );
+
+            // try to drop the object about one foot above the target
+            size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
+            dropVect.X = size / 2 - FRand() * size;
+            dropVect.Y = size / 2 - FRand() * size;
+            dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
+            dropVect += FrobTarget.Location;
+        }
+        else {
+            // Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
+            boost = 500;
+            boost += boost * GetValue( 'ThrowVelocityBonus' );
+
+            if ( IsLeaning() ) {
+                CarriedDecoration.Velocity = vect( 0, 0, 0 );
+            }
+            else {
+                CarriedDecoration.Velocity = Normal( Vector( ViewRotation ) ) * boost;
+            }
+
+            // scale it based on the mass
+            velscale = FClamp( CarriedDecoration.Mass / 20.0, 1.0, 40.0 );
+
+            CarriedDecoration.Velocity /= velscale;
+            dropVect = Location + ( CarriedDecoration.CollisionRadius + CollisionRadius + 4 ) * X;
+            dropVect.Z += BaseEyeHeight;
+        }
+
+        // is anything blocking the drop point? (like thin doors)
+        if ( FastTrace( dropVect ) ) {
+            CarriedDecoration.SetCollision( true, true, true );
+            CarriedDecoration.bCollideWorld = true;
+
+            // check to see if there's space there
+            extent.X = CarriedDecoration.CollisionRadius;
+            extent.Y = CarriedDecoration.CollisionRadius;
+            extent.Z = 1;
+            hitActor = Trace( HitLocation, HitNormal, dropVect, CarriedDecoration.Location, true, extent );
+
+            if ( hitActor == none && CarriedDecoration.SetLocation( dropVect ) ) {
+                success = true;
+            }
+            else {
+                CarriedDecoration.SetCollision( false, false, false );
+                CarriedDecoration.bCollideWorld = false;
+            }
+        }
+
+        // if we can drop it here, then drop it
+        if ( success ) {
+            CarriedDecoration.bWasCarried = true;
+            CarriedDecoration.SetBase( none);
+            CarriedDecoration.SetPhysics( PHYS_Falling );
+            CarriedDecoration.Instigator = self;
+
+            // turn off translucency
+            CarriedDecoration.Style = CarriedDecoration.Default.Style;
+            CarriedDecoration.bUnlit = CarriedDecoration.Default.bUnlit;
+            if ( CarriedDecoration.IsA( 'DeusExDecoration' ) ) {
+                DeusExDecoration( CarriedDecoration ).ResetScaleGlow();
+            }
+
+            CarriedDecoration = None;
+        }
+        else {
+            // otherwise, don't drop it and display a message
+            CarriedDecoration.SetLocation( origLoc );
+            ClientMessage( CannotDropHere );
+        }
+    }
 }
 
 //==============================================
