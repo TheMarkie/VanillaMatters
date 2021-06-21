@@ -5,6 +5,11 @@ var() array<int> HealAmount;
 var float Cost;
 var float StandingTimer;
 
+function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
+    super.Refresh( p, i, m );
+    m.TickHandlers[-1] = self;
+}
+
 // Make the aug heals every second AFTER you've been standing still for at least 2 seconds.
 function Tick( float deltaTime ) {
     if ( VSize( Player.Velocity ) < 10 ) {

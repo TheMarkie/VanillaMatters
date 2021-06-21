@@ -5,6 +5,11 @@ var() Name VisibilityModifierName;
 // Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory LastInHand;
 
+function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
+    super.Refresh( p, i, m );
+    m.TickHandlers[-1] = self;
+}
+
 function bool Activate() {
     Player.PlaySound( Sound'CloakUp', SLOT_Interact, 0.85,, 768, 1.0 );
 

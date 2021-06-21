@@ -5,7 +5,9 @@ var private transient bool refreshed;
 var travel VMAugmentationInfo FirstAugmentationInfo;
 
 // Event handlers
+var array<VMAugmentationBehaviour> TickHandlers;
 var array<VMAugmentationBehaviour> ProcessMoveHandlers;
+var array<VMAugmentationBehaviour> ParseLeftClickHandlers;
 
 var travel int InstallLocationCounts[7];
 var int InstallLocationMaxCounts[7];
@@ -78,20 +80,59 @@ function Reset() {
 //==============================================
 // Augmentation Events
 //==============================================
-function bool ProcessMove( float deltaTime ) {
-    local bool handled;
+function Tick( float deltaTime ) {
     local int i, count;
+    local VMAugmentationBehaviour behaviour;
+
+    if ( !refreshed ) {
+        return;
+    }
+
+    count = #TickHandlers;
+    for ( i = 0; i < count; i++ ) {
+        behaviour = TickHandlers[i];
+        if ( behaviour.Info.IsActive ) {
+            behaviour.Tick( deltaTime );
+        }
+    }
+}
+
+function bool ProcessMove( float deltaTime ) {
+    local int i, count;
+    local bool handled;
+    local VMAugmentationBehaviour behaviour;
 
     count = #ProcessMoveHandlers;
     for ( i = 0; i < count; i++ ) {
-        handled = handled || ProcessMoveHandlers[i].ProcessMove( deltaTime );
+        behaviour = ProcessMoveHandlers[i];
+        if ( behaviour.Info.IsActive ) {
+            handled = handled || behaviour.ProcessMove( deltaTime );
+        }
+    }
+
+    return handled;
+}
+
+function bool ParseLeftClick() {
+    local int i, count;
+    local bool handled;
+    local VMAugmentationBehaviour behaviour;
+
+    count = #ParseLeftClickHandlers;
+    for ( i = 0; i < count; i++ ) {
+        behaviour = ParseLeftClickHandlers[i];
+        if ( behaviour.Info.IsActive ) {
+            handled = handled || behaviour.ParseLeftClick();
+        }
     }
 
     return handled;
 }
 
 function ResetEvents() {
+    TickHandlers[-2] = none;
     ProcessMoveHandlers[-2] = none;
+    ParseLeftClickHandlers[-2] = none;
 }
 
 //==============================================
@@ -317,26 +358,6 @@ function DrawAugmentations( GC gc ) {
 //==============================================
 function bool IsLocationFull( int loc ) {
     return InstallLocationCounts[loc] >= default.InstallLocationMaxCounts[loc];
-}
-
-//==============================================
-// Callbacks
-//==============================================
-function Tick( float deltaTime ) {
-    local VMAugmentationInfo info;
-
-    if ( !refreshed ) {
-        return;
-    }
-
-    info = FirstAugmentationInfo;
-    while ( info != none ) {
-        if ( info.IsActive ) {
-            info.Tick( deltaTime );
-        }
-
-        info = info.Next;
-    }
 }
 
 defaultproperties

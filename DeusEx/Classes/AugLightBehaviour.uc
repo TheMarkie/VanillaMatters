@@ -5,6 +5,11 @@ var Beam GlowBeam;
 
 var() int Length;
 
+function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
+    super.Refresh( p, i, m );
+    m.TickHandlers[-1] = self;
+}
+
 // Behaviours
 function bool Activate() {
     if ( MainBeam != none ) {

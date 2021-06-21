@@ -878,11 +878,10 @@ exec function ParseLeftClick() {
         return;
     }
 
-    // if the spy drone augmentation is active, blow it up
-    if ( bSpyDroneActive ) {
-        DroneExplode();
-
-        return;
+    if ( VMAugmentationSystem != none ) {
+        if ( VMAugmentationSystem.ParseLeftClick() ) {
+            return;
+        }
     }
 
     if ( inHand != none && !bInHandTransition ) {

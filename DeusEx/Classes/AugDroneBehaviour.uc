@@ -17,6 +17,7 @@ var float durationTimer;
 //==============================================
 function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
     super.Refresh( p, i, m );
+    m.TickHandlers[-1] = self;
     m.ProcessMoveHandlers[-1] = self;
 }
 
