@@ -468,19 +468,21 @@ function Bump(actor Other)
         // VM: Damage scales with deco material.
         impactDamage = kEnergy * 0.01 * mult;
 
-        if ( pawnOther != None ) {
-            pawnOther.AdjustHitLocation( HitLocation, Velocity );
+        // VM: Not worth doing damage below 10.
+        if ( impactDamage >= 10 ) {
+            if ( pawnOther != None ) {
+                pawnOther.AdjustHitLocation( HitLocation, Velocity );
+            }
+            else {
+                HitLocation = Other.Location;
+            }
+
+            Other.TakeDamage( impactDamage, Instigator, HitLocation, Velocity, 'Shot' );
+            TakeDamage( impactDamage, pawnOther, Location, Velocity, 'Shot' );
+
+            // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
+            Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
         }
-        else {
-            HitLocation = Other.Location;
-        }
-
-        Other.TakeDamage( impactDamage, Instigator, HitLocation, Velocity, 'Shot' );
-
-        // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
-        Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
-
-        TakeDamage( impactDamage, pawnOther, Location, Velocity, 'Shot' );
     }
 
     if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
