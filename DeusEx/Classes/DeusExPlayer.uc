@@ -10545,7 +10545,6 @@ defaultproperties
      maxInvRows=6
      maxInvCols=5
      bBeltIsMPInventory=True
-     RunSilentValue=1.000000
      ClotPeriod=30.000000
      strStartMap="01_NYC_UNATCOIsland"
      bObjectNames=True
