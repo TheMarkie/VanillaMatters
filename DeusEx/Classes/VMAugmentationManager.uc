@@ -5,9 +5,9 @@ var private transient bool refreshed;
 var travel VMAugmentationInfo FirstAugmentationInfo;
 
 // Event handlers
-var array<VMAugmentationBehaviour> TickHandlers;
-var array<VMAugmentationBehaviour> ProcessMoveHandlers;
-var array<VMAugmentationBehaviour> ParseLeftClickHandlers;
+var transient array<VMAugmentationBehaviour> TickHandlers;
+var transient array<VMAugmentationBehaviour> ProcessMoveHandlers;
+var transient array<VMAugmentationBehaviour> ParseLeftClickHandlers;
 
 var travel int InstallLocationCounts[7];
 var int InstallLocationMaxCounts[7];
@@ -48,8 +48,6 @@ function VMAugmentationInfo Add( name className, name packageName, optional int 
 function Refresh( VMPlayer playerOwner ) {
     local VMAugmentationInfo info;
 
-    ResetEvents();
-
     super.Refresh( playerOwner );
 
     info = FirstAugmentationInfo;
@@ -64,8 +62,6 @@ function Refresh( VMPlayer playerOwner ) {
 
 function Reset() {
     local VMAugmentationInfo info;
-
-    ResetEvents();
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
@@ -127,12 +123,6 @@ function bool ParseLeftClick() {
     }
 
     return handled;
-}
-
-function ResetEvents() {
-    TickHandlers[-2] = none;
-    ProcessMoveHandlers[-2] = none;
-    ParseLeftClickHandlers[-2] = none;
 }
 
 //==============================================
