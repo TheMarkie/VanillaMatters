@@ -214,8 +214,6 @@ function Landed(vector HitNormal)
     bWasCarried = false;
     bBobbing    = false;
 
-    TakeDamage( 0.5 * Mass * ( VSize( Velocity ) / 52.5 ), Instigator, Location, Velocity, 'Exploded' );
-
     // The crouch height is higher in multiplayer, so we need to be more forgiving on the drop velocity to explode
     if ( Level.NetMode != NM_Standalone )
     {
