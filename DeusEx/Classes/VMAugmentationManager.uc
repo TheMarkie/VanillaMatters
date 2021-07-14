@@ -235,7 +235,7 @@ function DeactivateAll() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         if ( !info.IsPassive() ) {
-            info.IsActive = info.Deactivate();
+            info.IsActive = !info.Deactivate();
         }
 
         info = info.Next;
