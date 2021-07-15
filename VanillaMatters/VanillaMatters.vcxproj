@@ -42,11 +42,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <ModDir>Release\</ModDir>
+    <DeusExHeadersDir></DeusExHeadersDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(DeusExHeadersDir)Core\Inc;$(DeusExHeadersDir)Engine\Inc;$(DeusExHeadersDir)Extension\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DeusExHeadersDir)Core\Lib;$(DeusExHeadersDir)Engine\Lib;$(DeusExHeadersDir)Extension\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
