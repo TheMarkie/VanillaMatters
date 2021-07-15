@@ -14,7 +14,7 @@ var travel int      PlayerSkin;
 var travel Float CombatDifficulty;
 
 // Augmentation system vars
-// var travel DO_NOT_USE_AUGMENTATIONMANAGER_TYPE AugmentationSystem;
+var travel AugmentationManager AugmentationSystem;
 
 // Skill system vars
 var travel SkillManager SkillSystem;

@@ -81,8 +81,8 @@ function CreateAugButtons()
    // local int iButtonIndex;
    // local MenuUIChoiceButton CurButton;
    // local bool bShiftRight;
-   // local DO_NOT_USE_AUGMENTATIONMANAGER_TYPE AugSys;
-   // local DO_NOT_USE_AUGMENTATION_TYPE CurAug;
+   // local AugmentationManager AugSys;
+   // local Augmentation CurAug;
 
    // if (AugSys == None)
    //    return;
@@ -492,7 +492,7 @@ function SaveSettings()
    // Vanilla Matters MPTODO: Restore functionality.
 
    // local int AugIndex;
-   // local DO_NOT_USE_AUGMENTATION_TYPE CurAug;
+   // local Augmentation CurAug;
 
    // Super.SaveSettings();
 
@@ -540,7 +540,7 @@ function string AugFamiliarName(string AugStringName)
 {
    // Vanilla Matters MPTODO: Restore functionality.
 
-//     local DO_NOT_USE_AUGMENTATION_TYPE anAug;
+//     local Augmentation anAug;
 
 //    if (AugStringName == "")
 //       return "";
@@ -558,9 +558,9 @@ function string AugFamiliarName(string AugStringName)
 // GetAugFromStringName()
 // ----------------------------------------------------------------------
 // Vanilla Matters MPTODO: Restore functionality.
-// function DO_NOT_USE_AUGMENTATION_TYPE GetAugFromStringName(string AugStringName)
+// function Augmentation GetAugFromStringName(string AugStringName)
 // {
-//    local DO_NOT_USE_AUGMENTATION_TYPE anAug;
+//    local Augmentation anAug;
 
 //    if (AugStringName == "")
 //       return None;
