@@ -655,11 +655,13 @@ function EnableButtons()
 {
     // Don't allow delete if we're on the new savegame or the QuickSave
     // slot
-
-    if ((editRowId != newSaveRowId) && (editRowId != -1))
-        EnableActionButton(AB_Other, True, "DELETE");
-    else
-        EnableActionButton(AB_Other, False, "DELETE");
+    // Vanilla Matters
+    if ( editRowId != newSaveRowId && int( lstGames.GetField( editRowId, 4 ) ) >= 0 ) {
+        EnableActionButton( AB_Other, true, "DELETE" );
+    }
+    else {
+        EnableActionButton( AB_Other, false, "DELETE" );
+    }
 
     if (editName != None)
     {
