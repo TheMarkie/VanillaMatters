@@ -19,7 +19,7 @@ var() Texture SkillIcon;
 var() array<int> Costs;
 var() array<SkillValue> SkillValues;
 
-native(3200) static final function int SkillValueArrayCount( array<SkillValue> A );
+native(2300) static final function int SkillValueArrayCount( array<SkillValue> A );
 static final preoperator int #( out array<SkillValue> A ) { return SkillValueArrayCount( A ); }
 
 //==============================================
