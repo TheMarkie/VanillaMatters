@@ -513,7 +513,8 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     PopWindow();
 
     if (buttonNumber == 0)
-        DeusExPlayer(parentPawn).QuickLoadConfirmed();
+        // Vanilla Matters
+        VMPlayer( parentPawn ).QuickLoadConfirmed();
 
     return true;
 }

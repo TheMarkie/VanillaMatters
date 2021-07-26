@@ -366,11 +366,11 @@ exec function QuickSave() {
 
     // Allow two quick save slots.
     // We're gonna handle slot indexing before saving so that the variable always holds the index of the last quick save.
-    if ( CurrentQSIndex != 9996 ) {
-        CurrentQSIndex = 9996;
+    if ( CurrentQSIndex != -3 ) {
+        CurrentQSIndex = -3;
     }
-    else if ( CurrentQSIndex != 9997 ) {
-        CurrentQSIndex = 9997;
+    else if ( CurrentQSIndex != -4 ) {
+        CurrentQSIndex = -4;
     }
 
     SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ info.MissionLocation );
@@ -390,11 +390,11 @@ function AutoSave() {
         return;
     }
 
-    if ( CurrentASIndex != 9998 ) {
-        CurrentASIndex = 9998;
+    if ( CurrentASIndex != -5 ) {
+        CurrentASIndex = -5;
     }
-    else if ( CurrentASIndex != 9999 ) {
-        CurrentASIndex = 9999;
+    else if ( CurrentASIndex != -6 ) {
+        CurrentASIndex = -6;
     }
 
     IsAutoSaving = false;
@@ -416,8 +416,15 @@ function bool ShouldSave( DeusExLevelInfo info ) {
     }
 }
 
-// Override
 exec function QuickLoad() {
+    if ( Level.Netmode != NM_Standalone ) {
+        return;
+    }
+
+    DXRootWindow.ConfirmQuickLoad();
+}
+
+function QuickLoadConfirmed() {
     if ( Level.Netmode != NM_Standalone ) {
         return;
     }
