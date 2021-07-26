@@ -416,14 +416,7 @@ function bool ShouldSave( DeusExLevelInfo info ) {
     }
 }
 
-exec function QuickLoad() {
-    if ( Level.Netmode != NM_Standalone ) {
-        return;
-    }
-
-    DXRootWindow.ConfirmQuickLoad();
-}
-
+// Override
 function QuickLoadConfirmed() {
     if ( Level.Netmode != NM_Standalone ) {
         return;
