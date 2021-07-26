@@ -3576,7 +3576,7 @@ Begin:
 
             // Vanilla Matters: Add reloading one by one.
             if ( VM_pumpAction ) {
-                ClipCount = FMax( ClipCount - 1, 1 - AmmoType.AmmoAmount );
+                ClipCount = Max( Max( ClipCount - 1 , 0 ), 1 - AmmoType.AmmoAmount );
 
                 if ( !VM_stopReload && ClipCount > 0 ) {
                     Goto( 'Begin' );
