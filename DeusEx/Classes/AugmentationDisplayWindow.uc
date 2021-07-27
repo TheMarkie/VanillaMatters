@@ -297,11 +297,8 @@ function PostDrawWindow(GC gc)
     // if (bDefenseActive)
     //     DrawDefenseAugmentation(gc);
 
-    // if (Player.bSpyDroneActive)
-    //     DrawSpyDroneAugmentation(gc);
-
     // draw IFF and accuracy information all the time, return False if target aug is not active
-    // DrawTargetAugmentation(gc);
+    DrawTargetAugmentation(gc);
 
     gc.SetFont(Font'FontMenuSmall_DS');
     gc.SetTextColor(colHeaderText);
