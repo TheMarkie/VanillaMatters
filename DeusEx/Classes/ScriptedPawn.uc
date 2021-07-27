@@ -1856,7 +1856,7 @@ function Pawn CheckCycle() {
         mult = 1;
         player = DeusExPlayer( CycleCandidate );
         if ( player != none ) {
-            mult += ( player.CombatDifficulty - 1 ) * 0.15;
+            mult += ( player.CombatDifficulty - 1 ) * 0.2;
         }
 
         EnemyReadiness += CycleCumulative * CyclePeriod * mult;
@@ -1964,7 +1964,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                                     minDist = dist;
                                 }
 
-                                CycleCumulative += visibility;
+                                CycleCumulative += ( visibility + VisibilityThreshold ) * 20;
                             }
                         }
                     }
