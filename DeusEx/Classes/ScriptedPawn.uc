@@ -5527,7 +5527,9 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
         {
             // Vanilla Matters: Rewrite to add special rules.
             if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, false, true, true ) > 0 ) {
-                IncreaseAgitation( pawnActor );
+                if ( bHateShot ) {
+                    IncreaseAgitation( pawnActor );
+                }
 
                 if ( bFearShot ) {
                     IncreaseFear( pawnActor, 1.0 );
