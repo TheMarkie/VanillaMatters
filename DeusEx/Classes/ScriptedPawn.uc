@@ -2407,7 +2407,7 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
             || VSize( instigatedBy.Location - Location ) <= 160
             || ( SeekPawn == instigatedBy && damageType != 'PoisonEffect' ) ) {
             if ( bHateThisInjury ) {
-                IncreaseAgitation( instigatedBy, 1.0 );
+                IncreaseAgitation( instigatedBy );
             }
 
             if ( bFearThisInjury ) {
@@ -5527,9 +5527,7 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
         {
             // Vanilla Matters: Rewrite to add special rules.
             if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, false, true, true ) > 0 ) {
-                if ( GetPawnAllianceType( pawnActor ) != ALLIANCE_Friendly ) {
-                    IncreaseAgitation( pawnActor, 1.0 );
-                }
+                IncreaseAgitation( pawnActor );
 
                 if ( bFearShot ) {
                     IncreaseFear( pawnActor, 1.0 );
@@ -10663,7 +10661,7 @@ State Fleeing
             // Vanilla Matters: Rewrite to add special rules.
             if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0 ) {
                 if ( bHateThisInjury ) {
-                    IncreaseAgitation( instigatedBy, 1.0 );
+                    IncreaseAgitation( instigatedBy );
                 }
 
                 if ( bFearThisInjury ) {
@@ -11151,7 +11149,7 @@ State Attacking
             // Vanilla Matters: Rewrite to add special rules
             if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0 ) {
                 if ( bHateThisInjury ) {
-                    IncreaseAgitation( instigatedBy, 1.0 );
+                    IncreaseAgitation( instigatedBy );
                 }
 
                 if ( bFearThisInjury ) {
