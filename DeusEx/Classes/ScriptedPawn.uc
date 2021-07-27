@@ -5335,7 +5335,11 @@ function HandleCarcass( name event, EAIEventState state, XAIParams params ) {
     PotentialEnemyTimer = 15.0;
     bNoNegativeAlliances = false;
 
-    if ( AICanSee( killer, ComputeActorVisibility( killer ), true, true, true, true ) > 0 ) {
+    if ( killer != none ) {
+        IncreaseAgitation( killer, 1.0 );
+    }
+
+    if ( killer != none && AICanSee( killer, ComputeActorVisibility( killer ), true, true, true, true ) > 0 ) {
         if ( bFearCarcass ) {
             IncreaseFear( killer, 2.0 );
         }
@@ -5522,9 +5526,9 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
         if (pawnActor != None)
         {
             // Vanilla Matters: Rewrite to add special rules.
-            if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, true, true, true ) > 0 ) {
-                if ( bHateShot ) {
-                    IncreaseAgitation( pawnActor );
+            if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, false, true, true ) > 0 ) {
+                if ( GetPawnAllianceType( pawnActor ) != ALLIANCE_Friendly ) {
+                    IncreaseAgitation( pawnActor, 1.0 );
                 }
 
                 if ( bFearShot ) {
@@ -5761,11 +5765,11 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                         distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, false, true, true ) > 0 );
                     }
 
-                    if ( distressorSeen ) {
-                        if ( bHateDistress ) {
-                            IncreaseAgitation( distressor, 1.0 );
-                        }
+                    if ( distressor != none ) {
+                        IncreaseAgitation( distressor, 1.0 );
+                    }
 
+                    if ( distressorSeen ) {
                         if ( SetEnemy( distressor, seeTime ) ) {
                             SetDistressTimer();
                             HandleEnemy();
@@ -10589,6 +10593,11 @@ LookAround:
     {
         if (!bSeekLocation)
             Sleep(1.0);
+    }
+
+    // Vanilla Matters: If the pawn is friendly, cancel the search here.
+    if ( GetPawnAllianceType( SeekPawn ) == ALLIANCE_Friendly ) {
+        GotoState('Wandering');
     }
 
 FindAnotherPlace:
