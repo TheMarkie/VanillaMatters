@@ -969,68 +969,42 @@ function SetSeekLocation(Pawn seekCandidate, vector newLocation, ESeekType newSe
 // ----------------------------------------------------------------------
 // GetCarcassData()
 // ----------------------------------------------------------------------
-
-function bool GetCarcassData(actor sender, out Name killer, out Name alliance,
-                             out Name CarcassName, optional bool bCheckName)
-{
-    local DeusExPlayer  dxPlayer;
+// Vanilla Matters
+function bool GetCarcassData(
+    Actor sender,
+    out name carcassName,
+    out name carcassAlliance,
+    out name killerAlliance,
+    optional bool checkName
+) {
+    local VMPlayer player;
     local DeusExCarcass carcass;
-    local POVCorpse     corpseItem;
-    local bool          bCares;
-    local bool          bValid;
+    local POVCorpse povCorpse;
+    local bool valid;
 
-    alliance = '';
-    killer   = '';
+    carcassName = '';
+    carcassAlliance = '';
+    killerAlliance = '';
 
-    bValid   = false;
-    dxPlayer = DeusExPlayer(sender);
-    carcass  = DeusExCarcass(sender);
-    if (dxPlayer != None)
-    {
-        corpseItem = POVCorpse(dxPlayer.inHand);
-        if (corpseItem != None)
-        {
-            if (corpseItem.bEmitCarcass)
-            {
-                alliance    = corpseItem.Alliance;
-                killer      = corpseItem.KillerAlliance;
-                CarcassName = corpseItem.CarcassName;
-                bValid      = true;
-            }
+    player = VMPlayer( sender );
+    carcass = DeusExCarcass( sender );
+    if ( player != none ) {
+        povCorpse = POVCorpse( player.inHand );
+        if ( povCorpse != none ) {
+            carcassName = povCorpse.CarcassName;
+            carcassAlliance = povCorpse.Alliance;
+            killerAlliance = povCorpse.KillerAlliance;
+            valid = true;
         }
     }
-    else if (carcass != None)
-    {
-        if (carcass.bEmitCarcass)
-        {
-            alliance    = carcass.Alliance;
-            killer      = carcass.KillerAlliance;
-            CarcassName = carcass.CarcassName;
-            bValid      = true;
-        }
+    else if ( carcass != none ) {
+        carcassName = carcass.CarcassName;
+        carcassAlliance = carcass.Alliance;
+        killerAlliance = carcass.KillerAlliance;
+        valid = true;
     }
 
-    bCares = false;
-    if (bValid && (!bCheckName || !HaveSeenCarcass(CarcassName)))
-    {
-        if (bFearCarcass)
-            bCares = true;
-        else
-        {
-            if (GetAllianceType(alliance) == ALLIANCE_Friendly)
-            {
-                if (bHateCarcass)
-                    bCares = true;
-                else if (bReactCarcass)
-                {
-                    if (GetAllianceType(killer) == ALLIANCE_Hostile)
-                        bCares = true;
-                }
-            }
-        }
-    }
-
-    return bCares;
+    return valid && ( !checkName || !HaveSeenCarcass( carcassName ) );
 }
 
 
@@ -1072,7 +1046,7 @@ function ReactToProjectiles(Actor projectileActor)
             if (instigator != None)
             {
                 // Vanilla Matters: Rewrite to add special rules.
-                if ( AICanSee( instigator, ComputeActorVisibility( instigator ), true, true, true, true ) > 0
+                if ( AICanSee( instigator, ComputeActorVisibility( instigator ), true, false, true, true ) > 0
                     || VSize( instigator.Location - Location ) <= 160
                     || SeekPawn == instigator ) {
                     if ( bFearProjectiles ) {
@@ -2055,132 +2029,6 @@ function bool CheckBeamPresence(float deltaSeconds)
     }
 }
 
-
-// ----------------------------------------------------------------------
-// CheckCarcassPresence()
-// ----------------------------------------------------------------------
-
-function bool CheckCarcassPresence(float deltaSeconds)
-{
-    local Actor         carcass;
-    local Name          CarcassName;
-    local int           lastCycle;
-    local DeusExCarcass body;
-    local DeusExPlayer  player;
-    local float         visibility;
-    local Name          KillerAlliance;
-    local Name          killedAlliance;
-    local Pawn          killer;
-    local Pawn          bestKiller;
-    local float         dist;
-    local float         bestDist;
-    local float         maxCarcassDist;
-    local int           maxCarcassCount;
-
-    if (bFearCarcass && !bHateCarcass && !bReactCarcass)  // Major hack!
-        maxCarcassCount = 1;
-    else
-        maxCarcassCount = ArrayCount(Carcasses);
-
-    //if ((bHateCarcass || bReactCarcass || bFearCarcass) && bLookingForCarcass && (CarcassTimer <= 0))
-    if ((bHateCarcass || bReactCarcass || bFearCarcass) && (NumCarcasses < maxCarcassCount))
-    {
-        maxCarcassDist = 1200;
-        if (CarcassCheckTimer <= 0)
-        {
-            CarcassCheckTimer = 0.1;
-            carcass           = None;
-            lastCycle         = BodyIndex;
-            foreach CycleActors(Class'DeusExCarcass', body, BodyIndex)
-            {
-                if (body.Physics != PHYS_Falling)
-                {
-                    if (VSize(body.Location-Location) < maxCarcassDist)
-                    {
-                        if (GetCarcassData(body, KillerAlliance, killedAlliance, CarcassName, true))
-                        {
-                            visibility = AICanSee(body, ComputeActorVisibility(body), true, true, true, true);
-                            if (visibility > 0)
-                                carcass = body;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (lastCycle >= BodyIndex)
-            {
-                if (carcass == None)
-                {
-                    player = DeusExPlayer(GetPlayerPawn());
-                    if (player != None)
-                    {
-                        if (VSize(player.Location-Location) < maxCarcassDist)
-                        {
-                            if (GetCarcassData(player, KillerAlliance, killedAlliance, CarcassName, true))
-                            {
-                                visibility = AICanSee(player, ComputeActorVisibility(player), true, true, true, true);
-                                if (visibility > 0)
-                                    carcass = player;
-                            }
-                        }
-                    }
-                }
-            }
-            if (carcass != None)
-            {
-                CarcassTimer = 120;
-                AddCarcass(CarcassName);
-                if (bLookingForCarcass)
-                {
-                    if (KillerAlliance == 'Player')
-                        killer = GetPlayerPawn();
-                    else
-                    {
-                        bestKiller = None;
-                        bestDist   = 0;
-                        foreach AllActors(Class'Pawn', killer)  // hack
-                        {
-                            if (killer.Alliance == KillerAlliance)
-                            {
-                                dist = VSize(killer.Location - Location);
-                                if ((bestKiller == None) || (bestDist > dist))
-                                {
-                                    bestKiller = killer;
-                                    bestDist   = dist;
-                                }
-                            }
-                        }
-                        killer = bestKiller;
-                    }
-                    if (bHateCarcass)
-                    {
-                        PotentialEnemyAlliance = KillerAlliance;
-                        PotentialEnemyTimer    = 15.0;
-                        bNoNegativeAlliances   = false;
-                    }
-                    if (bFearCarcass)
-                        IncreaseFear(killer, 2.0);
-
-                    if (bFearCarcass && IsFearful() && !IsValidEnemy(killer))
-                    {
-                        SetDistressTimer();
-                        SetEnemy(killer, , true);
-                        GotoState('Fleeing');
-                    }
-                    else
-                    {
-                        SetDistressTimer();
-                        SetSeekLocation(killer, carcass.Location, SEEKTYPE_Carcass);
-                        HandleEnemy();
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-
 // ----------------------------------------------------------------------
 // AddProjectileToList()
 // ----------------------------------------------------------------------
@@ -2555,11 +2403,11 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
         bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
         // Vanilla Matters: Rewrite to add special rules.
-        if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0
+        if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0
             || VSize( instigatedBy.Location - Location ) <= 160
             || ( SeekPawn == instigatedBy && damageType != 'PoisonEffect' ) ) {
             if ( bHateThisInjury ) {
-                IncreaseAgitation( instigatedBy );
+                IncreaseAgitation( instigatedBy, 1.0 );
             }
 
             if ( bFearThisInjury ) {
@@ -5423,12 +5271,11 @@ function UpdateReactionCallbacks()
     else
         AIClearEventCallback('WeaponFire');
 
-/*
-    if ((bHateCarcass || bReactCarcass || bFearCarcass) && bLookingForCarcass)
+
+    if (bHateCarcass || bReactCarcass || bFearCarcass)
         AISetEventCallback('Carcass', 'HandleCarcass', 'CarcassScore', true, true, false, true);
     else
         AIClearEventCallback('Carcass');
-*/
 
     if (bReactLoudNoise && bLookingForLoudNoise)
         AISetEventCallback('LoudNoise', 'HandleLoudNoise', 'LoudNoiseScore');
@@ -5451,6 +5298,79 @@ function UpdateReactionCallbacks()
         AIClearEventCallback('Projectile');
 }
 
+function HandleCarcass( name event, EAIEventState state, XAIParams params ) {
+    local name carcassName;
+    local name killerAlliance;
+    local name carcassAlliance;
+    local Pawn killer;
+    local Pawn bestKiller;
+    local float dist;
+    local float bestDist;
+
+    if ( !GetCarcassData( params.BestActor, carcassName, carcassAlliance, killerAlliance, true ) ) {
+        return;
+    }
+
+    CarcassTimer = 120;
+    AddCarcass( carcassName );
+    if ( killerAlliance == 'Player' ) {
+        killer = GetPlayerPawn();
+    }
+    else {
+        bestKiller = none;
+        bestDist = 0;
+        foreach AllActors( class'Pawn', killer ) {
+            if ( killer.Alliance == killerAlliance ) {
+                dist = VSize( killer.Location - Location );
+                if ( bestKiller == none || bestDist > dist ) {
+                    bestKiller = killer;
+                    bestDist = dist;
+                }
+            }
+        }
+        killer = bestKiller;
+    }
+
+    PotentialEnemyAlliance = killerAlliance;
+    PotentialEnemyTimer = 15.0;
+    bNoNegativeAlliances = false;
+
+    if ( AICanSee( killer, ComputeActorVisibility( killer ), true, true, true, true ) > 0 ) {
+        if ( bFearCarcass ) {
+            IncreaseFear( killer, 2.0 );
+        }
+
+        if ( bFearCarcass && IsFearful() && !IsValidEnemy( killer ) ) {
+            SetDistressTimer();
+            SetEnemy( killer, , true );
+            GotoState( 'Fleeing' );
+        }
+        else {
+            SetDistressTimer();
+            SetEnemy( killer, 0, true );
+            HandleEnemy();
+        }
+    }
+    else {
+        if ( bFearCarcass ) {
+            IncreaseFear( none, 2.0 );
+        }
+
+        if ( bFearCarcass && IsFearful() ) {
+            SetDistressTimer();
+            GotoState( 'Fleeing' );
+        }
+        else {
+            SetDistressTimer();
+            SetSeekLocation( killer, params.BestActor.Location, SEEKTYPE_Carcass );
+            GotoState( 'Seeking', 'GoToLocation' );
+        }
+    }
+}
+
+function float CarcassScore( Actor receiver, Actor sender, float score ) {
+    return score;
+}
 
 // ----------------------------------------------------------------------
 // SetReactions()
@@ -5834,11 +5754,11 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                 {
                     // Vanilla Matters: Rewrite to add special rules.
                     if ( distressor != none ) {
-                        distressorSeen = ( ( distresseePawn != none && distressee.AICanSee( distressor, distresseePawn.ComputeActorVisibility( distressor ), true, true, true, true ) > 0 ) || distresseePlayer != none );
+                        distressorSeen = ( ( distresseePawn != none && distressee.AICanSee( distressor, distresseePawn.ComputeActorVisibility( distressor ), true, false, true, true ) > 0 ) || distresseePlayer != none );
                     }
                     else if ( distresseePawn != none ) {
                         distressor = distresseePawn.SeekPawn;
-                        distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, true, true, true ) > 0 );
+                        distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, false, true, true ) > 0 );
                     }
 
                     if ( distressorSeen ) {
@@ -6792,14 +6712,8 @@ function CheckEnemyParams(Pawn checkPawn,
     local int          threatLevel;
     local bool         bValid;
 
-    bValid = IsValidEnemy(checkPawn);
-    if (bValid && (Enemy != checkPawn))
-    {
-        // Honor cloaking, radar transparency, and other augs if this guy isn't our current enemy
-        if (ComputeActorVisibility(checkPawn) < 0.1)
-            bValid = false;
-    }
-
+    // Vanilla Matters
+    bValid = IsValidEnemy( checkPawn ) || checkPawn.Alliance == PotentialEnemyAlliance;
     if (bValid)
     {
         sPawn = ScriptedPawn(checkPawn);
@@ -6847,7 +6761,7 @@ function CheckEnemyParams(Pawn checkPawn,
         if (bReplace)
         {
             // Vanilla Matters: Apply visibility rules.
-            if ( Enemy == checkPawn || AICanSee( checkPawn, ComputeActorVisibility( checkPawn ), true, true, true, true ) > 0 )
+            if ( Enemy == checkPawn || AICanSee( checkPawn, ComputeActorVisibility( checkPawn ), false, false, true, true ) > 0 )
             {
                 bestPawn        = checkPawn;
                 bestThreatLevel = threatLevel;
@@ -6877,7 +6791,8 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
 
     if (!bIgnoreCurrentEnemy && (Enemy != None))
         CheckEnemyParams(Enemy, bestPawn, bestThreatLevel, bestDist);
-    foreach RadiusActors(Class'Pawn', nextPawn, 2000)  // arbitrary
+    // Vanilla Matters
+    foreach RadiusActors( class'Pawn', nextPawn, 3200 )  // arbitrary
         if (enemy != nextPawn)
             CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
 
@@ -7493,8 +7408,6 @@ function Tick(float deltaTime)
         else
         {
             CheckBeamPresence(deltaTime);
-            if (bDoLowPriority || LastRendered() < 5.0)
-                CheckCarcassPresence(deltaTime);  // hacky -- may change state!
         }
     }
 
@@ -10733,15 +10646,10 @@ State Fleeing
             bHateThisInjury = ShouldReactToInjuryType(damageType, bHateInjury, bHateIndirectInjury);
             bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
-            if (bHateThisInjury)
-                IncreaseAgitation(instigatedBy);
-            if (bFearThisInjury)
-                IncreaseFear(instigatedBy, 2.0);
-
             // Vanilla Matters: Rewrite to add special rules.
-            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0 ) {
                 if ( bHateThisInjury ) {
-                    IncreaseAgitation( instigatedBy );
+                    IncreaseAgitation( instigatedBy, 1.0 );
                 }
 
                 if ( bFearThisInjury ) {
@@ -11227,7 +11135,7 @@ State Attacking
             bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
             // Vanilla Matters: Rewrite to add special rules
-            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0 ) {
                 if ( bHateThisInjury ) {
                     IncreaseAgitation( instigatedBy, 1.0 );
                 }
@@ -13064,7 +12972,7 @@ state Burning
         if (health > 0)
         {
             // Vanilla Matters: Rewrite to add special rules.
-            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, true, true, true ) > 0 ) {
+            if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0 ) {
                 if ( Enemy != instigatedBy ) {
                     SetEnemy( instigatedBy );
                     newLabel = 'NewEnemy';
