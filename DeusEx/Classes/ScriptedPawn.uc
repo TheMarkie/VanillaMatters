@@ -5525,8 +5525,12 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
                     SetEnemy( pawnActor,, true );
                     GotoState( 'Fleeing' );
                 }
-                else if ( pawnActor.bIsPlayer ) {
-                    ReactToFutz();
+                else {
+                    SetSeekLocation( pawnActor, pawnActor.Location, SEEKTYPE_Sound );
+                    GotoState( 'Seeking', 'TurnToLocation' );
+                    if ( pawnActor.bIsPlayer ) {
+                        ReactToFutz();
+                    }
                 }
             }
             else {
@@ -5538,8 +5542,12 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
                     SetDistressTimer();
                     GotoState( 'Fleeing' );
                 }
-                else if ( pawnActor.bIsPlayer ) {
-                    ReactToFutz();
+                else {
+                    SetSeekLocation( pawnActor, pawnActor.Location, SEEKTYPE_Sound );
+                    GotoState( 'Seeking', 'GoToLocation' );
+                    if ( pawnActor.bIsPlayer ) {
+                        ReactToFutz();
+                    }
                 }
             }
         }
