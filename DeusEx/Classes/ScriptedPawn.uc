@@ -10547,6 +10547,16 @@ TurnToLocation:
     Sleep(FRand()*1.5+3.0);
 
 LookAround:
+    // Vanilla Matters: If the pawn is friendly, cancel the search here.
+    if ( SeekPawn != none && GetPawnAllianceType( SeekPawn ) == ALLIANCE_Friendly ) {
+        SeekLevel = 0;
+        TurnToward( SeekPawn );
+        if ( bCanTurnHead ) {
+            LookAtActor( SeekPawn, true, true, true, 0, 0.25 );
+        }
+        GotoState( 'Wandering' );
+    }
+
     if (bCanTurnHead)
     {
         if (FRand() < 0.5)
@@ -10593,11 +10603,6 @@ LookAround:
     {
         if (!bSeekLocation)
             Sleep(1.0);
-    }
-
-    // Vanilla Matters: If the pawn is friendly, cancel the search here.
-    if ( GetPawnAllianceType( SeekPawn ) == ALLIANCE_Friendly ) {
-        GotoState('Wandering');
     }
 
 FindAnotherPlace:
