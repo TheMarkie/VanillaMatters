@@ -3774,13 +3774,14 @@ function UpdateInHand()
 //
 // Small hack for sending carcass events
 // ----------------------------------------------------------------------
-
-function UpdateCarcassEvent()
-{
-    if ((inHand != None) && (inHand.IsA('POVCorpse')))
-        AIStartEvent('Carcass', EAITYPE_Visual);
-    else
-        AIEndEvent('Carcass', EAITYPE_Visual);
+// Vanilla Matters
+function UpdateCarcassEvent() {
+    if ( inHand != none && inHand.IsA( 'POVCorpse' ) ) {
+        AIStartEvent( 'Carcass', EAITYPE_Visual, 1, 3200 );
+    }
+    else {
+        AIEndEvent( 'Carcass', EAITYPE_Visual );
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -209,7 +209,8 @@ function Tick(float deltaSeconds)
     {
         bInit = true;
         if (bEmitCarcass)
-            AIStartEvent('Carcass', EAITYPE_Visual);
+            // Vanilla Matters
+            AIStartEvent( 'Carcass', EAITYPE_Visual, 1, 3200 );
     }
     Super.Tick(deltaSeconds);
 
@@ -647,7 +648,8 @@ auto state Dead
 
         // alert NPCs that I'm really disgusting
         if (bEmitCarcass)
-            AIStartEvent('Carcass', EAITYPE_Visual);
+            // Vanilla Matters
+            AIStartEvent( 'Carcass', EAITYPE_Visual, 1, 3200 );
     }
 
 Begin:
