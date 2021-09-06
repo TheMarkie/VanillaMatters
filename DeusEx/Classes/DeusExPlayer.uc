@@ -2926,7 +2926,7 @@ event HeadZoneChange(ZoneInfo newHeadZone)
         Acceleration = vect(0,0,0);
 
         // Vanilla Matters
-        swimDuration = UnderWaterTime + GetValue( 'LungCapacity' );
+        swimDuration = UnderWaterTime + GetValue( 'UnderwaterTimeBonus' );
         swimTimer = swimDuration;
         WaterSpeed = default.WaterSpeed * ( 1 + GetValue( 'SwimmingSpeedMult' ) );
     }
@@ -3032,7 +3032,7 @@ state PlayerSwimming
         SetBasedPawnSize(Default.CollisionRadius, 16);
 
         // Vanilla Matters
-        swimDuration = UnderWaterTime + GetValue( 'LungCapacity' );
+        swimDuration = UnderWaterTime + GetValue( 'UnderwaterTimeBonus' );
         swimTimer = swimDuration;
         WaterSpeed = default.WaterSpeed * ( 1 + GetValue( 'SwimmingSpeedMult' ) );
         swimBubbleTimer = 0;

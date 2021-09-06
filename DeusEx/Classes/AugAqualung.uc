@@ -1,27 +1,18 @@
 class AugAqualung extends VMAugmentation;
 
-// Vanilla Matters TODO: Restore functionality.
+var() array<float> UnderwaterTimeBonus;
 
-// state Active
-// {
-//     // Vanilla Matters: Keep increasing the breath span so it never runs out.
-//     function Timer() {
-//         Player.swimTimer = FMin( Player.swimTimer + 4, Player.swimDuration );
-//     }
+static function bool Activate( VMPlayer player, int level ) {
+    player.GlobalModifiers.Modify( 'UnderwaterTimeBonus', default.UnderwaterTimeBonus[level] );
 
-//     function EndState() {
-//         if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
-//             SetTimer( 1, false );
-//         }
-//     }
+    return true;
+}
 
-// Begin:
-//     // Vanilla Matters: Bonus is now all handled in deusexplayer.
-//     // VM: We're gonna deal with the last aug level by a timer.
-//     if ( Level.NetMode == NM_StandAlone && CurrentLevel >= 3 ) {
-//         SetTimer( 1, true );
-//     }
-// }
+static function bool Deactivate( VMPlayer player, int level ) {
+    player.GlobalModifiers.Modify( 'UnderwaterTimeBonus', -default.UnderwaterTimeBonus[level] );
+
+    return true;
+}
 
 defaultproperties
 {
@@ -31,4 +22,5 @@ defaultproperties
      UpgradeName="Aqualung"
      Description="Soda lime exostructures embedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater.|n|n[TECH ONE]|nLung capacity is extended by 15 seconds.|n|n[TECH TWO]|nLung capacity is extended by 30 seconds.|n|n[TECH THREE]|nLung capacity is extended by 60 seconds.|n|n[TECH FOUR]|nAn agent can stay underwater indefinitely."
      InstallLocation=AugmentationLocationTorso
+     UnderwaterTimeBonus=(15,30,60,60000)
 }
