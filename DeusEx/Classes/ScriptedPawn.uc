@@ -2726,7 +2726,7 @@ function Carcass SpawnCarcass() {
                 loc.Y = ( 1 - 2 * FRand() ) * CollisionRadius;
                 loc.Z = ( 1 - 2 * FRand() ) * CollisionHeight;
                 loc += Location;
-                chunk = spawn(class'FleshFragment', None,, loc);
+                chunk = spawn( class'FleshFragment', none,, loc );
                 if ( chunk != none ) {
                     chunk.DrawScale = size / 25;
                     chunk.SetCollisionSize( chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale );
@@ -2782,9 +2782,7 @@ function Carcass SpawnCarcass() {
                 }
             }
             loc = loc >> Rotation;
-            if ( carc != none ) {
-                loc.z -= CollisionHeight + item.CollisionHeight;
-            }
+            loc.z += item.CollisionHeight;
 
             item.DropFrom( Location + loc );
         }
