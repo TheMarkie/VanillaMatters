@@ -5306,13 +5306,35 @@ function HandleCarcass( name event, EAIEventState state, XAIParams params ) {
     local Pawn bestKiller;
     local float dist;
     local float bestDist;
+    local bool relevant;
 
     if ( !GetCarcassData( params.BestActor, carcassName, carcassAlliance, killerAlliance, true ) ) {
         return;
     }
 
+    if ( bFearCarcass ) {
+        relevant = true;
+    }
+    else if ( GetAllianceType( carcassAlliance ) == ALLIANCE_Friendly ) {
+        if ( bHateCarcass ) {
+            relevant = true;
+        }
+        else if ( bReactCarcass && GetAllianceType( killerAlliance ) == ALLIANCE_Hostile ) {
+            relevant = true;
+        }
+    }
+
+    if ( !relevant ) {
+        return;
+    }
+
     CarcassTimer = 120;
     AddCarcass( carcassName );
+
+    if ( !bLookingForCarcass ) {
+        return;
+    }
+
     if ( killerAlliance == 'Player' ) {
         killer = GetPlayerPawn();
     }
@@ -5331,12 +5353,10 @@ function HandleCarcass( name event, EAIEventState state, XAIParams params ) {
         killer = bestKiller;
     }
 
-    PotentialEnemyAlliance = killerAlliance;
-    PotentialEnemyTimer = 15.0;
-    bNoNegativeAlliances = false;
-
-    if ( killer != none ) {
-        IncreaseAgitation( killer, 1.0 );
+    if ( bHateCarcass ) {
+        PotentialEnemyAlliance = killerAlliance;
+        PotentialEnemyTimer = 15.0;
+        bNoNegativeAlliances = false;
     }
 
     if ( killer != none && AICanSee( killer, ComputeActorVisibility( killer ), true, true, true, true ) > 0 ) {
@@ -5851,10 +5871,8 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 
 // Vanilla Matters: Rewrite to handle cases where there is no clear instigator.
 function IncreaseFear( Actor actorInstigator, float addedFearLevel, optional float newFearTimer ) {
-    local Pawn instigator;
-
-    if ( actorInstigator == none ) {
-        addedFearLevel = addedFearLevel * 2;
+    if ( Pawn( actorInstigator ) == none ) {
+        return;
     }
 
     if ( FearTimer < ( FearSustainTime - newFearTimer ) ) {
@@ -5862,7 +5880,7 @@ function IncreaseFear( Actor actorInstigator, float addedFearLevel, optional flo
     }
 
     if ( FearTimer > 0 && addedFearLevel > 0 ) {
-        FearLevel = FearLevel + addedFearLevel;
+        FearLevel = FMin( FearLevel + addedFearLevel, 1.0 );
     }
 }
 
