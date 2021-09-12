@@ -10,8 +10,8 @@ defaultproperties
      Concealability=CONC_All
      ShotTime=0.300000
      reloadTime=0.000000
-     HitDamage=50
-     BaseAccuracy=0.800000
+     HitDamage=75
+     BaseAccuracy=1.000000
      bHasMuzzleFlash=False
      bEmitWeaponDrawn=False
      bUseAsDrawnWeapon=False
