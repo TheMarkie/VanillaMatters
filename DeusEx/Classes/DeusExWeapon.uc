@@ -1064,7 +1064,7 @@ function PlaceGrenade()
 
 // Vanilla Matters
 simulated function Tick( float deltaTime ) {
-    local float movespeed, standingRate, skillBonus;
+    local float movespeed, skillBonus;
     local DeusExPlayer player;
     local Pawn pawn;
     local vector loc;
@@ -2380,13 +2380,13 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
     Start = ComputeProjectileStart( X, Y, Z );
 
     AdjustedAim = Pawn( owner ).AdjustAim( ProjSpeed, Start, 0, true, bWarn );
-    AdjustedAim.Yaw += inaccuracy * ( Rand( 4096 ) - 2048 );
-    AdjustedAim.Pitch += inaccuracy * ( Rand( 4096 ) - 1024 );
+    AdjustedAim.Yaw += inaccuracy * ( Rand( 1536 ) - 768 );
+    AdjustedAim.Pitch += inaccuracy * ( Rand( 1536 ) - 768 );
 
     for ( i = 0; i < VM_ShotCount; i++ ) {
         if ( i > 0 ) {
-            AdjustedAim.Yaw += Rand( 512 ) - 256;
-            AdjustedAim.Pitch += Rand( 512 ) - 256;
+            AdjustedAim.Yaw += Rand( 256 ) - 128;
+            AdjustedAim.Pitch += Rand( 256 ) - 128;
         }
 
         if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
@@ -2524,7 +2524,7 @@ simulated function TraceFire( float accuracy ) {
     }
 
     inaccuracy = 1 - accuracy;
-    range = ( MaxRange * ( 1 + ModMaxRange ) ) / 2;
+    range = ( MaxRange * ( 1 + ModMaxRange ) ) * 0.2;
 
     spreadY = Y * inaccuracy * ( FRand() - 0.5 ) * range;
     spreadZ = Z * inaccuracy * ( FRand() - 0.5 ) * range;
@@ -2538,8 +2538,8 @@ simulated function TraceFire( float accuracy ) {
         if ( i > 0 ) {
             EndTrace = StartTrace;
             EndTrace += X * MaxRange;
-            EndTrace += spreadY + ( Y * ( Rand( 128 ) - 64 ) );
-            EndTrace += spreadZ + ( Z * ( Rand( 128 ) - 64 ) );
+            EndTrace += spreadY + ( Y * ( Rand( 80 ) - 40 ) );
+            EndTrace += spreadZ + ( Z * ( Rand( 80 ) - 40 ) );
         }
 
         Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
