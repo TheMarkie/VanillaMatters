@@ -951,20 +951,19 @@ function DrawTargetAugmentation(GC gc)
             crossColor = colWhite;
         }
 
-        w = width;
-        h = height;
-        x = int( w * 0.5 );
-        y = int( h * 0.5 );
+        x = int( width * 0.5 );
+        y = int( height * 0.5 );
 
-        mult = FMin( ( 1 - weapon.currentAccuracy ) * 100.0 * ( width / 640.0 ) * ( 85.0 / player.FovAngle ), 320 );
+        mult = FMin( ( 1 - weapon.currentAccuracy ) * 40.0 * ( width / 640.0 ) * ( 85.0 / player.FovAngle ), height / 2 );
 
         gc.SetTileColor( crossColor );
-        gc.DrawBox( x, y - mult, 1, corner, 0, 0, 1, Texture'Solid' );
-        gc.DrawBox( x, y + mult - corner + 1, 1, corner, 0, 0, 1, Texture'Solid' );
-
-        gc.DrawBox( x - mult, y, corner, 1, 0, 0, 1, Texture'Solid' );
-        gc.DrawBox( x + mult - corner + 1, y, corner, 1, 0, 0, 1, Texture'Solid' );
-
+        // Vertical lines
+        gc.DrawBox( x, y - mult - corner, 1, corner, 0, 0, 1, Texture'Solid' );
+        gc.DrawBox( x, y + mult + 1, 1, corner, 0, 0, 1, Texture'Solid' );
+        // Horizontal lines
+        gc.DrawBox( x - mult - corner, y, corner, 1, 0, 0, 1, Texture'Solid' );
+        gc.DrawBox( x + mult + 1, y, corner, 1, 0, 0, 1, Texture'Solid' );
+        // Dot
         gc.DrawBox( x, y, 1, 1, 0, 0, 1, Texture'Solid' );
 
         VM_recticleDrawn = true;
