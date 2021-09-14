@@ -5253,7 +5253,7 @@ function UpdateReactionCallbacks()
         AIClearEventCallback('WeaponFire');
 
 
-    if (bHateCarcass || bReactCarcass || bFearCarcass)
+    if ((bHateCarcass || bReactCarcass || bFearCarcass) && bLookingForCarcass)
         AISetEventCallback('Carcass', 'HandleCarcass', 'CarcassScore', true, true, false, true);
     else
         AIClearEventCallback('Carcass');
