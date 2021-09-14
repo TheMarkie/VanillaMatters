@@ -38,7 +38,7 @@ defaultproperties
      reloadTime=3.000000
      HitDamage=30
      maxRange=2400
-     BaseAccuracy=0.700000
+     BaseAccuracy=0.850000
      bCanHaveScope=True
      ScopeFOV=15
      bCanHaveLaser=True
