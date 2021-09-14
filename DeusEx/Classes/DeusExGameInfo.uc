@@ -6,7 +6,7 @@ class DeusExGameInfo expands GameInfo
 
 // Vanilla Matters: Our version string and how to get it.
 static function string GetVMVersion() {
-    return "2.0.0b3r4";
+    return "2.0.0b3r6";
 }
 
 // ----------------------------------------------------------------------
