@@ -1565,7 +1565,8 @@ exec function bool DropItem( optional Inventory item, optional bool drop ) {
 // Damage Management
 //==============================================
 // Override
-function bool GetModifiedDamage( int damage, name damageType, vector hitLocation, out int adjustedDamage ) {
+function bool GetModifiedDamage( int damage, name damageType, vector hitLocation, out int modifiedDamage ) {
+    local bool reduced;
     local float newDamage;
     local ChargedPickup cpickup;
 
@@ -1599,22 +1600,20 @@ function bool GetModifiedDamage( int damage, name damageType, vector hitLocation
         }
     }
 
-    // Allow full damage resistance.
+    reduced = newDamage < damage;
     if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
         newDamage *= CombatDifficulty;
-        damage *= CombatDifficulty;
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
     else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
         || damageType == 'PoisonGas'
     ) {
         newDamage *= ( CombatDifficulty / 2 ) + 0.5;
-        damage *= ( CombatDifficulty / 2 ) + 0.5;
     }
 
-    adjustedDamage = Max( int( newDamage ), 0 );
+    modifiedDamage = Max( int( newDamage ), 0 );
 
-    return newDamage < damage;
+    return reduced;
 }
 
 //==============================================
