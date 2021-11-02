@@ -8,6 +8,7 @@ var travel VMAugmentationInfo FirstAugmentationInfo;
 var transient array<VMAugmentationBehaviour> TickHandlers;
 var transient array<VMAugmentationBehaviour> ProcessMoveHandlers;
 var transient array<VMAugmentationBehaviour> ParseLeftClickHandlers;
+var transient array<VMAugmentationBehaviour> TakeDamageHandlers;
 
 var travel int InstallLocationCounts[7];
 var int InstallLocationMaxCounts[7];
@@ -125,6 +126,22 @@ function bool ParseLeftClick() {
     return handled;
 }
 
+function bool HandleTakeDamage( out int damage, name damageType, Pawn attacker, Vector hitLocation ) {
+    local int i, count;
+    local bool handled;
+    local VMAugmentationBehaviour behaviour;
+
+    count = #TakeDamageHandlers;
+    for ( i = 0; i < count; i++ ) {
+        behaviour = TakeDamageHandlers[i];
+        if ( behaviour.Info.IsActive ) {
+            handled = handled || behaviour.TakeDamage( damage, damageType, attacker, hitLocation );
+        }
+    }
+
+    return handled;
+}
+
 //==============================================
 // Augmentation Management
 //==============================================
@@ -212,9 +229,7 @@ function ActivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        if ( !info.IsPassive() ) {
-            info.IsActive = info.Activate();
-        }
+        info.Toggle( true );
 
         info = info.Next;
     }
@@ -224,9 +239,7 @@ function DeactivateAll() {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        if ( !info.IsPassive() ) {
-            info.IsActive = !info.Deactivate();
-        }
+        info.Toggle( false );
 
         info = info.Next;
     }

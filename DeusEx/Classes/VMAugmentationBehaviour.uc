@@ -10,11 +10,11 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 // Functionality
-function bool Activate() { return false; }
-function bool Deactivate() { return false; }
+function bool Activate() { return true; }
+function bool Deactivate() { return true; }
 
 function float GetRate( float time ) {
-    return ( Info.Definition.default.Rates[Min( Info.Level, #Info.Definition.default.Rates - 1 )] / 60 ) * time;
+    return ( Info.Definition.default.Rates[Info.Level] / 60 ) * time;
 }
 
 function float GetCooldown();
@@ -23,6 +23,7 @@ function float GetCooldown();
 event Tick( float deltaTime );
 event bool ProcessMove( float deltaTime );
 event bool ParseLeftClick();
+event bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector hitLocation );
 
 // Display
 function Draw( GC gc );

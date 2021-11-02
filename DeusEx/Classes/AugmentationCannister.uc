@@ -8,9 +8,6 @@ var() travel Name AddAugs[2];
 var localized string AugsAvailable;
 var localized string MustBeUsedOn;
 
-// Vanilla Matters
-var travel bool VM_augReplaced;
-
 // ----------------------------------------------------------------------
 // Network Replication
 // ---------------------------------------------------------------------

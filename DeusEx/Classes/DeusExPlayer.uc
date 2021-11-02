@@ -7944,9 +7944,16 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         }
     }
 
+    // Vanilla Matters
+    actualDamage = Damage;
+    if ( GetAugmentationSystem().HandleTakeDamage( actualDamage, damageType, instigatedBy, HitLocation ) ) {
+        return;
+    }
+    bDamageGotReduced = actualDamage < Damage;
+
     // check for augs or inventory items
     // Vanilla Matters
-    bDamageGotReduced = GetModifiedDamage(Damage, damageType, hitLocation, actualDamage);
+    bDamageGotReduced = bDamageGotReduced || GetModifiedDamage( actualDamage, damageType, hitLocation, actualDamage );
 
     // Vanilla Matters
     if ( bDamageGotReduced ) {
