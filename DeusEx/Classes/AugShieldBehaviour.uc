@@ -1,5 +1,6 @@
 class AugShieldBehaviour extends VMAugmentationBehaviour;
 
+var() array<name> DamageTypes;
 var() float DamageResistance;
 var() float EnergyThreshold;
 var() array<float> EnergyMultiplier;
@@ -10,12 +11,19 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 function bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector hitLocation ) {
+    local int i, count;
+    local bool applies;
     local float energy, mult;
     local int reducedDamage;
 
-    if ( !( damageType == 'Burned' || damageType == 'Flamed' ||
-        damageType == 'Exploded' || damageType == 'Shocked' )
-    ) {
+    count = #DamageTypes;
+    for ( i = 0; i < count; i++ ) {
+        if ( damageType == DamageTypes[i] ) {
+            applies = true;
+            break;
+        }
+    }
+    if ( !applies ) {
         return false;
     }
 
@@ -36,6 +44,7 @@ function bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector
 
 defaultproperties
 {
+     DamageTypes=(Burned,Flamed,Exploded,Shocked)
      DamageResistance=0.6
      EnergyThreshold=60
      EnergyMultiplier=(1,2,3,4)
