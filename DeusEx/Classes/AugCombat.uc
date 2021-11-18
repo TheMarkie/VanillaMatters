@@ -2,11 +2,14 @@ class AugCombat extends VMAugmentation;
 
 var() array<float> MeleeWeaponDamage;
 var() array<float> MeleeAttackSpeedBonus;
-var() array<float> ThrowVelocityBonus;
+var() array<float> ReloadTimeReduction;
+var() array<float> InjuryAccuracyPenaltyReduction;
 
 static function bool Activate( VMPlayer player, int level ) {
     player.GlobalModifiers.Modify( 'MeleeWeaponDamage', default.MeleeWeaponDamage[level] );
     player.GlobalModifiers.Modify( 'MeleeAttackSpeedBonus', default.MeleeAttackSpeedBonus[level] );
+    player.GlobalModifiers.Modify( 'ReloadTimeReduction', default.ReloadTimeReduction[level] );
+    player.GlobalModifiers.Modify( 'InjuryAccuracyPenaltyReduction', default.InjuryAccuracyPenaltyReduction[level] );
 
     return true;
 }
@@ -14,6 +17,8 @@ static function bool Activate( VMPlayer player, int level ) {
 static function bool Deactivate( VMPlayer player, int level ) {
     player.GlobalModifiers.Modify( 'MeleeWeaponDamage', -default.MeleeWeaponDamage[level] );
     player.GlobalModifiers.Modify( 'MeleeAttackSpeedBonus', -default.MeleeAttackSpeedBonus[level] );
+    player.GlobalModifiers.Modify( 'ReloadTimeReduction', -default.ReloadTimeReduction[level] );
+    player.GlobalModifiers.Modify( 'InjuryAccuracyPenaltyReduction', -default.InjuryAccuracyPenaltyReduction[level] );
 
     return true;
 }
@@ -28,4 +33,6 @@ defaultproperties
      InstallLocation=AugmentationLocationArm
      MeleeWeaponDamage=(0.25,0.5,0.75,1)
      MeleeAttackSpeedBonus=(0.1,0.2,0.3,0.4)
+     ReloadTimeReduction=(0.1,0.2,0.3,0.4)
+     InjuryAccuracyPenaltyReduction=(0.1,0.2,0.3,0.4)
 }

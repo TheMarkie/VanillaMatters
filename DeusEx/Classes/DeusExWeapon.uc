@@ -2971,7 +2971,7 @@ simulated function bool UpdateInfo(Object winObject)
 
         //  Vanilla Matters: Reload Time.
         str = FormatFloat( default.ReloadTime );
-        mod = ModReloadTime + GetModifierValue( 'ReloadTime' );
+        mod = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
             str = str @ "=" @ FormatFloat( default.ReloadTime + ( mod * default.ReloadTime ) );
@@ -3376,8 +3376,8 @@ ignores Fire, AltFire;
             // check for skill use if we are the player
 
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetModifierValue( 'ReloadTime' );
-            val = ReloadTime + ( val * ReloadTime );
+            val = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+            val = FMax( ReloadTime + ( val * ReloadTime ), 0 );
         }
 
         return val;
@@ -3666,8 +3666,8 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
         if (DeusExPlayer(Owner) != None)
         {
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetModifierValue( 'ReloadTime' );
-            val = ReloadTime + ( val * ReloadTime );
+            val = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+            val = FMax( ReloadTime + ( val * ReloadTime ), 0 );
         }
         return val;
     }
