@@ -1844,26 +1844,37 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
             PlaySound( sound'MedicalHiss', SLOT_None,,, 256 );
         }
 
-        // Prioritize crippled limbs.
-        if ( HealthLegLeft <= 0 ) {
-            HealPart( HealthLegLeft, healAmount, 10 );
+        // Prioritize critical conditions.
+        if ( HealthHead <= 30 ) {
+            HealPart( HealthHead, healAmount, 30 );
         }
-        if ( HealthLegRight <= 0 ) {
-            HealPart( HealthLegRight, healAmount, 10 );
-        }
-        if ( HealthArmLeft <= 0 ) {
-            HealPart( HealthArmLeft, healAmount, 10 );
-        }
-        if ( HealthArmRight <= 0 ) {
-            HealPart( HealthArmRight, healAmount, 10 );
+        if ( HealthTorso <= 30 ) {
+            HealPart( HealthTorso, healAmount, 30 );
         }
 
-        HealPart( HealthHead, healAmount, healAmount );
-        HealPart( HealthTorso, healAmount, healAmount );
-        HealPart( HealthLegLeft, healAmount, healAmount );
-        HealPart( HealthLegRight, healAmount, healAmount );
-        HealPart( HealthArmLeft, healAmount, healAmount );
-        HealPart( HealthArmRight, healAmount, healAmount );
+        if ( healAmount > 0 ) {
+            if ( HealthLegLeft <= 0 ) {
+                HealPart( HealthLegLeft, healAmount, 10 );
+            }
+            if ( HealthLegRight <= 0 ) {
+                HealPart( HealthLegRight, healAmount, 10 );
+            }
+            if ( HealthArmLeft <= 0 ) {
+                HealPart( HealthArmLeft, healAmount, 10 );
+            }
+            if ( HealthArmRight <= 0 ) {
+                HealPart( HealthArmRight, healAmount, 10 );
+            }
+        }
+
+        if ( healAmount > 0 ) {
+            HealPart( HealthHead, healAmount, healAmount );
+            HealPart( HealthTorso, healAmount, healAmount );
+            HealPart( HealthLegLeft, healAmount, healAmount );
+            HealPart( HealthLegRight, healAmount, healAmount );
+            HealPart( HealthArmLeft, healAmount, healAmount );
+            HealPart( HealthArmRight, healAmount, healAmount );
+        }
 
         GenerateTotalHealth();
 
@@ -1882,6 +1893,10 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
 
 function HealPart( out int target, out int pool, int amount ) {
     local int spill;
+
+    if ( pool <= 0 ) {
+        return;
+    }
 
     amount = Min( amount, pool );
     target += amount;
