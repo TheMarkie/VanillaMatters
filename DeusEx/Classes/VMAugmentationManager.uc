@@ -302,7 +302,7 @@ function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo 
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
     // Energy Rate
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, int( info.GetRate( 60 ) ) ) );
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, FormatFloat( info.GetRate( 1 ) ) ) );
 
     // Current Level
     str = Sprintf( CurrentLevelLabel, info.Level + 1 );
@@ -372,7 +372,7 @@ defaultproperties
      InstallLocationMaxCounts(4)=1
      InstallLocationMaxCounts(5)=1
      InstallLocationMaxCounts(6)=2
-     EnergyRateLabel="Energy Rate: %s Units/Minute"
+     EnergyRateLabel="Energy Rate: %s Units/Second"
      OccupiesLocationLabel="Occupies Location: %s"
      AlreadyAtMax="You already have the %s at the maximum level"
      NowUpgraded="%s upgraded to level %s"

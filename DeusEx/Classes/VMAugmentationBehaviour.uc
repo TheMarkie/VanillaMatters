@@ -14,7 +14,7 @@ function bool Activate() { return true; }
 function bool Deactivate() { return true; }
 
 function float GetRate( float time ) {
-    return ( Info.Definition.default.Rates[Info.Level] / 60 ) * time;
+    return Info.Definition.default.Rates[Info.Level] * time;
 }
 
 function float GetCooldown();

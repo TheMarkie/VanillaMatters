@@ -167,7 +167,7 @@ function float GetRate( float time ) {
         return Behaviour.GetRate( time );
     }
 
-    return ( Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] / 60 ) * time;
+    return Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] * time;
 }
 
 function float GetCooldown() {
