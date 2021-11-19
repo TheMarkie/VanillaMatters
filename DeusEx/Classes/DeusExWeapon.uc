@@ -2972,6 +2972,7 @@ simulated function bool UpdateInfo(Object winObject)
         //  Vanilla Matters: Reload Time.
         str = FormatFloat( default.ReloadTime );
         mod = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+        mod = FMax( mod, -1 );
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
             str = str @ "=" @ FormatFloat( default.ReloadTime + ( mod * default.ReloadTime ) );
