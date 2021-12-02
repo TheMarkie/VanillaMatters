@@ -1868,8 +1868,14 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
         }
 
         if ( healAmount > 0 ) {
-            HealPart( HealthHead, healAmount, healAmount );
-            HealPart( HealthTorso, healAmount, healAmount );
+            if ( HealthHead <= HealthTorso ) {
+                HealPart( HealthHead, healAmount, healAmount );
+                HealPart( HealthTorso, healAmount, healAmount );
+            }
+            else {
+                HealPart( HealthTorso, healAmount, healAmount );
+                HealPart( HealthHead, healAmount, healAmount );
+            }
             HealPart( HealthLegLeft, healAmount, healAmount );
             HealPart( HealthLegRight, healAmount, healAmount );
             HealPart( HealthArmLeft, healAmount, healAmount );
