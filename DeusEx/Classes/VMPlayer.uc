@@ -1,6 +1,15 @@
 class VMPlayer extends DeusExPlayer
     abstract;
 
+enum EBodyPart {
+    BodyPartHead,
+    BodyPartTorso,
+    BodyPartArmLeft,
+    BodyPartArmRight,
+    BodyPartLegLeft,
+    BodyPartLegRight,
+};
+
 //==============================================
 // Constants
 //==============================================
@@ -1826,6 +1835,29 @@ function float GetCurrentGroundSpeed() {
     return Default.GroundSpeed * ( 1 + bonus );
 }
 
+function int GetBodyPartHealth( byte partIndex ) {
+    switch ( partIndex ) {
+        case EBodyPart.BodyPartHead:
+            return HealthHead;
+            break;
+        case EBodyPart.BodyPartTorso:
+            return HealthTorso;
+            break;
+        case EBodyPart.BodyPartArmLeft:
+            return HealthArmLeft;
+            break;
+        case EBodyPart.BodyPartArmRight:
+            return HealthArmRight;
+            break;
+        case EBodyPart.BodyPartLegLeft:
+            return HealthLegLeft;
+            break;
+        case EBodyPart.BodyPartLegRight:
+            return HealthLegRight;
+            break;
+    }
+}
+
 // Override
 function int HealPlayer( int baseAmount, optional bool useSkill ) {
     local int totalHealAmount, healAmount, healedAmount;
@@ -1913,6 +1945,34 @@ function HealPartWithPool( out int target, out int pool, int amount ) {
 
     // Vanilla Matters: Add in FP rate for health restored.
     AddForwardPressure( amount - spill, 'Heal' );
+}
+function HealPartIndex( byte partIndex, int amount ) {
+    switch ( partIndex ) {
+        case EBodyPart.BodyPartHead:
+            HealPart( HealthHead, amount );
+            break;
+        case EBodyPart.BodyPartTorso:
+            HealPart( HealthTorso, amount );
+            break;
+        case EBodyPart.BodyPartArmLeft:
+            HealPart( HealthArmLeft, amount );
+            break;
+        case EBodyPart.BodyPartArmRight:
+            HealPart( HealthArmRight, amount );
+            break;
+        case EBodyPart.BodyPartLegLeft:
+            HealPart( HealthLegLeft, amount );
+            break;
+        case EBodyPart.BodyPartLegRight:
+            HealPart( HealthLegRight, amount );
+            break;
+    }
+}
+function HealPart( out int target, int amount ) {
+    if ( amount <= 0 ) {
+        return;
+    }
+    target = Min( target + amount, 100 );
 }
 
 // Override
