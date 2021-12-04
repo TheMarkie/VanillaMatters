@@ -1846,40 +1846,40 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
 
         // Prioritize critical conditions.
         if ( HealthHead <= 30 ) {
-            HealPart( HealthHead, healAmount, 30 );
+            HealPartWithPool( HealthHead, healAmount, 30 );
         }
         if ( HealthTorso <= 30 ) {
-            HealPart( HealthTorso, healAmount, 30 );
+            HealPartWithPool( HealthTorso, healAmount, 30 );
         }
 
         if ( healAmount > 0 ) {
             if ( HealthLegLeft <= 0 ) {
-                HealPart( HealthLegLeft, healAmount, 10 );
+                HealPartWithPool( HealthLegLeft, healAmount, 10 );
             }
             if ( HealthLegRight <= 0 ) {
-                HealPart( HealthLegRight, healAmount, 10 );
+                HealPartWithPool( HealthLegRight, healAmount, 10 );
             }
             if ( HealthArmLeft <= 0 ) {
-                HealPart( HealthArmLeft, healAmount, 10 );
+                HealPartWithPool( HealthArmLeft, healAmount, 10 );
             }
             if ( HealthArmRight <= 0 ) {
-                HealPart( HealthArmRight, healAmount, 10 );
+                HealPartWithPool( HealthArmRight, healAmount, 10 );
             }
         }
 
         if ( healAmount > 0 ) {
             if ( HealthHead <= HealthTorso ) {
-                HealPart( HealthHead, healAmount, healAmount );
-                HealPart( HealthTorso, healAmount, healAmount );
+                HealPartWithPool( HealthHead, healAmount, healAmount );
+                HealPartWithPool( HealthTorso, healAmount, healAmount );
             }
             else {
-                HealPart( HealthTorso, healAmount, healAmount );
-                HealPart( HealthHead, healAmount, healAmount );
+                HealPartWithPool( HealthTorso, healAmount, healAmount );
+                HealPartWithPool( HealthHead, healAmount, healAmount );
             }
-            HealPart( HealthLegLeft, healAmount, healAmount );
-            HealPart( HealthLegRight, healAmount, healAmount );
-            HealPart( HealthArmLeft, healAmount, healAmount );
-            HealPart( HealthArmRight, healAmount, healAmount );
+            HealPartWithPool( HealthLegLeft, healAmount, healAmount );
+            HealPartWithPool( HealthLegRight, healAmount, healAmount );
+            HealPartWithPool( HealthArmLeft, healAmount, healAmount );
+            HealPartWithPool( HealthArmRight, healAmount, healAmount );
         }
 
         GenerateTotalHealth();
@@ -1895,12 +1895,10 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
 
     return healedAmount;
 }
-
-
-function HealPart( out int target, out int pool, int amount ) {
+function HealPartWithPool( out int target, out int pool, int amount ) {
     local int spill;
 
-    if ( pool <= 0 ) {
+    if ( pool <= 0 || amount <= 0 ) {
         return;
     }
 
@@ -1910,12 +1908,11 @@ function HealPart( out int target, out int pool, int amount ) {
     if ( spill > 0 ) {
         target = 100;
     }
+    pool -= amount;
+    pool += spill;
 
     // Vanilla Matters: Add in FP rate for health restored.
     AddForwardPressure( amount - spill, 'Heal' );
-
-    pool -= amount;
-    pool += spill;
 }
 
 // Override
