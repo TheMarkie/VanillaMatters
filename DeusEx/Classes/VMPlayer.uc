@@ -18,6 +18,7 @@ const AutoSaveDelay = 180;
 //==============================================
 // Strings
 //==============================================
+var localized string BodyPartNamesLowercase[6];
 var localized string MsgFullHealth;
 var localized string MsgFullEnergy;
 var localized string MsgTooMuchAmmo;
@@ -2280,6 +2281,12 @@ function bool HasFullForwardPressure() {
 
 defaultproperties
 {
+     BodyPartNamesLowercase(0)="head"
+     BodyPartNamesLowercase(1)="torso"
+     BodyPartNamesLowercase(2)="left arm"
+     BodyPartNamesLowercase(3)="right arm"
+     BodyPartNamesLowercase(4)="left leg"
+     BodyPartNamesLowercase(5)="right leg"
      MsgFullHealth="You already have full health"
      MsgFullEnergy="You already have full energy"
      MsgTooMuchAmmo="You already have enough %s"
