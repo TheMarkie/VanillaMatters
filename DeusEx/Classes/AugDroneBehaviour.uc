@@ -33,7 +33,7 @@ function bool Activate() {
         return false;
     }
 
-    Player.Energy -= rate;
+    Player.DrainEnergy( rate );
 
     Initialize();
     return true;

@@ -1986,8 +1986,15 @@ function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
 }
 
 // Override
-function bool CanDrain( float drainAmount ) {
-    return Energy >= drainAmount;
+function bool CanDrain( float amount ) {
+    return Energy >= amount;
+}
+function DrainEnergy( float amount ) {
+    if ( amount <= 0 ) {
+        return;
+    }
+
+    Energy = Max( Energy - amount, 0 );
 }
 
 //==============================================

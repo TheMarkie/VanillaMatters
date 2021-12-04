@@ -10467,7 +10467,8 @@ function ClearHold();
 
 function float GetCurrentGroundSpeed() { return 0; }
 function int HealPlayer( int baseAmount, optional bool useSkill ) { return 0; }
-function bool CanDrain( float drainAmount );
+function bool CanDrain( float amount ) { return false; }
+function DrainEnergy( float amount );
 
 function AddEnemyInCombat( ScriptedPawn sp );
 function RemoveEnemyInCombat( ScriptedPawn sp );

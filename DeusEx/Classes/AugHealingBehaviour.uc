@@ -2,7 +2,6 @@ class AugHealingBehaviour extends VMAugmentationBehaviour;
 
 var() array<int> HealAmount;
 
-var float Cost;
 var float StandingTimer;
 
 function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
@@ -21,21 +20,12 @@ function Tick( float deltaTime ) {
 
     if ( standingTimer >= 2 ) {
         if ( Player.Health < 100 ) {
-            Cost += float( Player.HealPlayer( HealAmount[Info.Level], false ) ) / 5;
+            Player.DrainEnergy( float( Player.HealPlayer( HealAmount[Info.Level], false ) ) / 5 );
             Player.ClientFlash( 0.5, vect( 0, 0, 500 ) );
         }
 
         StandingTimer -= 1;
     }
-}
-
-function float GetRate( float time ) {
-    local float rate;
-
-    rate = Cost;
-    Cost = 0;
-
-    return rate;
 }
 
 defaultproperties
