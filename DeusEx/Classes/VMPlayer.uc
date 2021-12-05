@@ -1863,6 +1863,10 @@ function int GetBodyPartHealth( byte partIndex ) {
 function int HealPlayer( int baseAmount, optional bool useSkill ) {
     local int totalHealAmount, healAmount, healedAmount;
 
+    if ( Health >= 100 ) {
+        return healedAmount;
+    }
+
     if ( useSkill ) {
         healAmount = baseAmount + GetValue( 'HealingBonus' );
     }
@@ -1931,7 +1935,7 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
 function HealPartWithPool( out int target, out int pool, int amount ) {
     local int spill;
 
-    if ( pool <= 0 || amount <= 0 ) {
+    if ( pool <= 0 || amount <= 0 || target >= 100 ) {
         return;
     }
 
@@ -1970,7 +1974,7 @@ function HealPartIndex( byte partIndex, int amount ) {
     }
 }
 function HealPart( out int target, int amount ) {
-    if ( amount <= 0 ) {
+    if ( amount <= 0 || target >= 100 ) {
         return;
     }
     target = Min( target + amount, 100 );
