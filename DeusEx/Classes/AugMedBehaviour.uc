@@ -91,11 +91,11 @@ defaultproperties
 {
      HealthThreshold=30
      EnergyThreshold=50
-     LimbHealCost=6.000000
+     LimbHealCost=3.000000
      LimbHealCooldown=5.000000
      LimbRegenInterval=1.000000
      LimbRegenThreshold=40
      LimbRegenAmount=10
-     LimbRegenCost=2.000000
+     LimbRegenCost=1.000000
      LimbHealOrder=(4,5,2,3)
 }
