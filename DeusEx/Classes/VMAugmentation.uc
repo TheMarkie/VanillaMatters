@@ -40,5 +40,5 @@ static function int GetMaxLevel() {
 //==============================================
 // Functionality
 //==============================================
-static function bool Activate( VMPlayer player, int level );
-static function bool Deactivate( VMPlayer player, int level );
+static function bool Activate( VMPlayer player, int level ) { return true; }
+static function bool Deactivate( VMPlayer player, int level ) { return true; }
