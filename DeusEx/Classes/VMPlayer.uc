@@ -1860,7 +1860,7 @@ function int GetBodyPartHealth( byte partIndex ) {
 }
 
 // Override
-function int HealPlayer( int baseAmount, optional bool useSkill ) {
+function int HealPlayer( int baseAmount, optional bool useSkill, optional bool skipMessage ) {
     local int totalHealAmount, healAmount, healedAmount;
 
     if ( Health >= 100 ) {
@@ -1922,11 +1922,13 @@ function int HealPlayer( int baseAmount, optional bool useSkill ) {
         GenerateTotalHealth();
 
         healedAmount = totalHealAmount - healAmount;
-        if ( healedAmount == 1 ) {
-            ClientMessage( Sprintf( HealedPointLabel, healedAmount ) );
-        }
-        else {
-            ClientMessage( Sprintf( HealedPointsLabel, healedAmount ) );
+        if ( !skipMessage ) {
+            if ( healedAmount == 1 ) {
+                ClientMessage( Sprintf( HealedPointLabel, healedAmount ) );
+            }
+            else {
+                ClientMessage( Sprintf( HealedPointsLabel, healedAmount ) );
+            }
         }
     }
 
