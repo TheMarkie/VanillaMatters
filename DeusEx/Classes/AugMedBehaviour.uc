@@ -4,7 +4,6 @@ var() int HealthThreshold;
 var() int EnergyThreshold;
 var() float LimbHealCooldown;
 var() float LimbHealCost;
-var() float LimbRegenInterval;
 var() int LimbRegenThreshold;
 var() int LimbRegenAmount;
 var() int LimbRegenCost;
@@ -63,7 +62,7 @@ function Tick( float deltaTime ) {
                     if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
                         Player.HealPartIndex( partIndex, LimbRegenAmount );
                         Player.DrainEnergy( LimbRegenCost );
-                        LimbHealTimer += LimbRegenInterval;
+                        LimbHealTimer += 1;
                         healed = true;
                         break;
                     }
@@ -75,7 +74,7 @@ function Tick( float deltaTime ) {
                     if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
                         Player.HealPartIndex( partIndex, LimbRegenAmount );
                         Player.DrainEnergy( LimbRegenCost );
-                        LimbHealTimer += LimbRegenInterval;
+                        LimbHealTimer += 1;
                         healed = true;
                     }
                 }
@@ -93,7 +92,6 @@ defaultproperties
      EnergyThreshold=50
      LimbHealCost=3.000000
      LimbHealCooldown=5.000000
-     LimbRegenInterval=1.000000
      LimbRegenThreshold=40
      LimbRegenAmount=10
      LimbRegenCost=1.000000
