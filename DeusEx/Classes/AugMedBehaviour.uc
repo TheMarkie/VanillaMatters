@@ -3,10 +3,8 @@ class AugMedBehaviour extends VMAugmentationBehaviour;
 var() int HealthThreshold;
 var() int EnergyThreshold;
 var() float LimbHealCooldown;
-var() float LimbHealCost;
 var() int LimbRegenThreshold;
 var() int LimbRegenAmount;
-var() int LimbRegenCost;
 
 var array<byte> LimbHealOrder;
 var float LimbHealTimer;
@@ -48,7 +46,6 @@ function Tick( float deltaTime ) {
                     partIndex = LimbHealOrder[i];
                     if ( Player.GetBodyPartHealth( partIndex ) <= 0 ) {
                         Player.HealPartIndex( partIndex, HealthThreshold );
-                        Player.DrainEnergy( LimbHealCost );
                         Player.ClientMessage( Info.Definition.default.UpgradeName @ "has healed your" @ Player.BodyPartNamesLowercase[partIndex] );
                         LimbHealTimer += LimbHealCooldown;
                         healed = true;
@@ -61,7 +58,6 @@ function Tick( float deltaTime ) {
                     partIndex = LimbHealOrder[i];
                     if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
                         Player.HealPartIndex( partIndex, LimbRegenAmount );
-                        Player.DrainEnergy( LimbRegenCost );
                         LimbHealTimer += 1;
                         healed = true;
                         break;
@@ -73,7 +69,6 @@ function Tick( float deltaTime ) {
                     partIndex = LimbHealOrder[i];
                     if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
                         Player.HealPartIndex( partIndex, LimbRegenAmount );
-                        Player.DrainEnergy( LimbRegenCost );
                         LimbHealTimer += 1;
                         healed = true;
                     }
@@ -90,10 +85,8 @@ defaultproperties
 {
      HealthThreshold=30
      EnergyThreshold=50
-     LimbHealCost=3.000000
      LimbHealCooldown=5.000000
      LimbRegenThreshold=40
      LimbRegenAmount=10
-     LimbRegenCost=1.000000
      LimbHealOrder=(4,5,2,3)
 }

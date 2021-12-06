@@ -27,13 +27,10 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 function bool Activate() {
     local float rate;
 
-    // Vanilla Matters TODO: Rebalance rate and add message.
-    if ( !Player.CanDrain( DroneCost ) ) {
+    if ( !Player.DrainEnergy( rate ) ) {
         Player.ClientMessage( MsgDroneCost );
         return false;
     }
-
-    Player.DrainEnergy( rate );
 
     Initialize();
     return true;

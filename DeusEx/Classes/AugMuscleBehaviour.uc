@@ -47,7 +47,7 @@ function bool ParseLeftClick() {
 
     deco = DeusExDecoration( Player.CarriedDecoration );
     if ( deco != none ) {
-        if ( Player.CanDrain( 30 ) ) {
+        if ( Player.DrainEnergy( MuscleCost ) ) {
             Player.PlaySound( Player.JumpSound, SLOT_None );
             Player.PlaySound( Info.Definition.default.ActivateSound, SLOT_None );
 
