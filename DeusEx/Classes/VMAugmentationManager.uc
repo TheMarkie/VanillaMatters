@@ -38,7 +38,6 @@ function VMAugmentationInfo Add( name className, name packageName, optional int 
     info.Initialize( className, packageName, startingLevel );
     info.LoadBehaviour( self );
     info.Refresh( self, Player );
-
     info.Next = FirstAugmentationInfo;
     FirstAugmentationInfo = info;
     InstallLocationCounts[info.GetInstallLocation()] += 1;
@@ -54,7 +53,6 @@ function Refresh( VMPlayer playerOwner ) {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Refresh( self, Player, info.IsActive );
-
         info = info.Next;
     }
 
@@ -69,7 +67,6 @@ function Reset() {
         info.Level = 0;
         info.Deactivate();
         info.Refresh( self, Player );
-
         info = info.Next;
     }
 }
@@ -157,7 +154,6 @@ function VMAugmentationInfo GetInfo( name name ) {
         if ( info.DefinitionClassName == name ) {
             break;
         }
-
         info = info.Next;
     }
 
@@ -191,7 +187,6 @@ function IncreaseAllToMax() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-
         info = info.Next;
     }
 }
@@ -230,7 +225,6 @@ function ActivateAll() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Toggle( true );
-
         info = info.Next;
     }
 }
@@ -240,7 +234,6 @@ function DeactivateAll() {
     info = FirstAugmentationInfo;
     while ( info != none ) {
         info.Toggle( false );
-
         info = info.Next;
     }
 
@@ -270,7 +263,6 @@ function float GetTotalRate( float deltaTime ) {
         if ( info.IsActive ) {
             rate += info.GetRate( deltaTime );
         }
-
         info = info.Next;
     }
 
