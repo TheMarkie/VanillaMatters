@@ -20,7 +20,6 @@ var float durationTimer;
 //==============================================
 function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
     super.Refresh( p, i, m );
-    m.TickHandlers[-1] = self;
     m.ProcessMoveHandlers[-1] = self;
 }
 
@@ -46,13 +45,15 @@ function bool Deactivate() {
     return true;
 }
 
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     durationTimer -= deltaTime;
     if ( durationTimer <= 0 ) {
         CleanUp();
         durationTimer = 0;
         Info.IsActive = false;
     }
+
+    return super.Tick( deltaTime );
 }
 
 function bool ProcessMove( float deltaTime ) {

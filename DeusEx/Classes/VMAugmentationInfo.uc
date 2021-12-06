@@ -156,18 +156,11 @@ function bool Deactivate() {
     }
 }
 
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     if ( Behaviour != none ) {
-        Behaviour.Tick( deltaTime );
+        return Behaviour.Tick( deltaTime );
     }
-}
-
-function float GetRate( float time ) {
-    if ( Behaviour != none ) {
-        return Behaviour.GetRate( time );
-    }
-
-    return Definition.default.Rates[Min( Level, #Definition.default.Rates - 1 )] * time;
+    return Definition.default.Rates[Level] * deltaTime;
 }
 
 function float GetCooldown() {

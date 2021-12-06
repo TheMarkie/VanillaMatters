@@ -13,14 +13,12 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 function bool Activate() { return true; }
 function bool Deactivate() { return true; }
 
-function float GetRate( float time ) {
-    return Info.Definition.default.Rates[Info.Level] * time;
-}
-
 function float GetCooldown();
 
 // Events
-event Tick( float deltaTime );
+event float Tick( float deltaTime ) {
+    return Info.Definition.default.Rates[Info.Level] * deltaTime;
+}
 event bool ProcessMove( float deltaTime );
 event bool ParseLeftClick();
 event bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector hitLocation );

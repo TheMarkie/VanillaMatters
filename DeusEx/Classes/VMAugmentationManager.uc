@@ -5,7 +5,6 @@ var private transient bool refreshed;
 var travel VMAugmentationInfo FirstAugmentationInfo;
 
 // Event handlers
-var transient array<VMAugmentationBehaviour> TickHandlers;
 var transient array<VMAugmentationBehaviour> ProcessMoveHandlers;
 var transient array<VMAugmentationBehaviour> ParseLeftClickHandlers;
 var transient array<VMAugmentationBehaviour> TakeDamageHandlers;
@@ -74,21 +73,19 @@ function Reset() {
 //==============================================
 // Augmentation Events
 //==============================================
-function Tick( float deltaTime ) {
-    local int i, count;
-    local VMAugmentationBehaviour behaviour;
+function float TickAll( float deltaTime ) {
+    local VMAugmentationInfo info;
+    local float rate;
 
-    if ( !refreshed ) {
-        return;
-    }
-
-    count = #TickHandlers;
-    for ( i = 0; i < count; i++ ) {
-        behaviour = TickHandlers[i];
-        if ( behaviour.Info.IsActive ) {
-            behaviour.Tick( deltaTime );
+    info = FirstAugmentationInfo;
+    while ( info != none ) {
+        if ( info.IsActive ) {
+            rate += info.Tick( deltaTime );
         }
+        info = info.Next;
     }
+
+    return rate;
 }
 
 function bool ProcessMove( float deltaTime ) {
@@ -254,21 +251,6 @@ function bool IsActive( name name ) {
 //==============================================
 // Values
 //==============================================
-function float GetTotalRate( float deltaTime ) {
-    local VMAugmentationInfo info;
-    local float rate;
-
-    info = FirstAugmentationInfo;
-    while ( info != none ) {
-        if ( info.IsActive ) {
-            rate += info.GetRate( deltaTime );
-        }
-        info = info.Next;
-    }
-
-    return rate;
-}
-
 function int GetLevel( name name ) {
     local VMAugmentationInfo info;
 
@@ -294,7 +276,7 @@ function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo 
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
     // Energy Rate
-    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( EnergyRateLabel, FormatFloat( info.GetRate( 1 ) ) ) );
+    // Vanilla Matters TODO: Add energy rate tooltip back.
 
     // Current Level
     str = Sprintf( CurrentLevelLabel, info.Level + 1 );

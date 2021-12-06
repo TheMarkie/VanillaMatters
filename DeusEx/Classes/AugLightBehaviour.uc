@@ -5,11 +5,6 @@ var Beam GlowBeam;
 
 var() int Length;
 
-function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
-    super.Refresh( p, i, m );
-    m.TickHandlers[-1] = self;
-}
-
 // Behaviours
 function bool Activate() {
     if ( MainBeam != none ) {
@@ -50,9 +45,11 @@ function bool Deactivate() {
     return true;
 }
 
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     SetBeamLocation();
     SetGlowLocation();
+
+    return super.Tick( deltaTime );
 }
 
 // Beam Management

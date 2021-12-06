@@ -1751,6 +1751,13 @@ function DeactivateAllAugmentations() {
         VMAugmentationSystem.DeactivateAll();
     }
 }
+function float TickAllAugmentations( float deltaTime ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.TickAll( deltaTime );
+    }
+
+    return 0;
+}
 
 function int GetAugmentationLevel( name name ) {
     if ( VMAugmentationSystem != none ) {
@@ -1758,14 +1765,6 @@ function int GetAugmentationLevel( name name ) {
     }
 
     return -1;
-}
-
-function float GetTotalAugmentationRate( float deltaTime ) {
-    if ( VMAugmentationSystem != none ) {
-        return VMAugmentationSystem.GetTotalRate( deltaTime );
-    }
-
-    return 0;
 }
 
 function AddAugmentationHotBar( int slot, name name ) {

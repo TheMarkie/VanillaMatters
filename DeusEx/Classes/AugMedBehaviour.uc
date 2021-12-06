@@ -9,12 +9,7 @@ var() int LimbRegenAmount;
 var array<byte> LimbHealOrder;
 var float LimbHealTimer;
 
-function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
-    super.Refresh( p, i, m );
-    m.TickHandlers[-1] = self;
-}
-
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     local int i;
     local byte partIndex;
     local bool healed;
@@ -24,7 +19,6 @@ function Tick( float deltaTime ) {
         item = DeusExPickup( Player.FindInventoryType( class'MedKit' ) );
         if ( item != none && item.NumCopies > 1 ) {
             item.Activate();
-            return;
         }
     }
 
@@ -32,7 +26,6 @@ function Tick( float deltaTime ) {
         item = DeusExPickup( Player.FindInventoryType( class'BioelectricCell' ) );
         if ( item != none && item.NumCopies > 1 ) {
             item.Activate();
-            return;
         }
     }
 
@@ -79,6 +72,8 @@ function Tick( float deltaTime ) {
             Player.GenerateTotalHealth();
         }
     }
+
+    return super.Tick( deltaTime );
 }
 
 defaultproperties

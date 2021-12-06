@@ -7,24 +7,19 @@ var() array<int> HealAmounts;
 var float Timer;
 var float LastSpeedBonus;
 
-function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
-    super.Refresh( p, i, m );
-    m.TickHandlers[-1] = self;
-}
-
 function bool Deactivate() {
     ModifySpeedBonus( 0 );
     return true;
 }
 
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     local int level, energy, i;
     local float speedBonus;
     local int healAmount, healingAmount;
 
     Timer -= deltaTime;
     if ( Timer > 0 ) {
-        return;
+        return super.Tick( deltaTime );
     }
     Timer += 1;
 
@@ -34,7 +29,7 @@ function Tick( float deltaTime ) {
         if ( LastSpeedBonus > 0 ) {
             ModifySpeedBonus( 0 );
         }
-        return;
+        return super.Tick( deltaTime );
     }
 
     healAmount = HealAmounts[level];
@@ -47,6 +42,8 @@ function Tick( float deltaTime ) {
 
     ModifySpeedBonus( speedBonus );
     Player.HealPlayer( healingAmount,, true );
+
+    return super.Tick( deltaTime );
 }
 
 function ModifySpeedBonus( float amount ) {

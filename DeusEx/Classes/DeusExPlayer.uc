@@ -1305,7 +1305,7 @@ function MaintainEnergy(float deltaTime)
         if (Energy > 0)
         {
             // Vanilla Matters
-            energyUse = GetTotalAugmentationRate( deltaTime );
+            energyUse = TickAllAugmentations( deltaTime );
 
             Energy -= EnergyUse;
 
@@ -10507,13 +10507,13 @@ function bool SetAugmentation( name name, bool activate );
 function bool IsAugmentationActive( name name ) { return false; }
 function ActivateAllAugmentations();
 function DeactivateAllAugmentations();
+function float TickAllAugmentations( float deltaTime ) { return 0; }
 
 function AddAugmentationHotBar( int slot, name name );
 function RemoveAugmentationHotBar( int slot );
 
 function int GetAugmentationLevel( name name ) { return -1; }
 
-function float GetTotalAugmentationRate( float deltaTime ) { return 0; }
 
 function UpdateAugmentationDisplay( VMAugmentationInfo aug, bool show );
 function RefreshAugmentationDisplay();

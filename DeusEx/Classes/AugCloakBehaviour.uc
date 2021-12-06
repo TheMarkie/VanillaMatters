@@ -5,11 +5,6 @@ var() Name VisibilityModifierName;
 // Vanilla Matters: Keep track of the player's last in hand item.
 var travel Inventory LastInHand;
 
-function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
-    super.Refresh( p, i, m );
-    m.TickHandlers[-1] = self;
-}
-
 function bool Activate() {
     Player.PlaySound( Sound'CloakUp', SLOT_Interact, 0.85,, 768, 1.0 );
 
@@ -23,26 +18,24 @@ function bool Activate() {
     return true;
 }
 
-function Tick( float deltaTime ) {
+function float Tick( float deltaTime ) {
     if ( LastInHand == None ) {
         if ( Player.inHand != None ) {
             LastInHand = Player.inHand;
             ToggleTransparency( LastInHand, true, 0.05 );
         }
-
-        return;
     }
     else if ( Player.inHand == None ) {
         ToggleTransparency( LastInHand, false );
         LastInHand = None;
-        return;
     }
-
-    if ( LastInHand != Player.inHand ) {
+    else if ( LastInHand != Player.inHand ) {
         ToggleTransparency( LastInHand, false );
         LastInHand = Player.inHand;
         ToggleTransparency( LastInHand, true, 0.05 );
     }
+
+    return super.Tick( deltaTime );
 }
 
 function bool Deactivate() {
