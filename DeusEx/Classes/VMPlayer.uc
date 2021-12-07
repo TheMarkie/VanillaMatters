@@ -1882,10 +1882,10 @@ function int HealPlayer( int baseAmount, optional bool useSkill, optional bool s
 
         // Prioritize critical conditions.
         if ( HealthHead <= 30 ) {
-            HealPartWithPool( HealthHead, healAmount, 30 );
+            HealPartWithPool( HealthHead, healAmount, 40 );
         }
         if ( HealthTorso <= 30 ) {
-            HealPartWithPool( HealthTorso, healAmount, 30 );
+            HealPartWithPool( HealthTorso, healAmount, 40 );
         }
 
         if ( healAmount > 0 ) {
