@@ -3,14 +3,15 @@ class AugMedBehaviour extends VMAugmentationBehaviour;
 var() int HealthThreshold;
 var() int EnergyThreshold;
 var() float LimbHealCooldown;
-var() int LimbRegenThreshold;
+var() array<int> LimbRegenThresholds;
 var() int LimbRegenAmount;
 
 var array<byte> LimbHealOrder;
 var float LimbHealTimer;
+var float LimbRegenTimer;
 
 function float Tick( float deltaTime ) {
-    local int i;
+    local int i, threshold, health;
     local byte partIndex;
     local bool healed;
     local DeusExPickup item;
@@ -32,44 +33,33 @@ function float Tick( float deltaTime ) {
     if ( LimbHealTimer > 0 ) {
         LimbHealTimer -= deltaTime;
     }
-    if ( LimbHealTimer <= 0 ) {
-        switch ( Info.Level ) {
-            case 1:
-                for ( i = 0; i < 4; i++ ) {
-                    partIndex = LimbHealOrder[i];
-                    if ( Player.GetBodyPartHealth( partIndex ) <= 0 ) {
-                        Player.HealPartIndex( partIndex, HealthThreshold );
-                        Player.ClientMessage( Info.Definition.default.UpgradeName @ "has healed your" @ Player.BodyPartNamesLowercase[partIndex] );
-                        LimbHealTimer += LimbHealCooldown;
-                        healed = true;
-                        break;
-                    }
-                }
+    if ( LimbRegenTimer > 0 ) {
+        LimbRegenTimer -= deltaTime;
+    }
+    if ( LimbRegenTimer <= 0 ) {
+        threshold = LimbRegenThresholds[Info.Level];
+        for ( i = 0; i < 4; i++ ) {
+            partIndex = LimbHealOrder[i];
+            health = Player.GetBodyPartHealth( partIndex );
+
+            if ( LimbHealTimer <= 0 && health <= 0 ) {
+                Player.HealPartIndex( partIndex, HealthThreshold );
+                Player.ClientMessage( Info.Definition.default.UpgradeName @ "has healed your" @ Player.BodyPartNamesLowercase[partIndex] );
+                LimbHealTimer += LimbHealCooldown;
+                healed = true;
                 break;
-            case 2:
-                for ( i = 0; i < 4; i++ ) {
-                    partIndex = LimbHealOrder[i];
-                    if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
-                        Player.HealPartIndex( partIndex, LimbRegenAmount );
-                        LimbHealTimer += 1;
-                        healed = true;
-                        break;
-                    }
-                }
+            }
+
+            if ( Info.Level > 0 && health < threshold ) {
+                Player.HealPartIndex( partIndex, Min( LimbRegenAmount, threshold - health ) );
+                healed = true;
                 break;
-            case 3:
-                for ( i = 0; i < 4; i++ ) {
-                    partIndex = LimbHealOrder[i];
-                    if ( Player.GetBodyPartHealth( partIndex ) < LimbRegenThreshold ) {
-                        Player.HealPartIndex( partIndex, LimbRegenAmount );
-                        LimbHealTimer += 1;
-                        healed = true;
-                    }
-                }
-                break;
+            }
         }
+
         if ( healed ) {
             Player.GenerateTotalHealth();
+            LimbRegenTimer += 1;
         }
     }
 
@@ -80,8 +70,8 @@ defaultproperties
 {
      HealthThreshold=30
      EnergyThreshold=50
-     LimbHealCooldown=5.000000
-     LimbRegenThreshold=40
+     LimbHealCooldown=10.000000
+     LimbRegenThresholds=(40,40,60,80)
      LimbRegenAmount=10
      LimbHealOrder=(4,5,2,3)
 }
