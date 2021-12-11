@@ -111,6 +111,10 @@ function bool IncreaseLevel() {
             Activate();
         }
 
+        if ( Behaviour != none ) {
+            Behaviour.OnLevelChanged( Level - 1, Level );
+        }
+
         return true;
     }
 
@@ -127,6 +131,10 @@ function bool DecreaseLevel() {
 
         if ( IsActive ) {
             Activate();
+        }
+
+        if ( Behaviour != none ) {
+            Behaviour.OnLevelChanged( Level + 1, Level );
         }
 
         return true;

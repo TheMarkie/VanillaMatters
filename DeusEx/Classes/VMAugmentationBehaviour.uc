@@ -22,6 +22,7 @@ event float Tick( float deltaTime ) {
 event bool ProcessMove( float deltaTime );
 event bool ParseLeftClick();
 event bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector hitLocation );
+event OnLevelChanged( int oldLevel, int newLevel );
 
 // Display
 function Draw( GC gc );
