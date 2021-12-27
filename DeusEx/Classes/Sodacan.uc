@@ -18,7 +18,8 @@ state Activated
 
         player = DeusExPlayer(Owner);
         if (player != None)
-            player.HealPlayer(2, False);
+            // Vanilla Matters
+            player.HealPlayer( 2, false, false, 'Food');
 
         PlaySound(sound'MaleBurp');
         UseOnce();

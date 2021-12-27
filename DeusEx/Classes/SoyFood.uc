@@ -18,7 +18,8 @@ state Activated
 
         player = DeusExPlayer(Owner);
         if (player != None)
-            player.HealPlayer(5, False);
+            // Vanilla Matters
+            player.HealPlayer( 5, false, false, 'Food');
 
         UseOnce();
     }
