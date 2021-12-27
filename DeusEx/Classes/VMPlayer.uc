@@ -1859,18 +1859,19 @@ function int GetBodyPartHealth( byte partIndex ) {
 }
 
 // Override
-function int HealPlayer( int baseAmount, optional bool useSkill, optional bool skipMessage ) {
+function int HealPlayer( int baseAmount, optional bool useSkill, optional bool skipMessage, optional name source ) {
     local int totalHealAmount, healAmount, healedAmount;
 
     if ( Health >= 100 ) {
         return healedAmount;
     }
 
+    healAmount = baseAmount;
     if ( useSkill ) {
-        healAmount = baseAmount + GetValue( 'HealingBonus' );
+        healAmount += GetValue( 'HealingBonus' );
     }
-    else {
-        healAmount = baseAmount;
+    if ( source != '' ) {
+        healAmount += GetCategoryValue( 'HealingBonus', source );
     }
 
     totalHealAmount = healAmount;
