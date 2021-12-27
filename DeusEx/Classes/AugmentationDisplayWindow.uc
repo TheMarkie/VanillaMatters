@@ -287,12 +287,11 @@ function PostDrawWindow(GC gc)
 
     //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
 
-    // TODO: Restore aug drawing
     // Vanilla Matters: Handle active status in the function itself.
-    // DrawVisionAugmentation( gc );
+    DrawVisionAugmentation( gc );
 
-    // if ( Player.Level.NetMode != NM_Standalone )
-    //     DrawMiscStatusMessages( gc );
+    if ( Player.Level.NetMode != NM_Standalone )
+        DrawMiscStatusMessages( gc );
 
     // if (bDefenseActive)
     //     DrawDefenseAugmentation(gc);
