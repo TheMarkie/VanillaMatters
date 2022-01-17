@@ -24,10 +24,10 @@ var() Sound LoopSound;
 //==============================================
 // Properties
 //==============================================
+var EAugmentationLocation InstallLocation;
 var() bool IsPassive;
 var() array<float> Rates; // Energy cost per minute.
 
-var EAugmentationLocation InstallLocation;
 var name BehaviourClassName;
 
 //==============================================

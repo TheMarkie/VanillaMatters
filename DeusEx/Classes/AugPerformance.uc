@@ -6,7 +6,7 @@ defaultproperties
      SmallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
      UpgradeName="High Performance Capacitor"
      Description="PLACEHOLDER DESCRIPTION"
-     Rates=(0,0,0)
      InstallLocation=AugmentationLocationTorso
+     Rates=(0,0,0)
      BehaviourClassName=AugPerformanceBehaviour
 }
