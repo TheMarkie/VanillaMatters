@@ -17,7 +17,10 @@ function float GetCooldown();
 
 // Events
 event float Tick( float deltaTime ) {
-    return Info.Definition.default.Rates[Info.Level] * deltaTime;
+    if ( Info.IsActive ) {
+        return Info.Definition.default.Rates[Info.Level] * deltaTime;
+    }
+    return 0;
 }
 event bool ProcessMove( float deltaTime );
 event bool ParseLeftClick();

@@ -19,6 +19,10 @@ function bool Activate() {
 }
 
 function float Tick( float deltaTime ) {
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     if ( LastInHand == None ) {
         if ( Player.inHand != None ) {
             LastInHand = Player.inHand;

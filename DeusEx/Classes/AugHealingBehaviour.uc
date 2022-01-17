@@ -7,6 +7,10 @@ var float StandingTimer;
 
 // Make the aug heals every second AFTER you've been standing still for at least 2 seconds.
 function float Tick( float deltaTime ) {
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     if ( VSize( Player.Velocity ) < 10 ) {
         StandingTimer += deltaTime;
     }

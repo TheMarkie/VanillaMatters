@@ -16,6 +16,10 @@ function float Tick( float deltaTime ) {
     local bool healed;
     local DeusExPickup item;
 
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     if ( Player.HealthHead <= HealthThreshold || Player.HealthTorso <= HealthThreshold ) {
         item = DeusExPickup( Player.FindInventoryType( class'MedKit' ) );
         if ( item != none && item.NumCopies > 1 ) {

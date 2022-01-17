@@ -17,6 +17,10 @@ function float Tick( float deltaTime ) {
     local float speedBonus;
     local int healAmount, healingAmount;
 
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     Timer -= deltaTime;
     if ( Timer > 0 ) {
         return super.Tick( deltaTime );

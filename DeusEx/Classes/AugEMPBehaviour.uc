@@ -29,6 +29,10 @@ function bool Deactivate() {
 }
 
 function float Tick( float deltaTime ) {
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     SnapToPlayerView();
     return super.Tick( deltaTime );
 }

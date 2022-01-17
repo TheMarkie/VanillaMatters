@@ -46,6 +46,10 @@ function bool Deactivate() {
 }
 
 function float Tick( float deltaTime ) {
+    if ( !Info.IsActive ) {
+        return 0;
+    }
+
     durationTimer -= deltaTime;
     if ( durationTimer <= 0 ) {
         CleanUp();

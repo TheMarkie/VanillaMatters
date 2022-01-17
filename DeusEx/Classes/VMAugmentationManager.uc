@@ -79,9 +79,7 @@ function float TickAll( float deltaTime ) {
 
     info = FirstAugmentationInfo;
     while ( info != none ) {
-        if ( info.IsActive ) {
-            rate += info.Tick( deltaTime );
-        }
+        rate += info.Tick( deltaTime );
         info = info.Next;
     }
 
