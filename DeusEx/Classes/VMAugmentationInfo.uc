@@ -74,6 +74,7 @@ function Refresh( VMAugmentationManager manager, VMPlayer playerOwner, optional 
 
 function bool Toggle( bool on ) {
     if ( IsActive == on
+        || GetCooldown() > 0
         || ( Definition.default.IsPassive && !on )
     ) {
         return IsActive;
@@ -175,7 +176,6 @@ function float GetCooldown() {
     if ( Behaviour != none ) {
         return Behaviour.GetCooldown();
     }
-
     return 0;
 }
 

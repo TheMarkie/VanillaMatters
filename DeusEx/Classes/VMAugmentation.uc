@@ -1,8 +1,7 @@
 class VMAugmentation extends VMUpgrade
     abstract;
 
-enum EAugmentationLocation
-{
+enum EAugmentationLocation {
     AugmentationLocationDefault,
     AugmentationLocationCranial,
     AugmentationLocationEye,
