@@ -12,7 +12,6 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 // Functionality
 function bool Activate() { return true; }
 function bool Deactivate() { return true; }
-
 function float GetCooldown() { return 0; }
 
 // Events

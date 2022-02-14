@@ -11,7 +11,6 @@ var() array<int> DroneSpeed;
 var() array<float> DroneDuration;
 
 var() float DroneCost;
-var localized string MsgDroneCost;
 
 var float durationTimer;
 
@@ -24,10 +23,8 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 function bool Activate() {
-    local float rate;
-
-    if ( !Player.DrainEnergy( rate ) ) {
-        Player.ClientMessage( MsgDroneCost );
+    if ( !Player.DrainEnergy( DroneCost ) ) {
+        Info.WarnNotEnoughEnergy( DroneCost );
         return false;
     }
 
@@ -169,5 +166,4 @@ defaultproperties
      DroneSpeed=(100,125,150,200)
      DroneDuration=(5,10,20,30)
      DroneCost=30
-     MsgDroneCost="You don't have enough energy to power a drone"
 }

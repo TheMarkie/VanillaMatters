@@ -1,5 +1,7 @@
 class VMAugmentationInfo extends VMUpgradeInfo;
 
+var localized string MsgNotEnoughEnergy;
+
 var travel VMAugmentationInfo Next;
 var travel bool IsActive;
 
@@ -144,6 +146,10 @@ function bool DecreaseLevel() {
     return false;
 }
 
+function WarnNotEnoughEnergy( coerce int amount ) {
+    Player.ClientMessage( Sprintf( MsgNotEnoughEnergy, amount, Definition.default.UpgradeName ) );
+}
+
 //==============================================
 // Behaviours
 //==============================================
@@ -183,4 +189,9 @@ function DrawAugmentation( GC gc ) {
     if ( Behaviour != none ) {
         Behaviour.Draw( gc );
     }
+}
+
+defaultproperties
+{
+     MsgNotEnoughEnergy="You need %s to activate %s"
 }
