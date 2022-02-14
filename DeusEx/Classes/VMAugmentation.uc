@@ -44,5 +44,8 @@ static function bool Deactivate( VMPlayer player, int level ) { return true; }
 
 defaultproperties
 {
+     ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
+     DeActivateSound=Sound'DeusExSounds.Augmentation.AugDeactivate'
+     LoopSound=Sound'DeusExSounds.Augmentation.AugLoop'
      Rates=(0)
 }
