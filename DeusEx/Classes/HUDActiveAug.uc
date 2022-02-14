@@ -30,7 +30,7 @@ event DrawWindow( GC gc ) {
         gc.SetTileColor( color );
         gc.DrawTexture( 2, 2, 32, 32, 0, 0, icon );
 
-        if ( cooldown > 0 ) {
+        if ( !Info.IsActive && cooldown > 0 ) {
             str = FormatFloat( cooldown );
             gc.SetFont( Font'FontMenuTitle' );
             gc.SetTextColor( ColorCooldown );
