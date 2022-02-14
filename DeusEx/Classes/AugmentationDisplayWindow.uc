@@ -7,9 +7,6 @@ var ViewportWindow winZoom;
 var float margin;
 var float corner;
 
-var bool bDefenseActive;
-var int defenseLevel;
-
 var bool bTargetActive;
 var int targetLevel;
 var Actor lastTarget;
@@ -38,8 +35,6 @@ var localized String msgWeapon;
 var localized String msgNone;
 var localized String msgScanning1;
 var localized String msgScanning2;
-var localized String msgADSTracking;
-var localized String msgADSDetonating;
 var localized String msgBehind;
 var localized String msgEnergyLow;
 var localized String msgCantLaunch;
@@ -104,10 +99,6 @@ var String  keyDropItem, keyTalk, keyTeamTalk;
 var Color   colRed, colGreen, colWhite;
 
 // Vanilla Matters
-var Actor defenseTarget;                // AugDefense now deals with more than projectiles.
-var bool VM_bDefenseEnoughEnergy;       // AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
-var bool VM_bDefenseEnoughDistance;     // Shows if we're in range to detonate.
-
 var bool VM_recticleDrawn;              // True if we're drawing the weapon recticle.
 
 var int VM_visionLevels[2];             // Use an array to hold seperate values from different sources of vision.
@@ -117,7 +108,6 @@ var() float VM_nvBrightness;
 var() float VM_irBrightness;
 
 var localized String VM_msgUndefined;
-var localized String VM_msgADSNotEnoughEnergy;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -293,9 +283,6 @@ function PostDrawWindow(GC gc)
     if ( Player.Level.NetMode != NM_Standalone )
         DrawMiscStatusMessages( gc );
 
-    // if (bDefenseActive)
-    //     DrawDefenseAugmentation(gc);
-
     // draw IFF and accuracy information all the time, return False if target aug is not active
     DrawTargetAugmentation(gc);
 
@@ -313,99 +300,6 @@ function PostDrawWindow(GC gc)
     }
 }
 
-// ----------------------------------------------------------------------
-// DrawDefenseAugmentation()
-// ----------------------------------------------------------------------
-
-function DrawDefenseAugmentation(GC gc)
-{
-    local String str;
-    local float boxCX, boxCY;
-    local float x, y, w, h, mult;
-    local bool bDrawLine;
-
-    // Vanilla Matters
-    // local DeusExWeapon targetWeapon;
-    // local ScriptedPawn sp;
-    // local Vector vX, vY, vZ;
-    local Vector targetLocation;
-
-    if (defenseTarget != None)
-    {
-        bDrawLine = False;
-
-        // Vanilla Matters: Rewrite all the stuff to take into account new target types.
-        bDrawLine = true;
-
-        if ( VM_bDefenseEnoughDistance ) {
-            str = msgADSDetonating;
-        }
-        else {
-            str = msgADSTracking;
-        }
-
-        // sp = ScriptedPawn( defenseTarget );
-
-        // if ( sp != None ) {
-        //  targetWeapon = DeusExWeapon( sp.Weapon );
-
-        //  if ( targetWeapon != None ) {
-        //      targetLocation = defenseTarget.Location - ( ( sp.default.CollisionHeight - sp.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( targetWeapon.FireOffset >> sp.ViewRotation );
-        //  }
-        //  else {
-        //      targetLocation = defenseTarget.Location;
-        //  }
-        // }
-        // else {
-        //  targetLocation = defenseTarget.Location;
-        // }
-
-        targetLocation = defenseTarget.Location;
-
-        // VM: If the player has enough energy to detonation, display range, otherwise, say so.
-        if ( VM_bDefenseEnoughEnergy ) {
-            str = str $ CR() $ msgRange @ Int( VSize( targetLocation - Player.Location ) / 16 ) @ msgRangeUnits;
-
-            if ( !ConvertVectorToCoordinates( targetLocation, boxCX, boxCY ) ) {
-                str = str @ msgBehind;
-            }
-        }
-        else {
-            str = VM_msgADSNotEnoughEnergy;
-        }
-
-        gc.GetTextExtent( 0, w, h, str );
-        x = boxCX - w / 2;
-        y = boxCY - h - 11;
-        gc.SetTextColorRGB( 255, 0, 0 );
-        gc.DrawText( x, y, w, h, str );
-        gc.SetTextColor( colHeaderText );
-
-        if (bDrawLine) {
-            gc.SetTileColorRGB( 255, 0, 0 );
-            Interpolate( gc, width / 2, height / 2, boxCX, boxCY, 64 );
-            gc.SetTileColor( colHeaderText );
-
-            // VM: Draw four corners of the box.
-            // gc.DrawPattern( boxCX - 10, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX - 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX + 5, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX + 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX - 10, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX - 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX + 5, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX + 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
-        }
-    }
-}
-
-// ----------------------------------------------------------------------
-// DrawSpyDroneAugmentation()
-// ----------------------------------------------------------------------
-// Vanilla Matters: Handled in behaviour class.
 
 //-------------------------------------------------------------------------------------------------
 // TopCentralMessage()
@@ -1446,8 +1340,6 @@ defaultproperties
      msgNone="None"
      msgScanning1="* No Target *"
      msgScanning2="* Scanning *"
-     msgADSTracking="* ADS Tracking *"
-     msgADSDetonating="* ADS Detonating *"
      msgBehind="BEHIND"
      msgEnergyLow="BioElectric energy low!"
      msgCantLaunch="ERROR - No room for SpyDrone construction!"
@@ -1493,5 +1385,4 @@ defaultproperties
      VM_nvBrightness=2.500000
      VM_irBrightness=1.500000
      VM_msgUndefined="Undefined"
-     VM_msgADSNotEnoughEnergy="* ADS no energy *"
 }
