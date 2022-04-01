@@ -1305,7 +1305,7 @@ function MaintainEnergy(float deltaTime)
         if (Energy > 0)
         {
             // Vanilla Matters
-            energyUse = TickAllAugmentations( deltaTime );
+            energyUse = TickAllAugmentations( deltaTime ) * ( 1 - GetValue( 'EnergyUseReduction' ) );
 
             Energy -= EnergyUse;
 
