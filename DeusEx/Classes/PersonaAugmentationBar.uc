@@ -168,6 +168,7 @@ function bool AddAug( VMAugmentationInfo aug, int pos ) {
 function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot slot2 ) {
     local int pos1, pos2;
     local VMAugmentationInfo aug1, aug2;
+    local VMPlayer p;
 
     if ( slot1 == slot2 ) {
         return;
@@ -179,17 +180,11 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
     aug1 = slot1.aug;
     aug2 = slot2.aug;
 
-    ClearPosition( pos1 );
-
+    p = VMPlayer( player );
     if ( aug2 != none ) {
-        ClearPosition( pos2 );
+        p.AugmentationHotBar[pos1] = aug2.DefinitionClassName;
     }
-
-    augs[pos2].SetAug( aug1 );
-
-    if ( aug2 != none ) {
-        augs[pos1].SetAug( aug2 );
-    }
+    p.AugmentationHotBar[pos2] = aug1.DefinitionClassName;
 }
 
 // ----------------------------------------------------------------------

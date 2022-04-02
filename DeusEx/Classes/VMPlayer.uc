@@ -239,6 +239,7 @@ function RefreshSubSystems() {
     else {
         VMAugmentationSystem.Refresh( self );
     }
+    RefreshAugmentationDisplay();
 }
 
 function ResetSubSystems() {
@@ -272,6 +273,7 @@ function ResetSubSystems() {
     else {
         VMAugmentationSystem.Reset();
     }
+    RefreshAugmentationDisplay();
 }
 
 //==============================================
@@ -1171,7 +1173,7 @@ exec function ToggleFlashlight() {
 // Actions
 //==============================================
 function DoJump( optional float F ) {
-    if ( ( CarriedDecoration != none  && CarriedDecoration.Mass > 20 )
+    if ( ( CarriedDecoration != none && CarriedDecoration.Mass > 20 )
         || ( bForceDuck || IsLeaning() )
         || Physics != PHYS_Walking
     ) {

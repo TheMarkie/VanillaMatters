@@ -231,8 +231,6 @@ function DeactivateAll() {
         info.Toggle( false );
         info = info.Next;
     }
-
-    Player.ClearAugmentationDisplay();
 }
 
 function bool IsActive( name name ) {
