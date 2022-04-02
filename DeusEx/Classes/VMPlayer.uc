@@ -301,6 +301,43 @@ function VMPlayerTick( float deltaTime ) {
     }
 }
 
+// Override
+function MaintainEnergy( float deltaTime ) {
+    local Float energyUse;
+
+    if ( !IsInState( 'Dying' ) && !IsInState( 'Paralyzed' ) ) {
+        if ( Energy > 0 ) {
+            energyUse = TickAllAugmentations( deltaTime ) * ( 1 - GetValue( 'EnergyUseReduction' ) );
+            Energy -= energyUse;
+
+            AddForwardPressure( energyUse, 'Energy' );
+
+            // Calculate the energy drain due to EMP attacks
+            if ( EnergyDrain > 0 ) {
+                energyUse = EnergyDrainTotal * deltaTime;
+                Energy -= EnergyUse;
+                EnergyDrain -= EnergyUse;
+                if ( EnergyDrain <= 0 ) {
+                    EnergyDrain = 0;
+                    EnergyDrainTotal = 0;
+                }
+
+                AddForwardPressure( energyUse, 'Damage' );
+            }
+
+            if ( Energy <= 0 ) {
+                ClientMessage( EnergyDepleted );
+                Energy = 0;
+                EnergyDrain = 0;
+                EnergyDrainTotal = 0;
+            }
+        }
+        else {
+            DeactivateAllAugmentations();
+        }
+    }
+}
+
 // Vanilla Matters: Update visibility values.
 function UpdateVisibility() {
     local bool adaptiveOn;
@@ -356,27 +393,6 @@ function UpdateChargedPickupStatus() {
         }
 
         item = item.Inventory;
-    }
-}
-
-// Copied from ScriptedPawn to handle burning damage.
-function UpdateFire() {
-    HealthTorso = HealthTorso - 2;
-    HealthArmLeft = HealthArmLeft - 2;
-    HealthArmRight = HealthArmRight - 2;
-    HealthLegLeft = HealthLegLeft - 2;
-    HealthLegRight = HealthLegLeft - 2;
-
-    GenerateTotalHealth();
-
-    burnTimer = burnTimer - 10;
-
-    if ( Health <= 0 || burnTimer <= 0 ) {
-        ExtinguishFire();
-
-        if ( Health <= 0 ) {
-            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
-        }
     }
 }
 
@@ -2057,6 +2073,27 @@ function StartBurning( Pawn burner, float burnDamage ) {
     }
 
     SetTimer( 1.0, true );
+}
+
+// Copied from ScriptedPawn to handle burning damage.
+function UpdateFire() {
+    HealthTorso = HealthTorso - 2;
+    HealthArmLeft = HealthArmLeft - 2;
+    HealthArmRight = HealthArmRight - 2;
+    HealthLegLeft = HealthLegLeft - 2;
+    HealthLegRight = HealthLegLeft - 2;
+
+    GenerateTotalHealth();
+
+    burnTimer = burnTimer - 10;
+
+    if ( Health <= 0 || burnTimer <= 0 ) {
+        ExtinguishFire();
+
+        if ( Health <= 0 ) {
+            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
+        }
+    }
 }
 
 // Override

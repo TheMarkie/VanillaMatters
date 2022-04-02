@@ -1285,77 +1285,7 @@ function UpdateDynamicMusic(float deltaTime)
 
 function MaintainEnergy(float deltaTime)
 {
-    local Float energyUse;
-   local Float energyRegen;
-
-    // make sure we can't continue to go negative if we take damage
-    // after we're already out of energy
-    if (Energy <= 0)
-    {
-        Energy = 0;
-        EnergyDrain = 0;
-        EnergyDrainTotal = 0;
-    }
-
-   energyUse = 0;
-
-    // Don't waste time doing this if the player is dead or paralyzed
-    if ((!IsInState('Dying')) && (!IsInState('Paralyzed')))
-    {
-        if (Energy > 0)
-        {
-            // Vanilla Matters
-            energyUse = TickAllAugmentations( deltaTime ) * ( 1 - GetValue( 'EnergyUseReduction' ) );
-
-            Energy -= EnergyUse;
-
-            // Vanilla Matters: Add in FP rate for energy used.
-            AddForwardPressure( energyUse, 'Energy' );
-
-            // Calculate the energy drain due to EMP attacks
-            if (EnergyDrain > 0)
-            {
-                energyUse = EnergyDrainTotal * deltaTime;
-                Energy -= EnergyUse;
-                EnergyDrain -= EnergyUse;
-                if (EnergyDrain <= 0)
-                {
-                    EnergyDrain = 0;
-                    EnergyDrainTotal = 0;
-                }
-
-                // Vanilla Matters: Adds FP rate for EMP damage received.
-                AddForwardPressure( energyUse, 'Damage' );
-            }
-        }
-
-        //Do check if energy is 0.
-        // If the player's energy drops to zero, deactivate
-        // all augmentations
-        if (Energy <= 0)
-        {
-            //If we were using energy, then tell the client we're out.
-            //Otherwise just make sure things are off.  If energy was
-            //already 0, then energy use will still be 0, so we won't
-            //spam.  DEUS_EX AMSD
-            if (energyUse > 0)
-                ClientMessage(EnergyDepleted);
-            Energy = 0;
-            EnergyDrain = 0;
-            EnergyDrainTotal = 0;
-
-            // Vanilla Matters
-            DeactivateAllAugmentations();
-        }
-
-        // If all augs are off, then start regenerating in multiplayer,
-        // up to 25%.
-        if ((energyUse == 0) && (Energy <= MaxRegenPoint) && (Level.NetMode != NM_Standalone))
-        {
-            energyRegen = RegenRate * deltaTime;
-            Energy += energyRegen;
-        }
-    }
+    // Vanilla Matters: Handled in VMPlayer
 }
 // ----------------------------------------------------------------------
 // RefreshSystems()
