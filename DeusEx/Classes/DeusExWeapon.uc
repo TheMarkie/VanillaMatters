@@ -2583,6 +2583,9 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         if ( bHandToHand ) {
             mult += GetGlobalModifierValue( 'MeleeWeaponDamage' );
         }
+        if ( Other.IsA( 'Robot' ) ) {
+            mult += GetGlobalModifierValue( 'DamageVsRobot' );
+        }
 
         // Determine damage type
         damageType = WeaponDamageType();

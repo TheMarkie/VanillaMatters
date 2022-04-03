@@ -244,6 +244,8 @@ function RefreshMultiplayerKeys()
 
 function Tick(float deltaTime)
 {
+    local float x, y, w, h;
+
     // check for the target ViewportWindow being constructed
     if (bTargetActive && (targetLevel > 2) && (winZoom == None) && (lastTarget != None) && (Player.Level.NetMode == NM_Standalone))
     {
@@ -251,7 +253,14 @@ function Tick(float deltaTime)
         if (winZoom != None)
         {
             winZoom.AskParentForReconfigure();
+            // Vanilla Matters
+            w = FMin( width, height ) / 4;
+            h = w;
+            x = width - w - margin;
+            y = ( height - h ) / 2;
+            winZoom.ConfigureChild( x, y, w, h );
             winZoom.Lower();
+            winZoom.SetFOVAngle( 60 );
         }
     }
 
@@ -673,12 +682,12 @@ function DrawTargetAugmentation(GC gc)
     local DeusExWeapon weapon;
     local bool bUseOldTarget;
     local Color crossColor;
-    local DeusExPlayer own;
     local vector AimLocation;
     local int AimBodyPart;
 
     // Vanilla Matters
     local Crosshair crosshair;
+    local DeusExPlayer targetPlayer;
 
     crosshair = DeusExRootWindow( player.rootWindow ).hud.cross;
 
@@ -754,9 +763,9 @@ function DrawTargetAugmentation(GC gc)
     {
         // Vanilla Matters: Move this here.
         // VM: We're using an unused DXPlayer variable called "own", it does not mean this contains our own player.
-        own = DeusExPlayer( target );
-        if ( own != none && bTargetActive ) {
-            AimBodyPart = own.GetMPHitLocation( AimLocation );
+        targetPlayer = DeusExPlayer( target );
+        if ( targetPlayer != none && bTargetActive ) {
+            AimBodyPart = targetPlayer.GetMPHitLocation( AimLocation );
             if ( AimBodyPart == 1 ) {
                 TargetPlayerLocationString = "(" $ msgHead $ ")";
             }
@@ -821,32 +830,32 @@ function DrawTargetAugmentation(GC gc)
                 // even if we don't have a zoom window
 
                 // Vanilla Matters: Move the window to the right.
-                x = width - ( width / 8 ) - margin;
+                w = FMin( width, height ) / 4;
+                h = w;
+                x = width - ( w / 2 ) - margin;
                 y = height / 2;
-                w = width / 4;
-                h = height / 4;
 
                 DrawDropShadowBox(gc, x-w/2, y-h/2, w, h);
 
-                // Vanilla Matters: Move the window to the right.
-                boxCX = width - ( width / 8 ) - margin;
-                boxCY = height / 2;
-
-                boxTLX = boxCX - width/8;
-                boxTLY = boxCY - height/8;
-                boxBRX = boxCX + width/8;
-                boxBRY = boxCY + height/8;
+                // Vanilla Matters
+                boxCX = x;
+                boxCY = y;
+                boxTLX = boxCX - ( w / 2 );
+                boxTLY = boxCY - ( h / 2 );
+                boxBRX = boxCX;
+                boxBRY = boxCY;
 
                 if (targetLevel > 2)
                 {
                     if (winZoom != None)
                     {
-                        mult = (target.CollisionRadius + target.CollisionHeight);
-                        v1 = Player.Location;
-                        v1.Z += Player.BaseEyeHeight;
-                        v2 = 1.5 * Player.Normal(target.Location - v1);
-                        winZoom.SetViewportLocation(target.Location - mult * v2);
-                        winZoom.SetWatchActor(target);
+                        // Vanilla Matters
+                        mult = target.CollisionRadius + target.CollisionHeight;
+                        v1 = Player.Location - target.Location;
+                        v1.Z += player.BaseEyeHeight;
+                        v2 = Normal( v1 );
+                        winZoom.SetViewportLocation( target.Location + ( mult * 1.5 * v2 ) );
+                        winZoom.SetRotation( Rotator( -v2 ) );
                     }
                     // window construction now happens in Tick()
                 }
