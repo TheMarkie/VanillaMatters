@@ -203,6 +203,10 @@ var() float     VM_MoverDamageMult;             // Damage multiplier against mov
 var() float     VM_HeadshotMult;
 
 var() float     VM_standingBonus;               // Max accuracy bonus for standing still.
+var() float     VM_focusBonus;                  // Max accuracy bonus for standing still even longer.
+var() float     VM_focusTime;
+var() float     VM_focusThreshold;
+var() float     VM_focusTimer;
 
 var private float       VM_recoilForce;
 var private float       VM_recoilRecovery;
@@ -447,6 +451,8 @@ function BringUp()
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
+    // Vanilla Matters
+    VM_focusTimer = 0;
 
     // Vanilla Matters
     VM_readyFire = true;
@@ -464,6 +470,8 @@ function bool PutDown()
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
+    // Vanilla Matters
+    VM_focusTimer = 0;
 
     return Super.PutDown();
 }
@@ -614,16 +622,7 @@ simulated function float CalculateAccuracy() {
 
     // Vanilla Matters: Handle standing bonus differently.
     if ( player != none ) {
-        if ( standingTimer > 0 ) {
-            if ( player.bIsCrouching || player.bForceDuck ) {
-                tempacc = default.VM_standingBonus * 1.25;
-            }
-            else {
-                tempacc = default.VM_standingBonus;
-            }
-
-            accuracy += ( standingTimer / 0.2 ) * tempacc;
-        }
+        accuracy += ProcessAccuracyBonus( player );
 
         if ( VM_spreadPenalty > 0 ) {
             accuracy -= VM_spreadPenalty;
@@ -633,6 +632,30 @@ simulated function float CalculateAccuracy() {
     accuracy = FClamp( accuracy, 0, 1 );
 
     return accuracy;
+}
+
+function float ProcessAccuracyBonus( DeusExPlayer player ) {
+    local float bonus, scaling;
+
+    if ( standingTimer > 0 ) {
+        if ( player.bIsCrouching || player.bForceDuck ) {
+            scaling = default.VM_standingBonus * 1.25;
+        }
+        else {
+            scaling = default.VM_standingBonus;
+        }
+
+        bonus += ( standingTimer / 0.2 ) * scaling;
+    }
+
+    if ( VM_focusTimer >= VM_focusThreshold ) {
+        bonus += ( VM_focusTimer / ( VM_focusThreshold + VM_focusTime ) ) * VM_focusBonus;
+    }
+    else {
+        bonus += ( VM_focusTimer / VM_focusThreshold ) * VM_focusBonus * 0.2;
+    }
+
+    return bonus;
 }
 
 //
@@ -1117,12 +1140,15 @@ simulated function Tick( float deltaTime ) {
     movespeed = VSize( Owner.Velocity );
     if ( movespeed <= 10 ) {
         standingTimer = FMin( standingTimer + deltaTime, 0.2 );
+        VM_focusTimer = FMin( VM_focusTimer + deltaTime, VM_focusThreshold + VM_focusTime );
     }
     else if ( movespeed <= 160 ) {
         standingTimer = FMin( standingTimer + deltaTime, 0.15 );
+        VM_focusTimer = 0;
     }
     else {
         standingTimer = FMax( standingTimer - deltaTime, skillBonus * 0.1 );
+        VM_focusTimer = 0;
     }
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
@@ -2494,6 +2520,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
     if ( !bHandToHand ) {
         VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
         VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        VM_focusTimer = FMax( VM_focusTimer - ( VM_recoilForce * VM_focusThreshold ), 0 );
     }
 
     return proj;
@@ -2564,6 +2591,7 @@ simulated function TraceFire( float accuracy ) {
     if ( !bHandToHand ) {
         VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
         VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        VM_focusTimer = FMax( VM_focusTimer - ( VM_recoilForce * VM_focusThreshold * 2 ), 0 );
     }
 }
 
@@ -3905,6 +3933,9 @@ defaultproperties
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
      VM_standingBonus=0.080000
+     VM_focusBonus=0.150000
+     VM_focusTime=0.500000
+     VM_focusThreshold=2.000000
      VM_modTimerMax=0.200000
      VM_readyFire=True
      VM_handsTexPos(0)=-1
