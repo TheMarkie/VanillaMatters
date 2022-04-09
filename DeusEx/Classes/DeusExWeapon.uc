@@ -2936,7 +2936,7 @@ simulated function bool UpdateInfo(Object winObject)
         mod = ModBaseAccuracy + GetModifierValue( 'Accuracy' );
         if ( mod != 0.0 ) {
             str = str @ BuildPercentString( mod );
-            str = str @ "=" @ Min( ( BaseAccuracy + mod ) * 100, 100 ) $ "%";
+            str = str @ "=" @ FormatFloat( FMin( ( BaseAccuracy + mod ) * 100, 100 ), 0 ) $ "%";
         }
 
         winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
@@ -3095,7 +3095,12 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 simulated final function String BuildPercentString( float value ) {
     local string str;
 
-    str = "(" $ int( value * 100 ) $ "%)";
+    if ( value >= 0 ) {
+        str = "(+" $ FormatFloat( value * 100, 0 ) $ "%)";
+    }
+    else {
+        str = "(-" $ FormatFloat( value * 100, 0 ) $ "%)";
+    }
 
     return str;
 }
