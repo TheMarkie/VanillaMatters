@@ -1184,6 +1184,12 @@ simulated function Tick( float deltaTime ) {
     }
 }
 
+function AddSpreadAndRecoil() {
+    VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+    VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+    VM_focusTimer = FMax( VM_focusTimer - ( ShotTime * VM_focusThreshold * 4 ), 0 );
+}
+
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
     if ( VM_spreadForce > 0 ) {
         VM_spreadPenalty = FMin( VM_spreadPenalty + ( ( deltaTime * VM_spreadStrength * 0.5 ) / ShotTime ), default.VM_spreadStrength * ( 1 - ModStability - skillBonus ) );
@@ -2516,11 +2522,9 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
         }
     }
 
-    // Vanilla Matters: Add recoil force.
+    // Vanilla Matters
     if ( !bHandToHand ) {
-        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_focusTimer = FMax( VM_focusTimer - ( VM_recoilForce * VM_focusThreshold ), 0 );
+        AddSpreadAndRecoil();
     }
 
     return proj;
@@ -2587,11 +2591,9 @@ simulated function TraceFire( float accuracy ) {
 
     // otherwise we don't hit the target at all
 
-    // Vanilla Matters: Add recoil force.
+    // Vanilla Matters
     if ( !bHandToHand ) {
-        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_focusTimer = FMax( VM_focusTimer - ( VM_recoilForce * VM_focusThreshold * 2 ), 0 );
+        AddSpreadAndRecoil();
     }
 }
 
