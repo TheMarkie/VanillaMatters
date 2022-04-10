@@ -1,5 +1,7 @@
 class AugAqualung extends VMAugmentation;
 
+// Vanilla Matters: Replaced by AugMed.
+
 var() array<float> UnderwaterTimeBonus;
 
 static function bool Activate( VMPlayer player, int level ) {
@@ -20,7 +22,7 @@ defaultproperties
      SmallIcon=Texture'DeusExUI.UserInterface.AugIconAquaLung_Small'
      IsPassive=True
      UpgradeName="Aqualung"
-     Description="Soda lime exostructures embedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater.|n|n[TECH ONE]|nLung capacity is extended by 15 seconds.|n|n[TECH TWO]|nLung capacity is extended by 30 seconds.|n|n[TECH THREE]|nLung capacity is extended by 60 seconds.|n|n[TECH FOUR]|nAn agent can stay underwater indefinitely."
+     Description="UNUSED AUGMENTATION, YOU SHOULD NOT SEE THIS!"
      InstallLocation=AugmentationLocationTorso
      UnderwaterTimeBonus=(15,30,60,60000)
 }
