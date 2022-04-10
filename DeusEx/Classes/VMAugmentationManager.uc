@@ -271,9 +271,6 @@ function GetFullDescription( VMAugmentationInfo info, PersonaInfoWindow winInfo 
     // Install Location
     winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ Sprintf( OccupiesLocationLabel, AugmentationLocationLabels[info.GetInstallLocation()] ) );
 
-    // Energy Rate
-    // Vanilla Matters TODO: Add energy rate tooltip back.
-
     // Current Level
     str = Sprintf( CurrentLevelLabel, info.Level + 1 );
 
