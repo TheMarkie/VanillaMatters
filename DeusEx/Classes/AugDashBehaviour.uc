@@ -11,7 +11,6 @@ function bool Activate() {
 
     if ( ( Player.CarriedDecoration != none && Player.CarriedDecoration.Mass > 20 )
         || Player.IsLeaning()
-        || Player.Physics != PHYS_Walking
     ) {
         return false;
     }
