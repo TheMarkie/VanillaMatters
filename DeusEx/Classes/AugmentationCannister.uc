@@ -35,7 +35,7 @@ function PostBeginPlay() {
                     AddAugs[i] = 'AugMed';
                     break;
                 case 'AugHeartLung':
-                    AddAugs[i] = 'AugPerformance';
+                    AddAugs[i] = 'AugEnhance';
                     break;
                 case 'AugPower':
                     AddAugs[i] = 'AugDash';

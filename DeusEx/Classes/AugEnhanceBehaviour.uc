@@ -1,4 +1,4 @@
-class AugPerformanceBehaviour extends VMAugmentationBehaviour;
+class AugEnhanceBehaviour extends VMAugmentationBehaviour;
 
 var() array<int> EnergyThresholds;
 var() float MovementSpeedBonus;
@@ -61,6 +61,6 @@ function ModifySpeedBonus( float amount ) {
 defaultproperties
 {
      EnergyThresholds=(90,80,70)
-     MovementSpeedBonus=1.000000
-     HealAmounts=(0,1,2)
+     MovementSpeedBonus=0.100000
+     HealAmounts=(5,5,5)
 }

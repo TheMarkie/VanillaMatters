@@ -1,6 +1,6 @@
 class AugHeartLung extends VMAugmentation;
 
-// Vanilla Matters: Replaced by AugPerformance.
+// Vanilla Matters: Replaced by AugEnhance.
 
 defaultproperties
 {
