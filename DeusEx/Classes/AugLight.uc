@@ -7,7 +7,7 @@ defaultproperties
      ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
      DeActivateSound=Sound'DeusExSounds.Augmentation.AugDeactivate'
      UpgradeName="Light"
-     Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.|n|nNO UPGRADES"
+     Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.|n|nEnergy Rate: 0.1 per second"
      InstallLocation=AugmentationLocationDefault
      Rates=(0.1)
      BehaviourClassName=AugLightBehaviour
