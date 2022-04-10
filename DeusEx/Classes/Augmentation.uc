@@ -4,19 +4,6 @@
 class Augmentation extends Actor
     intrinsic;
 
-// Vanilla Matters: Import aug icons that have a pinkmask instead of blackmask.
-#exec TEXTURE IMPORT FILE="Textures\AugIconCloak.bmp"       NAME="AugIconCloak"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconCombat.bmp"      NAME="AugIconCombat"    GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconDefense.bmp"     NAME="AugIconDefense"   GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconDrone.bmp"       NAME="AugIconDrone"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconHeal.bmp"        NAME="AugIconHeal"      GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconHeart.bmp"       NAME="AugIconHeart"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconRadar.bmp"       NAME="AugIconRadar"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconRunSilent.bmp"   NAME="AugIconRunSilent" GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconSpeed.bmp"       NAME="AugIconSpeed"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconTarget.bmp"      NAME="AugIconTarget"    GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconVision.bmp"      NAME="AugIconVision"    GROUP="VMUI" MIPS=Off
-
 var() bool bAutomatic;
 var() float EnergyRate;
 var travel int CurrentLevel;
