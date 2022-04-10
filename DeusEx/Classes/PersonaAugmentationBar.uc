@@ -184,6 +184,9 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
     if ( aug2 != none ) {
         p.AugmentationHotBar[pos1] = aug2.DefinitionClassName;
     }
+    else {
+        p.AugmentationHotBar[pos1] = '';
+    }
     p.AugmentationHotBar[pos2] = aug1.DefinitionClassName;
 }
 
