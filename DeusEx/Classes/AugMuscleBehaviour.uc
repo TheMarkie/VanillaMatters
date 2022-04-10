@@ -1,6 +1,5 @@
 class AugMuscleBehaviour extends VMAugmentationBehaviour;
 
-
 var() array<float> LiftStrengthBonus;
 var() array<float> MeleeWeaponDamage;
 var() array<float> MeleeAttackSpeedBonus;
@@ -70,6 +69,6 @@ defaultproperties
      ThrowVelocityBonus=(0.25,0.5,0.75,1)
      InjuryAccuracyPenaltyReduction=(0.1,0.2,0.3,0.4)
      PowerthrowVelocityBoost=(1000,2000,3000,4000)
-     MuscleCost=30
+     MuscleCost=15
      MsgMuscleCost="You don't have enough energy to do a powerthrow"
 }
