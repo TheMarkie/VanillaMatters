@@ -30,6 +30,9 @@ function bool Activate() {
     }
     Player.SetPhysics( PHYS_Falling );
 
+    Player.PlaySound( Sound'DeusExSounds.Weapons.LAWFire', SLOT_Interact, 2, , 400, 0.5 );
+    Player.PlaySound( Sound'DeusExSounds.Weapons.PepperGunSelect', SLOT_Interact, 2, , 400, 0.5 );
+
     cooldownTimer = Cooldown[Info.Level];
     return false;
 }
@@ -52,5 +55,5 @@ defaultproperties
 {
      Distance=800
      Cost=(20,20,15,15)
-     Cooldown=(6,4,2,1)
+     Cooldown=(6,4.5,3,1.5)
 }
