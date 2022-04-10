@@ -7,7 +7,6 @@ var ViewportWindow playerViewport;
 var bool isMinimized;
 
 var() array<int> DroneSpeed;
-// Vanilla Matters TODO: Rebalance duration.
 var() array<float> DroneDuration;
 
 var() float DroneCost;
@@ -164,6 +163,6 @@ function CleanUp() {
 defaultproperties
 {
      DroneSpeed=(100,125,150,200)
-     DroneDuration=(5,10,20,30)
-     DroneCost=30
+     DroneDuration=(20,40,60,80)
+     DroneCost=20
 }
