@@ -8,6 +8,9 @@ var() travel Name AddAugs[2];
 var localized string AugsAvailable;
 var localized string MustBeUsedOn;
 
+// Vanilla Matters
+var travel bool VM_augReplaced;
+
 // ----------------------------------------------------------------------
 // Network Replication
 // ---------------------------------------------------------------------
@@ -17,6 +20,30 @@ replication
     //server to client variables
     reliable if ((Role == ROLE_Authority) && (bNetOwner))
         AddAugs;
+}
+
+// Vanilla Matters
+function PostBeginPlay() {
+    local int i;
+
+    super.PostBeginPlay();
+
+    if ( !VM_augReplaced ) {
+        for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
+            switch ( AddAugs[i] ) {
+                case 'AugAqualung':
+                    AddAugs[i] = 'AugMed';
+                    break;
+                case 'AugHeartLung':
+                    AddAugs[i] = 'AugPerformance';
+                    break;
+                case 'AugPower':
+                    AddAugs[i] = 'AugDash';
+                    break;
+            }
+        }
+        VM_augReplaced = true;
+    }
 }
 
 // ----------------------------------------------------------------------
