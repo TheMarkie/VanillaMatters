@@ -655,6 +655,8 @@ function float ProcessAccuracyBonus( DeusExPlayer player ) {
         bonus += ( VM_focusTimer / VM_focusThreshold ) * VM_focusBonus * 0.2;
     }
 
+    bonus += GetGlobalModifierValue( 'AccuracyBonus' );
+
     return bonus;
 }
 
