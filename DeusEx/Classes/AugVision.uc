@@ -34,7 +34,7 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconVision'
      SmallIcon=Texture'DeusExUI.UserInterface.AugIconVision_Small'
      UpgradeName="Vision Enhancement"
-     Description="By bleaching selected rod photoreceptors and saturating them with metarhodopsin XII, the 'nightvision' present in most nocturnal animals can be duplicated. Subsequent upgrades and modifications add infravision and sonar-resonance imaging that effectively allows an agent to see through walls.|n|n[TECH ONE]|nNightvision.|n|n[TECH TWO]|nInfravision.|n|n[TECH THREE]|nMedium range sonar imaging.|n|n[TECH FOUR]|nLong range sonar imaging."
+     Description="By bleaching selected rod photoreceptors and saturating them with metarhodopsin XII, the 'nightvision' present in most nocturnal animals can be duplicated. Subsequent upgrades and modifications add infravision and sonar-resonance imaging that effectively allows an agent to see through walls.|n|nTECH ONE: Nightvision.|nTECH TWO: Infravision.|nTECH THREE: Medium range sonar imaging.|nTECH FOUR: Long range sonar imaging.|n|nSonar Range: 30 / 60 feet|n|nEnergy Rate: 0.1 / 0.1 / 0.4 / 0.6 per second"
      InstallLocation=AugmentationLocationEye
      Rates=(0.1,0.1,0.4,0.6)
      SonarRange=(0,0,480,960)
