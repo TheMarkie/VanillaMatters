@@ -36,6 +36,6 @@ defaultproperties
      UpgradeName="Vision Enhancement"
      Description="By bleaching selected rod photoreceptors and saturating them with metarhodopsin XII, the 'nightvision' present in most nocturnal animals can be duplicated. Subsequent upgrades and modifications add infravision and sonar-resonance imaging that effectively allows an agent to see through walls.|n|n[TECH ONE]|nNightvision.|n|n[TECH TWO]|nInfravision.|n|n[TECH THREE]|nMedium range sonar imaging.|n|n[TECH FOUR]|nLong range sonar imaging."
      InstallLocation=AugmentationLocationEye
-     Rates=(0.1,0.1,1,2)
+     Rates=(0.1,0.1,0.4,0.6)
      SonarRange=(0,0,480,960)
 }
