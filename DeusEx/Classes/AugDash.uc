@@ -1,9 +1,12 @@
 class AugDash extends VMAugmentation;
 
+#exec TEXTURE IMPORT FILE="Textures\AugIconDash.bmp" NAME="AugIconDash" GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconDash_Small.bmp" NAME="AugIconDash_Small" GROUP="VMUI" MIPS=Off
+
 defaultproperties
 {
-     Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-     SmallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+     Icon=Texture'DeusEx.VMUI.AugIconDash'
+     SmallIcon=Texture'DeusEx.VMUI.AugIconDash_Small'
      UpgradeName="D.A.S.H"
      Description="Displacement Assisted by Supercharged Hypercapacitors utilizes a system of fast-charging, high-output capacitors installed across the agent's back to generate a controlled electromagnetic blast behind the agent, propeling them forward for a short distance.|n|nEnergy Rate: 20 / 20 / 15 / 15 per activation|nCooldown: 6 / 4.5 / 3 / 1.5 seconds"
      InstallLocation=AugmentationLocationTorso
