@@ -35,5 +35,5 @@ defaultproperties
      InstallLocation=AugmentationLocationTorso
      Rates=(0,0,0,0)
      DamageResistance=(0.2,0.4,0.6,0.8)
-     FoodHealingBonus=(2,4,6,8)
+     FoodHealingBonus=(2,4,8,16)
 }
