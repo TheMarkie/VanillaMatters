@@ -61,6 +61,6 @@ defaultproperties
      ThrowVelocityBonus=(0.25,0.5,0.75,1)
      InjuryAccuracyPenaltyReduction=(0.1,0.2,0.3,0.4)
      PowerthrowVelocityBoost=(1000,2000,3000,4000)
-     MuscleCost=15
+     MuscleCost=10
      MsgMuscleCost="You don't have enough energy to do a powerthrow"
 }
