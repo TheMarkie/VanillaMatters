@@ -71,6 +71,6 @@ function SnapToPlayerView() {
 defaultproperties
 {
      EMPResistance=(0.4,0.8,1,1)
-     Damage=(3,6,9,12)
-     Length=160.000000
+     Damage=(3,6,10,15)
+     Length=240.000000
 }
