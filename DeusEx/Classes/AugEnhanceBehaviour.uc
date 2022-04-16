@@ -1,21 +1,18 @@
 class AugEnhanceBehaviour extends VMAugmentationBehaviour;
 
-var() array<int> EnergyThresholds;
+var() array<int> BaseThresholds;
+var() int BonusThreshold;
 var() float MovementSpeedBonus;
-var() array<int> HealAmounts;
+var() float BaseHeal;
+var() array<float> BonusHeals;
 
 var float Timer;
 var float LastSpeedBonus;
 
-function bool Deactivate() {
-    ModifySpeedBonus( 0 );
-    return true;
-}
-
 function float Tick( float deltaTime ) {
-    local int level, energy, i;
+    local int level, energy, threshold;
     local float speedBonus;
-    local int healAmount, healingAmount;
+    local int healAmount, bonusHealAmount;
 
     if ( !Info.IsActive ) {
         return 0;
@@ -29,23 +26,26 @@ function float Tick( float deltaTime ) {
 
     level = Info.Level;
     energy = Player.Energy;
-    if ( energy < EnergyThresholds[level] ) {
+    threshold = BaseThresholds[level];
+    if ( energy < threshold ) {
         if ( LastSpeedBonus > 0 ) {
             ModifySpeedBonus( 0 );
         }
         return super.Tick( deltaTime );
     }
 
-    healAmount = HealAmounts[level];
-    for ( i = level; i >= 0; i-- ) {
-        if ( energy >= EnergyThresholds[i] ) {
-            speedBonus += MovementSpeedBonus;
-            healingAmount += healAmount;
-        }
+    speedBonus = MovementSpeedBonus;
+    healAmount = BaseHeal;
+    bonusHealAmount = BonusHeals[level];
+    threshold += BonusThreshold;
+    while ( energy > threshold ) {
+        speedBonus += MovementSpeedBonus;
+        healAmount += bonusHealAmount;
+        threshold += BonusThreshold;
     }
 
     ModifySpeedBonus( speedBonus );
-    Player.HealPlayer( healingAmount,, true );
+    Player.HealPlayer( healAmount,, true );
 
     return super.Tick( deltaTime );
 }
@@ -60,7 +60,9 @@ function ModifySpeedBonus( float amount ) {
 
 defaultproperties
 {
-     EnergyThresholds=(90,80,70)
+     BaseThresholds=(80,70,60)
+     BonusThreshold=10
      MovementSpeedBonus=0.100000
-     HealAmounts=(5,5,5)
+     BaseHeal=8
+     BonusHeals=(4,6,8)
 }
