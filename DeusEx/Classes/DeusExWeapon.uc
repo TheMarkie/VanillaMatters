@@ -3939,7 +3939,7 @@ defaultproperties
      VM_standingBonus=0.080000
      VM_focusBonus=0.150000
      VM_focusTime=0.500000
-     VM_focusThreshold=2.000000
+     VM_focusThreshold=2.500000
      VM_modTimerMax=0.200000
      VM_readyFire=True
      VM_handsTexPos(0)=-1
