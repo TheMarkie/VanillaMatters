@@ -8,8 +8,8 @@ defaultproperties
      Icon=Texture'DeusEx.VMUI.AugIconEMP'
      SmallIcon=Texture'DeusEx.VMUI.AugIconEMP_Small'
      UpgradeName="EMP Supercapacitor"
-     Description="Nanoscale EMP generators concentrate and direct electromagnetic pulses, allowing the agent to project a damaging short-length electromagnetic beam while also capable of protecting the agent from incoming pulses.|n|nDamage: 15 / 30 / 50 / 75 per second|nRange: 10 feet|nEMP Resistance: 40% / 80% / 100% / 100%|n|nEnergy Rate: 3 / 4 / 5 / 6 per second"
+     Description="Nanoscale EMP generators concentrate and direct electromagnetic pulses, allowing the agent to project a damaging electromagnetic beam while also capable of protecting the agent from incoming pulses.|n|nDamage: 20 / 40 / 80 / 160 per second|nRange: 25 feet|nEMP Resistance: 40% / 80% / 100% / 100%|n|nEnergy Rate: 2 / 4 / 6 / 8 per second"
      InstallLocation=AugmentationLocationSubdermal
-     Rates=(3,4,5,6)
+     Rates=(2,4,6,8)
      BehaviourClassName=AugEMPBehaviour
 }

@@ -52,10 +52,10 @@ function CreateEmitter() {
         emitter.Length = Length;
         emitter.randomAngle = 256;
         emitter.Instigator = Player;
-        emitter.SetBase( Player );
         location = Player.Location;
         location.Z += Player.BaseEyeHeight / 2;
         emitter.SetLocation( location );
+        emitter.SetBase( Player );
     }
 }
 
@@ -64,13 +64,13 @@ function SnapToPlayerView() {
     local Rotator rotation;
 
     rotation = Player.ViewRotation;
-    rotation.Pitch += 800;
+    rotation.Pitch += 400;
     emitter.SetRotation( rotation );
 }
 
 defaultproperties
 {
      EMPResistance=(0.4,0.8,1,1)
-     Damage=(3,6,10,15)
-     Length=240.000000
+     Damage=(4,8,16,32)
+     Length=400.000000
 }
