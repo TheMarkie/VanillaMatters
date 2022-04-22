@@ -112,9 +112,9 @@ function float Tick( float deltaTime ) {
 
 defaultproperties
 {
-     Cost=15
-     Duration=(5,10,10,15)
-     Cooldown=(10,15,15,15)
+     Cost=10
+     Duration=(6,8,10,12)
+     Cooldown=(12,12,12,12)
      ProjectileRadius=640.000000
      WeaponRadius=240.000000
 }
