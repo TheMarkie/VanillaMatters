@@ -63,6 +63,6 @@ defaultproperties
      BaseThresholds=(80,70,60)
      BonusThreshold=10
      MovementSpeedBonus=0.100000
-     BaseHeal=8
-     BonusHeals=(4,6,8)
+     BaseHeal=6
+     BonusHeals=(2,4,6)
 }
