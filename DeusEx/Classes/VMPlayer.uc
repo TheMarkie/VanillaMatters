@@ -1527,10 +1527,6 @@ function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
                     canPickup = false;
                 }
             }
-            else if ( weapon != none ) {
-                ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
-                canPickup = false;
-            }
         }
     }
 

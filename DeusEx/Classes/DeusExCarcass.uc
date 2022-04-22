@@ -402,11 +402,7 @@ function Frob( Actor frobber, Inventory frobWith ) {
 
         ammo = Ammo( item );
         if ( ammo != none ) {
-            if ( !Level.Game.PickupQuery( player, item ) ) {
-                item.SpawnCopy( player );
-            }
-            AddReceivedItem( player, item, ammo.AmmoAmount );
-
+            DeleteInventory( item );
             item.Destroy();
             item = nextItem;
             continue;
