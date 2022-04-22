@@ -48,5 +48,5 @@ defaultproperties
      DamageTypes=(Burned,Flamed,Exploded,Shocked)
      DamageResistance=(0.5,0.6,0.7,0.8)
      EnergyThreshold=50
-     EnergyMultiplier=(4,6,8,10)
+     EnergyMultiplier=(2,4,6,8)
 }
