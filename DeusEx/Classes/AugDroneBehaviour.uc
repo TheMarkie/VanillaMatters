@@ -162,7 +162,7 @@ function CleanUp() {
 
 defaultproperties
 {
-     DroneSpeed=(100,125,150,200)
+     DroneSpeed=(100,150,200,250)
      DroneDuration=(20,40,60,80)
-     DroneCost=20
+     DroneCost=10
 }
