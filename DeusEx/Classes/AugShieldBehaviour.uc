@@ -1,7 +1,7 @@
 class AugShieldBehaviour extends VMAugmentationBehaviour;
 
 var() array<name> DamageTypes;
-var() float DamageResistance;
+var() array<float> DamageResistance;
 var() float EnergyThreshold;
 var() array<float> EnergyMultiplier;
 
@@ -16,6 +16,11 @@ function bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector
     local float energy, mult;
     local int reducedDamage;
 
+    energy = Player.Energy - EnergyThreshold;
+    if ( energy <= 0 ) {
+        return false;
+    }
+
     count = #DamageTypes;
     for ( i = 0; i < count; i++ ) {
         if ( damageType == DamageTypes[i] ) {
@@ -27,14 +32,10 @@ function bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector
         return false;
     }
 
-    energy = Player.Energy - EnergyThreshold;
-    if ( energy <= 0 ) {
-        return false;
-    }
     mult = EnergyMultiplier[Info.Level];
     energy *= mult;
 
-    reducedDamage = damage * DamageResistance;
+    reducedDamage = damage * DamageResistance[Info.Level];
     reducedDamage = Min( reducedDamage, energy );
     Player.Energy = FMax( Player.Energy - ( reducedDamage / mult ), EnergyThreshold );
     damage -= reducedDamage;
@@ -45,7 +46,7 @@ function bool TakeDamage( out int damage, name damageType, Pawn attacker, Vector
 defaultproperties
 {
      DamageTypes=(Burned,Flamed,Exploded,Shocked)
-     DamageResistance=0.6
-     EnergyThreshold=60
-     EnergyMultiplier=(1,2,3,4)
+     DamageResistance=(0.5,0.6,0.7,0.8)
+     EnergyThreshold=50
+     EnergyMultiplier=(4,6,8,10)
 }
