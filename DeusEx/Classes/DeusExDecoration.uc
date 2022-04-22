@@ -494,7 +494,7 @@ function Bump(actor Other)
             if (player != None)
             {
                 // Vanilla Matters
-                augMult = 1 + player.GetAugmentationLevel( 'LiftStrengthBonus' );
+                augMult = 1 + player.GetValue( 'LiftStrengthBonus' );
                 maxPush = maxPush * augMult;
             }
 
