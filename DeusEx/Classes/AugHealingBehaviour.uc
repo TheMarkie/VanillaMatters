@@ -30,5 +30,5 @@ function float Tick( float deltaTime ) {
 defaultproperties
 {
      HealAmount=(10,20,30,40)
-     Costs=(1,2,3,4)
+     Costs=(0.5,1,1.5,2)
 }
