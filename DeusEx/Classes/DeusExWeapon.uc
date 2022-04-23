@@ -410,6 +410,9 @@ function bool HandlePickupQuery(Inventory Item)
     local class<Ammo> defAmmoClass;
     local Ammo defAmmo;
 
+    // Vanilla Matters
+    local int amount;
+
     // make sure that if you pick up a modded weapon that you
     // already have, you get the mods
     W = DeusExWeapon(Item);
@@ -449,32 +452,30 @@ function bool HandlePickupQuery(Inventory Item)
     }
     player = DeusExPlayer(Owner);
 
-    if (Item.Class == Class)
-    {
-      if (!( (Weapon(item).bWeaponStay && (Level.NetMode == NM_Standalone)) && (!Weapon(item).bHeldItem || Weapon(item).bTossedOut)))
-        {
+    // Vanilla Matters
+    if ( item.Class == Class ) {
+        if ( !( ( W.bWeaponStay && Level.NetMode == NM_Standalone ) && ( !W.bHeldItem || W.bTossedOut ) ) ) {
             // Only add ammo of the default type
             // There was an easy way to get 32 20mm shells, buy picking up another assault rifle with 20mm ammo selected
-            if ( AmmoType != None )
-            {
+            if ( AmmoType != none ) {
                 // Add to default ammo only
-                if ( AmmoNames[0] == None )
+                if ( AmmoNames[0] == none ) {
                     defAmmoClass = AmmoName;
-                else
-                    defAmmoClass = AmmoNames[0];
-
-                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
-                // Vanilla Matters
-                defAmmo.AddAmmo( ( FClamp( FRand(), 0.4, 0.6 ) * default.PickUpAmmoCount ) + 1 );
-
-                if ( Level.NetMode != NM_Standalone )
-                {
-                    if (( player != None ) && ( player.InHand != None ))
-                    {
-                        if ( DeusExWeapon(item).class == DeusExWeapon(player.InHand).class )
-                            ReadyToFire();
-                    }
                 }
+                else {
+                    defAmmoClass = AmmoNames[0];
+                }
+
+                if ( W.PickupAmmoCount > 0 ) {
+                    amount = W.PickupAmmoCount;
+                }
+                else {
+                    amount = ( FClamp( FRand(), 0.4, 0.6 ) * W.default.PickUpAmmoCount ) + 1;
+                }
+
+                defAmmo = Ammo( player.FindInventoryType( defAmmoClass ) );
+                defAmmo.AddAmmo( amount );
+                player.ClientMessage( defAmmo.PickupMessage @ amount @ "of" @ defAmmo.ItemName, 'Pickup' );
             }
         }
     }

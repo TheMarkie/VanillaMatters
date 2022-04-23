@@ -378,9 +378,9 @@ function Frob( Actor frobber, Inventory frobWith ) {
     local Vector loc;
     local VMPlayer player;
     local Inventory item, nextItem;
-    local Ammo ammo;
     local NanoKey key;
     local Credits credits;
+    local bool foundSomething;
 
     if ( bQueuedDestroy ) {
         return;
@@ -400,8 +400,7 @@ function Frob( Actor frobber, Inventory frobWith ) {
         nextItem = item.Inventory;
         DeleteInventory( item );
 
-        ammo = Ammo( item );
-        if ( ammo != none ) {
+        if ( item.IsA( 'Ammo' ) ) {
             DeleteInventory( item );
             item.Destroy();
             item = nextItem;
@@ -412,6 +411,7 @@ function Frob( Actor frobber, Inventory frobWith ) {
         if ( key != none ) {
             player.PickupNanoKey( key );
             AddReceivedItem( player, item, 1 );
+            foundSomething = true;
 
             item.Destroy();
             item = nextItem;
@@ -423,6 +423,7 @@ function Frob( Actor frobber, Inventory frobWith ) {
             player.Credits += credits.numCredits;
             AddReceivedItem( player, item, credits.numCredits );
             player.ClientMessage( Sprintf( credits.msgCreditsAdded, credits.numCredits ) );
+            foundSomething = true;
 
             item.Destroy();
             item = nextItem;
@@ -435,6 +436,7 @@ function Frob( Actor frobber, Inventory frobWith ) {
                 item.SpawnCopy( player );
                 AddReceivedItem( player, item, 1 );
                 player.ClientMessage( item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup' );
+                foundSomething = true;
 
                 item = nextItem;
                 continue;
@@ -463,6 +465,9 @@ function Frob( Actor frobber, Inventory frobWith ) {
     }
     else {
         if ( !VM_bSearchedOnce ) {
+            if ( !foundSomething ) {
+                player.ClientMessage( msgEmpty );
+            }
             VM_bSearchedOnce = true;
         }
         else {
