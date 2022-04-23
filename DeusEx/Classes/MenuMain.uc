@@ -31,14 +31,10 @@ event InitWindow()
 
 function UpdateButtonStatus()
 {
-    local DeusExLevelInfo info;
-
     // Vanilla Matters
     local bool shouldSave, isInMainMenu;
 
-    info = player.GetLevelInfo();
-
-    isInMainMenu = player.IsInMainMenu( info );
+    isInMainMenu = player.IsInMainMenu();
     shouldSave = !isInMainMenu && player.dataLinkPlay == none && player.HasFullForwardPressure();
 
     // Disable the "Save Game" and "Back to Game" menu choices

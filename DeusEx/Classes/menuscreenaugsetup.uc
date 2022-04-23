@@ -76,52 +76,52 @@ function CreateAugChosenHeader()
 
 function CreateAugButtons()
 {
-   local int iButtonIndex;
-   local MenuUIChoiceButton CurButton;
-   local bool bShiftRight;
-   local AugmentationManager AugSys;
-   local Augmentation CurAug;
+   // Vanilla Matters MPTODO: Restore functionality.
 
-   AugSys = Player.AugmentationSystem;
+   // local int iButtonIndex;
+   // local MenuUIChoiceButton CurButton;
+   // local bool bShiftRight;
+   // local AugmentationManager AugSys;
+   // local Augmentation CurAug;
 
-   if (AugSys == None)
-      return;
+   // if (AugSys == None)
+   //    return;
 
-   for (CurAug = AugSys.FirstAug; CurAug != None; CurAug = CurAug.Next)
-   {
-      if ((CurAug.MPConflictSlot < 1) || (CurAug.MPConflictSlot >=10))
-         continue;
-      iButtonIndex = (CurAug.mpConflictSlot-1) * 2;
-      bShiftRight = btnAugChoice[iButtonIndex] != None;
-      if (bShiftRight)
-         iButtonIndex++;
+   // for (CurAug = AugSys.FirstAug; CurAug != None; CurAug = CurAug.Next)
+   // {
+   //    if ((CurAug.MPConflictSlot < 1) || (CurAug.MPConflictSlot >=10))
+   //       continue;
+   //    iButtonIndex = (CurAug.mpConflictSlot-1) * 2;
+   //    bShiftRight = btnAugChoice[iButtonIndex] != None;
+   //    if (bShiftRight)
+   //       iButtonIndex++;
 
-      if (btnAugChoice[iButtonIndex] == None)
-      {
-         btnAugChoice[iButtonIndex] = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
-         btnaugChoice[iButtonIndex].SetButtonText(curAug.augmentationName);
-         if (iButtonIndex < 16)
-         {
-            if (!bShiftRight)
-            {
-               btnAugChoice[iButtonIndex].SetPos(6, 4 + 23 * CurAug.mpConflictSlot);
-            }
-            else
-            {
-               btnAugChoice[iButtonIndex].SetPos(172, 4 + 23 * CurAug.mpConflictSlot);
-            }
-         }
-         else // Last button is aqualung, centered
-         {
-            btnAugChoice[iButtonIndex].SetPos(92, 4 + 23 * CurAug.mpConflictSlot);
-         }
-         btnAugChoice[iButtonIndex].SetWidth(163);
-         btnAugChoice[iButtonIndex].SetHelpText(curAug.MPInfo);
-         btnAugChoice[iButtonIndex].fontButtonText = font'FontMenuSmall';
+   //    if (btnAugChoice[iButtonIndex] == None)
+   //    {
+   //       btnAugChoice[iButtonIndex] = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
+   //       btnaugChoice[iButtonIndex].SetButtonText(curAug.augmentationName);
+   //       if (iButtonIndex < 16)
+   //       {
+   //          if (!bShiftRight)
+   //          {
+   //             btnAugChoice[iButtonIndex].SetPos(6, 4 + 23 * CurAug.mpConflictSlot);
+   //          }
+   //          else
+   //          {
+   //             btnAugChoice[iButtonIndex].SetPos(172, 4 + 23 * CurAug.mpConflictSlot);
+   //          }
+   //       }
+   //       else // Last button is aqualung, centered
+   //       {
+   //          btnAugChoice[iButtonIndex].SetPos(92, 4 + 23 * CurAug.mpConflictSlot);
+   //       }
+   //       btnAugChoice[iButtonIndex].SetWidth(163);
+   //       btnAugChoice[iButtonIndex].SetHelpText(curAug.MPInfo);
+   //       btnAugChoice[iButtonIndex].fontButtonText = font'FontMenuSmall';
 
-         ChoiceNames[iButtonIndex] = String(CurAug.Class.Name);
-      }
-   }
+   //       ChoiceNames[iButtonIndex] = String(CurAug.Class.Name);
+   //    }
+   // }
 }
 
 // ----------------------------------------------------------------------
@@ -489,25 +489,27 @@ function ShiftAugmentation(int dir)
 
 function SaveSettings()
 {
-   local int AugIndex;
-   local Augmentation CurAug;
+   // Vanilla Matters MPTODO: Restore functionality.
 
-   Super.SaveSettings();
+   // local int AugIndex;
+   // local Augmentation CurAug;
 
-   // Clear player augprefs, copy Chosen augs over
-   for (AugIndex = 0; AugIndex < ArrayCount(player.AugPrefs); AugIndex++)
-   {
-      player.AugPrefs[AugIndex] = '';
-   }
+   // Super.SaveSettings();
 
-   for (AugIndex = 0; ((AugIndex < ArrayCount(ChosenAugs)) && (AugIndex < ArrayCount(player.AugPrefs))); AugIndex++)
-   {
-      CurAug = GetAugFromStringName(ChosenAugs[AugIndex]);
-      if (CurAug != None)
-         player.AugPrefs[AugIndex] = CurAug.Class.Name;
-   }
+   // // Clear player augprefs, copy Chosen augs over
+   // for (AugIndex = 0; AugIndex < ArrayCount(player.AugPrefs); AugIndex++)
+   // {
+   //    player.AugPrefs[AugIndex] = '';
+   // }
 
-   player.SaveConfig();
+   // for (AugIndex = 0; ((AugIndex < ArrayCount(ChosenAugs)) && (AugIndex < ArrayCount(player.AugPrefs))); AugIndex++)
+   // {
+   //    CurAug = GetAugFromStringName(ChosenAugs[AugIndex]);
+   //    if (CurAug != None)
+   //       player.AugPrefs[AugIndex] = CurAug.Class.Name;
+   // }
+
+   // player.SaveConfig();
 }
 
 // ----------------------------------------------------------------------
@@ -536,40 +538,35 @@ function ResetToDefaults()
 
 function string AugFamiliarName(string AugStringName)
 {
-    local Augmentation anAug;
+   // Vanilla Matters MPTODO: Restore functionality.
 
-   if (AugStringName == "")
-      return "";
-   else
-   {
-        anAug = GetAugFromStringName(AugStringName);
-      if (anAug == None)
-         return "";
-      else
-         return anAug.default.AugmentationName;
-   }
+//     local Augmentation anAug;
+
+//    if (AugStringName == "")
+//       return "";
+//    else
+//    {
+//         anAug = GetAugFromStringName(AugStringName);
+//       if (anAug == None)
+//          return "";
+//       else
+//          return anAug.default.AugmentationName;
+//    }
 }
 
 // ----------------------------------------------------------------------
 // GetAugFromStringName()
 // ----------------------------------------------------------------------
+// Vanilla Matters MPTODO: Restore functionality.
+// function Augmentation GetAugFromStringName(string AugStringName)
+// {
+//    local Augmentation anAug;
 
-function Augmentation GetAugFromStringName(string AugStringName)
-{
-   local Augmentation anAug;
+//    if (AugStringName == "")
+//       return None;
 
-   if (AugStringName == "")
-      return None;
-
-   anAug = player.AugmentationSystem.FirstAug;
-   while (anAug != None)
-   {
-      if (AugStringName == string(anAug.Class.Name))
-         break;
-      anAug = anAug.next;
-   }
-   return anAug;
-}
+//    return anAug;
+// }
 
 // ----------------------------------------------------------------------
 // FindAugInChosenList()

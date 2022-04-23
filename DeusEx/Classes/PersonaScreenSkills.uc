@@ -305,7 +305,7 @@ function UpgradeSkill()
         return;
 
     // Vanilla Matters
-    if ( player.IncreaseSkillLevel( selectedSkill ) ) {
+    if ( player.IncreaseSkillLevel( selectedSkill.DefinitionClassName ) ) {
         selectedSkillButton.RefreshSkillInfo();
         winSkillPoints.SetText( player.SkillPointsAvail );
     }
@@ -357,7 +357,7 @@ function RefreshWindow(float DeltaTime)
 // Vanilla Matters: Update description window
 function UpdateInfo( VMSkillInfo info ) {
     winInfo.Clear();
-    winInfo.SetTitle( info.GetSkillName() );
+    winInfo.SetTitle( info.GetName() );
     winInfo.SetText( info.GetDescription() );
 }
 

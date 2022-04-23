@@ -4,19 +4,6 @@
 class Augmentation extends Actor
     intrinsic;
 
-// Vanilla Matters: Import aug icons that have a pinkmask instead of blackmask.
-#exec TEXTURE IMPORT FILE="Textures\AugIconCloak.bmp"       NAME="AugIconCloak"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconCombat.bmp"      NAME="AugIconCombat"    GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconDefense.bmp"     NAME="AugIconDefense"   GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconDrone.bmp"       NAME="AugIconDrone"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconHeal.bmp"        NAME="AugIconHeal"      GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconHeart.bmp"       NAME="AugIconHeart"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconRadar.bmp"       NAME="AugIconRadar"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconRunSilent.bmp"   NAME="AugIconRunSilent" GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconSpeed.bmp"       NAME="AugIconSpeed"     GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconTarget.bmp"      NAME="AugIconTarget"    GROUP="VMUI" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\AugIconVision.bmp"      NAME="AugIconVision"    GROUP="VMUI" MIPS=Off
-
 var() bool bAutomatic;
 var() float EnergyRate;
 var travel int CurrentLevel;
@@ -131,38 +118,7 @@ auto state Inactive
 
 function Activate()
 {
-    // can't do anything if we don't have it
-    if (!bHasIt)
-        return;
-
-    if (IsInState('Inactive'))
-    {
-        // this block needs to be before bIsActive is set to True, otherwise
-        // NumAugsActive counts incorrectly and the sound won't work
-        Player.PlaySound(ActivateSound, SLOT_None);
-        if (Player.AugmentationSystem.NumAugsActive() == 0)
-            Player.AmbientSound = LoopSound;
-
-        bIsActive = True;
-
-        Player.ClientMessage(Sprintf(AugActivated, AugmentationName));
-
-        if (Player.bHUDShowAllAugs)
-            Player.UpdateAugmentationDisplayStatus(Self);
-        else
-            Player.AddAugmentationDisplay(Self);
-
-        GotoState('Active');
-    }
-}
-
-// Vanilla Matters: Pretend to activate the aug on the HUD.
-function FakeActivate() {
-    Player.PlaySound( ActivateSound, SLOT_None );
-
-    Player.ClientMessage( Sprintf( AugActivated, AugmentationName ) );
-
-    Player.AddAugmentationDisplay( self );
+    // Vanilla Matters: Unused.
 }
 
 // ----------------------------------------------------------------------
@@ -171,41 +127,7 @@ function FakeActivate() {
 
 function Deactivate()
 {
-    // can't do anything if we don't have it
-    if (!bHasIt)
-        return;
-
-    // If the 'bAlwaysActive' flag is set, this aug can't be
-    // deactivated
-    if (bAlwaysActive)
-        return;
-
-    if (IsInState('Active'))
-    {
-        bIsActive = False;
-
-        Player.ClientMessage(Sprintf(AugDeactivated, AugmentationName));
-
-        if (Player.bHUDShowAllAugs)
-            Player.UpdateAugmentationDisplayStatus(Self);
-        else
-            Player.RemoveAugmentationDisplay(Self);
-
-        if (Player.AugmentationSystem.NumAugsActive() == 0)
-            Player.AmbientSound = None;
-
-        Player.PlaySound(DeactivateSound, SLOT_None);
-        GotoState('Inactive');
-    }
-}
-
-// Vanilla Matters: Pretend to deactivate the aug on the HUD.
-function FakeDeactivate() {
-    Player.ClientMessage( Sprintf( AugDeactivated, AugmentationName ) );
-
-    Player.RemoveAugmentationDisplay( self );
-
-    Player.PlaySound( DeactivateSound, SLOT_None );
+    // Vanilla Matters: Unused.
 }
 
 // ----------------------------------------------------------------------
@@ -406,7 +328,7 @@ defaultproperties
      IconWidth=52
      IconHeight=52
      HotKeyNum=-1
-     EnergyRateLabel="Energy Rate: %d Units/Minute"
+     EnergyRateLabel="Energy Rate: %s Units/Minute"
      OccupiesSlotLabel="Occupies Slot: %s"
      AugLocsText(0)="Cranial"
      AugLocsText(1)="Eyes"
@@ -419,11 +341,11 @@ defaultproperties
      AugDeactivated="%s deactivated"
      MPInfo="DEFAULT AUG MP INFO - REPORT THIS AS A BUG"
      AugAlreadyHave="You already have the %s at the maximum level"
-     AugNowHave="%s upgraded to level %d"
-     AugNowHaveAtLevel="Augmentation %s at level %d"
+     AugNowHave="%s upgraded to level %s"
+     AugNowHaveAtLevel="Augmentation %s at level %s"
      AlwaysActiveLabel="[Always Active]"
      CanUpgradeLabel="(Can Upgrade)"
-     CurrentLevelLabel="Current Level: %d"
+     CurrentLevelLabel="Current Level: %s"
      MaximumLabel="(Maximum)"
      ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
      DeActivateSound=Sound'DeusExSounds.Augmentation.AugDeactivate'

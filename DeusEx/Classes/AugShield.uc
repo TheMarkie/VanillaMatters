@@ -1,20 +1,12 @@
-//=============================================================================
-// AugShield.
-//=============================================================================
-class AugShield extends Augmentation;
+class AugShield extends VMAugmentation;
 
 defaultproperties
 {
      Icon=Texture'DeusExUI.UserInterface.AugIconShield'
-     smallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
-     bAlwaysActive=True
-     AugmentationName="Energy Shield"
-     Description="Polyaniline capacitors below the skin absorb heat and electricity, reducing the damage received from flame, electrical, emp and plasma attacks.|n|n[TECH ONE]|nDamage from energy attacks is reduced by 20%.|n|n[TECH TWO]|nDamage from energy attacks is reduced by 40%.|n|n[TECH THREE]|nDamage from energy attacks is reduced by 60%.|n|n[TECH FOUR]|nAn agent is nearly invulnerable energy attacks. Damage from energy attacks is reduced by 80%."
-     MPInfo="When active, you only take 40% damage from flame and plasma attacks.  Energy Drain: None"
-     LevelValues(0)=0.800000
-     LevelValues(1)=0.600000
-     LevelValues(2)=0.400000
-     LevelValues(3)=0.200000
-     AugmentationLocation=LOC_Subdermal
-     MPConflictSlot=1
+     SmallIcon=Texture'DeusExUI.UserInterface.AugIconShield_Small'
+     UpgradeName="Energy Shield"
+     Description="Polyaniline capacitors below the skin absorb heat and electricity, reducing the damage received from flame, electrical, emp and plasma attacks.|n|nOnly active when energy is above 50%.|nConsume energy per damage reduced.|n|nDamage Resistance: 50% / 60% / 70% / 80%|nDamage Reduced Per Energy: 2 / 4 / 6 / 8"
+     InstallLocation=AugmentationLocationSubdermal
+     Rates=(0,0,0,0)
+     BehaviourClassName=AugShieldBehaviour
 }

@@ -281,7 +281,7 @@ defaultproperties
      ButtonLabelClose="|&Close"
      BalanceLabel="Current Balance:"
      WithdrawAmountLabel="Amount to Withdraw:"
-     InstructionText="Account #: %d|nPlease enter the amount of|ncredits you wish to withdraw."
+     InstructionText="Account #: %s|nPlease enter the amount of|ncredits you wish to withdraw."
      InvalidAmountLabel="INVALID AMOUNT ENTERED"
      InsufficientCreditsLabel="INSUFFICIENT CREDITS"
      CreditsWithdrawnLabel="CREDITS WITHDRAWN"

@@ -1,91 +1,54 @@
-class VMSkillInfo extends Object;
-
-var travel name SkillClassName;
-var travel int Level;
+class VMSkillInfo extends VMUpgradeInfo;
 
 var travel VMSkillInfo Next;
 
-var private transient class<VMSkill> _skillClass;
-function class<VMSkill> GetSkillClass() {
-    if ( _skillClass == none ) {
-        _skillClass = class<VMSkill>( DynamicLoadObject( "DeusEx." $ string( SkillClassName ), class'Class' ) );
-    }
+var transient class<VMSkill> Definition;
 
-    return _skillClass;
+function LoadDefinition() {
+    if ( Definition == none ) {
+        Definition = class<VMSkill>( DynamicLoadObject( string( DefinitionPackageName ) $ "." $ string( DefinitionClassName ), class'Class' ) );
+    }
 }
 
 //==============================================
 // General info
 //==============================================
-function string GetSkillName() {
-    return GetSkillClass().default.SkillName;
+function string GetName() {
+    return Definition.default.UpgradeName;
 }
 function string GetDescription() {
-    return GetSkillClass().default.Description;
+    return Definition.default.Description;
 }
-function Texture GetSkillIcon() {
-    return GetSkillClass().default.SkillIcon;
+function Texture GetIcon() {
+    return Definition.default.Icon;
 }
 
 function int GetMaxLevel() {
-    return GetSkillClass().static.GetMaxLevel();
+    return Definition.static.GetMaxLevel();
 }
-
 function int GetNextLevelCost() {
-    if ( Level < GetMaxLevel() ) {
-        return GetSkillClass().default.Costs[Level];
+    if ( Level < Definition.static.GetMaxLevel() ) {
+        return Definition.default.Costs[Level];
     }
     else {
         return -1;
     }
 }
-
-function bool CanUpgrade( int amount ) {
-    if ( Level < GetMaxLevel() && amount >= GetNextLevelCost() ) {
-        return true;
-    }
-    else {
-        return false;
-    }
+function bool CanUpgrade( optional int amount ) {
+    return ( Level < Definition.static.GetMaxLevel() && amount >= Definition.default.Costs[Level] );
 }
 
 //==============================================
 // Management
 //==============================================
-function RefreshValues( TableFloat table ) {
-    GetSkillClass().static.UpdateValues( table, -1, Level );
+function RefreshValues( VMPlayer player ) {
+    LoadDefinition();
+
+    Definition.static.UpdateValues( player, -1, Level );
 }
 
-function bool IncreaseLevel( optional TableFloat table ) {
-    if ( Level < GetMaxLevel() ) {
-        GetSkillClass().static.UpdateValues( table, Level, Level + 1 );
-        Level += 1;
-
-        return true;
-    }
-
-    return false;
-}
-
-function bool DecreaseLevel( optional TableFloat table ) {
-    if ( Level > 0 ) {
-        GetSkillClass().static.UpdateValues( table, Level, Level - 1 );
-        Level -= 1;
-
-        return true;
-    }
-
-    return false;
-}
-
-function IncreaseToMax( optional TableFloat table ) {
-    local int maxLevel;
-
-    maxLevel = GetMaxLevel();
-    if ( Level < maxLevel ) {
-        GetSkillClass().static.UpdateValues( table, Level, maxLevel );
-        Level = maxLevel;
-    }
+function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
+    Definition.static.UpdateValues( player, oldLevel, newLevel );
 }
 
 defaultproperties

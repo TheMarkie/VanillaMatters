@@ -53,7 +53,6 @@ var bool                bReadyToFire;           // true if our bullets are loade
 var() int               LowAmmoWaterMark;       // critical low ammo count
 var travel int          ClipCount;              // number of bullets remaining in current clip
 
-var() class<Skill>      GoverningSkill;         // skill that affects this weapon
 var() travel float      NoiseLevel;             // amount of noise that weapon makes when fired
 var() EEnemyEffective   EnemyEffective;         // type of enemies that weapon is effective against
 var() EEnviroEffective  EnviroEffective;        // type of environment that weapon is effective in
@@ -185,8 +184,6 @@ var localized String msgInfoYes;
 var localized String msgInfoNo;
 var localized String msgInfoAuto;
 var localized String msgInfoSingle;
-var localized String msgInfoRounds;
-var localized String msgInfoRoundsPerSec;
 var localized String msgInfoSkill;
 var localized String msgInfoWeaponStats;
 
@@ -206,6 +203,10 @@ var() float     VM_MoverDamageMult;             // Damage multiplier against mov
 var() float     VM_HeadshotMult;
 
 var() float     VM_standingBonus;               // Max accuracy bonus for standing still.
+var() float     VM_focusBonus;                  // Max accuracy bonus for standing still even longer.
+var() float     VM_focusTime;
+var() float     VM_focusThreshold;
+var() float     VM_focusTimer;
 
 var private float       VM_recoilForce;
 var private float       VM_recoilRecovery;
@@ -232,8 +233,10 @@ var localized string VM_msgInfoStun;                // Label for stunning weapon
 var localized String VM_msgInfoHeadshot;            // Label the headshot multipler section.
 var localized string VM_msgInfoStability;
 var localized string VM_msgInfoDefault;
+var localized string VM_msgInfoRPM;
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
+var localized string VM_msgFromWeapon;
 
 //
 // network replication
@@ -407,6 +410,9 @@ function bool HandlePickupQuery(Inventory Item)
     local class<Ammo> defAmmoClass;
     local Ammo defAmmo;
 
+    // Vanilla Matters
+    local int amount;
+
     // make sure that if you pick up a modded weapon that you
     // already have, you get the mods
     W = DeusExWeapon(Item);
@@ -446,31 +452,30 @@ function bool HandlePickupQuery(Inventory Item)
     }
     player = DeusExPlayer(Owner);
 
-    if (Item.Class == Class)
-    {
-      if (!( (Weapon(item).bWeaponStay && (Level.NetMode == NM_Standalone)) && (!Weapon(item).bHeldItem || Weapon(item).bTossedOut)))
-        {
+    // Vanilla Matters
+    if ( item.Class == Class ) {
+        if ( !( ( W.bWeaponStay && Level.NetMode == NM_Standalone ) && ( !W.bHeldItem || W.bTossedOut ) ) ) {
             // Only add ammo of the default type
             // There was an easy way to get 32 20mm shells, buy picking up another assault rifle with 20mm ammo selected
-            if ( AmmoType != None )
-            {
+            if ( AmmoType != none ) {
                 // Add to default ammo only
-                if ( AmmoNames[0] == None )
+                if ( AmmoNames[0] == none ) {
                     defAmmoClass = AmmoName;
-                else
-                    defAmmoClass = AmmoNames[0];
-
-                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
-                defAmmo.AddAmmo( Weapon(Item).PickupAmmoCount );
-
-                if ( Level.NetMode != NM_Standalone )
-                {
-                    if (( player != None ) && ( player.InHand != None ))
-                    {
-                        if ( DeusExWeapon(item).class == DeusExWeapon(player.InHand).class )
-                            ReadyToFire();
-                    }
                 }
+                else {
+                    defAmmoClass = AmmoNames[0];
+                }
+
+                if ( W.PickupAmmoCount > 0 ) {
+                    amount = W.PickupAmmoCount;
+                }
+                else {
+                    amount = ( FClamp( FRand(), 0.4, 0.6 ) * W.default.PickUpAmmoCount ) + 1;
+                }
+
+                defAmmo = Ammo( player.FindInventoryType( defAmmoClass ) );
+                defAmmo.AddAmmo( amount );
+                player.ClientMessage( defAmmo.PickupMessage @ amount @ "of" @ defAmmo.ItemName, 'Pickup' );
             }
         }
     }
@@ -495,6 +500,8 @@ function BringUp()
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
+    // Vanilla Matters
+    VM_focusTimer = 0;
 
     // Vanilla Matters
     VM_readyFire = true;
@@ -512,6 +519,8 @@ function bool PutDown()
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
+    // Vanilla Matters
+    VM_focusTimer = 0;
 
     return Super.PutDown();
 }
@@ -524,21 +533,18 @@ function ReloadAmmo( optional bool bForce ) {
 
     if ( ReloadCount == 0 ) {
         p.ClientMessage( msgCannotBeReloaded );
-
         return;
     }
 
     // Vanilla Matters: Fix the bug where player can reload with a full clip. Also the exploit where triggering a reload animation can quicken equip animation.
     if ( !bForce && ClipCount <= 0 ) {
         p.ClientMessage( VM_msgFullClip );
-
         return;
     }
 
     // Vanilla Matters: Fix the bug where player can reload with no ammo left in storage.
     if ( !bForce && ( AmmoType.AmmoAmount - ( ReloadCount - ClipCount ) ) <= 0 ) {
         p.ClientMessage( VM_msgNoAmmo );
-
         return;
     }
 
@@ -548,41 +554,27 @@ function ReloadAmmo( optional bool bForce ) {
     }
 }
 
-// Vanilla Matters: Rewrite to get only skill value.
-function float GetSkillValue( string category ) {
+// Vanilla Matters
+function float GetModifierValue( name category ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return player.GetSkillValue( GetStringClassName() $ category );
+        return player.GetCategoryValue( category, Class.Name );
     }
 
     return 0;
 }
-
-function float GetGlobalSkillValue( string category ) {
+function float GetGlobalModifierValue( name category ) {
     local DeusExPlayer player;
 
     player = DeusExPlayer( Owner );
     if ( player != None ) {
-        return player.GetSkillValue( category );
+        return player.GetValue( category );
     }
 
     return 0;
 }
-
-// Vanilla Matters: Get aug value.
-function float GetAugValue( class<Augmentation> class ) {
-    local DeusExPlayer player;
-
-    player = DeusExPlayer( Owner );
-    if ( player != None ) {
-        return FMax( player.GetAugValue( class ), 0 );
-    }
-
-    return 0;
-}
-
 
 // calculate the accuracy for this weapon and the owner's damage
 // Vanilla Matters: Rewrite because why not.
@@ -600,7 +592,7 @@ simulated function float CalculateAccuracy() {
     }
 
     accuracy = BaseAccuracy;        // start with the weapon's base accuracy
-    weapskill = GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+    weapskill = GetModifierValue( 'Accuracy' );
 
     // Vanilla Matters: Handle accuracy mod bonus here.
     accuracy = accuracy + ModBaseAccuracy;
@@ -641,9 +633,6 @@ simulated function float CalculateAccuracy() {
             accuracy += 0.2;
         }
     }
-    else {
-        checkit = false;
-    }
 
     // Disabled accuracy mods based on health in multiplayer
     if ( Level.NetMode != NM_Standalone ) {
@@ -669,13 +658,7 @@ simulated function float CalculateAccuracy() {
         // VM: AugMuscle helps with arm penalties.
         div = 1;
         if ( player != none ) {
-            div = player.AugmentationSystem.GetClassLevel( class'AugMuscle' );
-            if ( div == -1 ) {
-                div = 1;
-            }
-            else {
-                div = 1 - ( div * 0.1 );
-            }
+            div = FMax( 1 - player.GetValue( 'InjuryAccuracyPenaltyReduction' ), 0 );
         }
 
         accuracy -= ( 1 - FMax( float( HealthArmRight ) / BestArmRight, 0 ) ) * 0.2 * div;
@@ -688,16 +671,7 @@ simulated function float CalculateAccuracy() {
 
     // Vanilla Matters: Handle standing bonus differently.
     if ( player != none ) {
-        if ( standingTimer > 0 ) {
-            if ( player.bIsCrouching || player.bForceDuck ) {
-                tempacc = default.VM_standingBonus * 1.25;
-            }
-            else {
-                tempacc = default.VM_standingBonus;
-            }
-
-            accuracy += ( standingTimer / 0.2 ) * tempacc;
-        }
+        accuracy += ProcessAccuracyBonus( player );
 
         if ( VM_spreadPenalty > 0 ) {
             accuracy -= VM_spreadPenalty;
@@ -707,6 +681,32 @@ simulated function float CalculateAccuracy() {
     accuracy = FClamp( accuracy, 0, 1 );
 
     return accuracy;
+}
+
+function float ProcessAccuracyBonus( DeusExPlayer player ) {
+    local float bonus, scaling;
+
+    if ( standingTimer > 0 ) {
+        if ( player.bIsCrouching || player.bForceDuck ) {
+            scaling = default.VM_standingBonus * 1.25;
+        }
+        else {
+            scaling = default.VM_standingBonus;
+        }
+
+        bonus += ( standingTimer / 0.2 ) * scaling;
+    }
+
+    if ( VM_focusTimer >= VM_focusThreshold ) {
+        bonus += ( VM_focusTimer / ( VM_focusThreshold + VM_focusTime ) ) * VM_focusBonus;
+    }
+    else {
+        bonus += ( VM_focusTimer / VM_focusThreshold ) * VM_focusBonus * 0.2;
+    }
+
+    bonus += GetGlobalModifierValue( 'AccuracyBonus' );
+
+    return bonus;
 }
 
 //
@@ -1126,7 +1126,7 @@ function PlaceGrenade()
             gren.SetBase(placeMover);
 
         // Vanilla Matters
-        dmgX = 1.0 + GetSkillValue( "Damage" );
+        dmgX = 1.0 + GetModifierValue( 'Damage' );
 
         gren.Damage *= dmgX;
 
@@ -1178,7 +1178,7 @@ simulated function Tick( float deltaTime ) {
 
     ProcessLockTarget( deltaTime, Player );
 
-    skillBonus = GetSkillValue( "Stability" );
+    skillBonus = GetModifierValue( 'Stability' );
 
     if ( !bHandToHand && player != none ) {
         ProcessSpread( deltaTime, player, skillBonus );
@@ -1191,12 +1191,15 @@ simulated function Tick( float deltaTime ) {
     movespeed = VSize( Owner.Velocity );
     if ( movespeed <= 10 ) {
         standingTimer = FMin( standingTimer + deltaTime, 0.2 );
+        VM_focusTimer = FMin( VM_focusTimer + deltaTime, VM_focusThreshold + VM_focusTime );
     }
     else if ( movespeed <= 160 ) {
         standingTimer = FMin( standingTimer + deltaTime, 0.15 );
+        VM_focusTimer = 0;
     }
     else {
         standingTimer = FMax( standingTimer - deltaTime, skillBonus * 0.1 );
+        VM_focusTimer = 0;
     }
 
     // Vanilla Matters: Add in a timer before laser/scope becomes fully effective. Changes to make the laser work only when walking and the scope only when standing still.
@@ -1230,6 +1233,12 @@ simulated function Tick( float deltaTime ) {
             VM_readyFire = true;
         }
     }
+}
+
+function AddSpreadAndRecoil() {
+    VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+    VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+    VM_focusTimer = FMax( VM_focusTimer - ( ShotTime * VM_focusThreshold * 4 ), 0 );
 }
 
 function ProcessSpread( float deltaTime, DeusExPlayer player, float skillBonus ) {
@@ -1287,7 +1296,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
         {
             if (bCanTrack)
             {
-                if ( GetSkillValue( "Homing" ) <= 0 ) {
+                if ( GetModifierValue( 'Homing' ) <= 0 ) {
                     return;
                 }
 
@@ -1352,7 +1361,7 @@ function ProcessLockTarget( float deltaTime, DeusExPlayer player ) {
                         if (LockTimer == 0)
                         {
                             // Vanilla Matters
-                            LockTime = FMax( default.LockTime * ( 1 + GetSkillValue( "LockTime" ) ), 0 );
+                            LockTime = FMax( default.LockTime * ( 1 + GetModifierValue( 'LockTime' ) ), 0 );
                         }
 
                         LockTimer += deltaTime;
@@ -2430,7 +2439,7 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
     local float inaccuracy, throwBonus;
     local DeusExPlayer player;
 
-    throwBonus = GetAugValue( class'AugMuscle' );
+    throwBonus = GetGlobalModifierValue( 'ThrowVelocityBonus' );
     if ( throwBonus <= 0 ) {
         throwBonus = 1;
     }
@@ -2438,9 +2447,9 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
         throwBonus = ( throwBonus + 1 ) / 2;
     }
 
-    mult = 1.0 + GetSkillValue( "Damage" );
+    mult = 1.0 + GetModifierValue( 'Damage' );
     if ( bHandToHand ) {
-        mult += GetAugValue( class'AugCombat' );
+        mult += GetGlobalModifierValue( 'ThrowDamageBonus' );
     }
 
     inaccuracy = 1 - currentAccuracy;
@@ -2564,10 +2573,9 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
         }
     }
 
-    // Vanilla Matters: Add recoil force.
+    // Vanilla Matters
     if ( !bHandToHand ) {
-        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        AddSpreadAndRecoil();
     }
 
     return proj;
@@ -2634,10 +2642,9 @@ simulated function TraceFire( float accuracy ) {
 
     // otherwise we don't hit the target at all
 
-    // Vanilla Matters: Add recoil force.
+    // Vanilla Matters
     if ( !bHandToHand ) {
-        VM_spreadForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
-        VM_recoilForce = FClamp( ShotTime * 0.6, 0.1, 0.2 );
+        AddSpreadAndRecoil();
     }
 }
 
@@ -2653,10 +2660,12 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     if (Other != None)
     {
         // Vanilla Matters
-        mult = 1.0 + GetSkillValue( "Damage" );
+        mult = 1.0 + GetModifierValue( 'Damage' );
         if ( bHandToHand ) {
-            mult += GetGlobalSkillValue( "MeleeWeaponDamage" );
-            mult += GetAugValue( class'AugCombat' );
+            mult += GetGlobalModifierValue( 'MeleeWeaponDamage' );
+        }
+        if ( Other.IsA( 'Robot' ) ) {
+            mult += GetGlobalModifierValue( 'DamageVsRobot' );
         }
 
         // Determine damage type
@@ -2974,17 +2983,17 @@ simulated function bool UpdateInfo(Object winObject)
         str = str $ "x" $ Default.VM_ShotCount;
     }
 
-    mod = 1.0 + GetSkillValue( "Damage" );
+    mod = 1.0 + GetModifierValue( 'Damage' );
     if ( bHandToHand ) {
         if ( bInstantHit ) {
-            mod += GetGlobalSkillValue( "MeleeWeaponDamage" );
+            mod += GetGlobalModifierValue( 'MeleeWeaponDamage' );
         }
-        mod += GetAugValue( class'AugCombat' );
+        mod += GetGlobalModifierValue( 'ThrowDamageBonus' );
     }
 
     if ( mod != 1.0 ) {
         str = str @ BuildPercentString( mod - 1 );
-        str = str @ "=" @ FormatFloatString( dmg * mod, 0.1 );
+        str = str @ "=" @ int( dmg * mod );
 
         // Vanilla Matters: Display the same number of shots afterwards.
         if ( Default.VM_ShotCount > 1 ) {
@@ -3005,18 +3014,18 @@ simulated function bool UpdateInfo(Object winObject)
     if ( !bHandToHand && default.ReloadCount > 0 ) {
         // Vanilla Matters: Accuracy.
         str = int( BaseAccuracy * 100 ) $ "%";
-        mod = ModBaseAccuracy + GetAugValue( class'AugTarget' ) + GetSkillValue( "Accuracy" );
+        mod = ModBaseAccuracy + GetModifierValue( 'Accuracy' );
         if ( mod != 0.0 ) {
-            str = str @ BuildPercentString( mod + 0.000003 );
-            str = str @ "=" @ int( FMin( ( BaseAccuracy + mod + 0.000003 ) * 100, 100 ) ) $ "%";
+            str = str @ BuildPercentString( mod );
+            str = str @ "=" @ FormatFloat( FMin( ( BaseAccuracy + mod ) * 100, 100 ), 0 ) $ "%";
         }
 
         winInfo.AddInfoItem( msgInfoAccuracy, str, mod != 0 );
 
         // Vanilla Matters: Stability.
-        mod = GetSkillValue( "Stability" ) + ModStability;
+        mod = GetModifierValue( 'Stability' ) + ModStability;
         if ( mod != 0 ) {
-            str = "+" $ FormatFloatString( mod * 100, 0.01 ) $ "%";
+            str = "+" $ int( mod * 100 ) $ "%";
         }
         else {
             str = VM_msgInfoDefault;
@@ -3025,10 +3034,10 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( VM_msgInfoStability, str, mod != 0 );
 
         // Vanilla Matters: Clip Size.
-        str = Default.ReloadCount @ msgInfoRounds;
+        str = string( default.ReloadCount );
         if ( HasClipMod() ) {
             str = str @ BuildPercentString( ModReloadCount );
-            str = str @ "=" @ ReloadCount @ msgInfoRounds;
+            str = str @ "=" @ ReloadCount;
         }
 
         winInfo.AddInfoItem( msgInfoClip, str, HasClipMod() );
@@ -3040,16 +3049,17 @@ simulated function bool UpdateInfo(Object winObject)
         else {
             str = msgInfoSingle;
         }
-        str = str $ "," @ FormatFloatString( 1.0 / default.ShotTime, 0.1 ) @ msgInfoRoundsPerSec;
+        str = str $ "," @ int( ( 1.0 / default.ShotTime ) * 60 ) @ VM_msgInfoRPM;
 
         winInfo.AddInfoItem( msgInfoROF, str );
 
         //  Vanilla Matters: Reload Time.
-        str = FormatFloatString( default.ReloadTime, 0.1 );
-        mod = ModReloadTime + GetSkillValue( "ReloadTime" );
+        str = FormatFloat( default.ReloadTime );
+        mod = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+        mod = FMax( mod, -1 );
         if ( mod != 0 ) {
             str = str @ BuildPercentString( mod );
-            str = str @ "=" @ FormatFloatString( default.ReloadTime + ( mod * default.ReloadTime ), 0.1 );
+            str = str @ "=" @ FormatFloat( default.ReloadTime + ( mod * default.ReloadTime ) );
         }
         str = str @ msgTimeUnit;
 
@@ -3063,20 +3073,20 @@ simulated function bool UpdateInfo(Object winObject)
     else {
         dmg = default.MaxRange;
     }
-    str = FormatFloatString( dmg / 16.0, 1.0 ) @ msgRangeUnit;
+    str = int( dmg / 16.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
         str = str @ BuildPercentString( ModMaxRange );
-        str = str @ "=" @ FormatFloatString( ( dmg * ( 1 + ModMaxRange ) ) / 16.0, 1.0 ) @ msgRangeUnit;
+        str = str @ "=" @ int( ( dmg * ( 1 + ModMaxRange ) ) / 16.0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
 
     // Vanilla Matters: Headshot Multiplier.
-    str = "x" $ FormatFloatString( default.VM_HeadshotMult, 0.1 );
+    str = "x" $ FormatFloat( default.VM_HeadshotMult );
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
     // mass
-    winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
+    winInfo.AddInfoItem(msgInfoMass, int( Default.Mass ) @ msgMassUnit);
 
     // laser mod
     if (bCanHaveLaser)
@@ -3162,53 +3172,18 @@ simulated function UpdateAmmoInfo(Object winObject, Class<DeusExAmmo> ammoClass)
 // BuildPercentString()
 // ----------------------------------------------------------------------
 
-// Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static final function String BuildPercentString( float value ) {
+// Vanilla Matters
+simulated final function String BuildPercentString( float value ) {
     local string str;
 
-    str = FormatFloatString( Abs( value * 100.0 ), 0.1 );
-
-    if ( value < 0 ) {
-        str = "-" $ str;
+    if ( value >= 0 ) {
+        str = "(+" $ FormatFloat( value * 100, 0 ) $ "%)";
     }
     else {
-        str = "+" $ str;
-    }
-
-    str = "(" $ str $ "%)";
-
-    return str;
-}
-
-// ----------------------------------------------------------------------
-// FormatFloatString()
-// ----------------------------------------------------------------------
-
-// Vanilla Matters: Make it static so it can be used outside of this class easily.
-simulated static function String FormatFloatString( float value, float precision ) {
-    local string str;
-
-    if ( precision <= 0 ) {
-        return "ERR";
-    }
-
-    str = string( int( value ) );
-
-    value = value - int( value );
-    if ( precision < 1.0 && value >= precision ) {
-        str = str $ "." $ string( int( ( 0.5 * precision ) + ( value * ( 1.0 / precision ) ) ) );
+        str = "(-" $ FormatFloat( value * 100, 0 ) $ "%)";
     }
 
     return str;
-}
-
-// ----------------------------------------------------------------------
-// CR()
-// ----------------------------------------------------------------------
-
-simulated function String CR()
-{
-    return Chr(13) $ Chr(10);
 }
 
 // ----------------------------------------------------------------------
@@ -3354,33 +3329,20 @@ state NormalFire {
     }
 
     function float GetShotTime() {
-        local float mult, sTime;
-        local ScriptedPawn sp;
-        local DeusExPlayer player;
+        local float mult;
 
-        sp = ScriptedPawn( Owner );
-
-        if ( sp != none ) {
-            return ShotTime;
-        }
-        else {
-            player = DeusExPlayer( Owner );
-            mult = 1.0;
-            if ( bHandToHand && player != none ) {
-                // Vanilla Matters: Tweak AugCombat bonus.
-                mult = player.AugmentationSystem.GetAugLevelValue( class'AugCombat' );
-                if ( mult == -1 ) {
-                    mult = 1.0;
-                }
-                else {
-                    mult = 1 - mult;
-                }
+        mult = 1.0;
+        if ( bHandToHand ) {
+            mult = GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
+            if ( mult > 0 ) {
+                mult = 1 - mult;
             }
-
-            sTime = ShotTime * mult;
-
-            return ( sTime );
+            else {
+                mult = 1;
+            }
         }
+
+        return ShotTime * mult;
     }
 
     function HandleFire() {
@@ -3504,8 +3466,8 @@ ignores Fire, AltFire;
             // check for skill use if we are the player
 
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetSkillValue( "ReloadTime" );
-            val = ReloadTime + ( val * ReloadTime );
+            val = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+            val = FMax( ReloadTime + ( val * ReloadTime ), 0 );
         }
 
         return val;
@@ -3539,6 +3501,8 @@ ignores Fire, AltFire;
 
     function Tick( float deltaTime ) {
         global.Tick( deltaTime );
+        standingTimer = 0;
+        VM_focusTimer = 0;
 
         if ( Pawn( Owner ).bFire != 0 ) {
             VM_stopReload = true;
@@ -3631,15 +3595,15 @@ simulated state ClientFiring
         else
         {
             // AugCombat decreases shot time
+            // Vanilla Matters
             mult = 1.0;
-            if (bHandToHand && DeusExPlayer(Owner) != None)
-            {
-                mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
-                if (mult == -1.0)
-                    mult = 1.0;
-                // Vanilla Matters: Compensate for reduced augcombat values.
+            if ( bHandToHand ) {
+                mult = GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
+                if ( mult > 0 ) {
+                    mult = 1 - mult;
+                }
                 else {
-                    mult = mult / 10.0;
+                    mult = 1;
                 }
             }
             sTime = ShotTime * mult;
@@ -3794,8 +3758,8 @@ ignores Fire, AltFire, ClientFire, ClientReFire;
         if (DeusExPlayer(Owner) != None)
         {
             // Vanilla Matters: Handle all forms of bonuses here.
-            val = ModReloadTime + GetSkillValue( "ReloadTime" );
-            val = ReloadTime + ( val * ReloadTime );
+            val = ModReloadTime + GetModifierValue( 'ReloadTime' ) - GetGlobalModifierValue( 'ReloadTimeReduction' );
+            val = FMax( ReloadTime + ( val * ReloadTime ), 0 );
         }
         return val;
     }
@@ -3866,23 +3830,6 @@ Begin:
 
 state FlameThrowerOn
 {
-    function float GetShotTime()
-    {
-        local float mult, sTime;
-
-        // AugCombat decreases shot time
-        mult = 1.0;
-        if (bHandToHand && DeusExPlayer(Owner) != None)
-        {
-            mult = 1.0 / DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
-            if (mult == -1.0)
-                mult = 1.0;
-        }
-
-        sTime = ShotTime * mult;
-        return (sTime);
-    }
-
 Begin:
     if ( (DeusExPlayer(Owner).Health > 0) && bFlameOn && (ClipCount < ReloadCount))
     {
@@ -3896,7 +3843,8 @@ Begin:
         else
             flameShotCount--;
 
-        Sleep( GetShotTime() );
+        // Vanilla Matters
+        Sleep( ShotTime );
         GenerateBullet();
         goto('Begin');
     }
@@ -4034,14 +3982,15 @@ defaultproperties
      msgInfoNo="NO"
      msgInfoAuto="AUTO"
      msgInfoSingle="SINGLE"
-     msgInfoRounds="RDS"
-     msgInfoRoundsPerSec="RDS/SEC"
      msgInfoSkill="Skill:"
      msgInfoWeaponStats="Weapon Stats:"
      VM_ShotCount=1
      VM_MoverDamageMult=1.000000
      VM_HeadshotMult=4.000000
      VM_standingBonus=0.080000
+     VM_focusBonus=0.150000
+     VM_focusTime=0.500000
+     VM_focusThreshold=2.500000
      VM_modTimerMax=0.200000
      VM_readyFire=True
      VM_handsTexPos(0)=-1
@@ -4050,8 +3999,10 @@ defaultproperties
      VM_msgInfoHeadshot="Headshot:"
      VM_msgInfoStability="Stability:"
      VM_msgInfoDefault="Default"
+     VM_msgInfoRPM="RPM"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"
+     VM_msgFromWeapon="from the"
      ReloadCount=10
      shakevert=10.000000
      Misc1Sound=Sound'DeusExSounds.Generic.DryFire'

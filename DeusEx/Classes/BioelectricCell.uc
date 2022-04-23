@@ -46,7 +46,7 @@ state Activated
         if (player != None)
         {
             // Vanilla Matters: Make SkillMedicine affect recharge amount.
-            skillLevelValue = player.GetSkillValue( "RechargeBonus" );
+            skillLevelValue = player.GetValue( 'RechargeBonus' );
             actualAmount = player.ChargePlayer( rechargeAmount + skillLevelValue );
 
             player.ClientMessage( Sprintf( msgRecharged, actualAmount ) );
@@ -102,8 +102,8 @@ defaultproperties
 {
      rechargeAmount=15
      mpRechargeAmount=15
-     msgRecharged="Recharged %d points"
-     RechargesLabel="Recharges %d Energy Units"
+     msgRecharged="Recharged %s points"
+     RechargesLabel="Recharges %s Energy Units"
      maxCopies=10
      bCanHaveMultipleCopies=True
      bActivatable=True

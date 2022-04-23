@@ -12,9 +12,6 @@ var int        rounds;
 
 var Color colSelectionBorderHalf;
 
-var localized String RoundLabel;
-var localized String RoundsLabel;
-
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -85,11 +82,6 @@ event DrawWindow(GC gc)
     if ((bHasIt) && (rounds > 0))
     {
         str = String(rounds);
-
-        if (str == "1")
-            str = Sprintf(RoundLabel, str);
-        else
-            str = Sprintf(RoundsLabel, str);
     }
 
     if (bHasIt)
@@ -178,8 +170,6 @@ defaultproperties
 {
      bDisabledByDefault=True
      colSelectionBorderHalf=(R=128,G=128,B=128)
-     RoundLabel="%d Round"
-     RoundsLabel="%d Rounds"
      iconPosWidth=42
      iconPosHeight=37
      buttonWidth=44

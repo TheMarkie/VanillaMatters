@@ -224,8 +224,8 @@ function DrawWindow(GC gc)
         gc.SetTextColor(col);
         gc.SetFont(Font'TechSmall');
 
-        // Vanilla Matters: Use FormatFloatString to display a more accurate percentage.
-        strInfo = class'DeusExWeapon'.static.FormatFloatString( ( absorptionPercent + 0.000001 ) * 100, 0.1 ) $ "%" @ msgAbsorbed;
+        // Vanilla Matters
+        strInfo = FormatFloat( absorptionPercent * 100 ) $ "%" @ msgAbsorbed;
 
         gc.GetTextExtent(0, strW, strH, strInfo);
         strX = (width - strW) / 2;

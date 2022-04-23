@@ -1,34 +1,38 @@
-//=============================================================================
-// AugCombat.
-//=============================================================================
-class AugCombat extends Augmentation;
+class AugCombat extends VMAugmentation;
 
-state Active
-{
-Begin:
+var() array<float> MeleeWeaponDamage;
+var() array<float> MeleeAttackSpeedBonus;
+var() array<float> ReloadTimeReduction;
+var() array<float> InjuryAccuracyPenaltyReduction;
+
+static function bool Activate( VMPlayer player, int level ) {
+    player.GlobalModifiers.Modify( 'MeleeWeaponDamage', default.MeleeWeaponDamage[level] );
+    player.GlobalModifiers.Modify( 'MeleeAttackSpeedBonus', default.MeleeAttackSpeedBonus[level] );
+    player.GlobalModifiers.Modify( 'ReloadTimeReduction', default.ReloadTimeReduction[level] );
+    player.GlobalModifiers.Modify( 'InjuryAccuracyPenaltyReduction', default.InjuryAccuracyPenaltyReduction[level] );
+
+    return true;
 }
 
-function Deactivate()
-{
-    Super.Deactivate();
+static function bool Deactivate( VMPlayer player, int level ) {
+    player.GlobalModifiers.Modify( 'MeleeWeaponDamage', -default.MeleeWeaponDamage[level] );
+    player.GlobalModifiers.Modify( 'MeleeAttackSpeedBonus', -default.MeleeAttackSpeedBonus[level] );
+    player.GlobalModifiers.Modify( 'ReloadTimeReduction', -default.ReloadTimeReduction[level] );
+    player.GlobalModifiers.Modify( 'InjuryAccuracyPenaltyReduction', -default.InjuryAccuracyPenaltyReduction[level] );
+
+    return true;
 }
 
 defaultproperties
 {
-     EnergyRate=30.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconCombat'
-     smallIcon=Texture'DeusExUI.UserInterface.AugIconCombat_Small'
-     AugmentationName="Combat Strength"
-     Description="Sorting rotors accelerate calcium ion concentration in the sarcoplasmic reticulum, increasing an agent's muscle speed several-fold and multiplying the damage they inflict in melee combat.|n|n[TECH ONE]|n+ 25% melee damage|n+12.5% melee attack speed|n|n[TECH TWO]|n50% melee damage|n+25% melee attack speed|n|n[TECH THREE]|n75% melee damage|n+37.5% melee attack speed|n|n[TECH FOUR]|nMelee weapons are almost instantly lethal.|n100% melee damage|n+50% melee attack speed"
-     MPInfo="When active, you do double damage with melee weapons.  Energy Drain: Moderate"
-     LevelValues(0)=0.125000
-     LevelValues(1)=0.250000
-     LevelValues(2)=0.375000
-     LevelValues(3)=0.500000
-     AugmentationLocation=LOC_Arm
-     MPConflictSlot=1
-     VM_EnergyRateAddition(1)=10.000000
-     VM_EnergyRateAddition(2)=20.000000
-     VM_EnergyRateAddition(3)=30.000000
-     VM_dragIcon=Texture'DeusEx.VMUI.AugIconCombat'
+     SmallIcon=Texture'DeusExUI.UserInterface.AugIconCombat_Small'
+     UpgradeName="Combat Strength"
+     Description="Sorting rotors accelerate calcium ion concentration in the sarcoplasmic reticulum, increasing an agent's muscle speed several-fold and enhancing their combat prowess and speed.|n|nMelee Damage: +25% / 50% / 75% / 100%|nMelee Attack Speed: +10% / 20% / 30% / 40%|nReload Time: -10% / 20% / 30% / 40%|nInjury Accuracy Penalty: -10% / 20% / 30% / 40%|n|nEnergy Rate: 0.4 / 0.6 / 0.8 / 1 per second"
+     InstallLocation=AugmentationLocationArm
+     Rates=(0.4,0.6,0.8,1)
+     MeleeWeaponDamage=(0.25,0.5,0.75,1)
+     MeleeAttackSpeedBonus=(0.1,0.2,0.3,0.4)
+     ReloadTimeReduction=(0.1,0.2,0.3,0.4)
+     InjuryAccuracyPenaltyReduction=(0.1,0.2,0.3,0.4)
 }

@@ -7,7 +7,6 @@ class HUDMedBotAugItemButton extends PersonaItemButton;
 var AugmentationCannister augCan;
 
 var bool bSlotFull;
-var bool bHasIt;
 
 var Color colBorder;
 var Color colIconDisabled;
@@ -16,47 +15,51 @@ var Color colIconNormal;
 // ----------------------------------------------------------------------
 // DrawWindow()
 // ----------------------------------------------------------------------
-
-event DrawWindow(GC gc)
-{
-    // if ((bSlotFull) || (bHasIt))
-    //  colIcon = colIconDisabled;
-    // else
-    //  colIcon = colIconNormal;
+// Vanilla Matters
+event DrawWindow( GC gc ) {
+    local VMAugmentationInfo info;
 
     // Vanilla Matters: We can reinstall the same aug again to upgrade it so it shouldn't be grayed out.
-    if ( ( bSlotFull && !bHasIt ) || ( !Augmentation( GetClientObject() ).CanBeUpgraded() && Augmentation( GetClientObject() ).MaxLevel > 1 ) ) {
-        colIcon = colIconDisabled;
-    }
-    else {
+    info = VMAugmentationInfo( GetClientObject() );
+    if ( ( !bSlotFull && info == none ) || ( info != none && info.CanUpgrade() ) ) {
         colIcon = colIconNormal;
     }
+    else {
+        colIcon = colIconDisabled;
+    }
 
-    Super.DrawWindow(gc);
+    super.DrawWindow( gc );
 
     // Draw selection border
-    if (!bSelected)
-    {
-        gc.SetTileColor(colBorder);
-        gc.SetStyle(DSTY_Masked);
-        gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
+    if ( !bSelected ) {
+        gc.SetTileColor( colBorder );
+        gc.SetStyle( DSTY_Masked );
+        gc.DrawBorders( 0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders );
     }
 }
 
 // ----------------------------------------------------------------------
 // SetAugmentation()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function SetAugmentation( class<VMAugmentation> newAug ) {
+    local VMAugmentationManager augSystem;
+    local VMAugmentationInfo info;
 
-function SetAugmentation(Augmentation newAug)
-{
-    SetClientObject(newAug);
-    SetIcon(newAug.smallIcon);
+    augSystem = player.GetAugmentationSystem();
+    if ( augSystem != none ) {
+        info = augSystem.GetInfo( newAug.Name );
+    }
 
-    // First check to see if the player already has this augmentation
-    bHasIt = newAug.bHasIt;
+    if ( info != none ) {
+        SetClientObject( info );
+    }
+    else {
+        SetClientObject( newAug );
+    }
+    SetIcon( newAug.default.SmallIcon );
 
-    // Now check to see if this augmentation slot is full
-    bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
+    bSlotFull = augSystem.IsLocationFull( newAug.default.InstallLocation );
 }
 
 // ----------------------------------------------------------------------
@@ -78,24 +81,19 @@ function AugmentationCannister GetAugCan()
 }
 
 // ----------------------------------------------------------------------
-// GetAugmentation()
-// ----------------------------------------------------------------------
-
-function Augmentation GetAugmentation()
-{
-    return Augmentation(GetClientObject());
-}
-
-// ----------------------------------------------------------------------
 // GetAugDesc()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function string GetAugDesc() {
+    local VMAugmentationInfo info;
 
-function String GetAugDesc()
-{
-    if (GetClientObject() != None)
-        return Augmentation(GetClientObject()).augmentationName;
-    else
+    info = VMAugmentationInfo( GetClientObject() );
+    if ( info != none ) {
+        return info.GetName();
+    }
+    else {
         return "";
+    }
 }
 
 // ----------------------------------------------------------------------

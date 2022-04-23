@@ -46,10 +46,6 @@ var FlyGenerator flyGen;            // fly generator
 var localized string itemArticle;
 var localized string itemName;      // human readable name
 
-// Vanilla Matters
-var bool VM_bPowerthrown;           // Is this decoration being powerthrown with AugMuscle?
-var Actor VM_powerThrower;          // The actor powerthrowing this.
-
 native(2101) final function ConBindEvents();
 
 //
@@ -218,24 +214,16 @@ function Landed(vector HitNormal)
     bWasCarried = false;
     bBobbing    = false;
 
-    // Vanilla Matters: Reset bPowerthrown.
-    if ( VM_bPowerthrown ) {
-        TakeDamage( 0.5 * Mass * ( VSize( Velocity ) / 52.5 ), Pawn( VM_powerThrower ), Location, Velocity, 'Exploded' );
-
-        VM_bPowerthrown = false;
-        VM_powerThrower = None;
-    }
-
     // The crouch height is higher in multiplayer, so we need to be more forgiving on the drop velocity to explode
     if ( Level.NetMode != NM_Standalone )
     {
         if ((bExplosive && (VSize(Velocity) > 478)) || (!bExplosive && (Velocity.Z < -500)))
-            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'Fell');
     }
     else
     {
         if ((bExplosive && (VSize(Velocity) > 425)) || (!bExplosive && (Velocity.Z < -500)))
-            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'fell');
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), 'Fell');
     }
 }
 
@@ -397,8 +385,8 @@ function ZoneChange(ZoneInfo NewZone)
     }
 }
 
-// Vanilla Matters: Function to scale powerthrow damage based on material.
-function float GetPowerThrowMaterialMult() {
+// Vanilla Matters: Function to scale impact damage based on material.
+function float GetImpactDamageMaterialMult() {
     local float mult;
 
     if ( fragType == class'GlassFragment' ) {
@@ -434,16 +422,17 @@ function float GetPowerThrowMaterialMult() {
 
 function Bump(actor Other)
 {
-    local int augLevel, augMult;
-    local float maxPush, velscale;
+    local float maxPush, velscale, augMult;
     local DeusExPlayer player;
     local Rotator rot;
 
     // Vanilla Matters
     local Vector HitLocation;
-    local float realVelocity, kEnergy, powerThrowDamage, mult;
+    local float realVelocity, kEnergy, impactDamage, mult;
+    local Pawn pawnOther;
 
     player = DeusExPlayer(Other);
+    pawnOther = Pawn( Other );
 
     // if we are bumped by a burning pawn, then set us on fire
     if (Other.IsA('Pawn') && Pawn(Other).bOnFire && !Other.IsA('Robot') && !Region.Zone.bWaterZone && bFlammable)
@@ -467,36 +456,31 @@ function Bump(actor Other)
 //          return;
     }
 
-    // Vanilla Matters: Add in impact damage if powerthrown.
-    if ( VM_bPowerthrown ) {
-        // VM: Make the thrower immune to their own powerthrow, to prevent wonky hitbox.
-        if ( Other == VM_powerThrower ) {
-            return;
-        }
-
+    // Vanilla Matters: Add in impact damage.
+    // VM: Make the thrower immune to their own impact damage, to prevent wonky hitbox.
+    if ( pawnOther != none && pawnOther != Instigator ) {
         // VM: Damage formula based on real physics formula for impact force.
         realVelocity = ( VSize( Velocity ) / 16 ) * 0.3048;
         kEnergy = 0.5 * ( Mass * 0.6 ) * ( realVelocity * realVelocity );
-        mult = GetPowerThrowMaterialMult();
+        mult = GetImpactDamageMaterialMult();
         // VM: Damage scales with deco material.
-        powerThrowDamage = kEnergy * 0.01 * mult;
+        impactDamage = kEnergy * 0.01 * mult;
 
-        if ( Pawn( Other ) != None ) {
-            Pawn( Other ).AdjustHitLocation( HitLocation, Velocity );
+        // VM: Not worth doing damage below 10.
+        if ( impactDamage >= 10 ) {
+            if ( pawnOther != None ) {
+                pawnOther.AdjustHitLocation( HitLocation, Velocity );
+            }
+            else {
+                HitLocation = Other.Location;
+            }
+
+            Other.TakeDamage( impactDamage, Instigator, HitLocation, Velocity, 'Shot' );
+            TakeDamage( impactDamage, pawnOther, Location, Velocity, 'Shot' );
+
+            // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
+            Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
         }
-        else {
-            HitLocation = Other.Location;
-        }
-
-        Other.TakeDamage( powerThrowDamage, Pawn( VM_powerThrower ), HitLocation, Velocity, 'Shot' );
-
-        // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
-        Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
-
-        TakeDamage( powerThrowDamage, Pawn( Other ), Location, Velocity, 'Shot' );
-
-        VM_bPowerthrown = false;
-        VM_powerThrower = none;
     }
 
     if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
@@ -509,16 +493,9 @@ function Bump(actor Other)
             augMult = 1;
             if (player != None)
             {
-                if (player.AugmentationSystem != None)
-                {
-                    augLevel = player.AugmentationSystem.GetClassLevel(class'AugMuscle');
-
-                    // Vanilla Matters: Makes bonus from augmuscle bigger.
-                    if ( augLevel >= 0 ) {
-                        augMult = augLevel + 2.5;
-                        maxPush = maxPush * ( augLevel + 2 );
-                    }
-                }
+                // Vanilla Matters
+                augMult = 1 + player.GetValue( 'LiftStrengthBonus' );
+                maxPush = maxPush * augMult;
             }
 
             if (Mass <= maxPush)
@@ -526,7 +503,7 @@ function Bump(actor Other)
                 // slow it down based on how heavy it is and what level my augmentation is
 
                 // Vanilla Matters: Tweak the formula to promote augmuscle.
-                velscale = FClamp( ( 50 * augMult ) / ( Mass * 2 ), 0, 1.0 );
+                velscale = FClamp( ( 50 * augMult ) / Mass, 0, 1.0 );
                 if ( velscale <= 0.25 ) {
                     velscale = 0;
                 }

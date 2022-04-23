@@ -36,7 +36,7 @@ function CalcTrace(float deltaTime)
         rot.Roll = Int((0.5 - FRand()) * randomAngle);
 
         StartTrace = Location;
-        EndTrace = Location + 5000 * vector(Rotation + rot);
+        EndTrace = Location + Length * vector(Rotation + rot);
         HitActor = None;
 
         foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, StartTrace)
@@ -56,17 +56,24 @@ function CalcTrace(float deltaTime)
             }
         }
 
+        // Vanilla Matters: If the last target hit is not valid, set the HitLocation to EndTrace like we hit nothing.
+        if ( target == none || target.DrawType == DT_None || target.bHidden ) {
+            HitLocation = EndTrace;
+        }
+
         lastDamageTime += deltaTime;
 
         // shock whatever gets in the beam
         if ((HitActor != None) && (lastDamageTime >= damageTime))
         {
             HitActor.TakeDamage(damageAmount, Instigator, HitLocation, vect(0,0,0), 'Shocked');
-            lastDamageTime = 0;
+            // Vanilla Matters
+            lastDamageTime -= damageTime;
         }
 
         if (LaserIterator(RenderInterface) != None)
-            LaserIterator(RenderInterface).AddBeam(0, Location, Rotation + rot, VSize(Location - HitLocation));
+            // Vanilla Matters
+            LaserIterator( RenderInterface ).AddBeam( 0, Location, Rotation + rot, Min( Length, VSize( Location - HitLocation ) ) );
     }
 }
 

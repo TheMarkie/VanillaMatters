@@ -15,6 +15,9 @@ var bool bHiddenBeam;           // is this beam hidden?
 
 var LaserProxy proxy;
 
+// Vanilla Matters
+var float Length;
+
 function CalcTrace(float deltaTime)
 {
     local vector StartTrace, EndTrace, HitLocation, HitNormal, Reflection;
@@ -23,7 +26,7 @@ function CalcTrace(float deltaTime)
     local name texName, texGroup;
 
     StartTrace = Location;
-    EndTrace = Location + 5000 * vector(Rotation);
+    EndTrace = Location + Length * vector(Rotation);
     HitActor = None;
 
     // trace the path of the reflected beam and draw points at each hit
@@ -46,16 +49,23 @@ function CalcTrace(float deltaTime)
             }
         }
 
+        // Vanilla Matters: If the last target hit is not valid, set the HitLocation to EndTrace like we hit nothing.
+        if ( target == none || target.DrawType == DT_None || target.bHidden ) {
+            HitLocation = EndTrace;
+        }
+
         // draw first beam
         if (i == 0)
         {
             if (LaserIterator(RenderInterface) != None)
-                LaserIterator(RenderInterface).AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
+                // Vanilla Matters
+                LaserIterator( RenderInterface ).AddBeam( i, Location, Rotation, Min( Length, VSize( Location - HitLocation ) ) );
         }
         else
         {
             if (LaserIterator(RenderInterface) != None)
-                LaserIterator(RenderInterface).AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
+                // Vanilla Matters
+                LaserIterator( RenderInterface ).AddBeam( i, StartTrace - HitNormal, Rotator( Reflection ), Min( Length, VSize( StartTrace - HitLocation - HitNormal ) ) );
         }
 
         if (spot[i] == None)
@@ -95,7 +105,7 @@ function CalcTrace(float deltaTime)
 
         Reflection = MirrorVectorByNormal(Normal(HitLocation - StartTrace), HitNormal);
         StartTrace = HitLocation + HitNormal;
-        EndTrace = Reflection * 10000;
+        EndTrace = Reflection * Length * 2;
     }
 }
 
@@ -214,4 +224,5 @@ defaultproperties
      CollisionRadius=40.000000
      CollisionHeight=40.000000
      RenderIteratorClass=Class'DeusEx.LaserIterator'
+     Length=5000.000000
 }

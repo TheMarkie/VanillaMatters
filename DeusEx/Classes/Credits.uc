@@ -34,7 +34,7 @@ auto state Pickup
 defaultproperties
 {
      numCredits=100
-     msgCreditsAdded="%d credits added"
+     msgCreditsAdded="%s credits added"
      ItemName="Credit Chit"
      PlayerViewOffset=(X=30.000000,Z=-12.000000)
      PlayerViewMesh=LodMesh'DeusExItems.Credits'

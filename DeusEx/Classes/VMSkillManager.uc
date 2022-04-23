@@ -1,63 +1,56 @@
-class VMSkillManager extends Actor;
+class VMSkillManager extends VMUpgradeManager;
 
 //==============================================
 // Strings
 //==============================================
-var() localized string SkillLevelNames[4];
+var() localized string LevelNames[4];
 
 //==============================================
 // Data
 //==============================================
 var travel VMSkillInfo FirstSkillInfo;
-var travel TableFloat SkillValues;
+
+//==============================================
+// General info
+//==============================================
+static function string GetLevelName( int level, int maxLevel ) {
+    return default.LevelNames[3 - maxLevel + level];
+}
 
 //==============================================
 // Management
 //==============================================
-function Initialize() {
-    SkillValues = new class'TableFloat';
-}
-
-function bool AddSkill( class<VMSkill> class, optional int startingLevel ) {
+function Add( name className, name packageName, optional int startingLevel ) {
     local VMSkillInfo info;
-
-    if ( startingLevel < 0 || GetSkillInfo( class.Name ) != none ) {
-        return false;
-    }
 
     info = new class'VMSkillInfo';
-    info.SkillClassName = class.Name;
-    info.Level = startingLevel;
+    info.Initialize( className, packageName, startingLevel );
+    info.RefreshValues( Player );
+
     info.Next = FirstSkillInfo;
     FirstSkillInfo = info;
-
-    info.RefreshValues( SkillValues );
-
-    return true;
 }
 
-function Reset() {
+function Refresh( VMPlayer playerOwner ) {
     local VMSkillInfo info;
 
-    SkillValues.Clear();
+    super.Refresh( playerOwner );
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.Level = 0;
-        info.RefreshValues( SkillValues );
+        info.RefreshValues( Player );
 
         info = info.Next;
     }
 }
 
-function RefreshValues() {
+function Reset() {
     local VMSkillInfo info;
-
-    SkillValues.Clear();
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        info.RefreshValues( SkillValues );
+        info.Level = 0;
+        info.RefreshValues( Player );
 
         info = info.Next;
     }
@@ -66,12 +59,12 @@ function RefreshValues() {
 //==============================================
 // Skill Management
 //==============================================
-function VMSkillInfo GetSkillInfo( name name ) {
+function VMSkillInfo GetInfo( name name ) {
     local VMSkillInfo info;
 
     info = FirstSkillInfo;
     while ( info != none ) {
-        if ( info.SkillClassName == name ) {
+        if ( info.DefinitionClassName == name ) {
             break;
         }
 
@@ -81,48 +74,53 @@ function VMSkillInfo GetSkillInfo( name name ) {
     return info;
 }
 
-function bool IncreaseLevel( VMSkillInfo info ) {
-    return info.IncreaseLevel( SkillValues );
-}
-function bool DecreaseLevel( VMSkillInfo info ) {
-    return info.DecreaseLevel( SkillValues );
-}
-
-function IncreaseToMax( VMSkillInfo info ) {
-    info.IncreaseToMax( SkillValues );
-}
-function IncreaseAllToMax() {
+function bool IncreaseLevel( name name ) {
     local VMSkillInfo info;
 
-    SkillValues.Clear();
+    info = GetInfo( name );
+    if ( info != none && info.CanUpgrade( Player.SkillPointsAvail ) ) {
+        Player.SkillPointsAvail -= info.GetNextLevelCost();
+        info.IncreaseLevel();
+        info.UpdateValues( Player, info.Level - 1, info.Level );
+
+        return true;
+    }
+
+    return false;
+}
+function bool DecreaseLevel( name name ) {
+    local VMSkillInfo info;
+
+    info = GetInfo( name );
+    if ( info != none && info.DecreaseLevel() ) {
+        Player.SkillPointsAvail += info.GetNextLevelCost();
+        info.UpdateValues( Player, info.Level + 1, info.Level );
+
+        return true;
+    }
+
+    return false;
+}
+
+function IncreaseAllToMax() {
+    local VMSkillInfo info;
 
     info = FirstSkillInfo;
     while ( info != none ) {
         info.Level = info.GetMaxLevel();
-        info.RefreshValues( SkillValues );
+        info.RefreshValues( Player );
 
         info = info.Next;
     }
 }
 
 //==============================================
-// Skill values
+// Values
 //==============================================
-function float GetValue( string name, optional float defaultValue ) {
-    local float value;
-
-    if ( SkillValues.TryGetValue( name, value ) ) {
-        return value;
-    }
-    else {
-        return defaultValue;
-    }
-}
-
 function int GetLevel( name name ) {
     local VMSkillInfo info;
 
-    info = GetSkillInfo( name );
+    info = GetInfo( name );
     if ( info != none ) {
         return info.Level;
     }
@@ -132,10 +130,8 @@ function int GetLevel( name name ) {
 
 defaultproperties
 {
-     SkillLevelNames(0)="UNTRAINED"
-     SkillLevelNames(1)="TRAINED"
-     SkillLevelNames(2)="ADVANCED"
-     SkillLevelNames(3)="MASTER"
-     bHidden=True
-     bTravel=True
+     LevelNames(0)="UNTRAINED"
+     LevelNames(1)="TRAINED"
+     LevelNames(2)="ADVANCED"
+     LevelNames(3)="MASTER"
 }

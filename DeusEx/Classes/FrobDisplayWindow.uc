@@ -292,7 +292,7 @@ function DrawWindow(GC gc)
                 if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
                 {
                     // Vanilla Matters
-                    numTools = int( ( ( dxMover.lockStrength * 100.0 ) / FMax( Player.GetSkillValue( "Lockpicking" ), 1 ) ) + 0.99 );
+                    numTools = int( ( ( dxMover.lockStrength * 100.0 ) / FMax( Player.GetValue( 'Lockpicking' ), 1 ) ) + 0.99 );
                     if (numTools == 1)
                         strInfo = numTools @ msgPick;
                     else
@@ -376,7 +376,7 @@ function DrawWindow(GC gc)
                 if ((device.bHackable) && (device.hackStrength != 0.0))
                 {
                     // Vanilla Matters
-                    numTools = int( ( ( device.hackStrength * 100.0 ) / FMax( Player.GetSkillValue( "Multitooling" ), 1 ) ) + 0.99 );
+                    numTools = int( ( ( device.hackStrength * 100.0 ) / FMax( Player.GetValue( 'Multitooling' ), 1 ) ) + 0.99 );
                     if (numTools == 1)
                         strInfo = numTools @ msgTool;
                     else

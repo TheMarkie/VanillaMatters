@@ -576,7 +576,7 @@ defaultproperties
      texBorders(6)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_Top'
      texBorders(7)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_Bottom'
      texBorders(8)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_Center'
-     RoundLabel="%d Rd"
-     RoundsLabel="%d Rds"
+     RoundLabel="%s Rd"
+     RoundsLabel="%s Rds"
      CountLabel="COUNT:"
 }

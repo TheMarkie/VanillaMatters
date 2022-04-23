@@ -131,7 +131,7 @@ simulated function Tick(float deltaTime)
                                 if (VSize(dist) < proxRadius)
                                     if (skillTime == 0)
                                         // Vanilla Matters: Tweak skill time.
-                                        skillTime = FClamp( 2 + player.GetSkillValue( "MineTriggerDelay" ), 1, 5 );
+                                        skillTime = 2;
                             }
                         }
                     }
@@ -156,9 +156,6 @@ simulated function Tick(float deltaTime)
                                     // Pass on team member
                                     else if ( (TeamDMGame(Player.DXGame) != None) && (team == player.PlayerReplicationInfo.team) )
                                         pass = True;
-                                    // Pass if radar transparency on
-                                    else if ( Player.AugmentationSystem.GetClassLevel( class'AugRadarTrans' ) == 3 )
-                                        pass = True;
 
                                     // Finally, make sure we can see them (no exploding through thin walls)
                                     if ( !pass )
@@ -180,7 +177,7 @@ simulated function Tick(float deltaTime)
                                             if (skillTime == 0)
                                             {
                                                 // Vanilla Matters
-                                                skillTime = FClamp( 1 + player.GetSkillValue( "MineTriggerDelay" ), 1, 3 );
+                                                skillTime = 1;
                                             }
                                         }
                                     }

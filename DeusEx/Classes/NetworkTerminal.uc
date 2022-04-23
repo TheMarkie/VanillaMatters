@@ -347,7 +347,7 @@ function ForceCloseScreen()
 function CreateHackWindow() {
     local float hackTime, detectionTime;
 
-    detectionTime = player.GetSkillValue( "HackingTime" );
+    detectionTime = player.GetValue( 'HackingTime' );
     if ( detectionTime > 0 && bUsesHackWindow ) {
         hackTime = 6 - player.GetSkillLevel( 'SkillComputer' );
 

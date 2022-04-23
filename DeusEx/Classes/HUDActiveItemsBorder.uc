@@ -4,6 +4,23 @@
 
 class HUDActiveItemsBorder extends HUDActiveItemsBorderBase;
 
+// Vanilla Matters
+function AddIcon( Texture newIcon, Object saveObject ) {
+    local HUDActiveItemBase activeItem;
+
+    activeItem = HUDActiveItemBase( winIcons.NewChild( class'HUDActiveItem' ) );
+    activeItem.SetIcon( newIcon );
+    activeItem.SetClientObject( saveObject );
+    activeItem.SetObject( saveObject );
+
+    // Hide if there are no icons visible
+    if ( ++iconCount == 1 ) {
+        Show();
+    }
+
+    AskParentForReconfigure();
+}
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 

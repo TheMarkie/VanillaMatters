@@ -6,7 +6,6 @@ class PersonaScreenAugmentations extends PersonaScreenBaseWindow;
 
 #exec TEXTURE IMPORT FILE="Textures\AugmentationsBorder_6.bmp"      NAME="AugmentationsBorder_6"        GROUP="VMUI" MIPS=Off
 
-var PersonaActionButtonWindow           btnActivate;
 var PersonaActionButtonWindow           btnUpgrade;
 var PersonaActionButtonWindow           btnUseCell;
 var PersonaInfoWindow                   winInfo;
@@ -17,8 +16,8 @@ var PersonaItemDetailWindow             winAugCans;
 var ProgressBarWindow                   winBioEnergy;
 var TextWindow                          winBioEnergyText;
 
-// Currently selected button, either a skill or augmentation
-var Augmentation      selectedAug;
+// Vanilla Matters
+var VMAugmentationInfo selectedAug;
 var PersonaItemButton selectedAugButton;
 
 struct AugLoc_S
@@ -39,8 +38,6 @@ var Color colBarBack;
 
 var localized String AugmentationsTitleText;
 var localized String UpgradeButtonLabel;
-var localized String ActivateButtonLabel;
-var localized String DeactivateButtonLabel;
 var localized String UseCellButtonLabel;
 var localized String AugCanUseText;
 var localized String BioCellUseText;
@@ -54,6 +51,8 @@ var Localized string AugLocationTorso;
 var Localized string AugLocationSubdermal;
 
 // Vanilla Matters
+var VMAugmentationManager VM_AugSystem;
+
 var PersonaAugmentationBar VM_augBar;
 var PersonaAugmentationBarSlot VM_selectedSlot;
 
@@ -70,6 +69,9 @@ var PersonaAugmentationBarSlot VM_lastDragOverSlot;
 event InitWindow()
 {
     Super.InitWindow();
+
+    // Vanilla Matters
+    VM_AugSystem = Player.GetAugmentationSystem();
 
     EnableButtons();
 }
@@ -126,9 +128,6 @@ function CreateButtons()
 
     btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnUpgrade.SetButtonText(UpgradeButtonLabel);
-
-    btnActivate = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    btnActivate.SetButtonText(ActivateButtonLabel);
 
     winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
     winActionButtons.SetPos(346, 387);
@@ -331,28 +330,6 @@ function UpdateBioCells()
 }
 
 // ----------------------------------------------------------------------
-// RefreshWindow()
-// ----------------------------------------------------------------------
-
-function RefreshWindow(float DeltaTime)
-{
-    UpdateAugCans();
-    UpdateBioCells();
-    UpdateBioEnergyBar();
-
-    if (selectedAugButton != None)
-    {
-        PersonaAugmentationItemButton(selectedAugButton).SetLevel(selectedAug.GetCurrentLevel());
-        PersonaAugmentationItemButton(selectedAugButton).SetActive(selectedAug.IsActive());
-    }
-
-
-    EnableButtons();
-
-    Super.RefreshWindow(DeltaTime);
-}
-
-// ----------------------------------------------------------------------
 // CreateAugmentationHighlights()
 // ----------------------------------------------------------------------
 
@@ -394,93 +371,64 @@ function Window CreateHighlight(
 // Loop through all the Augmentation items and draw them in our Augmentation grid as
 // buttons
 // ----------------------------------------------------------------------
-
-function CreateAugmentationButtons()
-{
-    local Augmentation anAug;
-    local int augX, augY;
-    local int torsoCount;
-    local int skinCount;
-    local int defaultCount;
-    local int slotIndex;
-    local int augCount;
-
-    augCount   = 0;
-    torsoCount = 0;
-    skinCount  = 0;
-    defaultCount = 0;
+// Vanilla Matters
+function CreateAugmentationButtons() {
+    local VMAugmentationInfo info;
+    local int slot, x, y;
+    local int torsoCount, skinCount, defaultCount, augCount;
 
     // Iterate through the augmentations, creating a unique button for each
-    anAug = player.AugmentationSystem.FirstAug;
-    while(anAug != None)
-    {
-        if (( anAug.AugmentationName != "" ) && ( anAug.bHasIt ))
-        {
-            slotIndex = 0;
-            augX = augLocs[int(anAug.AugmentationLocation)].x;
-            augY = augLocs[int(anAug.AugmentationLocation)].y;
+    info = player.GetFirstAugmentationInfo();
+    while( info != none ) {
+        slot = info.GetInstallLocation();
+        x = augLocs[slot].x;
+        y = augLocs[slot].y;
 
-            // Show the highlight graphic for this augmentation slot as long
-            // as it's not the Default slot (for which there is no graphic)
-
-            if (anAug.AugmentationLocation < arrayCount(augHighlightWindows))
-                augHighlightWindows[anAug.AugmentationLocation].Show();
-
-            if (int(anAug.AugmentationLocation) == 2)           // Torso
-            {
-                slotIndex = torsoCount;
-                augY += (torsoCount++ * augSlotSpacingY);
-            }
-
-            if (int(anAug.AugmentationLocation) == 5)           // Subdermal
-            {
-                slotIndex = skinCount;
-                augY += (skinCount++ * augSlotSpacingY);
-            }
-
-            if (int(anAug.AugmentationLocation) == 6)           // Default
-                augX += (defaultCount++ * augSlotSpacingX);
-
-            augItems[augCount] = CreateAugButton(anAug, augX, augY, slotIndex);
-
-            // If the augmentation is active, make sure the button draws it
-            // appropriately
-
-            augItems[augCount].SetActive(anAug.IsActive());
-
-            augCount++;
+        // Show the highlight graphic for this augmentation slot as long
+        // as it's not the Default slot (for which there is no graphic)
+        if ( slot > 0 ) {
+            augHighlightWindows[slot - 1].Show();
+        }
+        else {
+            x += defaultCount++ * augSlotSpacingX;
         }
 
-        anAug = anAug.next;
+        // Torso
+        if ( slot == 3 ) {
+            y += torsoCount++ * augSlotSpacingY;
+        }
+        // Subdermal
+        else if ( slot == 6 ) {
+            y += skinCount++ * augSlotSpacingY;
+        }
+
+        augItems[augCount] = CreateAugButton( info, x, y );
+        augCount++;
+
+        info = info.next;
     }
 }
 
 // ----------------------------------------------------------------------
 // CreateAugButton
 // ----------------------------------------------------------------------
-
-function PersonaAugmentationItemButton CreateAugButton(Augmentation anAug, int augX, int augY, int slotIndex)
-{
+// Vanilla Matters
+function PersonaAugmentationItemButton CreateAugButton( VMAugmentationInfo info, int x, int y ) {
     local PersonaAugmentationItemButton newButton;
 
-    newButton = PersonaAugmentationItemButton(winClient.NewChild(Class'PersonaAugmentationItemButton'));
-    newButton.SetPos(augX, augY);
-    newButton.SetClientObject(anAug);
-    newButton.SetIcon(anAug.icon);
-
-    // set the hotkey number
-    if (!anAug.bAlwaysActive)
-        newButton.SetHotkeyNumber(anAug.GetHotKey());
+    newButton = PersonaAugmentationItemButton( winClient.NewChild( Class'PersonaAugmentationItemButton' ) );
+    newButton.SetPos( x, y );
+    newButton.SetClientObject( info );
+    newButton.SetIcon( info.GetIcon() );
 
     // If the augmentation is currently active, notify the button
-    newButton.SetActive(anAug.IsActive());
-    newButton.SetLevel(anAug.GetCurrentLevel());
+    newButton.SetLevel( info.Level );
+    newButton.SetActive( info.IsActive );
 
     // Vanilla Matters: Set up stuff for dragging.
-    newButton.VM_aug = anAug;
     newButton.VM_augWnd = self;
-    newButton.VM_draggable = !( anAug.bAlwaysActive || anAug.class == class'AugLight' );
-    newButton.VM_dragIcon = anAug.VM_dragIcon;
+    newButton.VM_draggable = !( info.IsPassive() || info.GetInstallLocation() <= 0 );
+    newButton.VM_dragIcon = info.GetSmallIcon();
 
     return newButton;
 }
@@ -494,7 +442,7 @@ function CreateAugmentationBar() {
 
 // Vanilla Matters: Update the aug display on the HUD.
 function DestroyWindow() {
-    player.AugmentationSystem.RefreshAugDisplay();
+    player.RefreshAugmentationDisplay();
 
     super.DestroyWindow();
 }
@@ -502,126 +450,45 @@ function DestroyWindow() {
 // ----------------------------------------------------------------------
 // ButtonActivated()
 // ----------------------------------------------------------------------
+// Vanilla Matters
+function bool ButtonActivated( Window buttonPressed ) {
+    local PersonaItemButton itemButton;
 
-function bool ButtonActivated(Window buttonPressed)
-{
-    local bool bHandled;
-
-    if (Super.ButtonActivated(buttonPressed))
-        return True;
-
-    bHandled   = True;
-
-    // Check if this is one of our Augmentation buttons
-    if (buttonPressed.IsA('PersonaItemButton'))
-    {
-        SelectAugmentation(PersonaItemButton(buttonPressed));
-    }
-    else
-    {
-        switch(buttonPressed)
-        {
-            case btnUpgrade:
-                UpgradeAugmentation();
-                break;
-
-            case btnActivate:
-                ActivateAugmentation();
-                break;
-
-            case btnUseCell:
-                UseCell();
-                break;
-
-            default:
-                bHandled = False;
-                break;
-        }
+    if ( super.ButtonActivated( buttonPressed ) ) {
+        return true;
     }
 
-    return bHandled;
-}
+    itemButton = PersonaItemButton( buttonPressed );
+    if ( itemButton != none ) {
+        SelectAugmentation( itemButton );
 
-// ----------------------------------------------------------------------
-// VirtualKeyPressed()
-//
-// Called when a key is pressed; provides a virtual key value
-// ----------------------------------------------------------------------
-
-event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
-{
-    local bool bKeyHandled;
-    bKeyHandled = True;
-
-    if (Super.VirtualKeyPressed(key, bRepeat))
-        return True;
-
-    switch( key )
-    {
-        // Vanilla Matters: Disable the F hotkeys because aug keys aren't hardcoded anymore.
-
-        // Enter will toggle an aug on/off
-        case IK_Enter:
-            ActivateAugmentation();
-            break;
-
-        default:
-            bKeyHandled = False;
-            break;
+        return true;
     }
 
-    return bKeyHandled;
-}
-
-// ----------------------------------------------------------------------
-// SelectAugByKey()
-// ----------------------------------------------------------------------
-
-function SelectAugByKey(int keyNum)
-{
-    local int buttonIndex;
-    local Augmentation anAug;
-
-    for(buttonIndex=0; buttonIndex<arrayCount(augItems); buttonIndex++)
-    {
-        if (augItems[buttonIndex] != None)
-        {
-            // Vanilla Matters
-            anAug = augItems[buttonIndex].VM_aug;
-
-            if ((anAug != None) && (anAug.HotKeyNum - 3 == keyNum))
-            {
-                SelectAugmentation(augItems[buttonIndex]);
-                ActivateAugmentation();
-                break;
-            }
-        }
-    }
+    return false;
 }
 
 // ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
-
-function SelectAugmentation(PersonaItemButton buttonPressed)
-{
-    // Don't do extra work.
-    if (selectedAugButton != buttonPressed)
-    {
+// Vanilla Matters
+function SelectAugmentation( PersonaItemButton buttonPressed ) {
+    if ( selectedAugButton != buttonPressed ) {
         // Deselect current button
-        if (selectedAugButton != None)
-            selectedAugButton.SelectButton(False);
+        if ( selectedAugButton != none ) {
+            selectedAugButton.SelectButton( false );
+        }
 
         selectedAugButton = buttonPressed;
 
-        // Vanilla Matters
-        selectedAug = PersonaAugmentationItemButton( buttonPressed ).VM_aug;
+        selectedAug = VMAugmentationInfo( buttonPressed.GetClientObject() );
+        if ( selectedAug != none ) {
+            VM_AugSystem.GetFullDescription( selectedAug, winInfo );
+            // Vanilla Matters: Highlight the slot that the aug is assigned to, if any.
+            VM_augBar.SelectAug( selectedAug.DefinitionClassName, true );
+        }
 
-        selectedAug.UpdateInfo(winInfo);
-        selectedAugButton.SelectButton(True);
-
-        // Vanilla Matters: Highlight the slot that the aug is assigned to, if any.
-        VM_augBar.SelectAug( selectedAug, true );
+        selectedAugButton.SelectButton( true );
 
         EnableButtons();
     }
@@ -630,59 +497,33 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 // ----------------------------------------------------------------------
 // UpgradeAugmentation()
 // ----------------------------------------------------------------------
-
-function UpgradeAugmentation()
-{
+// Vanilla Matters
+function UpgradeAugmentation() {
     local AugmentationUpgradeCannister augCan;
 
     // First make sure we have a selected Augmentation
-    if (selectedAug == None)
+    if ( selectedAug == none ) {
         return;
+    }
 
     // Now check to see if we have an upgrade cannister
-    augCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
-
-    if (augCan != None)
-    {
+    augCan = AugmentationUpgradeCannister( player.FindInventoryType( class'AugmentationUpgradeCannister' ) );
+    if ( augCan != none ) {
         // Increment the level and remove the aug cannister from
         // the player's inventory
 
-        selectedAug.IncLevel();
-        selectedAug.UpdateInfo(winInfo);
+        selectedAug.IncreaseLevel();
+        VM_AugSystem.GetFullDescription( selectedAug, winInfo );
 
         augCan.UseOnce();
 
         // Update the level icons
-        if (selectedAugButton != None)
-            PersonaAugmentationItemButton(selectedAugButton).SetLevel(selectedAug.GetCurrentLevel());
+        if ( selectedAugButton != none ) {
+            PersonaAugmentationItemButton( selectedAugButton ).SetLevel( selectedAug.Level );
+        }
     }
 
     UpdateAugCans();
-    EnableButtons();
-}
-
-// ----------------------------------------------------------------------
-// ActivateAugmentation()
-// ----------------------------------------------------------------------
-
-function ActivateAugmentation()
-{
-    if (selectedAug == None)
-        return;
-
-    if (selectedAug.IsActive())
-        selectedAug.Deactivate();
-    else
-        selectedAug.Activate();
-
-    // If the augmentation activated or deactivated, set the
-    // button appropriately.
-
-    if (selectedAugButton != None)
-        PersonaAugmentationItemButton(selectedAugButton).SetActive(selectedAug.IsActive());
-
-    selectedAug.UpdateInfo(winInfo);
-
     EnableButtons();
 }
 
@@ -713,28 +554,12 @@ function EnableButtons()
     // AugmentationUpgradeCannister that allows this augmentation to
     // be upgraded
 
-    // Vanilla Matters: We're gonna change this up a bit now that CanBeUpgraded doesn't check for the upgrade cannister.
+    // Vanilla Matters
     if ( selectedAug != None && AugmentationUpgradeCannister( player.FindInventoryType( class'AugmentationUpgradeCannister' ) ) != None ) {
-        btnUpgrade.EnableWindow( selectedAug.CanBeUpgraded() );
+        btnUpgrade.EnableWindow( selectedAug.CanUpgrade() );
     }
     else {
         btnUpgrade.EnableWindow( false );
-    }
-
-    // Only allow btnActivate to be active if
-    //
-    // 1.  We have a selected augmentation
-    // 2.  The player's energy is above 0
-    // 3.  This augmentation isn't "AlwaysActive"
-
-    btnActivate.EnableWindow((selectedAug != None) && (player.Energy > 0) && (!selectedAug.IsAlwaysActive()));
-
-    if ( selectedAug != None )
-    {
-        if ( selectedAug.bIsActive )
-            btnActivate.SetButtonText(DeactivateButtonLabel);
-        else
-            btnActivate.SetButtonText(ActivateButtonLabel);
     }
 
     // Use Cell button
@@ -776,6 +601,7 @@ function UpdateDragMouse( float newX, float newY ) {
 
 function FinishButtonDrag() {
     local PersonaAugmentationBarSlot dragSlot, slot;
+    local VMAugmentationInfo info;
 
     dragSlot = PersonaAugmentationBarSlot( VM_dragBtn );
 
@@ -785,19 +611,20 @@ function FinishButtonDrag() {
             VM_lastDragOverSlot.SetToggle( true );
         }
         else {
-            slot = VM_augBar.GetSlot( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug );
+            info = VMAugmentationInfo( VM_dragBtn.GetClientObject() );
+            slot = VM_augBar.GetSlot( info.DefinitionClassName );
 
             if ( slot != none ) {
                 VM_augBar.SwapAug( slot, VM_lastDragOverSlot );
             }
             else {
-                VM_augBar.AddAug( PersonaAugmentationItemButton( VM_dragBtn ).VM_aug, VM_lastDragOverSlot.slot );
+                VM_augBar.AddAug( info, VM_lastDragOverSlot.slot );
             }
         }
     }
     else {
         if ( dragSlot != none ) {
-            VM_augBar.RemoveAug( dragSlot.aug );
+            VM_augBar.RemoveAug( dragSlot.aug.DefinitionClassName );
         }
     }
 
@@ -845,7 +672,7 @@ function bool ToggleChanged( Window button, bool bNewToggle ) {
 
             if ( slot.aug != selectedAug ) {
                 for ( i = 0; i < 12; i++ ) {
-                    if ( augItems[i].VM_aug == slot.aug ) {
+                    if ( VMAugmentationInfo( augItems[i].GetClientObject() ).DefinitionClassName == slot.aug.DefinitionClassName ) {
                         SelectAugmentation( augItems[i] );
 
                         break;
@@ -868,13 +695,13 @@ function bool ToggleChanged( Window button, bool bNewToggle ) {
 
 defaultproperties
 {
-     AugLocs(0)=(X=56,Y=38)
-     AugLocs(1)=(X=211,Y=38)
-     AugLocs(2)=(X=246,Y=120)
-     AugLocs(3)=(X=18,Y=114)
-     AugLocs(4)=(X=246,Y=322)
-     AugLocs(5)=(X=18,Y=198)
-     AugLocs(6)=(X=18,Y=341)
+     AugLocs(0)=(X=18,Y=341)
+     AugLocs(1)=(X=56,Y=38)
+     AugLocs(2)=(X=211,Y=38)
+     AugLocs(3)=(X=246,Y=120)
+     AugLocs(4)=(X=18,Y=114)
+     AugLocs(5)=(X=246,Y=322)
+     AugLocs(6)=(X=18,Y=198)
      augHighlightTextures(0)=Texture'DeusExUI.UserInterface.AugmentationsLocationCerebral'
      augHighlightTextures(1)=Texture'DeusExUI.UserInterface.AugmentationsLocationEyes'
      augHighlightTextures(2)=Texture'DeusExUI.UserInterface.AugmentationsLocationTorso'
@@ -885,8 +712,6 @@ defaultproperties
      augSlotSpacingY=59
      AugmentationsTitleText="Augmentations"
      UpgradeButtonLabel="|&Upgrade"
-     ActivateButtonLabel="Acti|&vate"
-     DeactivateButtonLabel="Deac|&tivate"
      UseCellButtonLabel="Us|&e Cell"
      AugCanUseText="To upgrade an Augmentation, click on the Augmentation you wish to upgrade, then on the Upgrade button."
      BioCellUseText="To replenish Bioelectric Energy for your Augmentations, click on the Use Cell button."

@@ -1,29 +1,15 @@
-//=============================================================================
-// AugEMP.
-//=============================================================================
-class AugEMP extends Augmentation;
+class AugEMP extends VMAugmentation;
 
-state Active
-{
-Begin:
-}
-
-function Deactivate()
-{
-    Super.Deactivate();
-}
+#exec TEXTURE IMPORT FILE="Textures\AugIconEMP.bmp" NAME="AugIconEMP" GROUP="VMUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconEMP_Small.bmp" NAME="AugIconEMP_Small" GROUP="VMUI" MIPS=Off
 
 defaultproperties
 {
-     Icon=Texture'DeusExUI.UserInterface.AugIconEMP'
-     smallIcon=Texture'DeusExUI.UserInterface.AugIconEMP_Small'
-     bAlwaysActive=True
-     AugmentationName="EMP Shield"
-     Description="Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.|n|n[TECH ONE]|nDamage from EMP attacks is reduced by 25%.|n|n[TECH TWO]|nDamage from EMP attacks is reduced by 50%.|n|n[TECH THREE]|nDamage from EMP attacks is reduced by 75%.|n|n[TECH FOUR]|nAn agent is invulnerable to damage from EMP attacks."
-     MPInfo="When active, you only take 5% damage from EMP attacks.  Energy Drain: None"
-     LevelValues(0)=0.750000
-     LevelValues(1)=0.500000
-     LevelValues(2)=0.250000
-     AugmentationLocation=LOC_Subdermal
-     MPConflictSlot=3
+     Icon=Texture'DeusEx.VMUI.AugIconEMP'
+     SmallIcon=Texture'DeusEx.VMUI.AugIconEMP_Small'
+     UpgradeName="EMP Supercapacitor"
+     Description="Nanoscale EMP generators concentrate and direct electromagnetic pulses, allowing the agent to project a damaging electromagnetic beam while also capable of protecting the agent from incoming pulses.|n|nDamage: 20 / 40 / 80 / 160 per second|nRange: 25 feet|nEMP Resistance: 40% / 80% / 100% / 100%|n|nEnergy Rate: 2 per second"
+     InstallLocation=AugmentationLocationSubdermal
+     Rates=(2,2,2,2)
+     BehaviourClassName=AugEMPBehaviour
 }

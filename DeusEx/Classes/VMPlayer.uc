@@ -1,16 +1,14 @@
 class VMPlayer extends DeusExPlayer
     abstract;
 
-// Colored hand textures
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1a.bmp"       NAME="WeaponHandsTex1a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2a.bmp"       NAME="WeaponHandsTex2a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3a.bmp"       NAME="WeaponHandsTex3a"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4a.bmp"       NAME="WeaponHandsTex4a"     GROUP="VM" MIPS=On
-
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex1b.bmp"       NAME="WeaponHandsTex1b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex2b.bmp"       NAME="WeaponHandsTex2b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex3b.bmp"       NAME="WeaponHandsTex3b"     GROUP="VM" MIPS=On
-#exec TEXTURE IMPORT FILE="Textures\WeaponHandsTex4b.bmp"       NAME="WeaponHandsTex4b"     GROUP="VM" MIPS=On
+enum EBodyPart {
+    BodyPartHead,
+    BodyPartTorso,
+    BodyPartArmLeft,
+    BodyPartArmRight,
+    BodyPartLegLeft,
+    BodyPartLegRight,
+};
 
 //==============================================
 // Constants
@@ -20,11 +18,10 @@ const AutoSaveDelay = 180;
 //==============================================
 // Strings
 //==============================================
+var localized string BodyPartNamesLowercase[6];
 var localized string MsgFullHealth;
 var localized string MsgFullEnergy;
-var localized string MsgDroneCost;
 var localized string MsgTooMuchAmmo;
-var localized string MsgMuscleCost;
 var localized string MsgChargedPickupAlready;
 var localized string MsgUseChargedPickup;
 
@@ -47,33 +44,54 @@ var float AutoSaveTimer;
 //==============================================
 // Systems
 //==============================================
+var transient DeusExLevelInfo LevelInfo;
+var transient DeusExRootWindow DXRootWindow;
+
 var travel ForwardPressure FPSystem;
+
+var TableFloat GlobalModifiers;
+var TableTableFloat CategoryModifiers;
 
 var travel VMSkillManager VMSkillSystem;
 var() array< class<VMSKill> > StartingSkills;
+
+var travel VMAugmentationManager VMAugmentationSystem;
+var() array< class<VMAugmentation> > StartingAugmentations;
+var travel name AugmentationHotBar[11];
+
+//==============================================
+// Status
+//==============================================
+var travel Inventory LastPutAway;               // Last item in hand before PutInHand( None ).
+var travel Inventory HeldInHand;                // Item being held.
+var travel Inventory LastHeldInHand;            // Some temporary place to keep track of HeldInHand.
+
+var byte ChargedPickupStatus[5];
+
+var int EnemyInCombatCount;                     // Number of enemies targeting this player in combat.
 
 //==============================================
 // Properties
 //==============================================
 var travel float VisibilityNormal;
-var travel float VisibilityRobot;
-
-var travel Inventory LastPutAway;               // Last item in hand before PutInHand( None ).
-var travel Inventory HeldInHand;                // Item being held.
-var travel Inventory LastHeldInHand;            // Some temporary place to keep track of HeldInHand.
+var travel float VisibilityRadar;
 
 var travel int LastMissionNumber;               // Keep track of the last mission number in case the player transitions to a new mission.
 var travel bool IsMapTravel;                    // Denote if a travel is a normal map travel or game load.
 
-var byte ChargedPickupStatus[5];
+//==============================================
+// Replication
+//==============================================
+replication {
+    reliable if ( Role < ROLE_Authority )
+        ParseLeftClick, ParseRightClick;
+}
 
 //==============================================
 // Initializing and Startup
 //==============================================
 // Override
 function PreTravel() {
-    local DeusExLevelInfo info;
-
     super.PreTravel();
 
     // Gotta do this to keep the held item from being added to the inventory.
@@ -82,9 +100,8 @@ function PreTravel() {
     }
 
     // Save current mission number and marks this as a normal map transition.
-    info = GetLevelInfo();
-    if ( info != None ) {
-        LastMissionNumber = info.MissionNumber;
+    if ( LevelInfo != None ) {
+        LastMissionNumber = LevelInfo.MissionNumber;
     }
     else {
         LastMissionNumber = -3;
@@ -95,30 +112,22 @@ function PreTravel() {
 
 // Override
 event TravelPostAccept() {
-    local DeusExLevelInfo info;
     local int missionNumber;
+
+    LevelInfo = FindLevelInfo();
 
     super.TravelPostAccept();
 
-    info = GetLevelInfo();
-    if ( info != none ) {
-        missionNumber = info.MissionNumber;
+    DXRootWindow = DeusExRootWindow( rootWindow );
+
+    if ( LevelInfo != none ) {
+        missionNumber = LevelInfo.MissionNumber;
     }
     else {
         missionNumber = -3;
     }
 
-    if ( VMSkillSystem == none ) {
-        InitializeSkillSystem();
-    }
-    else {
-        VMSkillSystem.RefreshValues();
-    }
-
-    if (AugmentationSystem != none) {
-        // Should ensure all augs work fine through patches.
-        AugmentationSystem.RefreshesAugs();
-    }
+    RefreshSubSystems();
 
     // Repair the held item since it's fucked up by vanilla coding.
     if ( HeldInHand != None ) {
@@ -147,7 +156,7 @@ event TravelPostAccept() {
 
     // If this is a mission transition, applies FP rate, if a normal map transition, keep current FP meter.
     // Assume the player only moves forward in missions, which is currently true. Also lastMission is set to -3 incase level info can't be found.
-    if ( LastMissionNumber != -3 && info.MissionNumber > LastMissionNumber ) {
+    if ( LastMissionNumber != -3 && LevelInfo.MissionNumber > LastMissionNumber ) {
         AddForwardPressure( 1, 'Critical' );
     }
 
@@ -173,10 +182,41 @@ event TravelPostAccept() {
 }
 
 // Override
-function InitializeSubSystems() {
-    super.InitializeSubSystems();
+function InitializeSkillSystem() {
+    local int i;
 
-    // Initiate the FP system if not found, doesn't matter if FP is enabled or not.
+    VMSkillSystem = Spawn( class'VMSkillManager', self );
+    VMSkillSystem.Initialize( self );
+
+    // Start in reverse because we're adding to a linked list.
+    for ( i = #StartingSkills - 1; i >= 0; i-- ) {
+        VMSkillSystem.Add( StartingSkills[i].Name, StartingSkills[i].Outer.Name );
+    }
+}
+
+// Override
+function InitializeAugmentationSystem() {
+    local int i;
+
+    VMAugmentationSystem = Spawn( class'VMAugmentationManager', self );
+    VMAugmentationSystem.Initialize( self );
+
+    // Start in reverse because we're adding to a linked list.
+    for ( i = #StartingAugmentations - 1; i >= 0; i-- ) {
+        VMAugmentationSystem.Add( StartingAugmentations[i].Name, StartingAugmentations[i].Outer.Name );
+    }
+}
+
+function RefreshSubSystems() {
+    if ( GlobalModifiers == none ) {
+        GlobalModifiers = new class'TableFloat';
+    }
+    GlobalModifiers.Clear();
+    if ( CategoryModifiers == none ) {
+        CategoryModifiers = new class'TableTableFloat';
+    }
+    CategoryModifiers.Clear();
+
     if ( FPSystem == none ) {
         FPSystem = Spawn( class'ForwardPressure', self );
         FPSystem.Initialize( self );
@@ -185,19 +225,55 @@ function InitializeSubSystems() {
         FPSystem.SetPlayer( self );
     }
     FPSystem.SetOwner( self );
+
+    if ( VMSkillSystem == none ) {
+        InitializeSkillSystem();
+    }
+    else {
+        VMSkillSystem.Refresh( self );
+    }
+
+    if ( VMAugmentationSystem == none ) {
+        InitializeAugmentationSystem();
+    }
+    else {
+        VMAugmentationSystem.Refresh( self );
+    }
+    RefreshAugmentationDisplay();
 }
 
-// Override
-function InitializeSkillSystem() {
-    local int i;
-
-    VMSkillSystem = Spawn( class'VMSkillManager', self );
-    VMSkillSystem.Initialize();
-
-    // Start in reverse because we're adding to a linked list.
-    for ( i = ( #StartingSkills - 1 ); i >= 0; i-- ) {
-        VMSkillSystem.AddSkill( StartingSkills[i] );
+function ResetSubSystems() {
+    if ( GlobalModifiers == none ) {
+        GlobalModifiers = new class'TableFloat';
     }
+    GlobalModifiers.Clear();
+    if ( CategoryModifiers == none ) {
+        CategoryModifiers = new class'TableTableFloat';
+    }
+    CategoryModifiers.Clear();
+
+    if ( FPSystem == none ) {
+        FPSystem = Spawn( class'ForwardPressure', self );
+        FPSystem.Initialize( self );
+    }
+    else {
+        FPSystem.Reset();
+    }
+
+    if ( VMSkillSystem == none ) {
+        InitializeSkillSystem();
+    }
+    else {
+        VMSkillSystem.Reset();
+    }
+
+    if ( VMAugmentationSystem == none ) {
+        InitializeAugmentationSystem();
+    }
+    else {
+        VMAugmentationSystem.Reset();
+    }
+    RefreshAugmentationDisplay();
 }
 
 //==============================================
@@ -225,25 +301,66 @@ function VMPlayerTick( float deltaTime ) {
     }
 }
 
+// Override
+function MaintainEnergy( float deltaTime ) {
+    local Float energyUse;
+
+    if ( !IsInState( 'Dying' ) && !IsInState( 'Paralyzed' ) ) {
+        if ( Energy > 0 ) {
+            energyUse = TickAllAugmentations( deltaTime ) * ( 1 - GetValue( 'EnergyUseReduction' ) );
+            Energy -= energyUse;
+
+            AddForwardPressure( energyUse, 'Energy' );
+
+            // Calculate the energy drain due to EMP attacks
+            if ( EnergyDrain > 0 ) {
+                energyUse = EnergyDrainTotal * deltaTime;
+                Energy -= EnergyUse;
+                EnergyDrain -= EnergyUse;
+                if ( EnergyDrain <= 0 ) {
+                    EnergyDrain = 0;
+                    EnergyDrainTotal = 0;
+                }
+
+                AddForwardPressure( energyUse, 'Damage' );
+            }
+
+            if ( Energy <= 0 ) {
+                ClientMessage( EnergyDepleted );
+                Energy = 0;
+                EnergyDrain = 0;
+                EnergyDrainTotal = 0;
+            }
+        }
+        else {
+            DeactivateAllAugmentations();
+        }
+    }
+}
+
 // Vanilla Matters: Update visibility values.
 function UpdateVisibility() {
     local bool adaptiveOn;
 
     adaptiveOn = UsingChargedPickup( class'AdaptiveArmor' );
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugRadarTrans' ) != -1.0 || adaptiveOn ) {
-        VisibilityRobot = 0;
+    if ( adaptiveOn ) {
+        VisibilityRadar = 0;
     }
     else {
-        VisibilityRobot = AIVisibility();
+        VisibilityRadar = AIVisibility();
     }
 
-    if ( AugmentationSystem.GetAugLevelValue( class'AugCloak' ) != -1.0 || adaptiveOn ) {
+    VisibilityRadar *= FMax( 1 - GetValue( 'RadarVisibilityReductionMult' ), 0 );
+
+    if ( adaptiveOn ) {
         VisibilityNormal = 0;
     }
     else {
         VisibilityNormal = AIVisibility();
     }
+
+    VisibilityNormal *= FMax( 1 - GetValue( 'NormalVisibilityReductionMult' ), 0 );
 }
 
 // Vanilla Matters: Update the activation status of every type of charged pickups.
@@ -279,27 +396,6 @@ function UpdateChargedPickupStatus() {
     }
 }
 
-// Copied from ScriptedPawn to handle burning damage.
-function UpdateFire() {
-    HealthTorso = HealthTorso - 2;
-    HealthArmLeft = HealthArmLeft - 2;
-    HealthArmRight = HealthArmRight - 2;
-    HealthLegLeft = HealthLegLeft - 2;
-    HealthLegRight = HealthLegLeft - 2;
-
-    GenerateTotalHealth();
-
-    burnTimer = burnTimer - 10;
-
-    if ( Health <= 0 || burnTimer <= 0 ) {
-        ExtinguishFire();
-
-        if ( Health <= 0 ) {
-            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
-        }
-    }
-}
-
 // Override
 event PlayerTick( float deltaTime ) {
     // Update our stuff first.
@@ -313,6 +409,204 @@ state PlayerWalking {
         VMPlayerTick( deltaTime );
 
         super.PlayerTick( deltaTime );
+    }
+
+    // lets us affect the player's movement
+    function ProcessMove ( float deltaTime, vector newAccel, eDodgeDir dodgeMove, rotator deltaRot ) {
+        local int newSpeed, defaultSpeed;
+        local vector HitLocation, HitNormal, checkpoint, downcheck;
+        local Actor HitActor, HitActorDown;
+        local bool bCantStandUp;
+        local Vector loc, traceSize;
+        local float alpha, maxLeanDist;
+
+        if ( VMAugmentationSystem != none ) {
+            if ( VMAugmentationSystem.ProcessMove( deltaTime ) ) {
+                return;
+            }
+        }
+
+        defaultSpeed = GetCurrentGroundSpeed();
+
+        if ( bIsCrouching || bForceDuck ) {
+            SetBasedPawnSize( default.CollisionRadius, 16 );
+
+            // check to see if we could stand up if we wanted to
+            checkpoint = Location;
+            // check normal standing height
+            checkpoint.Z = checkpoint.Z - CollisionHeight + 2 * GetDefaultCollisionHeight();
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = 1;
+            HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+            bCantStandUp = HitActor != none;
+        }
+        else {
+            GroundSpeed = defaultSpeed;
+            if ( !IsLeaning() ) {
+                ResetBasedPawnSize();
+            }
+        }
+
+        bForceDuck = bCantStandUp;
+
+        // if the player's legs are damaged, then reduce our speed accordingly
+        newSpeed = defaultSpeed;
+
+        if ( Level.NetMode == NM_Standalone ) {
+            if ( HealthLegLeft < 1 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.2;
+            }
+            else if ( HealthLegLeft < 34 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.15;
+            }
+            else if ( HealthLegLeft < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.10;
+            }
+
+            if ( HealthLegRight < 1 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.2;
+            }
+            else if ( HealthLegRight < 34 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.15;
+            }
+            else if ( HealthLegRight < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.10;
+            }
+
+            if ( HealthTorso < 67 ) {
+                newSpeed -= defaultSpeed * 0.5 * 0.05;
+            }
+        }
+
+        // let the player pull themselves along with their hands even if both of
+        // their legs are blown off
+        if ( HealthLegLeft < 1 && HealthLegRight < 1 ) {
+            bIsWalking = true;
+            bForceDuck = true;
+        }
+        else if ( bIsCrouching || bForceDuck ) {
+            bIsWalking = true;
+        }
+
+        // slow the player down if he's carrying something heavy
+        // Like a DEAD BODY!  AHHHHHH!!!
+        if ( CarriedDecoration != none ) {
+            newSpeed -= CarriedDecoration.Mass * 2;
+        }
+        else if ( inHand != none && inHand.IsA( 'POVCorpse' ) ) {
+            newSpeed -= inHand.Mass * 3;
+        }
+
+        // Vanilla Matters: Change heavy weapon penalty check to apply a direct penalty instead of level check
+        if ( Weapon != none && Weapon.Mass > 30 ) {
+            newSpeed = defaultSpeed * ( 0.5 + GetValue( 'HeavyWeaponMovementSpeedBonus' ) );
+        }
+
+        // if we are moving really slow, force us to walking
+        // Vanilla Matters: Change walking to start at half running speed
+        if ( newSpeed <= ( defaultSpeed / 2 ) && !bForceDuck ) {
+            bIsWalking = true;
+            newSpeed = defaultSpeed;
+        }
+
+        GroundSpeed = FMax( newSpeed, 100 );
+
+        // if we are moving or crouching, we can't lean
+        // uncomment below line to disallow leaning during crouch
+
+        if ( VSize( Velocity ) < 10 && aForward == 0 ) {
+            bCanLean = true;
+        }
+        else {
+            bCanLean = false;
+        }
+
+        // check leaning buttons (axis aExtra0 is used for leaning)
+        maxLeanDist = 40;
+
+        if ( IsLeaning() ) {
+            if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                ViewRotation.Roll = curLeanDist * 20;
+            }
+
+            if ( !bIsCrouching && !bForceDuck ) {
+                SetBasedPawnSize( CollisionRadius, GetDefaultCollisionHeight() - Abs( curLeanDist ) / 3.0 );
+            }
+        }
+
+        if ( bCanLean && aExtra0 != 0 ) {
+            DropDecoration();
+            if ( AnimSequence != 'CrouchWalk' ) {
+                PlayCrawling();
+            }
+
+            alpha = maxLeanDist * aExtra0 * 2.0 * deltaTime;
+
+            loc = vect( 0,0,0 );
+            loc.Y = alpha;
+            if ( Abs( curLeanDist + alpha ) < maxLeanDist ) {
+                // check to make sure the destination not blocked
+                checkpoint = ( loc >> Rotation ) + Location;
+                traceSize.X = CollisionRadius;
+                traceSize.Y = CollisionRadius;
+                traceSize.Z = CollisionHeight;
+                HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+
+                // check down as well to make sure there's a floor there
+                downcheck = checkpoint - vect( 0, 0, 1 ) * CollisionHeight;
+                HitActorDown = Trace( HitLocation, HitNormal, downcheck, checkpoint, true, traceSize );
+                if ( HitActor == none && HitActorDown != none ) {
+                    if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                        SetLocation( checkpoint );
+                        ServerUpdateLean( checkpoint );
+                        curLeanDist += alpha;
+                    }
+                }
+            }
+            else {
+                if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                    curLeanDist = aExtra0 * maxLeanDist;
+                }
+            }
+        }
+        else if ( IsLeaning() ) {
+            if ( AnimSequence == 'CrouchWalk' ) {
+                PlayRising();
+            }
+
+            if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                prevLeanDist = curLeanDist;
+                alpha = FClamp( 7.0 * DeltaTime, 0.001, 0.9 );
+                curLeanDist *= 1.0 - alpha;
+                if ( Abs( curLeanDist ) < 1.0 ) {
+                    curLeanDist = 0;
+                }
+            }
+
+            loc = vect( 0,0,0 );
+            loc.Y = -( prevLeanDist - curLeanDist );
+
+            // check to make sure the destination not blocked
+            checkpoint = ( loc >> Rotation ) + Location;
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = CollisionHeight;
+            HitActor = Trace( HitLocation, HitNormal, checkpoint, Location, true, traceSize );
+
+            // check down as well to make sure there's a floor there
+            downcheck = checkpoint - vect( 0,0,1 ) * CollisionHeight;
+            HitActorDown = Trace( HitLocation, HitNormal, downcheck, checkpoint, true, traceSize );
+            if ( HitActor == none && HitActorDown != none )
+            {
+                if ( PlayerIsClient() || Level.NetMode == NM_Standalone ) {
+                    SetLocation( checkpoint );
+                    ServerUpdateLean( checkpoint );
+                }
+            }
+        }
+
+        super.ProcessMove( deltaTime, newAccel, dodgeMove, deltaRot );
     }
 }
 
@@ -339,8 +633,6 @@ state PlayerSwimming {
 //==============================================
 // Override
 exec function QuickSave() {
-    local DeusExLevelInfo info;
-
     // Don't allow saving if:
     // 1) The player is dead
     // 2) We're on the logo map
@@ -348,8 +640,7 @@ exec function QuickSave() {
     // 3) A datalink is playing
     // 4) We're in a multiplayer game
 
-    info = GetLevelInfo();
-    if ( !ShouldSave( info ) ) {
+    if ( !ShouldSave() ) {
         return;
     }
 
@@ -373,7 +664,7 @@ exec function QuickSave() {
         CurrentQSIndex = -4;
     }
 
-    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ info.MissionLocation );
+    SaveGame( CurrentQSIndex, QuickSaveGameTitle @ "-" @ TruePlayerName @ "-" @ LevelInfo.MissionLocation );
 }
 
 // Override
@@ -383,10 +674,7 @@ function RequestAutoSave( optional float delay ) {
 }
 // Handle auto save.
 function AutoSave() {
-    local DeusExLevelInfo info;
-
-    info = GetLevelInfo();
-    if ( !ShouldSave( info ) ) {
+    if ( !ShouldSave() ) {
         return;
     }
 
@@ -400,11 +688,11 @@ function AutoSave() {
     IsAutoSaving = false;
     AutoSaveTimer = 0;
 
-    SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ info.MissionLocation );
+    SaveGame( CurrentASIndex, "Auto Save -" @ TruePlayerName @ "-" @ LevelInfo.MissionLocation );
 }
 
-function bool ShouldSave( DeusExLevelInfo info ) {
-    if ( IsInMainMenu( info )
+function bool ShouldSave() {
+    if ( IsInMainMenu()
         || dataLinkPlay != none
         || Level.NetMode != NM_Standalone
     ) {
@@ -415,7 +703,14 @@ function bool ShouldSave( DeusExLevelInfo info ) {
     }
 }
 
-// Override
+exec function QuickLoad() {
+    if ( Level.Netmode != NM_Standalone ) {
+        return;
+    }
+
+    DXRootWindow.ConfirmQuickLoad();
+}
+
 function QuickLoadConfirmed() {
     if ( Level.Netmode != NM_Standalone ) {
         return;
@@ -424,8 +719,8 @@ function QuickLoadConfirmed() {
     LoadGame( CurrentQSIndex );
 }
 
-function bool IsInMainMenu( DeusExLevelInfo info ) {
-    if ( ( info != none && ( info.MissionNumber < 0 || info.MissionLocation == "" ) )
+function bool IsInMainMenu() {
+    if ( LevelInfo == none || LevelInfo.MissionNumber < 0 || LevelInfo.MissionLocation == ""
         || IsInState( 'Dying' ) || IsInState( 'Paralyzed' ) || IsInState( 'Interpolating' )
     ) {
         return true;
@@ -574,42 +869,25 @@ function Landed( vector HitNormal ) {
 
         if ( Velocity.Z < -700 && ReducedDamageType != 'All' ) {
             if ( Role == ROLE_Authority ) {
-                augReduce = 0;
-                if ( AugmentationSystem != none ) {
-                    // Make AugStealth also reduce a smaller amount of fall damage, while AugSpeed reduce more.
-                    augLevel = AugmentationSystem.GetClassLevel( class'AugSpeed' );
-                    if ( augLevel >= 0 ) {
-                        augReduce = 20 * ( augLevel + 1 );
-                    }
-                    else {
-                        augLevel = AugmentationSystem.GetClassLevel( class'AugStealth' );
-
-                        if ( augLevel >= 0 ) {
-                            augReduce = 4 + ( 4 * ( augLevel + 1 ) );
-                        }
-                    }
-                }
-
-                // Don't call TakeDamage if it's fully reduced.
-                dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+                dmg = Max( ( -0.16 * ( Velocity.Z + 700 ) ), 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( -1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
 
                     legLocation = Location + vect( 1, 0, -1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
                 }
 
-                dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ) - augReduce, 0 );
+                dmg = Max( ( -0.06 * ( Velocity.Z + 700 ) ), 0 );
                 if ( dmg > 0 ) {
                     legLocation = Location + vect( 0, 0, 1 );
-                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'fell' );
+                    TakeDamage( dmg, none, legLocation, vect( 0, 0, 0 ), 'Fell' );
                 }
             }
         }
     }
-    else if ( Level.Game != none && Level.Game.Difficulty > 1 && Velocity.Z > 0.5 * JumpZ ) {
-        MakeNoise( 0.1 * Level.Game.Difficulty );
+    else if ( Velocity.Z > 0.5 * JumpZ ) {
+        MakeNoise( 0.1 * CombatDifficulty );
     }
 
     bJustLanded = true;
@@ -625,38 +903,20 @@ function Timer() {
 //==============================================
 // Inputs
 //==============================================
-// Rewrite aug activativation functions to be clearer.
-exec function AugSlot1() { ActivateAugByKey( 0 ); }
-exec function AugSlot2() { ActivateAugByKey( 1 ); }
-exec function AugSlot3() { ActivateAugByKey( 2 ); }
-exec function AugSlot4() { ActivateAugByKey( 3 ); }
-exec function AugSlot5() { ActivateAugByKey( 4 ); }
-exec function AugSlot6() { ActivateAugByKey( 5 ); }
-exec function AugSlot7() { ActivateAugByKey( 6 ); }
-exec function AugSlot8() { ActivateAugByKey( 7 ); }
-exec function AugSlot9() { ActivateAugByKey( 8 ); }
-exec function AugSlot10() { ActivateAugByKey( 9 ); }
-
-// Flashlight now has its own key and function.
-exec function ToggleFlashlight() {
-    ActivateAugByKey( 10 );
-}
-
 // Override
 exec function ParseLeftClick() {
     local Inventory item;
-    local Augmentation aug;
+    local VMAugmentationInfo aug;
     local ChargedPickup cpickup;
 
     if ( RestrictInput() ) {
         return;
     }
 
-    // if the spy drone augmentation is active, blow it up
-    if ( bSpyDroneActive ) {
-        DroneExplode();
-
-        return;
+    if ( VMAugmentationSystem != none ) {
+        if ( VMAugmentationSystem.ParseLeftClick() ) {
+            return;
+        }
     }
 
     if ( inHand != none && !bInHandTransition ) {
@@ -732,28 +992,10 @@ exec function ParseLeftClick() {
             }
         }
     }
-    // Allow holding pickups in hands or doing powerthrows.
+    // Allow holding pickups in hands.
     else if ( inHand == None ) {
         if ( FrobTarget != None ) {
             TakeHold( Inventory( FrobTarget ), true );
-        }
-        else if ( CarriedDecoration != None && AugmentationSystem != None ) {
-            aug = AugmentationSystem.FindAugmentation( class'AugMuscle' );
-
-            if ( aug != None && aug.bHasIt && aug.bIsActive ) {
-                if ( !CanDrain( ( CarriedDecoration.Mass / 50 ) * AugMuscle( aug ).VM_muscleCost ) ) {
-                    ClientMessage( MsgMuscleCost );
-                }
-                else if ( DeusExDecoration( CarriedDecoration ) != None ) {
-                    DeusExDecoration( CarriedDecoration ).VM_bPowerthrown = true;
-                    DeusExDecoration( CarriedDecoration ).VM_powerThrower = self;
-
-                    PlaySound( JumpSound, SLOT_None );
-                    PlaySound( aug.ActivateSound, SLOT_None );
-
-                    DropDecoration();
-                }
-            }
         }
         else if ( LastPutAway != None ) {
             PutInHand( LastPutAway );
@@ -766,8 +1008,7 @@ exec function ParseRightClick() {
     local AutoTurret turret;
     local int viewIndex;
     local bool ownedByPlayer;
-    local Inventory oldFirstItem;
-    local Inventory oldInHand;
+    local Inventory item, oldFirstItem, oldInHand;
     local Decoration oldCarriedDecoration;
     local Vector loc;
     local bool needKey;
@@ -780,6 +1021,7 @@ exec function ParseRightClick() {
         return;
     }
 
+    item = Inventory( FrobTarget );
     oldFirstItem = Inventory;
     oldInHand = inHand;
     oldCarriedDecoration = CarriedDecoration;
@@ -810,11 +1052,11 @@ exec function ParseRightClick() {
 
             return;
         }
-        else if ( Inventory( FrobTarget ) != none ) {
+        else if ( item != none ) {
             // Allow taking hold of an item if the player can't pick it up.
-            if ( !HandleItemPickup( FrobTarget, true ) ) {
-                if ( TakeHold( Inventory( FrobTarget ) ) ) {
-                    if ( WasHolding( Inventory( FrobTarget ) ) ) {
+            if ( !HandleItemPickup( item, true ) ) {
+                if ( TakeHold( item ) ) {
+                    if ( WasHolding( item ) ) {
                         LastHeldInHand = None;
                     }
                 }
@@ -829,7 +1071,7 @@ exec function ParseRightClick() {
                 )
             ) {
                 if ( Level.NetMode == NM_Standalone ) {
-                    FindInventorySlot( Inventory( FrobTarget ) );
+                    FindInventorySlot( item );
                 }
                 else {
                     FindInventorySlot( Inventory );
@@ -926,47 +1168,54 @@ exec function ParseRightClick() {
     }
 }
 
+// Rewrite aug activativation functions to be clearer.
+exec function AugSlot1() { ToggleAugmentation( AugmentationHotBar[0] ); }
+exec function AugSlot2() { ToggleAugmentation( AugmentationHotBar[1] ); }
+exec function AugSlot3() { ToggleAugmentation( AugmentationHotBar[2] ); }
+exec function AugSlot4() { ToggleAugmentation( AugmentationHotBar[3] ); }
+exec function AugSlot5() { ToggleAugmentation( AugmentationHotBar[4] ); }
+exec function AugSlot6() { ToggleAugmentation( AugmentationHotBar[5] ); }
+exec function AugSlot7() { ToggleAugmentation( AugmentationHotBar[6] ); }
+exec function AugSlot8() { ToggleAugmentation( AugmentationHotBar[7] ); }
+exec function AugSlot9() { ToggleAugmentation( AugmentationHotBar[8] ); }
+exec function AugSlot10() { ToggleAugmentation( AugmentationHotBar[9] ); }
+
+// Flashlight now has its own key and function.
+exec function ToggleFlashlight() {
+    ToggleAugmentation( AugmentationHotBar[10] );
+}
+
 //==============================================
-// Stats Management
+// Actions
 //==============================================
-function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
-    if ( Robot( P ) != none ) {
-        return VisibilityRobot;
+function DoJump( optional float F ) {
+    if ( ( CarriedDecoration != none && CarriedDecoration.Mass > 20 )
+        || ( bForceDuck || IsLeaning() )
+        || Physics != PHYS_Walking
+    ) {
+        return;
     }
-    else {
-        return VisibilityNormal;
+
+    if ( Role == ROLE_Authority ) {
+        PlaySound( JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2 * FRand() );
     }
+
+    MakeNoise( 0.1 * CombatDifficulty );
+
+    PlayInAir();
+
+    Velocity.Z = JumpZ * ( 1 + GetValue( 'JumpVelocityBonusMult' ) );
+
+    if ( Base != Level ) {
+        Velocity.Z += Base.Velocity.Z;
+    }
+
+    SetPhysics( PHYS_Falling );
 }
 
-function bool CanDrain( float drainAmount ) {
-    if ( AugmentationSystem != None ) {
-        return ( Energy >= ( drainAmount * AugmentationSystem.VM_energyMult ) );
-    }
-
-    return false;
-}
-
-// Override: Drain energy then return the amount that doesn't get drained properly if energy is depleted.
-function float DrainEnergy( Augmentation augDraining, float drainAmount, optional float efficiency ) {
-    if ( efficiency > 0.0 ) {
-        // How much energy should be drained per unit of drainAmount.
-        drainAmount = drainAmount / efficiency;
-    }
-
-    augDraining.AddImmediateEnergyRate( drainAmount );
-
-    if ( !CanDrain( drainAmount ) ) {
-        drainAmount = drainAmount - Energy;
-    }
-
-    // Return the drainAmount to normal.
-    if ( efficiency > 0.0 ) {
-        drainAmount = drainAmount * efficiency;
-    }
-
-    return drainAmount;
-}
-
+//==============================================
+// Status Management
+//==============================================
 // Override to optimize
 function bool UsingChargedPickup( class<ChargedPickup> itemClass ) {
     local int i;
@@ -1006,16 +1255,26 @@ function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) 
     return None;
 }
 
+// Combat status
+// Override
+function AddEnemyInCombat( ScriptedPawn sp ) {
+    EnemyInCombatCount++;
+}
+// Override
+function RemoveEnemyInCombat( ScriptedPawn sp ) {
+    EnemyInCombatCount = Max( EnemyInCombatCount - 1, 0 );
+}
+// Override
+function bool IsInCombat() {
+    return EnemyInCombatCount > 0;
+}
+
 //==============================================
 // Item Management
 //==============================================
 // Override
 exec function PutInHand( optional Inventory inv ) {
     if ( RestrictInput() ) {
-        return;
-    }
-
-    if ( inHand == none && bSpyDroneActive ) {
         return;
     }
 
@@ -1137,11 +1396,97 @@ function bool BringUpItem( name itemName ) {
     return false;
 }
 
+// Override
+function DropDecoration() {
+    local float velscale, size, mult, boost;
+    local bool success;
+    local Vector X, Y, Z, dropVect, origLoc, HitLocation, HitNormal, extent;
+    local Actor hitActor;
+
+    if ( CarriedDecoration != None ) {
+        origLoc = CarriedDecoration.Location;
+        GetAxes( Rotation, X, Y, Z );
+
+        // if we are highlighting something, try to place the object on the target
+        if ( FrobTarget != none && !FrobTarget.IsA( 'Pawn' ) ) {
+            CarriedDecoration.Velocity = vect( 0, 0, 0 );
+
+            // try to drop the object about one foot above the target
+            size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
+            dropVect.X = size / 2 - FRand() * size;
+            dropVect.Y = size / 2 - FRand() * size;
+            dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
+            dropVect += FrobTarget.Location;
+        }
+        else {
+            // Use a boost variable so we have more control over throw power. Base boost is 500, like vanilla.
+            boost = 500;
+            boost += boost * GetValue( 'ThrowVelocityBonus' );
+
+            if ( IsLeaning() ) {
+                CarriedDecoration.Velocity = vect( 0, 0, 0 );
+            }
+            else {
+                CarriedDecoration.Velocity = Normal( Vector( ViewRotation ) ) * boost;
+            }
+
+            // scale it based on the mass
+            velscale = FClamp( CarriedDecoration.Mass / 20.0, 1.0, 40.0 );
+
+            CarriedDecoration.Velocity /= velscale;
+            dropVect = Location + ( CarriedDecoration.CollisionRadius + CollisionRadius + 4 ) * X;
+            dropVect.Z += BaseEyeHeight;
+        }
+
+        // is anything blocking the drop point? (like thin doors)
+        if ( FastTrace( dropVect ) ) {
+            CarriedDecoration.SetCollision( true, true, true );
+            CarriedDecoration.bCollideWorld = true;
+
+            // check to see if there's space there
+            extent.X = CarriedDecoration.CollisionRadius;
+            extent.Y = CarriedDecoration.CollisionRadius;
+            extent.Z = 1;
+            hitActor = Trace( HitLocation, HitNormal, dropVect, CarriedDecoration.Location, true, extent );
+
+            if ( hitActor == none && CarriedDecoration.SetLocation( dropVect ) ) {
+                success = true;
+            }
+            else {
+                CarriedDecoration.SetCollision( false, false, false );
+                CarriedDecoration.bCollideWorld = false;
+            }
+        }
+
+        // if we can drop it here, then drop it
+        if ( success ) {
+            CarriedDecoration.bWasCarried = true;
+            CarriedDecoration.SetBase( none);
+            CarriedDecoration.SetPhysics( PHYS_Falling );
+            CarriedDecoration.Instigator = self;
+
+            // turn off translucency
+            CarriedDecoration.Style = CarriedDecoration.Default.Style;
+            CarriedDecoration.bUnlit = CarriedDecoration.Default.bUnlit;
+            if ( CarriedDecoration.IsA( 'DeusExDecoration' ) ) {
+                DeusExDecoration( CarriedDecoration ).ResetScaleGlow();
+            }
+
+            CarriedDecoration = None;
+        }
+        else {
+            // otherwise, don't drop it and display a message
+            CarriedDecoration.SetLocation( origLoc );
+            ClientMessage( CannotDropHere );
+        }
+    }
+}
+
 //==============================================
 // Inventory Management
 //==============================================
 // Override
-function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
+function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
     local bool canPickup;
     local bool slotSearchNeeded;
     local Inventory foundItem;
@@ -1151,16 +1496,16 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
     canPickup = true;
     slotSearchNeeded = true;
 
-    if ( DataVaultImage( FrobTarget ) != none || NanoKey( FrobTarget ) != none || Credits( FrobTarget ) != none ) {
+    if ( DataVaultImage( item ) != none || NanoKey( item ) != none || Credits( item ) != none ) {
         slotSearchNeeded = False;
     }
-    else if ( DeusExPickup( FrobTarget ) != none ) {
-        if ( FindInventoryType( FrobTarget.Class ) != none ) {
-            slotSearchNeeded = !DeusExPickup( FrobTarget ).bCanHaveMultipleCopies;
+    else if ( DeusExPickup( item ) != none ) {
+        if ( FindInventoryType( item.Class ) != none ) {
+            slotSearchNeeded = !DeusExPickup( item ).bCanHaveMultipleCopies;
         }
     }
     else {
-        foundItem = GetWeaponOrAmmo( Inventory( FrobTarget ) );
+        foundItem = GetWeaponOrAmmo( item );
 
         if ( foundItem != none ) {
             slotSearchNeeded = false;
@@ -1182,33 +1527,20 @@ function bool HandleItemPickup( Actor FrobTarget, optional bool searchOnly ) {
                     canPickup = false;
                 }
             }
-            else if ( weapon != none ) {
-                if ( weapon.AmmoName == none
-                    || weapon.AmmoName == class'AmmoNone'
-                    || weapon.PickupAmmoCount <= 0
-                ) {
-                    ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
-                    canPickup = false;
-                }
-                else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
-                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.ItemName ) );
-                    canPickup = false;
-                }
-            }
         }
     }
 
     if ( slotSearchNeeded && canPickup ) {
-        if ( !FindInventorySlot( Inventory( FrobTarget ), searchOnly ) ) {
-            ClientMessage( Sprintf( InventoryFull, Inventory( FrobTarget ).itemName ) );
+        if ( !FindInventorySlot( item, searchOnly ) ) {
+            ClientMessage( Sprintf( InventoryFull, item.itemName ) );
             canPickup = False;
             ServerConditionalNotifyMsg( MPMSG_DropItem );
         }
     }
 
     if ( canPickup ) {
-        weapon = DeusExWeapon( FrobTarget );
-        if ( Level.NetMode != NM_Standalone && ( weapon != none || DeusExAmmo( FrobTarget ) != none ) ) {
+        weapon = DeusExWeapon( item );
+        if ( Level.NetMode != NM_Standalone && ( weapon != none || DeusExAmmo( item ) != none ) ) {
             PlaySound( Sound'WeaponPickup', SLOT_Interact, 0.5 + FRand() * 0.25, , 256, 0.95 + FRand() * 0.1 );
         }
 
@@ -1257,54 +1589,15 @@ exec function bool DropItem( optional Inventory item, optional bool drop ) {
 // Damage Management
 //==============================================
 // Override
-function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool checkOnly ) {
-    local float newDamage;
-    local float augValue;
-    local float pct;
+function bool GetModifiedDamage( int damage, name damageType, vector hitLocation, out int modifiedDamage ) {
     local bool reduced;
+    local float newDamage;
     local ChargedPickup cpickup;
 
-    newDamage = float( Damage );
+    newDamage = float( damage );
 
-    if ( damageType == 'HalonGas' ) {
-        if ( bOnFire && !checkOnly ) {
-            ExtinguishFire();
-        }
-    }
-
-    if ( AugmentationSystem != none ) {
-        if ( damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
-            || damageType == 'HalonGas'  || damageType == 'PoisonEffect' || damageType == 'Poison'
-        ) {
-            augValue = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
-
-            if ( newDamage ~= 0.0 ) {
-                StopPoison();
-                drugEffectTimer = 0;
-            }
-        }
-
-        // Add sabot to augballistic.
-        if ( damageType == 'Shot' || damageType == 'AutoShot' || damageType == 'Sabot' ) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugBallistic' );
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
-        }
-
-        // Add EMP to augshield.
-        if ( damageType == 'Burned' || damageType == 'Flamed' || damageType == 'EMP' ||
-            damageType == 'Exploded' || damageType == 'Shocked'
-        ) {
-            augValue = AugmentationSystem.GetAugLevelValue( class'AugShield' );
-            if ( augValue >= 0.0 ) {
-                newDamage *= augValue;
-            }
-        }
-    }
+    newDamage = newDamage - GetCategoryValue( 'DamageResistanceFlat', damageType );
+    newDamage *= 1 - GetCategoryValue( 'DamageResistanceMult', damageType );
 
     // Nullify all damage of the gas type if you have a Rebreather.
     if ( UsingChargedPickup( class'Rebreather' )
@@ -1331,33 +1624,46 @@ function bool DXReduceDamage( int Damage, name damageType, vector hitLocation, o
         }
     }
 
-    // Allow full damage resistance.
+    reduced = newDamage < damage;
     if ( damageType == 'Shot' || damageType == 'AutoShot' ) {
         newDamage *= CombatDifficulty;
-        Damage *= CombatDifficulty;
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
     else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
         || damageType == 'PoisonGas'
     ) {
         newDamage *= ( CombatDifficulty / 2 ) + 0.5;
-        Damage *= ( CombatDifficulty / 2 ) + 0.5;
     }
 
-    if ( newDamage < Damage ) {
-        if ( !checkOnly ) {
-            pct = 1.0 - ( newDamage / Damage );
-
-            SetDamagePercent( pct );
-            ClientFlash( 0.01, vect( 0, 0, 50 ) );
-        }
-
-        reduced = true;
-    }
-
-    adjustedDamage = int( newDamage );
+    modifiedDamage = Max( int( newDamage ), 0 );
 
     return reduced;
+}
+
+//==============================================
+// Modifiers Management
+//==============================================
+function float GetValue( name name, optional float defaultValue ) {
+    local float value;
+
+    if ( GlobalModifiers.TryGetValue( name, value ) ) {
+        return value;
+    }
+
+    return defaultValue;
+}
+
+function float GetCategoryValue( name category, name name, optional float defaultValue ) {
+    local float value;
+    local TableFloat table;
+
+    if ( CategoryModifiers.TryGetValue( category, table ) ) {
+        if ( table.TryGetValue( name, value ) ) {
+            return value;
+        }
+    }
+
+    return defaultValue;
 }
 
 //==============================================
@@ -1377,34 +1683,10 @@ function VMSkillInfo GetFirstSkillInfo() {
 }
 
 // Override
-function bool IncreaseSkillLevel( VMSkillInfo info ) {
-    if ( info.CanUpgrade( SkillPointsAvail ) ) {
-        SkillPointsAvail -= info.GetNextLevelCost();
-        return VMSkillSystem.IncreaseLevel( info );
-    }
-
-    return false;
-}
-// Override
-function bool DecreaseSkillLevel( VMSkillInfo info ) {
-    if ( VMSkillSystem.DecreaseLevel( info ) ) {
-        SkillPointsAvail += info.GetNextLevelCost();
-
-        return true;
-    }
-
-    return false;
+function bool IncreaseSkillLevel( name name ) {
+    return VMSkillSystem.IncreaseLevel( name );
 }
 
-// Override
-function float GetSkillValue( string name, optional float defaultValue ) {
-    if ( VMSkillSystem != none ) {
-        return VMSkillSystem.GetValue( name, defaultValue );
-    }
-    else {
-        return defaultValue;
-    }
-}
 // Override
 function int GetSkillLevel( name name ) {
     if ( VMSkillSystem != none ) {
@@ -1417,32 +1699,328 @@ function int GetSkillLevel( name name ) {
 //==============================================
 // Aug Management
 //==============================================
-function float GetAugValue( class<Augmentation> class ) {
-    if ( AugmentationSystem != none ) {
-        return AugmentationSystem.GetAugLevelValue( class );
+function VMAugmentationManager GetAugmentationSystem() {
+    return VMAugmentationSystem;
+}
+function VMAugmentationInfo GetFirstAugmentationInfo() {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.FirstAugmentationInfo;
+    }
+
+    return none;
+}
+
+function bool AddAugmentation( name className, name packageName ) {
+    local int i;
+    local VMAugmentationInfo info;
+
+    if ( VMAugmentationSystem != none ) {
+        info = VMAugmentationSystem.Add( className, packageName );
+        if ( info != none && !info.IsPassive() ) {
+            for ( i = 0; i < 10; i++ ) {
+                if ( AugmentationHotBar[i] == '' ) {
+                    AugmentationHotBar[i] = className;
+                    break;
+                }
+            }
+
+            RefreshAugmentationDisplay();
+
+            return true;
+        }
+    }
+
+    return false;
+}
+function bool IncreaseAugmentationLevel( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.IncreaseLevel( name );
+    }
+
+    return false;
+}
+
+function bool SetAugmentation( name name, bool activate ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.Set( name, activate );
+    }
+}
+function bool ToggleAugmentation( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.Toggle( name );
+    }
+}
+function bool IsAugmentationActive( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.IsActive( name );
+    }
+}
+function ActivateAllAugmentations() {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.ActivateAll();
+    }
+}
+function DeactivateAllAugmentations() {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.DeactivateAll();
+    }
+}
+function float TickAllAugmentations( float deltaTime ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.TickAll( deltaTime );
+    }
+
+    return 0;
+}
+
+function int GetAugmentationLevel( name name ) {
+    if ( VMAugmentationSystem != none ) {
+        return VMAugmentationSystem.GetLevel( name );
     }
 
     return -1;
 }
 
-function int GetAugLevel( class<Augmentation> class ) {
-    if ( AugmentationSystem != none ) {
-        return AugmentationSystem.GetClassLevel( class );
+function AddAugmentationHotBar( int slot, name name ) {
+    if ( slot >= 0 && slot < 10 ) {
+        AugmentationHotBar[slot] = name;
+    }
+}
+function RemoveAugmentationHotBar( int slot ) {
+    if ( slot >= 0 && slot < 10 ) {
+        AugmentationHotBar[slot] = '';
+    }
+}
+
+function UpdateAugmentationDisplay( VMAugmentationInfo info, bool show ) {
+    if ( DXRootWindow == none ) {
+        return;
     }
 
-    return -1;
+    if ( show ) {
+        DXRootWindow.hud.activeItems.AddIcon( info.GetSmallIcon(), info );
+    }
+    else {
+        DXRootWindow.hud.activeItems.RemoveIcon( info );
+    }
+}
+function RefreshAugmentationDisplay() {
+    local int i;
+    local VMAugmentationInfo info;
+
+    if ( DXRootWindow != none && DXRootWindow.hud != none ) {
+        DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
+
+        if ( VMAugmentationSystem != none ) {
+            for ( i = 0; i < 10; i++ ) {
+                if ( AugmentationHotBar[i] != '' ) {
+                    info = VMAugmentationSystem.GetInfo( AugmentationHotBar[i] );
+                    if ( info != none ) {
+                        DXRootWindow.hud.activeItems.AddIcon( info.GetSmallIcon(), info );
+                    }
+                }
+            }
+        }
+    }
+}
+function ClearAugmentationDisplay() {
+    if ( DXRootWindow != none && DXRootWindow.hud != none ) {
+        DXRootWindow.hud.activeItems.ClearAugmentationDisplay();
+    }
+}
+function DrawAugmentations( GC gc ) {
+    if ( VMAugmentationSystem != none ) {
+        VMAugmentationSystem.DrawAugmentations( gc );
+    }
+}
+
+//==============================================
+// Stats Management
+//==============================================
+// Override
+function float GetCurrentGroundSpeed() {
+    local float bonus;
+
+    // Disable movement speed bonus when crouching.
+    if ( !bIsCrouching && !bForceDuck ) {
+        bonus = GetValue( 'MovementSpeedBonusMult' );
+    }
+
+    return Default.GroundSpeed * ( 1 + bonus );
+}
+
+function int GetBodyPartHealth( byte partIndex ) {
+    switch ( partIndex ) {
+        case EBodyPart.BodyPartHead:
+            return HealthHead;
+            break;
+        case EBodyPart.BodyPartTorso:
+            return HealthTorso;
+            break;
+        case EBodyPart.BodyPartArmLeft:
+            return HealthArmLeft;
+            break;
+        case EBodyPart.BodyPartArmRight:
+            return HealthArmRight;
+            break;
+        case EBodyPart.BodyPartLegLeft:
+            return HealthLegLeft;
+            break;
+        case EBodyPart.BodyPartLegRight:
+            return HealthLegRight;
+            break;
+    }
+}
+
+// Override
+function int HealPlayer( int baseAmount, optional bool useSkill, optional bool skipMessage, optional name source ) {
+    local int totalHealAmount, healAmount, healedAmount;
+
+    if ( Health >= 100 ) {
+        return healedAmount;
+    }
+
+    healAmount = baseAmount;
+    if ( useSkill ) {
+        healAmount += GetValue( 'HealingBonus' );
+    }
+    if ( source != '' ) {
+        healAmount += GetCategoryValue( 'HealingBonus', source );
+    }
+
+    totalHealAmount = healAmount;
+
+    if ( healAmount > 0 ) {
+        if ( useSkill ) {
+            PlaySound( sound'MedicalHiss', SLOT_None,,, 256 );
+        }
+
+        // Prioritize critical conditions.
+        if ( HealthHead <= 30 ) {
+            HealPartWithPool( HealthHead, healAmount, 40 );
+        }
+        if ( HealthTorso <= 30 ) {
+            HealPartWithPool( HealthTorso, healAmount, 40 );
+        }
+
+        if ( healAmount > 0 ) {
+            if ( HealthLegLeft <= 0 ) {
+                HealPartWithPool( HealthLegLeft, healAmount, 10 );
+            }
+            if ( HealthLegRight <= 0 ) {
+                HealPartWithPool( HealthLegRight, healAmount, 10 );
+            }
+            if ( HealthArmLeft <= 0 ) {
+                HealPartWithPool( HealthArmLeft, healAmount, 10 );
+            }
+            if ( HealthArmRight <= 0 ) {
+                HealPartWithPool( HealthArmRight, healAmount, 10 );
+            }
+        }
+
+        if ( healAmount > 0 ) {
+            if ( HealthHead <= HealthTorso ) {
+                HealPartWithPool( HealthHead, healAmount, healAmount );
+                HealPartWithPool( HealthTorso, healAmount, healAmount );
+            }
+            else {
+                HealPartWithPool( HealthTorso, healAmount, healAmount );
+                HealPartWithPool( HealthHead, healAmount, healAmount );
+            }
+            HealPartWithPool( HealthLegLeft, healAmount, healAmount );
+            HealPartWithPool( HealthLegRight, healAmount, healAmount );
+            HealPartWithPool( HealthArmLeft, healAmount, healAmount );
+            HealPartWithPool( HealthArmRight, healAmount, healAmount );
+        }
+
+        GenerateTotalHealth();
+
+        healedAmount = totalHealAmount - healAmount;
+        if ( !skipMessage ) {
+            if ( healedAmount == 1 ) {
+                ClientMessage( Sprintf( HealedPointLabel, healedAmount ) );
+            }
+            else {
+                ClientMessage( Sprintf( HealedPointsLabel, healedAmount ) );
+            }
+        }
+    }
+
+    return healedAmount;
+}
+function HealPartWithPool( out int target, out int pool, int amount ) {
+    local int spill;
+
+    if ( pool <= 0 || amount <= 0 || target >= 100 ) {
+        return;
+    }
+
+    amount = Min( amount, pool );
+    target += amount;
+    spill = Max( target - 100, 0 );
+    if ( spill > 0 ) {
+        target = 100;
+    }
+    pool -= amount;
+    pool += spill;
+
+    // Vanilla Matters: Add in FP rate for health restored.
+    AddForwardPressure( amount - spill, 'Heal' );
+}
+function HealPartIndex( byte partIndex, int amount ) {
+    switch ( partIndex ) {
+        case EBodyPart.BodyPartHead:
+            HealPart( HealthHead, amount );
+            break;
+        case EBodyPart.BodyPartTorso:
+            HealPart( HealthTorso, amount );
+            break;
+        case EBodyPart.BodyPartArmLeft:
+            HealPart( HealthArmLeft, amount );
+            break;
+        case EBodyPart.BodyPartArmRight:
+            HealPart( HealthArmRight, amount );
+            break;
+        case EBodyPart.BodyPartLegLeft:
+            HealPart( HealthLegLeft, amount );
+            break;
+        case EBodyPart.BodyPartLegRight:
+            HealPart( HealthLegRight, amount );
+            break;
+    }
+}
+function HealPart( out int target, int amount ) {
+    if ( amount <= 0 || target >= 100 ) {
+        return;
+    }
+    target = Min( target + amount, 100 );
+}
+
+// Override
+function float CalculatePlayerVisibility( optional ScriptedPawn P ) {
+    if ( Robot( P ) != none ) {
+        return VisibilityRadar;
+    }
+    else {
+        return VisibilityNormal;
+    }
+}
+
+// Override
+function bool DrainEnergy( float amount ) {
+    if ( amount <= 0 || Energy < amount ) {
+        return false;
+    }
+
+    Energy -= amount;
+    return true;
 }
 
 //==============================================
 // Misc
 //==============================================
-function ActivateAugByKey( int keyNum ) {
-    if ( AugmentationSystem != none ) {
-        AugmentationSystem.ActivateAugByKey( keyNum );
-    }
-}
-
 // Replace CatchFire to have burn damage depend on initial damage taken.
+// Override
 function StartBurning( Pawn burner, float burnDamage ) {
     local Fire f;
     local int i;
@@ -1493,6 +2071,27 @@ function StartBurning( Pawn burner, float burnDamage ) {
     SetTimer( 1.0, true );
 }
 
+// Copied from ScriptedPawn to handle burning damage.
+function UpdateFire() {
+    HealthTorso = HealthTorso - 2;
+    HealthArmLeft = HealthArmLeft - 2;
+    HealthArmRight = HealthArmRight - 2;
+    HealthLegLeft = HealthLegLeft - 2;
+    HealthLegRight = HealthLegLeft - 2;
+
+    GenerateTotalHealth();
+
+    burnTimer = burnTimer - 10;
+
+    if ( Health <= 0 || burnTimer <= 0 ) {
+        ExtinguishFire();
+
+        if ( Health <= 0 ) {
+            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
+        }
+    }
+}
+
 // Override
 function DroneExplode()
 {
@@ -1501,20 +2100,126 @@ function DroneExplode()
     if ( aDrone != none )
     {
         // Make drone detonation cost energy.
-        aug = AugDrone( AugmentationSystem.FindAugmentation( class'AugDrone' ) );
+        SetAugmentation( 'AugDrone', false );
+        // TODO: Add support for AugDrone detonation.
+    }
+}
 
-        if ( aug != None ) {
-            if ( !CanDrain( aug.GetEnergyRate() ) ) {
-                ClientMessage( MsgDroneCost );
+// Override
+function DeusExLevelInfo GetLevelInfo() {
+    return LevelInfo;
+}
+function DeusExLevelInfo FindLevelInfo() {
+    local DeusExLevelInfo info;
 
-                return;
+    foreach AllActors( class'DeusExLevelInfo', info ) {
+        break;
+    }
+
+    return info;
+}
+
+//==============================================
+// Presentation
+//==============================================
+// Override
+function UpdateDynamicMusic( float deltaTime ) {
+    local DeusExLevelInfo info;
+
+    if ( Level.Song == none ) {
+        return;
+    }
+
+    // DEUS_EX AMSD In singleplayer, do the old thing.
+    // In multiplayer, we can come out of dying.
+    if ( !PlayerIsClient() ) {
+        if ( musicMode == MUS_Dying || musicMode == MUS_Outro ) {
+            return;
+        }
+    }
+    else {
+        if ( musicMode == MUS_Outro ) {
+            return;
+        }
+    }
+
+    musicCheckTimer += deltaTime;
+    musicChangeTimer += deltaTime;
+
+    if ( IsInState( 'Interpolating' ) ) {
+        // don't mess with the music on any of the intro maps
+        if ( LevelInfo != none && LevelInfo.MissionNumber < 0 ) {
+            musicMode = MUS_Outro;
+            return;
+        }
+
+        if ( musicMode != MUS_Outro ) {
+            ClientSetMusic( Level.Song, 5, 255, MTRAN_FastFade );
+            musicMode = MUS_Outro;
+        }
+    }
+    else if ( IsInState( 'Conversation' ) ) {
+        if ( musicMode != MUS_Conversation ) {
+            // save our place in the ambient track
+            if ( musicMode == MUS_Ambient ) {
+                savedSection = SongSection;
+            }
+            else {
+                savedSection = 255;
             }
 
-            aug.Deactivate();
+            ClientSetMusic( Level.Song, 4, 255, MTRAN_Fade );
+            musicMode = MUS_Conversation;
+        }
+    }
+    else if ( IsInState( 'Dying' ) ) {
+        if ( musicMode != MUS_Dying ) {
+            ClientSetMusic( Level.Song, 1, 255, MTRAN_Fade );
+            musicMode = MUS_Dying;
+        }
+    }
+    else {
+        // only check for combat music every second
+        if ( musicCheckTimer > 1 ) {
+            musicCheckTimer -= 1;
 
-            aDrone.Explode( aDrone.Location, vect( 0, 0, 1 ) );
+            if ( IsInCombat() ) {
+                musicChangeTimer = 0.0;
 
-            DrainEnergy( aug, aug.GetEnergyRate() );
+                if ( musicMode != MUS_Combat ) {
+                    // save our place in the ambient track
+                    if ( musicMode == MUS_Ambient ) {
+                        savedSection = SongSection;
+                    }
+                    else {
+                        savedSection = 255;
+                    }
+
+                    ClientSetMusic( Level.Song, 3, 255, MTRAN_FastFade );
+                    musicMode = MUS_Combat;
+                }
+            }
+            else if ( musicMode != MUS_Ambient ) {
+                // wait until we've been out of combat for 5 seconds before switching music
+                if ( musicChangeTimer > 5.0 ) {
+                    // use the default ambient section for this map
+                    if ( savedSection == 255 ) {
+                        savedSection = Level.SongSection;
+                    }
+
+                    // fade slower for combat transitions
+                    if ( musicMode == MUS_Combat ) {
+                        ClientSetMusic( Level.Song, savedSection, 255, MTRAN_SlowFade );
+                    }
+                    else {
+                        ClientSetMusic( Level.Song, savedSection, 255, MTRAN_Fade );
+                    }
+
+                    savedSection = 255;
+                    musicMode = MUS_Ambient;
+                    musicChangeTimer = 0.0;
+                }
+            }
         }
     }
 }
@@ -1615,13 +2320,18 @@ function bool HasFullForwardPressure() {
 
 defaultproperties
 {
+     BodyPartNamesLowercase(0)="head"
+     BodyPartNamesLowercase(1)="torso"
+     BodyPartNamesLowercase(2)="left arm"
+     BodyPartNamesLowercase(3)="right arm"
+     BodyPartNamesLowercase(4)="left leg"
+     BodyPartNamesLowercase(5)="right leg"
      MsgFullHealth="You already have full health"
      MsgFullEnergy="You already have full energy"
-     MsgDroneCost="You don't have enough energy to detonate a drone"
      MsgTooMuchAmmo="You already have enough %s"
-     MsgMuscleCost="You don't have enough energy to do a powerthrow"
      MsgChargedPickupAlready="You are already using that type of equipment"
      MsgUseChargedPickup="You need to have the item in your inventory to activate it"
      SkillPointsTotal=4500
      SkillPointsAvail=4500
+     AugmentationHotBar(10)=AugLight
 }

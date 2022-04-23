@@ -24,10 +24,10 @@ defaultproperties
      choices(2)=Class'DeusEx.MenuChoice_GoreLevel'
      choices(3)=Class'DeusEx.MenuChoice_Subtitles'
      choices(4)=Class'DeusEx.MenuChoice_Crosshairs'
-     choices(5)=Class'DeusEx.MenuChoice_HUDAugDisplay'
+     choices(5)=Class'DeusEx.MenuChoice_HeadBob'
      choices(6)=Class'DeusEx.MenuChoice_UIBackground'
-     choices(7)=Class'DeusEx.MenuChoice_HeadBob'
-     choices(8)=Class'DeusEx.MenuChoice_LogTimeoutValue'
+     choices(7)=Class'DeusEx.MenuChoice_CombatDifficulty'
+     choices(8)=Class'DeusEx.MenuChoice_FOV'
      actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)

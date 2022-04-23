@@ -28,9 +28,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -41,13 +41,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <ue1launcherProjectDir>D:\_Dev\C++\ue1launcher\ue1launcher\</ue1launcherProjectDir>
-    <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
+    <ModDir>Release\</ModDir>
+    <DeusExHeadersDir></DeusExHeadersDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(ue1launcherProjectDir)Core\Inc;$(ue1launcherProjectDir)Engine\Inc;$(ue1launcherProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ue1launcherProjectDir)Core\Lib;$(ue1launcherProjectDir)Engine\Lib;$(ue1launcherProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Inc;$(ProjectDir)Src;$(DeusExHeadersDir)Core\Inc;$(DeusExHeadersDir)Engine\Inc;$(DeusExHeadersDir)Extension\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DeusExHeadersDir)Core\Lib;$(DeusExHeadersDir)Engine\Lib;$(DeusExHeadersDir)Extension\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -74,9 +74,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
     <Delete Files="$(ModDir)$(TargetFileName).old" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(ModDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(TargetFileName).old" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(ModDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(TargetFileName).old" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
     <Delete Files="$(ModDir)$(TargetFileName)" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFolder="$(ModDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFolder="$(ModDir)" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
   </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

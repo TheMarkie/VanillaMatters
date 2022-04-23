@@ -4,7 +4,6 @@
 class ChargedPickup extends DeusExPickup
     abstract;
 
-var() class<Skill> skillNeeded;
 var() bool bOneUseOnly;
 var() sound ActivateSound;
 var() sound DeactivateSound;
@@ -65,7 +64,7 @@ simulated function bool UpdateInfo(Object winObject)
 
         // Vanilla Matters: Add in damage resistance value if there's any.
         if ( default.VM_DamageResistance != 0.0 ) {
-            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ class'DeusExWeapon'.static.FormatFloatString( ( 1 - default.VM_DamageResistance ) * 100, 0.1 ) $ "% " );
+            winInfo.AppendText( winInfo.CR() $ VM_msgDamageResistance @ FormatFloat( ( 1 - default.VM_DamageResistance ) * 100 ) $ "% " );
         }
 
         // Vanilla Matters: Add in whether the charged pickup is toggleable.
@@ -95,8 +94,7 @@ simulated function bool UpdateInfo(Object winObject)
 function UpdateCharge( DeusExPlayer player ) {
     local int newCharge;
 
-    newCharge = Default.Charge * ( 1 + Player.GetSkillValue( "EquipmentChargeMult" ) );
-    newCharge = newCharge * ( 1 + Player.GetSkillValue( GetStringClassName() $ "ChargeMult" ) );
+    newCharge = Default.Charge * ( 1 + Player.GetValue( 'EquipmentChargeMult' ) );
 
     // VM: If the newCharge is higher than the previous actualCharge, replace it and scale the current Charge up.
     if ( newCharge > VM_actualCharge ) {

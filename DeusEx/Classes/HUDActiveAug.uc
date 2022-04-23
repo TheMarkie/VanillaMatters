@@ -4,74 +4,39 @@
 
 class HUDActiveAug extends HUDActiveItemBase;
 
-var Color colBlack;
-var Color colAugActive;
-var Color colAugInactive;
+var Color ColorEnabled;
+var Color ColorDisabled;
+var Color ColorCooldown;
 
-var int    hotKeyNum;
-var String hotKeyString;
+var VMAugmentationInfo Info;
 
-// ----------------------------------------------------------------------
-// DrawHotKey()
-// ----------------------------------------------------------------------
+event DrawWindow( GC gc ) {
+    local Color color;
+    local float cooldown, w, h;
+    local string str;
 
-function DrawHotKey(GC gc)
-{
-    // gc.SetAlignments(HALIGN_Right, VALIGN_Top);
-    // gc.SetFont(Font'FontTiny');
+    if ( Info != none ) {
+        cooldown = Info.GetCooldown();
+        if ( Info.IsActive ) {
+            color = ColorEnabled;
+        }
+        else if ( cooldown > 0 ) {
+            color = ColorDisabled;
+        }
+        else {
+            color = colItemIcon;
+        }
+        gc.SetStyle( iconDrawStyle );
+        gc.SetTileColor( color );
+        gc.DrawTexture( 2, 2, 32, 32, 0, 0, icon );
 
-    // // Draw Dropshadow
-    // gc.SetTextColor(colBlack);
-    // gc.DrawText(16, 1, 15, 8, hotKeyString);
-
-    // // Draw Dropshadow
-    // gc.SetTextColor(colText);
-    // gc.DrawText(17, 0, 15, 8, hotKeyString);
-}
-
-// ----------------------------------------------------------------------
-// SetObject()
-//
-// Had to write this because SetClientObject() is FINAL in Extension
-// ----------------------------------------------------------------------
-
-function SetObject(object newClientObject)
-{
-    if (newClientObject.IsA('Augmentation'))
-    {
-        // Get the function key and set the text
-        SetKeyNum(Augmentation(newClientObject).GetHotKey());
-        UpdateAugIconStatus();
-    }
-}
-
-// ----------------------------------------------------------------------
-// SetKeyNum()
-// ----------------------------------------------------------------------
-
-function SetKeyNum(int newNumber)
-{
-    // Get the function key and set the text
-    hotKeyNum    = newNumber;
-    hotKeyString = "F" $ String(hotKeyNum);
-}
-
-// ----------------------------------------------------------------------
-// UpdateAugIconStatus()
-// ----------------------------------------------------------------------
-
-function UpdateAugIconStatus()
-{
-    local Augmentation aug;
-
-    aug = Augmentation(GetClientObject());
-
-    if (aug != None)
-    {
-        if (aug.IsActive())
-            colItemIcon = colAugActive;
-        else
-            colItemIcon = colAugInactive;
+        if ( !Info.IsActive && cooldown > 0 ) {
+            str = FormatFloat( cooldown );
+            gc.SetFont( Font'FontMenuTitle' );
+            gc.SetTextColor( ColorCooldown );
+            gc.GetTextExtent( 0, w, h, str );
+            gc.DrawText( ( width - w ) / 2, ( height - h ) / 2, w, h, str );
+        }
     }
 }
 
@@ -80,7 +45,7 @@ function UpdateAugIconStatus()
 
 defaultproperties
 {
-     colAugActive=(R=255,G=255)
-     colAugInactive=(R=100,G=100,B=100)
-     colItemIcon=(B=0)
+     ColorEnabled=(R=0,G=255,B=0)
+     ColorDisabled=(R=92,G=92,B=92)
+     ColorCooldown=(R=255,G=0,B=0)
 }

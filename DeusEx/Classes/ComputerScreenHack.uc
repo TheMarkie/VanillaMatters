@@ -189,7 +189,7 @@ function PostDrawWindow( GC gc ) {
         return;
     }
 
-    str = class'DeusExWeapon'.static.FormatFloatString( detectionTime + hackTime, 0.1 );
+    str = FormatFloat( detectionTime + hackTime );
 
     gc.SetFont( Font'FontMenuTitle' );
     gc.SetTextColor( VM_colBudget );

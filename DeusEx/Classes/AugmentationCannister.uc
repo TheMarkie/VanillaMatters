@@ -17,12 +17,12 @@ var travel bool VM_augReplaced;
 
 replication
 {
-   //server to client variables
-   reliable if ((Role == ROLE_Authority) && (bNetOwner))
-      AddAugs;
+    //server to client variables
+    reliable if ((Role == ROLE_Authority) && (bNetOwner))
+        AddAugs;
 }
 
-// Vanilla Matters: Replace EMP Shield with Energy Shield.
+// Vanilla Matters
 function PostBeginPlay() {
     local int i;
 
@@ -30,14 +30,18 @@ function PostBeginPlay() {
 
     if ( !VM_augReplaced ) {
         for( i = 0; i < ArrayCount( AddAugs ); i++ ) {
-            if ( AddAugs[i] == 'AugShield' ) {
-                AddAugs[i] = 'AugEnviro';
-            }
-            else if ( AddAugs[i] == 'AugEMP' ) {
-                AddAugs[i] = 'AugShield';
+            switch ( AddAugs[i] ) {
+                case 'AugAqualung':
+                    AddAugs[i] = 'AugMed';
+                    break;
+                case 'AugHeartLung':
+                    AddAugs[i] = 'AugEnhance';
+                    break;
+                case 'AugPower':
+                    AddAugs[i] = 'AugDash';
+                    break;
             }
         }
-
         VM_augReplaced = true;
     }
 }
@@ -45,76 +49,44 @@ function PostBeginPlay() {
 // ----------------------------------------------------------------------
 // UpdateInfo()
 // ----------------------------------------------------------------------
-
-simulated function bool UpdateInfo(Object winObject)
-{
-    local PersonaInfoWindow winInfo;
-    local String outText;
+// Vanilla Matters
+simulated function bool UpdateInfo( Object winObject ) {
     local Int canIndex;
-    local Augmentation aug;
+    local PersonaInfoWindow winInfo;
+    local class<VMAugmentation> aug;
 
-    winInfo = PersonaInfoWindow(winObject);
-    if (winInfo == None)
-        return False;
+    winInfo = PersonaInfoWindow( winObject );
+    if ( winInfo == none ) {
+        return false;
+    }
 
     winInfo.Clear();
-    winInfo.SetTitle(itemName);
-    winInfo.SetText(Description);
+    winInfo.SetTitle( itemName );
+    winInfo.SetText( Description );
 
-    winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
-    winInfo.AppendText(winInfo.CR() $ winInfo.CR());
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ AugsAvailable );
+    winInfo.AppendText( winInfo.CR() $ winInfo.CR() );
 
-    for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
-    {
-        if (AddAugs[canIndex] != '')
-        {
-            aug = GetAugmentation(canIndex);
-
-            if (aug != None)
-                winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
+    for( canIndex = 0; canIndex < ArrayCount( AddAugs ); canIndex++ ) {
+        if ( AddAugs[canIndex] != '' ) {
+            aug = GetAugmentation( canIndex );
+            if ( aug != none ) {
+                winInfo.AppendText( aug.default.UpgradeName $ winInfo.CR() );
+            }
         }
     }
 
-    winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
+    winInfo.AppendText( winInfo.CR() $ MustBeUsedOn );
 
-    return True;
+    return true;
 }
 
 // ----------------------------------------------------------------------
 // GetAugmentation()
 // ----------------------------------------------------------------------
-
-simulated function Augmentation GetAugmentation(int augIndex)
-{
-    local Augmentation anAug;
-    local DeusExPlayer player;
-
-    // First make sure we have a valid value
-    if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1)))
-        return None;
-
-    if (AddAugs[augIndex] == '')
-        return None;
-
-    // Loop through all the augmentation objects and look
-    // for the augName that matches the one stored in
-    // this object
-
-    player = DeusExPlayer(Owner);
-
-    if (player != None)
-    {
-        anAug = player.AugmentationSystem.FirstAug;
-        while(anAug != None)
-        {
-            if (addAugs[augIndex] == anAug.Class.Name)
-                break;
-
-            anAug = anAug.next;
-        }
-    }
-
-    return anAug;
+// Vanilla Matters
+function class<VMAugmentation> GetAugmentation( int augIndex ) {
+    return class<VMAugmentation>( DynamicLoadObject( "DeusEx." $ string( AddAugs[augIndex] ), class'Class' ) );
 }
 
 // ----------------------------------------------------------------------
@@ -145,82 +117,14 @@ auto state Pickup
 // function Frob()
 // For autoinstalling in deathmatch, we need to overload frob here
 // ----------------------------------------------------------------------
-   function Frob(Actor Other, Inventory frobWith)
-   {
-      local Inventory Copy;
-      local int AugZeroPriority;
-      local int AugOnePriority;
-      local Augmentation AugZero;
-      local Augmentation AugOne;
-      //If we aren't autoinstalling, just return.
-      if ( (Level.NetMode == NM_Standalone) || (DeusExMPGame(Level.Game) == None) || (DeusExMPGame(Level.Game).bAutoInstall == False) ||
-           (DeusExPlayer(Other) == None) )
-      {
-         Super.Frob(Other,frobWith);
-         return;
-      }
-      if ( ValidTouch(Other) )
-      {
-         if (Level.Game.LocalLog != None)
-            Level.Game.LocalLog.LogPickup(Self, Pawn(Other));
-         if (Level.Game.WorldLog != None)
-            Level.Game.WorldLog.LogPickup(Self, Pawn(Other));
-
-         SetOwner(DeusExPlayer(Other));
-
-         AugZero = GetAugmentation(0);
-         AugOne = GetAugmentation(1);
-
-         if (AugZero != None)
-            AugZeroPriority = DeusExPlayer(Other).GetAugPriority(AugZero);
-         else
-            AugZeroPriority = -10;
-
-         if (AugOne != None)
-            AugOnePriority = DeusExPlayer(Other).GetAugPriority(AugOne);
-         else
-            AugOnePriority = -10;
-
-         if ((AugZeroPriority < 0) || (AugOnePriority < 0))
-         {
-            Pawn(Other).ClientMessage("No available augmentations found.");
-         }
-         else if (AugZeroPriority < 0)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugOne.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugOne.Class);
-         }
-         else if (AugOnePriority < 0)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugZero.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugZero.Class);
-         }
-         else if (AugZeroPriority < AugOnePriority)
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugZero.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugZero.Class);
-         }
-         else
-         {
-            Pawn(Other).ClientMessage("Autoinstalling Augmentation "$AugOne.AugmentationName$".");
-            DeusExPlayer(Other).AugmentationSystem.GivePlayerAugmentation(AugOne.Class);
-         }
-
-         SetOwner(None);
-      }
-   }
-
-   function BeginState()
-   {
-      Super.BeginState();
-   }
+// Vanilla Matters MPTODO: Add multiplayer support for aug cannister install.
 }
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     AugsAvailable="Can Add:"
+     AugsAvailable="Can Install:"
      MustBeUsedOn="Can only be installed with the help of a MedBot."
      ItemName="Augmentation Canister"
      ItemArticle="an"

@@ -120,11 +120,11 @@ function ClearBar() {
 // RemoveAug()
 // ----------------------------------------------------------------------
 
-function RemoveAug( Augmentation aug ) {
+function RemoveAug( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].GetAug() == aug ) {
+        if ( augs[i].aug != none && augs[i].aug.DefinitionClassName == name ) {
             augs[i].SetAug( none );
         }
     }
@@ -134,7 +134,7 @@ function RemoveAug( Augmentation aug ) {
 // AddAug()
 // ----------------------------------------------------------------------
 
-function bool AddAug( Augmentation aug, int pos ) {
+function bool AddAug( VMAugmentationInfo aug, int pos ) {
     local int  i;
     local int FirstPos;
     local bool retval;
@@ -142,9 +142,9 @@ function bool AddAug( Augmentation aug, int pos ) {
     retval = true;
     if ( aug != None ) {
         if ( IsValid( pos ) ) {
-            RemoveAug( aug );
+            RemoveAug( aug.DefinitionClassName );
 
-            if ( augs[pos].GetAug() != none ) {
+            if ( augs[pos].aug != none ) {
                 ClearPosition( pos );
             }
 
@@ -167,7 +167,8 @@ function bool AddAug( Augmentation aug, int pos ) {
 
 function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot slot2 ) {
     local int pos1, pos2;
-    local Augmentation aug1, aug2;
+    local VMAugmentationInfo aug1, aug2;
+    local VMPlayer p;
 
     if ( slot1 == slot2 ) {
         return;
@@ -179,41 +180,25 @@ function SwapAug( PersonaAugmentationBarSlot slot1, PersonaAugmentationBarSlot s
     aug1 = slot1.aug;
     aug2 = slot2.aug;
 
-    ClearPosition( pos1 );
-
+    p = VMPlayer( player );
     if ( aug2 != none ) {
-        ClearPosition( pos2 );
-    }
-
-    AddAug( aug1, pos2 );
-
-    if ( aug2 != none ) {
-        AddAug( aug2, pos1 );
-    }
-}
-
-// ----------------------------------------------------------------------
-// GetAug()
-// ----------------------------------------------------------------------
-
-function Augmentation GetAug( int pos ) {
-    if ( IsValid( pos ) ) {
-        return ( augs[pos].GetAug() );
+        p.AugmentationHotBar[pos1] = aug2.DefinitionClassName;
     }
     else {
-        return none;
+        p.AugmentationHotBar[pos1] = '';
     }
+    p.AugmentationHotBar[pos2] = aug1.DefinitionClassName;
 }
 
 // ----------------------------------------------------------------------
 // GetSlot()
 // ----------------------------------------------------------------------
 
-function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
+function PersonaAugmentationBarSlot GetSlot( name name ) {
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug == aug ) {
+        if ( augs[i].aug != none && augs[i].aug.DefinitionClassName == name ) {
             return augs[i];
         }
     }
@@ -227,13 +212,15 @@ function PersonaAugmentationBarSlot GetSlot( Augmentation aug ) {
 
 function PopulateBar() {
     local int i;
-    local AugmentationManager manager;
+    local VMPlayer p;
+    local VMAugmentationManager manager;
 
-    manager = player.AugmentationSystem;
+    p = VMPlayer( player );
+    manager = player.GetAugmentationSystem();
     if ( manager != none ) {
         for ( i = 0; i < 10; i++ ) {
-            if ( manager.VM_augSlots[i] != none ) {
-                AddAug( manager.VM_augSlots[i], i );
+            if ( p.AugmentationHotBar[i] != '' ) {
+                AddAug( manager.GetInfo( p.AugmentationHotBar[i] ), i );
             }
         }
     }
@@ -255,20 +242,41 @@ function SetAugWnd( PersonaScreenAugmentations augWnd ) {
 // SelectAug()
 // ----------------------------------------------------------------------
 
-function SelectAug( Augmentation aug, bool bNewToggle ) {
+function SelectAug( name name, bool bNewToggle ) {
+    local PersonaAugmentationBarSlot slot;
     local int i;
 
     for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug == aug ) {
-            if ( !augs[i].GetToggle() ) {
-                augs[i].SetToggle( bNewToggle );
+        slot = augs[i];
+        if ( slot.aug != none && slot.aug.DefinitionClassName == name ) {
+            if ( !slot.GetToggle() ) {
+                slot.SetToggle( bNewToggle );
             }
         }
         else {
-            augs[i].SetToggle( false );
-            augs[i].HighlightSelect( false );
+            slot.SetToggle( false );
+            slot.HighlightSelect( false );
         }
     }
+}
+
+// ----------------------------------------------------------------------
+// DestroyWindow()
+// ----------------------------------------------------------------------
+
+function DestroyWindow() {
+    local int i;
+
+    for ( i = 0; i < 10; i++ ) {
+        if ( augs[i].aug != none ) {
+            player.AddAugmentationHotBar( i, augs[i].aug.DefinitionClassName );
+        }
+        else {
+            player.AddAugmentationHotBar( i, '' );
+        }
+    }
+
+    super.DestroyWindow();
 }
 
 // ----------------------------------------------------------------------

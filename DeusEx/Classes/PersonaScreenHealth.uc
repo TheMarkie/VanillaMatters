@@ -404,36 +404,38 @@ function int HealAllParts()
 // ----------------------------------------------------------------------
 // GetMedKitHealPoints()
 // ----------------------------------------------------------------------
-
-function int GetMedKitHealPoints()
-{
+// Vanilla Matters
+function int GetMedKitHealPoints() {
     local MedKit medkit;
 
-    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    medKit = MedKit( player.FindInventoryType( class'MedKit' ) );
 
-    if (medKit != None)
-        return player.CalculateSkillHealAmount(medKit.NumCopies * medKit.healAmount);
-    else
+    if ( medKit != None ) {
+        return ( medkit.NumCopies * ( medkit.healAmount + player.GetValue( 'HealingBonus' ) ) );
+    }
+    else {
         return 0;
+    }
 }
 
 // ----------------------------------------------------------------------
 // RemoveMedKits
 // ----------------------------------------------------------------------
-
+// Vanilla Matters
 function RemoveMedKits(int healPointsUsed)
 {
     local MedKit medkit;
-    local int    healPointsRemaining;
+    local int healPointsRemaining;
+    local float bonus;
 
     healPointsRemaining = healPointsUsed;
-    medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    medkit = MedKit( player.FindInventoryType( class'MedKit' ) );
+    bonus = player.GetValue( 'HealingBonus' );
 
-    while((medKit != None) && (healPointsRemaining > 0))
-    {
-        healPointsRemaining -= player.CalculateSkillHealAmount(medkit.healAmount);
-        UseMedKit(medkit);
-        medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+    while( medkit != none && healPointsRemaining > 0 ) {
+        healPointsRemaining -= medkit.healAmount + bonus;
+        UseMedKit( medkit );
+        medkit = MedKit( player.FindInventoryType( class'MedKit' ) );
     }
 }
 
@@ -459,8 +461,10 @@ function int HealPart(PersonaHealthRegionWindow region, optional float pointsToH
     // points to heal for this body part.  Otherwise use the
     // medkit's default heal amount.
 
-    if (pointsToHeal == 0)
-        pointsToHeal = player.CalculateSkillHealAmount(medKit.healAmount);
+    // Vanilla Matters
+    if ( pointsToHeal == 0 ) {
+        pointsToHeal = medKit.healAmount + player.GetValue( 'HealingBonus' );
+    }
 
     // Heal the selected body part by the number of
     // points available in the part
@@ -645,7 +649,7 @@ defaultproperties
      HealthLocationLeftArm="Left Arm"
      HealthLocationRightLeg="Right Leg"
      HealthLocationLeftLeg="Left Leg"
-     PointsHealedLabel="%d points healed"
+     PointsHealedLabel="%s points healed"
      clientBorderOffsetY=32
      ClientWidth=596
      ClientHeight=427

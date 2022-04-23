@@ -214,7 +214,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                     curTool.PlayUseAnim();
                     bHacking = true;
                     //Number of percentage points to remove
-                    numHacks = int( FMax( Player.GetSkillValue( "Multitooling" ), 1 ) );
+                    numHacks = int( FMax( Player.GetValue( 'Multitooling' ), 1 ) );
                     TicksPerHack = ( hackTime * 10.0 ) / numHacks;
 
                     // Vanilla Matters: Using level time is a bad idea, so we set it to 0 and use deltaTime.

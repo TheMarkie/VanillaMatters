@@ -715,12 +715,27 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
     // Vanilla Matters
     local DeusExPlayer player;
 
+    if ( Enemy == newEnemy ) {
+        return true;
+    }
+
     if (bForce || IsValidEnemy(newEnemy))
     {
-        // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
-        player = DeusExPlayer( Enemy );
-        if ( newEnemy == None && player != None ) {
-            player.AddForwardPressure( 10, 'Stealth' );
+        // Vanilla Matters
+        player = DeusExPlayer( newEnemy );
+        if ( player != none ) {
+            player.AddEnemyInCombat( self );
+        }
+        else {
+            player = DeusExPlayer( Enemy );
+            if ( player != none ) {
+                player.RemoveEnemyInCombat( self );
+
+                // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
+                if ( newEnemy == none ) {
+                    player.AddForwardPressure( 10, 'Stealth' );
+                }
+            }
         }
 
         if (newEnemy != Enemy)
@@ -2691,126 +2706,92 @@ function SupportActor(Actor standingActor)
 // ----------------------------------------------------------------------
 // SpawnCarcass()
 // ----------------------------------------------------------------------
-
-function Carcass SpawnCarcass()
-{
+// Vanilla Matters
+function Carcass SpawnCarcass() {
+    local int i;
+    local float size;
     local DeusExCarcass carc;
     local vector loc;
     local Inventory item, nextItem;
     local FleshFragment chunk;
-    local int i;
-    local float size;
-
-    // Vanilla Matters
     local DeusExWeapon w;
+    local Weapon currentWeapon;
 
     // if we really got blown up good, gib us and don't display a carcass
-    if ((Health < -100) && !IsA('Robot'))
-    {
-        size = (CollisionRadius + CollisionHeight) / 2;
-        if (size > 10.0)
-        {
-            for (i=0; i<size/4.0; i++)
-            {
-                loc.X = (1-2*FRand()) * CollisionRadius;
-                loc.Y = (1-2*FRand()) * CollisionRadius;
-                loc.Z = (1-2*FRand()) * CollisionHeight;
+    if ( Health < -100 ) {
+        size = ( CollisionRadius + CollisionHeight ) / 2;
+        if ( size > 10.0 ) {
+            for ( i = 0; i < size / 4.0; i++ ) {
+                loc.X = ( 1 - 2 * FRand() ) * CollisionRadius;
+                loc.Y = ( 1 - 2 * FRand() ) * CollisionRadius;
+                loc.Z = ( 1 - 2 * FRand() ) * CollisionHeight;
                 loc += Location;
-                chunk = spawn(class'FleshFragment', None,, loc);
-                if (chunk != None)
-                {
+                chunk = spawn( class'FleshFragment', none,, loc );
+                if ( chunk != none ) {
                     chunk.DrawScale = size / 25;
-                    chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
-                    chunk.bFixedRotationDir = True;
-                    chunk.RotationRate = RotRand(False);
+                    chunk.SetCollisionSize( chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale );
+                    chunk.bFixedRotationDir = true;
+                    chunk.RotationRate = RotRand( false );
                 }
             }
         }
+    }
+    else {
+        // spawn the carcass
+        carc = DeusExCarcass( Spawn( CarcassType ) );
+        if ( carc != none ) {
+            carc.bNotDead = bStunned;
+            carc.Initfor( self );
 
-        // Vanilla Matters: Deals with our inventory if we gib.
-        item = Inventory;
-        while ( item != none ) {
-            nextItem = item.Inventory;
-
-            DeleteInventory( item );
-
-            w = DeusExWeapon( item );
-
-            // VM: Also add a 80% chance to destroy a combat knife if present on the pawn.
-            if ( ( w != none && w.bNativeAttack ) || Ammo( item ) != none || ( WeaponCombatKnife( w ) != none && FRand() > 0.2 ) ) {
-                item.Destroy();
-            }
-            else {
-                if ( w.VM_isGrenade ) {
-                    w.PickupAmmoCount = 1;
-                }
-                else if ( w != none && Level.NetMode == NM_Standalone ) {
-                    // Vanilla Matters: Make the count scale with the weapon's default amount.
-                    if ( W.default.PickUpAmmoCount > 10 ) {
-                        W.PickupAmmoCount = FMax( FClamp( FRand(), 0.2, 0.4 ) * W.default.PickUpAmmoCount, 4 );
-                    }
-                    else {
-                        W.PickUpAmmoCount = Rand( W.default.PickUpAmmoCount / 2 ) + 2;
-                    }
-                }
-
-                loc = Location;
-                loc.x = loc.x + ( FRand() * CollisionRadius * 4 ) - ( FRand() * CollisionRadius * 4 );
-                loc.y = loc.y + ( FRand() * CollisionRadius * 4 ) - ( FRand() * CollisionRadius * 4 );
-
-                item.DropFrom( loc );
-            }
-
-            item = nextItem;
+            // move it down to the floor
+            loc = Location;
+            loc.z -= CollisionHeight;
+            loc.z += carc.CollisionHeight;
+            carc.SetLocation( loc );
+            carc.Velocity = Velocity;
+            carc.Acceleration = Acceleration;
         }
-
-        return None;
     }
 
-    // spawn the carcass
-    carc = DeusExCarcass(Spawn(CarcassType));
+    currentWeapon = Weapon;
+    item = Inventory;
+    while ( item != none ) {
+        nextItem = item.Inventory;
+        DeleteInventory( item );
+        w = DeusExWeapon( item );
 
-    if ( carc != None )
-    {
-        if (bStunned)
-            carc.bNotDead = True;
-
-        carc.Initfor(self);
-
-        // move it down to the floor
-        loc = Location;
-        loc.z -= Default.CollisionHeight;
-        loc.z += carc.Default.CollisionHeight;
-        carc.SetLocation(loc);
-        carc.Velocity = Velocity;
-        carc.Acceleration = Acceleration;
-
-        // give the carcass the pawn's inventory if we aren't an animal or robot
-        if (!IsA('Animal') && !IsA('Robot'))
-        {
-            if (Inventory != None)
-            {
-                do
-                {
-                    item = Inventory;
-                    nextItem = item.Inventory;
-                    DeleteInventory(item);
-                    // Vanilla Matters: Add a 80% chance to destroy a combat knife if present on the pawn.
-                    w = DeusExWeapon( item );
-                    if ( ( w != none && w.bNativeAttack ) || Ammo( item ) != none || ( WeaponCombatKnife( w ) != none && FRand() > 0.2 ) )
-                        item.Destroy();
-                    else
-                        carc.AddInventory(item);
-                    item = nextItem;
-                }
-                until (item == None);
+        // VM: Also add a 80% chance to destroy a combat knife if present on the pawn.
+        if ( ( w != none && w.bNativeAttack ) || ( WeaponCombatKnife( w ) != none && FRand() > 0.2 ) ) {
+            item.Destroy();
+        }
+        else if ( Ammo( item ) != none || Credits( item ) != none || DataVaultImage( item ) != none || NanoKey( item ) != none ) {
+            if ( carc != none ) {
+                carc.AddInventory( item );
             }
         }
+        else {
+            loc = Vect( 0, 0, 0 );
+            if ( item == currentWeapon ) {
+                loc.y = CollisionRadius * 1.6;
+            }
+            else {
+                loc.x = ( FRand() - FRand() ) * CollisionRadius * 2;
+                loc.y = CollisionRadius + ( FRand() * CollisionRadius * 0.2 );
+                if ( FRand() > 0.5 ) {
+                    loc.y *= -1;
+                }
+            }
+            loc = loc >> Rotation;
+            loc.z += item.CollisionHeight;
+
+            item.DropFrom( Location + loc );
+        }
+
+        item = nextItem;
     }
 
     return carc;
 }
-
 
 // ----------------------------------------------------------------------
 // FilterDamageType()
@@ -5564,8 +5545,12 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
                     SetEnemy( pawnActor,, true );
                     GotoState( 'Fleeing' );
                 }
-                else if ( pawnActor.bIsPlayer ) {
-                    ReactToFutz();
+                else {
+                    SetSeekLocation( pawnActor, pawnActor.Location, SEEKTYPE_Sound );
+                    GotoState( 'Seeking', 'TurnToLocation' );
+                    if ( pawnActor.bIsPlayer ) {
+                        ReactToFutz();
+                    }
                 }
             }
             else {
@@ -5577,8 +5562,12 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
                     SetDistressTimer();
                     GotoState( 'Fleeing' );
                 }
-                else if ( pawnActor.bIsPlayer ) {
-                    ReactToFutz();
+                else {
+                    SetSeekLocation( pawnActor, pawnActor.Location, SEEKTYPE_Sound );
+                    GotoState( 'Seeking', 'GoToLocation' );
+                    if ( pawnActor.bIsPlayer ) {
+                        ReactToFutz();
+                    }
                 }
             }
         }
@@ -8555,6 +8544,11 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 
     if (player != None)
     {
+        // Vanilla Matters
+        if ( player == Enemy ) {
+            player.RemoveEnemyInCombat( self );
+        }
+
         // Abort any conversation we may have been having with the NPC
         if (bInConversation)
             player.AbortConversation();
@@ -14007,12 +14001,12 @@ Begin:
     if ((Health > -100) && !IsA('Robot'))
         FinishAnim();
 
-    SetWeapon(None);
-
     bHidden = True;
 
     Acceleration = vect(0,0,0);
     SpawnCarcass();
+    // Vanilla Matters
+    SetWeapon( none );
     Destroy();
 }
 
@@ -14096,11 +14090,11 @@ state FallingState
             if (Velocity.Z < -700)
             {
                 legLocation = Location + vect(-1,0,-1);         // damage left leg
-                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
                 legLocation = Location + vect(1,0,-1);          // damage right leg
-                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.14 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
                 legLocation = Location + vect(0,0,1);           // damage torso
-                TakeDamage(-0.04 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'fell');
+                TakeDamage(-0.04 * (Velocity.Z + 700), Self, legLocation, vect(0,0,0), 'Fell');
             }
             landVol = Velocity.Z/JumpZ;
             landVol = 0.005 * Mass * FMin(5, landVol * landVol);

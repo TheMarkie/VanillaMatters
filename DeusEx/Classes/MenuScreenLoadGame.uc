@@ -796,10 +796,10 @@ defaultproperties
      TimeAMLabel="am"
      TimePMLabel="pm"
      LocationLabel="Location: %s|n"
-     SaveCountLabel="Save Count: %d|n"
+     SaveCountLabel="Save Count: %s|n"
      PlayTimeLabel="Play Time: %s|n"
-     FileSizeLabel="File Size: %dMB"
-     FreeSpaceLabel="Free Space: %dMB"
+     FileSizeLabel="File Size: %sMB"
+     FreeSpaceLabel="Free Space: %sMB"
      ConfirmDeleteLabel="Confirm Savegame Deletion"
      CheatsEnabledLabel="- CHEATS ENABLED -"
      actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)

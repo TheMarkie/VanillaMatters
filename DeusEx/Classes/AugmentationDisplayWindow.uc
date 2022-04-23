@@ -7,15 +7,6 @@ var ViewportWindow winZoom;
 var float margin;
 var float corner;
 
-var bool bDefenseActive;
-var int defenseLevel;
-
-var ViewportWindow winDrone;
-var bool bDroneCreated;
-var bool bDroneReferenced;
-//var SpyDrone aDrone;      // MBCODE: Took this out and moved it to DeusExPlayer since the server
-                                    // has no idea about these windows or the drone (needed for multiplayer).
-
 var bool bTargetActive;
 var int targetLevel;
 var Actor lastTarget;
@@ -44,10 +35,7 @@ var localized String msgWeapon;
 var localized String msgNone;
 var localized String msgScanning1;
 var localized String msgScanning2;
-var localized String msgADSTracking;
-var localized String msgADSDetonating;
 var localized String msgBehind;
-var localized String msgDroneActive;
 var localized String msgEnergyLow;
 var localized String msgCantLaunch;
 var localized String msgLightAmpActive;
@@ -111,12 +99,6 @@ var String  keyDropItem, keyTalk, keyTeamTalk;
 var Color   colRed, colGreen, colWhite;
 
 // Vanilla Matters
-var Actor defenseTarget;                // AugDefense now deals with more than projectiles.
-var bool VM_bDefenseEnoughEnergy;       // AugDefense now has a cost so the HUD has to deal with whether a detonation is possible.
-var bool VM_bDefenseEnoughDistance;     // Shows if we're in range to detonate.
-
-var ViewportWindow VM_playerWnd;        // Holds the player perspective when AugDrone is on.
-
 var bool VM_recticleDrawn;              // True if we're drawing the weapon recticle.
 
 var int VM_visionLevels[2];             // Use an array to hold seperate values from different sources of vision.
@@ -126,7 +108,6 @@ var() float VM_nvBrightness;
 var() float VM_irBrightness;
 
 var localized String VM_msgUndefined;
-var localized String VM_msgADSNotEnoughEnergy;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -227,46 +208,6 @@ function Interpolate(GC gc, float fromX, float fromY, float toX, float toY, int 
 }
 
 // ----------------------------------------------------------------------
-// ConfigurationChanged()
-// ----------------------------------------------------------------------
-
-function ConfigurationChanged()
-{
-    local float x, y, w, h, cx, cy;
-
-    // Vanilla Matters: Tweak the locations of the windows.
-    if ( winDrone != none ) {
-        winDrone.ConfigureChild( 0, 0, width, height );
-    }
-
-    x = margin;
-    y = height * 0.375;
-    w = width / 4;
-    h = height / 4;
-
-    if ( VM_playerWnd != none ) {
-        VM_playerWnd.ConfigureChild( x, y, w, h );
-    }
-
-    x = width - ( width / 4 ) - margin;
-
-    if ( winZoom != none ) {
-        winZoom.ConfigureChild( x, y, w, h );
-    }
-}
-
-// ----------------------------------------------------------------------
-// ChildRequestedReconfiguration()
-// ----------------------------------------------------------------------
-
-function bool ChildRequestedReconfiguration(Window childWin)
-{
-    ConfigurationChanged();
-
-    return True;
-}
-
-// ----------------------------------------------------------------------
 // RefreshMultiplayerKeys()
 // ----------------------------------------------------------------------
 function RefreshMultiplayerKeys()
@@ -303,41 +244,7 @@ function RefreshMultiplayerKeys()
 
 function Tick(float deltaTime)
 {
-    // check for the drone ViewportWindow being constructed
-
-    // Vanilla Matters: When AugDrone is active, make the spy drone's perspective the main one and shift the player's down to a smaller window.
-    if ( player.bSpyDroneActive && player.aDrone != none && ( player.PlayerIsClient() || player.Level.NetMode == NM_Standalone ) ) {
-        if ( VM_playerWnd == none ) {
-            VM_playerWnd = ViewportWindow( NewChild( class'ViewportWindow' ) );
-            VM_playerWnd.AskParentForReconfigure();
-            VM_playerWnd.Lower();
-            VM_playerWnd.SetViewportActor( player );
-        }
-        if ( winDrone == none ) {
-            winDrone = ViewportWindow( NewChild( class'ViewportWindow' ) );
-            winDrone.AskParentForReconfigure();
-            winDrone.Lower();
-            winDrone.SetViewportActor( player.aDrone );
-        }
-    }
-
-    if ( !player.bSpyDroneActive ) {
-        if ( winDrone != none ) {
-            winDrone.Destroy();
-            winDrone = none;
-        }
-        if ( VM_playerWnd != none ) {
-            VM_playerWnd.Destroy();
-            VM_playerWnd = none;
-        }
-
-        if ( player.aDrone != none && IsActorValid( player.aDrone ) ) {
-            RemoveActorRef( player.aDrone );
-            bDroneReferenced = false;
-        }
-
-        bDroneCreated = false;
-    }
+    local float x, y, w, h;
 
     // check for the target ViewportWindow being constructed
     if (bTargetActive && (targetLevel > 2) && (winZoom == None) && (lastTarget != None) && (Player.Level.NetMode == NM_Standalone))
@@ -346,7 +253,14 @@ function Tick(float deltaTime)
         if (winZoom != None)
         {
             winZoom.AskParentForReconfigure();
+            // Vanilla Matters
+            w = FMin( width, height ) / 4;
+            h = w;
+            x = width - w - margin;
+            y = ( height - h ) / 2;
+            winZoom.ConfigureChild( x, y, w, h );
             winZoom.Lower();
+            winZoom.SetFOVAngle( 60 );
         }
     }
 
@@ -370,7 +284,7 @@ function PostDrawWindow(GC gc)
 
     pp = Player.GetPlayerPawn();
 
-   //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
+    //DEUS_EX AMSD Draw vision first so that everything else doesn't get washed green
 
     // Vanilla Matters: Handle active status in the function itself.
     DrawVisionAugmentation( gc );
@@ -378,13 +292,7 @@ function PostDrawWindow(GC gc)
     if ( Player.Level.NetMode != NM_Standalone )
         DrawMiscStatusMessages( gc );
 
-    if (bDefenseActive)
-        DrawDefenseAugmentation(gc);
-
-    if (Player.bSpyDroneActive)
-        DrawSpyDroneAugmentation(gc);
-
-   // draw IFF and accuracy information all the time, return False if target aug is not active
+    // draw IFF and accuracy information all the time, return False if target aug is not active
     DrawTargetAugmentation(gc);
 
     gc.SetFont(Font'FontMenuSmall_DS');
@@ -401,157 +309,6 @@ function PostDrawWindow(GC gc)
     }
 }
 
-// ----------------------------------------------------------------------
-// DrawDefenseAugmentation()
-// ----------------------------------------------------------------------
-
-function DrawDefenseAugmentation(GC gc)
-{
-    local String str;
-    local float boxCX, boxCY;
-    local float x, y, w, h, mult;
-    local bool bDrawLine;
-
-    // Vanilla Matters
-    // local DeusExWeapon targetWeapon;
-    // local ScriptedPawn sp;
-    // local Vector vX, vY, vZ;
-    local Vector targetLocation;
-
-    if (defenseTarget != None)
-    {
-        bDrawLine = False;
-
-        // Vanilla Matters: Rewrite all the stuff to take into account new target types.
-        bDrawLine = true;
-
-        if ( VM_bDefenseEnoughDistance ) {
-            str = msgADSDetonating;
-        }
-        else {
-            str = msgADSTracking;
-        }
-
-        // sp = ScriptedPawn( defenseTarget );
-
-        // if ( sp != None ) {
-        //  targetWeapon = DeusExWeapon( sp.Weapon );
-
-        //  if ( targetWeapon != None ) {
-        //      targetLocation = defenseTarget.Location - ( ( sp.default.CollisionHeight - sp.CollisionHeight ) * 0.5 * vect( 0, 0, 1 ) ) + ( targetWeapon.FireOffset >> sp.ViewRotation );
-        //  }
-        //  else {
-        //      targetLocation = defenseTarget.Location;
-        //  }
-        // }
-        // else {
-        //  targetLocation = defenseTarget.Location;
-        // }
-
-        targetLocation = defenseTarget.Location;
-
-        // VM: If the player has enough energy to detonation, display range, otherwise, say so.
-        if ( VM_bDefenseEnoughEnergy ) {
-            str = str $ CR() $ msgRange @ Int( VSize( targetLocation - Player.Location ) / 16 ) @ msgRangeUnits;
-
-            if ( !ConvertVectorToCoordinates( targetLocation, boxCX, boxCY ) ) {
-                str = str @ msgBehind;
-            }
-        }
-        else {
-            str = VM_msgADSNotEnoughEnergy;
-        }
-
-        gc.GetTextExtent( 0, w, h, str );
-        x = boxCX - w / 2;
-        y = boxCY - h - 11;
-        gc.SetTextColorRGB( 255, 0, 0 );
-        gc.DrawText( x, y, w, h, str );
-        gc.SetTextColor( colHeaderText );
-
-        if (bDrawLine) {
-            gc.SetTileColorRGB( 255, 0, 0 );
-            Interpolate( gc, width / 2, height / 2, boxCX, boxCY, 64 );
-            gc.SetTileColor( colHeaderText );
-
-            // VM: Draw four corners of the box.
-            // gc.DrawPattern( boxCX - 10, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX - 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX + 5, boxCY - 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX + 10, boxCY - 10, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX - 10, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX - 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
-
-            // gc.DrawPattern( boxCX + 5, boxCY + 10, 4, 1, 0, 0, Texture'SolidRed' );
-            // gc.DrawPattern( boxCX + 10, boxCY + 5, 1, 4, 0, 0, Texture'SolidRed' );
-        }
-    }
-}
-
-// ----------------------------------------------------------------------
-// DrawSpyDroneAugmentation()
-// ----------------------------------------------------------------------
-
-function DrawSpyDroneAugmentation(GC gc)
-{
-    local String str;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-    local float x, y, w, h, mult;
-    local Vector loc;
-
-    // set the coords of the drone window
-    boxW = width/4;
-    boxH = height/4;
-    boxCX = width/8 + margin;
-    boxCY = height/2;
-    boxTLX = boxCX - boxW/2;
-    boxTLY = boxCY - boxH/2;
-    boxBRX = boxCX + boxW/2;
-    boxBRY = boxCY + boxH/2;
-
-    if (winDrone != None)
-    {
-        DrawDropShadowBox(gc, boxTLX, boxTLY, boxW, boxH);
-
-        str = msgDroneActive;
-        gc.GetTextExtent(0, w, h, str);
-        x = boxCX - w/2;
-        y = boxTLY - h - margin;
-        gc.DrawText(x, y, w, h, str);
-
-        // print a low energy warning message
-        if ((Player.Energy / Player.Default.Energy) < 0.2)
-        {
-            str = msgEnergyLow;
-            gc.GetTextExtent(0, w, h, str);
-            x = boxCX - w/2;
-            y = boxTLY + margin;
-            gc.SetTextColorRGB(255,0,0);
-            gc.DrawText(x, y, w, h, str);
-            gc.SetTextColor(colHeaderText);
-        }
-    }
-    // Since drone is created on server, they is a delay in when it will actually show up on the client
-    // the flags dronecreated and drone referenced negotiate this timing
-    if ( !bDroneCreated )
-    {
-        if (Player.aDrone == None)
-        {
-            bDroneCreated = true;
-            Player.CreateDrone();
-        }
-    }
-    else if ( !bDroneReferenced )
-    {
-        if ( Player.aDrone != None )
-        {
-            bDroneReferenced = true;
-            AddActorRef( Player.aDrone );
-        }
-    }
-}
 
 //-------------------------------------------------------------------------------------------------
 // TopCentralMessage()
@@ -925,12 +682,12 @@ function DrawTargetAugmentation(GC gc)
     local DeusExWeapon weapon;
     local bool bUseOldTarget;
     local Color crossColor;
-    local DeusExPlayer own;
     local vector AimLocation;
     local int AimBodyPart;
 
     // Vanilla Matters
     local Crosshair crosshair;
+    local DeusExPlayer targetPlayer;
 
     crosshair = DeusExRootWindow( player.rootWindow ).hud.cross;
 
@@ -1006,9 +763,9 @@ function DrawTargetAugmentation(GC gc)
     {
         // Vanilla Matters: Move this here.
         // VM: We're using an unused DXPlayer variable called "own", it does not mean this contains our own player.
-        own = DeusExPlayer( target );
-        if ( own != none && bTargetActive ) {
-            AimBodyPart = own.GetMPHitLocation( AimLocation );
+        targetPlayer = DeusExPlayer( target );
+        if ( targetPlayer != none && bTargetActive ) {
+            AimBodyPart = targetPlayer.GetMPHitLocation( AimLocation );
             if ( AimBodyPart == 1 ) {
                 TargetPlayerLocationString = "(" $ msgHead $ ")";
             }
@@ -1073,32 +830,32 @@ function DrawTargetAugmentation(GC gc)
                 // even if we don't have a zoom window
 
                 // Vanilla Matters: Move the window to the right.
-                x = width - ( width / 8 ) - margin;
+                w = FMin( width, height ) / 4;
+                h = w;
+                x = width - ( w / 2 ) - margin;
                 y = height / 2;
-                w = width / 4;
-                h = height / 4;
 
                 DrawDropShadowBox(gc, x-w/2, y-h/2, w, h);
 
-                // Vanilla Matters: Move the window to the right.
-                boxCX = width - ( width / 8 ) - margin;
-                boxCY = height / 2;
-
-                boxTLX = boxCX - width/8;
-                boxTLY = boxCY - height/8;
-                boxBRX = boxCX + width/8;
-                boxBRY = boxCY + height/8;
+                // Vanilla Matters
+                boxCX = x;
+                boxCY = y;
+                boxTLX = boxCX - ( w / 2 );
+                boxTLY = boxCY - ( h / 2 );
+                boxBRX = boxCX;
+                boxBRY = boxCY;
 
                 if (targetLevel > 2)
                 {
                     if (winZoom != None)
                     {
-                        mult = (target.CollisionRadius + target.CollisionHeight);
-                        v1 = Player.Location;
-                        v1.Z += Player.BaseEyeHeight;
-                        v2 = 1.5 * Player.Normal(target.Location - v1);
-                        winZoom.SetViewportLocation(target.Location - mult * v2);
-                        winZoom.SetWatchActor(target);
+                        // Vanilla Matters
+                        mult = target.CollisionRadius + target.CollisionHeight;
+                        v1 = Player.Location - target.Location;
+                        v1.Z += player.BaseEyeHeight;
+                        v2 = Normal( v1 );
+                        winZoom.SetViewportLocation( target.Location + ( mult * 1.5 * v2 ) );
+                        winZoom.SetRotation( Rotator( -v2 ) );
                     }
                     // window construction now happens in Tick()
                 }
@@ -1592,10 +1349,7 @@ defaultproperties
      msgNone="None"
      msgScanning1="* No Target *"
      msgScanning2="* Scanning *"
-     msgADSTracking="* ADS Tracking *"
-     msgADSDetonating="* ADS Detonating *"
      msgBehind="BEHIND"
-     msgDroneActive="Remote SpyDrone Active"
      msgEnergyLow="BioElectric energy low!"
      msgCantLaunch="ERROR - No room for SpyDrone construction!"
      msgLightAmpActive="LightAmp Active"
@@ -1640,5 +1394,4 @@ defaultproperties
      VM_nvBrightness=2.500000
      VM_irBrightness=1.500000
      VM_msgUndefined="Undefined"
-     VM_msgADSNotEnoughEnergy="* ADS no energy *"
 }

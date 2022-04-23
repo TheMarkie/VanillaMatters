@@ -1,58 +1,38 @@
-//=============================================================================
-// AugTarget.
-//=============================================================================
-class AugTarget extends Augmentation;
+class AugTarget extends VMAugmentation;
 
-// ----------------------------------------------------------------------------
-// Network Replication
-// ----------------------------------------------------------------------------
+var() array<float> AccuracyBonus;
+var() array<float> DamageVsRobot;
 
-replication
-{
-   //Server to client function replication
-   reliable if (Role == ROLE_Authority)
-      SetTargetingAugStatus;
+static function bool Activate( VMPlayer player, int level ) {
+    SetTargetingAugStatus( player, true, level );
+    player.GlobalModifiers.Modify( 'AccuracyBonus', default.AccuracyBonus[level] );
+    player.GlobalModifiers.Modify( 'DamageVsRobot', default.DamageVsRobot[level] );
+    return true;
 }
 
-state Active
-{
-Begin:
-   SetTargetingAugStatus(CurrentLevel,True);
+static function bool Deactivate( VMPlayer player, int level ) {
+    SetTargetingAugStatus( player, false, level );
+    player.GlobalModifiers.Modify( 'AccuracyBonus', -default.AccuracyBonus[level] );
+    player.GlobalModifiers.Modify( 'DamageVsRobot', -default.DamageVsRobot[level] );
+    return true;
 }
 
-function Deactivate()
-{
-    Super.Deactivate();
+static function SetTargetingAugStatus( VMPlayer player, bool active, int level ) {
+    local AugmentationDisplayWindow augWnd;
 
-   SetTargetingAugStatus(CurrentLevel,False);
-}
-
-// ----------------------------------------------------------------------
-// SetTargetingAugStatus()
-// ----------------------------------------------------------------------
-
-simulated function SetTargetingAugStatus(int Level, bool IsActive)
-{
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.bTargetActive = IsActive;
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.targetLevel = Level;
+    augWnd = player.DXRootWindow.hud.augDisplay;
+    augWnd.bTargetActive = active;
+    augWnd.targetLevel = level;
 }
 
 defaultproperties
 {
-     EnergyRate=20.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconTarget'
-     smallIcon=Texture'DeusExUI.UserInterface.AugIconTarget_Small'
-     AugmentationName="Targeting"
-     Description="Image-scaling and recognition provided by multiplexing the optic nerve with doped polyacetylene 'quantum wires' not only increases accuracy, but also delivers limited situational info about a target.|n|n[TECH ONE]|nGeneral target information.|n+4% weapon accuracy|n|n[TECH TWO]|nExtensive target information.|n+8% weapon accuracy|n|n[TECH THREE]|nSpecific target information.|n+12% weapon accuracy|n|n[TECH FOUR]|nTelescopic vision.|n+16% weapon accuracy"
-     MPInfo="When active, all weapon skills are effectively increased by one level, and you can see an enemy's health.  The skill increases allow you to effectively surpass skill level 3.  Energy Drain: Moderate"
-     LevelValues(0)=0.040000
-     LevelValues(1)=0.080000
-     LevelValues(2)=0.120000
-     LevelValues(3)=0.160000
-     AugmentationLocation=LOC_Eye
-     MPConflictSlot=4
-     VM_EnergyRateAddition(1)=10.000000
-     VM_EnergyRateAddition(2)=20.000000
-     VM_EnergyRateAddition(3)=30.000000
-     VM_dragIcon=Texture'DeusEx.VMUI.AugIconTarget'
+     SmallIcon=Texture'DeusExUI.UserInterface.AugIconTarget_Small'
+     UpgradeName="Targeting"
+     Description="Image-scaling and recognition provided by multiplexing the optic nerve with doped polyacetylene 'quantum wires' not only increases accuracy, but also delivers limited situational info about a target. Complex and precise analysis allows the agent to be more effective against mechanical targets.|n|nTarget information and details increase with tech level.|n|nWeapon Accuracy: +4% / 8% / 12% / 16%|nDamage vs Robots: +0% / 20% / 40% / 60%|n|nEnergy Rate: 0.3 / 0.4 / 0.5 / 0.6 per second"
+     InstallLocation=AugmentationLocationEye
+     Rates=(0.3,0.4,0.5,0.6)
+     AccuracyBonus=(0.04,0.08,0.12,0.16)
+     DamageVsRobot=(0,0.2,0.4,0.6)
 }

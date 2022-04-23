@@ -122,7 +122,7 @@ function SetCountLabel(String newLabel)
 defaultproperties
 {
      bDisabledByDefault=True
-     CountLabel="Count: %d"
+     CountLabel="Count: %s"
      iconPosWidth=53
      iconPosHeight=53
      buttonWidth=55

@@ -1,26 +1,13 @@
-class VMSkill extends Object
+class VMSkill extends VMUpgrade
     abstract;
-
-struct SkillValue {
-    var() string Name;
-    var() array<float> Values;
-};
-
-//==============================================
-// Description
-//==============================================
-var() localized string SkillName;
-var() localized string Description;
-var() Texture SkillIcon;
 
 //==============================================
 // Properties
 //==============================================
 var() array<int> Costs;
-var() array<SkillValue> SkillValues;
 
-native(2300) static final function int SkillValueArrayCount( array<SkillValue> A );
-static final preoperator int #( out array<SkillValue> A ) { return SkillValueArrayCount( A ); }
+var() array<UpgradeValue> GlobalValues;
+var() array<UpgradeCategory> CategoryValues;
 
 //==============================================
 // General info
@@ -30,31 +17,61 @@ static function int GetMaxLevel() {
 }
 
 //==============================================
-// Skill values
+// Values
 //==============================================
-static function UpdateValues( TableFloat table, int oldLevel, int newLevel ) {
-    local int i, count, valueCount;
-    local SkillValue skillValue;
+static function UpdateValues( VMPlayer player, int oldLevel, int newLevel ) {
+    local int i, j, count, categoryCount, valueCount;
     local float value;
 
-    if ( table == none || oldLevel == newLevel ) {
+    local TableFloat globalTable;
+    local TableTableFloat categoryTable;
+
+    local UpgradeCategory category;
+    local UpgradeValue valueData;
+
+    if ( oldLevel == newLevel ) {
         return;
     }
 
-    count = #default.SkillValues;
-    for ( i = 0; i < count; i++ ) {
-        skillValue = default.SkillValues[i];
-        valueCount = #skillValue.Values;
+    globalTable = player.GlobalModifiers;
 
-        table.TryGetValue( skillValue.Name, value );
+    count = #default.GlobalValues;
+    for ( i = 0; i < count; i++ ) {
+        valueData = default.GlobalValues[i];
+        valueCount = #valueData.Values;
+
+        value = 0;
         if ( oldLevel >= 0 ) {
-            value -= skillValue.Values[Min( oldLevel, valueCount - 1 )];
+            value -= valueData.Values[Min( oldLevel, valueCount - 1 )];
         }
         if ( newLevel >= 0 ) {
-            value += skillValue.Values[Min( newLevel, valueCount - 1 )];
+            value += valueData.Values[Min( newLevel, valueCount - 1 )];
         }
 
-        table.Set( skillValue.Name, value );
+        globalTable.Modify( valueData.Name, value );
+    }
+
+    categoryTable = player.CategoryModifiers;
+
+    categoryCount = #default.CategoryValues;
+    for ( i = 0; i < categoryCount; i++ ) {
+        category = default.CategoryValues[i];
+
+        count = #category.Values;
+        for ( j = 0; j < count; j++ ) {
+            valueData = category.Values[j];
+            valueCount = #valueData.Values;
+
+            value = 0;
+            if ( oldLevel >= 0 ) {
+                value -= valueData.Values[Min( oldLevel, valueCount - 1 )];
+            }
+            if ( newLevel >= 0 ) {
+                value += valueData.Values[Min( newLevel, valueCount - 1 )];
+            }
+
+            categoryTable.Modify( category.Name, valueData.Name, value );
+        }
     }
 }
 

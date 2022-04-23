@@ -217,10 +217,10 @@ event DrawWindow(GC gc)
             info = player.GetFirstSkillInfo();
             while ( info != None ) {
                 if ( index == 10 ) {
-                    str = "0. " $ info.GetSkillName();
+                    str = "0. " $ info.GetName();
                 }
                 else {
-                    str = index $ ". " $ info.GetSkillName();
+                    str = index $ ". " $ info.GetName();
                 }
 
                 gc.GetTextExtent( 0, w, h, str );
@@ -320,16 +320,14 @@ function VMSkillInfo GetSkillFromIndex( DeusExPlayer thisPlayer, int index ) {
 // AttemptBuySkill()
 // ----------------------------------------------------------------------
 // Vanilla Matters
-function bool AttemptBuySkill( DeusExPlayer thisPlayer, VMSkillInfo info ) {
-    if ( info != None ) {
-        if ( info.CanUpgrade( thisPlayer.SkillPointsAvail ) ) {
-            thisPlayer.BuySkillSound( 0 );
-            return thisPlayer.IncreaseSkillLevel( info );
-        }
-        else {
-            thisPlayer.BuySkillSound( 1 );
-            return false;
-        }
+function bool AttemptBuySkill( DeusExPlayer thisPlayer, name name ) {
+    if ( thisPlayer.IncreaseSkillLevel( name ) ) {
+        thisPlayer.BuySkillSound( 0 );
+        return true;
+    }
+    else {
+        thisPlayer.BuySkillSound( 1 );
+        return false;
     }
 }
 
@@ -345,7 +343,7 @@ function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum ) {
     }
 
     info = GetSkillFromIndex( thisPlayer, objectNum );
-    if ( AttemptBuySkill( thisPlayer, info ) ) {
+    if ( AttemptBuySkill( thisPlayer, info.DefinitionClassName ) ) {
         thisPlayer.bBuySkills = false;      // Got our skill, exit out of menu
     }
 

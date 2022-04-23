@@ -1,29 +1,14 @@
-//=============================================================================
-// AugMuscle.
-//=============================================================================
-class AugMuscle extends Augmentation;
-
-// Vanilla Matters
-var() float VM_muscleCost;
-
-state Active
-{
-Begin:
-}
+class AugMuscle extends VMAugmentation;
 
 defaultproperties
 {
-     VM_muscleCost=10.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconMuscle'
-     smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
-     bAlwaysActive=True
-     AugmentationName="Microfibral Muscle"
-     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|n[TECH ONE]|nStrength is increased by 100%.|n- The agent can turn any object into a lethal missile with a powerthrow.|n(Powerthrow damage is relative to strength)|n+25% thrown weapon speed and distance|n-10% accuracy penalty from arm injuries|n|n[TECH TWO]|nStrength is increased by 200%.|n+50% thrown weapon speed and distance|n-20% accuracy penalty|n|n[TECH THREE]|nStrength is increased by 300%.|n+75% thrown weapon speed and distance|n-30% accuracy penalty|n|n[TECH FOUR]|nAn agent is inhumanly strong.|nStrength is increased by 400%.|n+100% thrown weapon speed and distance|n-40% accuracy penalty|n|nStarts draining energy when a heavy object is held or a powerthrow is performed, drain rate depends on the object's mass."
-     MPInfo="When active, you can pick up large crates.  Energy Drain: Low"
-     LevelValues(0)=1.500000
-     LevelValues(1)=2.000000
-     LevelValues(2)=2.500000
-     LevelValues(3)=3.000000
-     AugmentationLocation=LOC_Arm
-     MPConflictSlot=8
+     SmallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
+     ActivateSound=Sound'DeusExSounds.Augmentation.AugActivate'
+     IsPassive=True
+     UpgradeName="Microfibral Muscle"
+     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects. The agent can also turn any object into a lethal missile with a powerthrow.|n|nPress Fire when holding an object to powerthrow.|n|nLift Strength: +100% / 200% / 300% / 400%|nThrow Strength: +25% / 50% / 75% / 100%|nInjury Accuracy Penalty: -10% / 20% / 30% / 40%|n|nEnergy Cost: 10 per powerthrow"
+     Rates=(0,0,0,0)
+     InstallLocation=AugmentationLocationArm
+     BehaviourClassName=AugMuscleBehaviour
 }
