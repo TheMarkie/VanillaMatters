@@ -10378,10 +10378,7 @@ function DeusExLevelInfo GetLevelInfo() { return none; }
 
 function RequestAutoSave( optional float delay );
 function bool ShouldSave() { return false; }
-
 function bool IsInMainMenu() { return false; }
-
-function bool IsInMainMenu( DeusExLevelInfo info ) { return true; }
 
 function SetSkinStyle( ERenderStyle newStyle, optional texture newTex, optional float newScaleGlow );
 function ResetSkinStyle();
