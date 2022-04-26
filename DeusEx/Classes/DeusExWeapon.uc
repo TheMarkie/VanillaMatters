@@ -475,7 +475,9 @@ function bool HandlePickupQuery(Inventory Item)
 
                 defAmmo = Ammo( player.FindInventoryType( defAmmoClass ) );
                 defAmmo.AddAmmo( amount );
-                player.ClientMessage( defAmmo.PickupMessage @ amount @ "of" @ defAmmo.ItemName, 'Pickup' );
+                if ( !VM_isGrenade && defAmmo.PickupViewMesh != Mesh'TestBox' ) {
+                    player.ClientMessage( defAmmo.PickupMessage @ amount @ "of" @ defAmmo.ItemName, 'Pickup' );
+                }
             }
         }
     }

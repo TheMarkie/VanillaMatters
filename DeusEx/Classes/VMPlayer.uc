@@ -1516,14 +1516,16 @@ function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
             if ( ammo != none ) {
                 if ( AmmoNone( ammo ) == none && ammo.AmmoAmount >= ammo.MaxAmmo ) {
                     ClientMessage( Sprintf( MsgTooMuchAmmo, ammo.itemName ) );
-
                     canPickup = false;
                 }
             }
-            else if ( weapon != none && weapon.VM_isGrenade ) {
-                if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo) {
+            else if ( weapon != none ) {
+                if ( weapon.ReloadCount == 0 && weapon.PickupAmmoCount == 0 && weapon.AmmoName != none ) {
+                    ClientMessage( Sprintf( CanCarryOnlyOne, weapon.ItemName ) );
+                    canPickup = false;
+                }
+                else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
                     ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.itemName ) );
-
                     canPickup = false;
                 }
             }
