@@ -56,11 +56,6 @@ function CalcTrace(float deltaTime)
             }
         }
 
-        // Vanilla Matters: If the last target hit is not valid, set the HitLocation to EndTrace like we hit nothing.
-        if ( target == none || target.DrawType == DT_None || target.bHidden ) {
-            HitLocation = EndTrace;
-        }
-
         lastDamageTime += deltaTime;
 
         // shock whatever gets in the beam
@@ -73,7 +68,7 @@ function CalcTrace(float deltaTime)
 
         if (LaserIterator(RenderInterface) != None)
             // Vanilla Matters
-            LaserIterator( RenderInterface ).AddBeam( 0, Location, Rotation + rot, Min( Length, VSize( Location - HitLocation ) ) );
+            LaserIterator( RenderInterface ).AddBeam( 0, Location, Rotation + rot, VSize( Location - HitLocation ) );
     }
 }
 
