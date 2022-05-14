@@ -270,7 +270,8 @@ simulated function bool UpdateInfo(Object winObject)
     if (bCanHaveMultipleCopies)
     {
         // Print the number of copies
-        str = CountLabel @ String(NumCopies);
+        // Vanilla Matters
+        str = CountLabel @ NumCopies @ "/" @ maxCopies;
         winInfo.AppendText(str);
     }
 
