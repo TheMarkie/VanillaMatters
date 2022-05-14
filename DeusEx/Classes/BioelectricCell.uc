@@ -100,11 +100,11 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 
 defaultproperties
 {
-     rechargeAmount=15
+     rechargeAmount=20
      mpRechargeAmount=15
      msgRecharged="Recharged %s points"
      RechargesLabel="Recharges %s Energy Units"
-     maxCopies=10
+     maxCopies=20
      bCanHaveMultipleCopies=True
      bActivatable=True
      ItemName="Bioelectric Cell"
