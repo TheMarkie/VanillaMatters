@@ -1114,7 +1114,6 @@ function ResetPlayerToDefaults()
 
     // Reinitialize all subsystems we've just nuked
     InitializeSubSystems();
-    ResetSubSystems();
 
    // Give starting inventory.
    if (Level.Netmode != NM_Standalone)
