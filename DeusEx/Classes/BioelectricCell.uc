@@ -74,12 +74,13 @@ function bool UpdateInfo(Object winObject)
 
     winInfo.SetTitle(itemName);
     winInfo.SetText(Description $ winInfo.CR() $ winInfo.CR());
-    //winInfo.AppendText(Sprintf(RechargesLabel, RechargeAmount));
 
-    // Vanilla Matters: Amount recharged varies so we're gonna omit this for now.
+    // Vanilla Matters
+    winInfo.AppendText( Sprintf( RechargesLabel, int( rechargeAmount + VMPlayer( Owner ).GetValue( 'RechargeBonus' ) ) ) );
 
     // Print the number of copies
-    str = CountLabel @ String(NumCopies);
+    // Vanilla Matters
+    str = CountLabel @ NumCopies @ "/" @ maxCopies;
     winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ str);
 
     return True;

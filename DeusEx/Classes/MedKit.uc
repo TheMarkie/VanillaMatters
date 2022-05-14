@@ -84,10 +84,12 @@ function bool UpdateInfo(Object winObject)
             bNoPrintMustBeUsed = False;
         }
 
-        // Print the number of copies
-        outText = CountLabel @ String(NumCopies);
+        winInfo.AppendText( Sprintf( "Restores %s HP", int( healAmount + player.GetValue( 'HealingBonus' ) ) ) );
 
-        winInfo.AppendText(winInfo.CR() $ outText);
+        // Print the number of copies
+        // Vanilla Matters
+        outText = CountLabel @ NumCopies @ "/" @ maxCopies;
+        winInfo.AppendText( winInfo.CR() $ winInfo.CR() $ outText );
     }
 
     return True;
