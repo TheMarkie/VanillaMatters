@@ -510,16 +510,6 @@ state PlayerWalking {
 
         GroundSpeed = FMax( newSpeed, 100 );
 
-        // if we are moving or crouching, we can't lean
-        // uncomment below line to disallow leaning during crouch
-
-        if ( VSize( Velocity ) < 10 && aForward == 0 ) {
-            bCanLean = true;
-        }
-        else {
-            bCanLean = false;
-        }
-
         // check leaning buttons (axis aExtra0 is used for leaning)
         maxLeanDist = 40;
 
