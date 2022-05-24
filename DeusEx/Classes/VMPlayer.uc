@@ -68,8 +68,6 @@ var travel Inventory LastHeldInHand;            // Some temporary place to keep 
 
 var byte ChargedPickupStatus[5];
 
-var int EnemyInCombatCount;                     // Number of enemies targeting this player in combat.
-
 //==============================================
 // Properties
 //==============================================
@@ -1257,16 +1255,19 @@ function ChargedPickup GetActiveChargedPickup( class<ChargedPickup> itemclass ) 
 
 // Combat status
 // Override
-function AddEnemyInCombat( ScriptedPawn sp ) {
-    EnemyInCombatCount++;
-}
-// Override
-function RemoveEnemyInCombat( ScriptedPawn sp ) {
-    EnemyInCombatCount = Max( EnemyInCombatCount - 1, 0 );
-}
-// Override
 function bool IsInCombat() {
-    return EnemyInCombatCount > 0;
+    local Pawn pawn;
+    local ScriptedPawn scriptedPawn;
+
+    for ( pawn = Level.PawnList; pawn != None; pawn = pawn.NextPawn ) {
+        scriptedPawn = ScriptedPawn( pawn );
+        if ( scriptedPawn != none && VSize( scriptedPawn.Location - Location ) < ( 1600 + scriptedPawn.CollisionRadius ) ) {
+            if ( scriptedPawn.GetStateName() == 'Attacking' && scriptedPawn.Enemy == self ) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //==============================================

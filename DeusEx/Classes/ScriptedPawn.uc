@@ -712,32 +712,8 @@ function bool AddInitialInventory(class<Inventory> newInventory,
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
                        optional bool bForce)
 {
-    // Vanilla Matters
-    local DeusExPlayer player;
-
-    if ( Enemy == newEnemy ) {
-        return true;
-    }
-
     if (bForce || IsValidEnemy(newEnemy))
     {
-        // Vanilla Matters
-        player = DeusExPlayer( newEnemy );
-        if ( player != none ) {
-            player.AddEnemyInCombat( self );
-        }
-        else {
-            player = DeusExPlayer( Enemy );
-            if ( player != none ) {
-                player.RemoveEnemyInCombat( self );
-
-                // Vanilla Matters: If the player manages to escape this pawn, then they should be awarded some FP.
-                if ( newEnemy == none ) {
-                    player.AddForwardPressure( 10, 'Stealth' );
-                }
-            }
-        }
-
         if (newEnemy != Enemy)
             EnemyTimer = 0;
         Enemy         = newEnemy;
@@ -8544,11 +8520,6 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 
     if (player != None)
     {
-        // Vanilla Matters
-        if ( player == Enemy ) {
-            player.RemoveEnemyInCombat( self );
-        }
-
         // Abort any conversation we may have been having with the NPC
         if (bInConversation)
             player.AbortConversation();

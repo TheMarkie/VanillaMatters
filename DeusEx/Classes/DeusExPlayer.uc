@@ -10397,8 +10397,6 @@ function float GetCurrentGroundSpeed() { return 0; }
 function int HealPlayer( int baseAmount, optional bool useSkill, optional bool skipMessage, optional name source ) { return 0; }
 function bool DrainEnergy( float amount ) { return false; }
 
-function AddEnemyInCombat( ScriptedPawn sp );
-function RemoveEnemyInCombat( ScriptedPawn sp );
 function bool IsInCombat() { return false; }
 
 function ResetSubSystems();
