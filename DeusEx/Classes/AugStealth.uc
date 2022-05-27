@@ -22,6 +22,7 @@ defaultproperties
      UpgradeName="Run Silent"
      Description="The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.|n|nMovement Sound Reduction: 30% / 50% / 70% / 90%|nFall Damage Reduction: 15 / 30 / 45 / 60"
      InstallLocation=AugmentationLocationLeg
+     IsPassive=True
      RunSilentBonus=(0.3,0.5,0.7,0.9)
      FellDamageResistanceFlat=(15,30,45,60)
 }
