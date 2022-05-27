@@ -29,7 +29,7 @@ var localized string AugmentationLocationLabels[7];
 function VMAugmentationInfo Add( name className, name packageName, optional int startingLevel ) {
     local VMAugmentationInfo info;
 
-    if ( GetInfo( name ) != none ) {
+    if ( GetInfo( className ) != none ) {
         return none;
     }
 
