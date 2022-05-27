@@ -1,6 +1,8 @@
 class VMAugmentationInfo extends VMUpgradeInfo;
 
 var localized string MsgNotEnoughEnergy;
+var localized string MsgActivated;
+var localized string MsgDeactivated;
 
 var travel VMAugmentationInfo Next;
 var travel bool IsActive;
@@ -84,18 +86,20 @@ function bool Toggle( bool on ) {
 
     if ( on ) {
         if ( Activate() ) {
+            IsActive = true;
             if ( Definition.default.ActivateSound != none ) {
                 Player.PlaySound( Definition.default.ActivateSound, SLOT_None );
             }
-            IsActive = true;
+            Player.ClientMessage( Sprintf( MsgActivated, Definition.default.UpgradeName ) );
         }
     }
     else {
         if ( Deactivate() ) {
+            IsActive = false;
             if ( Definition.default.DeactivateSound != none ) {
                 Player.PlaySound( Definition.default.DeactivateSound, SLOT_None );
             }
-            IsActive = false;
+            Player.ClientMessage( Sprintf( MsgDeactivated, Definition.default.UpgradeName ) );
         }
     }
 
@@ -194,4 +198,6 @@ function DrawAugmentation( GC gc ) {
 defaultproperties
 {
      MsgNotEnoughEnergy="You need %s energy to activate %s"
+     MsgActivated="%s activated"
+     MsgDeactivated="%s deactivated"
 }
