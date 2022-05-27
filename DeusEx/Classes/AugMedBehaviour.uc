@@ -73,7 +73,7 @@ function float Tick( float deltaTime ) {
 defaultproperties
 {
      HealthThreshold=30
-     EnergyThreshold=50
+     EnergyThreshold=40
      LimbHealCooldown=10.000000
      LimbRegenThresholds=(40,40,60,80)
      LimbRegenAmount=10
