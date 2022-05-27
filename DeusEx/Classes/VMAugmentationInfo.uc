@@ -193,5 +193,5 @@ function DrawAugmentation( GC gc ) {
 
 defaultproperties
 {
-     MsgNotEnoughEnergy="You need %s to activate %s"
+     MsgNotEnoughEnergy="You need %s energy to activate %s"
 }
