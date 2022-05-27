@@ -523,7 +523,7 @@ state PlayerWalking {
             }
         }
 
-        if ( bCanLean && aExtra0 != 0 ) {
+        if ( aExtra0 != 0 ) {
             DropDecoration();
             if ( AnimSequence != 'CrouchWalk' ) {
                 PlayCrawling();
