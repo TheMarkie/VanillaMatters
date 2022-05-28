@@ -461,8 +461,17 @@ function bool ButtonActivated( Window buttonPressed ) {
     itemButton = PersonaItemButton( buttonPressed );
     if ( itemButton != none ) {
         SelectAugmentation( itemButton );
-
         return true;
+    }
+    else {
+        switch ( buttonPressed ) {
+            case btnUpgrade:
+                UpgradeAugmentation();
+                break;
+            case btnUseCell:
+                UseCell();
+                break;
+        }
     }
 
     return false;
