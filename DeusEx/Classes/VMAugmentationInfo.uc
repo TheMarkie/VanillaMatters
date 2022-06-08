@@ -179,7 +179,10 @@ function float Tick( float deltaTime ) {
     if ( Behaviour != none ) {
         return Behaviour.Tick( deltaTime );
     }
-    return Definition.default.Rates[Level] * deltaTime;
+    if ( IsActive ) {
+        return Definition.default.Rates[Level] * deltaTime;
+    }
+    return 0;
 }
 
 function float GetCooldown() {
