@@ -6,8 +6,8 @@ class AmmoPlasma extends DeusExAmmo;
 defaultproperties
 {
      bShowInfo=True
-     AmmoAmount=12
-     MaxAmmo=84
+     AmmoAmount=24
+     MaxAmmo=240
      ItemName="Plasma Clip"
      ItemArticle="a"
      PickupViewMesh=LodMesh'DeusExItems.AmmoPlasma'

@@ -8,7 +8,7 @@ defaultproperties
      LowAmmoWaterMark=12
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=3.000000
-     HitDamage=25
+     HitDamage=35
      BaseAccuracy=0.650000
      bCanHaveScope=True
      ScopeFOV=20
@@ -24,7 +24,7 @@ defaultproperties
      VM_ShotCount=3
      AmmoName=Class'DeusEx.AmmoPlasma'
      ReloadCount=12
-     PickupAmmoCount=12
+     PickupAmmoCount=24
      ProjectileClass=Class'DeusEx.PlasmaBolt'
      shakemag=250.000000
      FireSound=Sound'DeusExSounds.Weapons.PlasmaRifleFire'
