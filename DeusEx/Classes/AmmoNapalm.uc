@@ -6,8 +6,8 @@ class AmmoNapalm extends DeusExAmmo;
 defaultproperties
 {
      bShowInfo=True
-     AmmoAmount=100
-     MaxAmmo=400
+     AmmoAmount=200
+     MaxAmmo=800
      ItemName="Napalm Canister"
      ItemArticle="a"
      PickupViewMesh=LodMesh'DeusExItems.AmmoNapalm'

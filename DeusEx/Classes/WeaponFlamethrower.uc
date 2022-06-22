@@ -71,7 +71,7 @@ defaultproperties
      VM_LoopFireAnimation=True
      AmmoName=Class'DeusEx.AmmoNapalm'
      ReloadCount=100
-     PickupAmmoCount=100
+     PickupAmmoCount=200
      FireOffset=(Y=10.000000,Z=10.000000)
      ProjectileClass=Class'DeusEx.Fireball'
      shakemag=50.000000

@@ -7,7 +7,7 @@ defaultproperties
 {
      bShowInfo=True
      AmmoAmount=4
-     MaxAmmo=20
+     MaxAmmo=40
      ItemName="Rockets"
      ItemArticle="some"
      PickupViewMesh=LodMesh'DeusExItems.GEPAmmo'
