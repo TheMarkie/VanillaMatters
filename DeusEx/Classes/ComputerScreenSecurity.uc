@@ -513,7 +513,7 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
     if (Player.Level.NetMode == NM_Standalone)
     {
         // Vanilla Matters
-        if ( player.GetSkillLevel( 'SkillComputer' ) < 3 && winTerm.bHacked ) {
+        if ( player.GetSkillLevel( 'SkillComputer' ) < 2 && winTerm.bHacked ) {
             choiceWindows[2].DisableChoice();
         }
     }
