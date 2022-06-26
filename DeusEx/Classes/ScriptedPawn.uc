@@ -6700,6 +6700,10 @@ function CheckEnemyParams(Pawn checkPawn,
     local bool         bValid;
 
     // Vanilla Matters
+    if (checkPawn == self) {
+        return;
+    }
+
     bValid = IsValidEnemy( checkPawn ) || checkPawn.Alliance == PotentialEnemyAlliance;
     if (bValid)
     {
