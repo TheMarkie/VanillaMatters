@@ -626,10 +626,6 @@ event TravelPostAccept()
         ThemeManager.SetHUDThemeByName(HUDThemeName);
     }
 
-    // Make sure any charged pickups that were active
-    // before travelling are still active.
-    RefreshChargedPickups();
-
     // Make sure the Skills and Augmentation systems
     // are properly initialized and reset.
 
@@ -696,30 +692,6 @@ function RestoreScopeView()
             Binoculars(inHand).RefreshScopeDisplay(Self, True);
         else if ((DeusExWeapon(inHand) != None) && (DeusExWeapon(inHand).bZoomed))
             DeusExWeapon(inHand).RefreshScopeDisplay(Self, True, True);
-    }
-}
-
-// ----------------------------------------------------------------------
-// RefreshChargedPickups()
-// ----------------------------------------------------------------------
-
-function RefreshChargedPickups()
-{
-    local ChargedPickup anItem;
-
-    // Loop through all the ChargedPicksups and look for charged pickups
-    // that are active.  If we find one, add to the user-interface.
-
-    foreach AllActors(class'ChargedPickup', anItem)
-    {
-        if ((anItem.Owner == Self) && (anItem.IsActive()))
-        {
-            // Make sure tech goggles display is refreshed
-            if (anItem.IsA('TechGoggles'))
-                TechGoggles(anItem).UpdateHUDDisplay(Self);
-
-            AddChargedDisplay(anItem);
-        }
     }
 }
 
