@@ -1507,7 +1507,7 @@ function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
 
             if ( ammo != none ) {
                 if ( AmmoNone( ammo ) == none && ammo.AmmoAmount >= ammo.MaxAmmo ) {
-                    ClientMessage( Sprintf( MsgTooMuchAmmo, ammo.itemName ) );
+                    ClientMessage( Sprintf( MsgTooMuchAmmo, ammo.ItemName ) );
                     canPickup = false;
                 }
             }
@@ -1517,7 +1517,7 @@ function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
                     canPickup = false;
                 }
                 else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
-                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.itemName ) );
+                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.ItemName ) );
                     canPickup = false;
                 }
             }
