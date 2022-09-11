@@ -319,7 +319,7 @@ function InstallAugmentation() {
         info.IncreaseLevel();
     }
     else {
-        VM_AugSystem.Add( itemButton.GetClientObject().Name, itemButton.GetClientObject().Outer.Name );
+        player.AddAugmentation(itemButton.GetClientObject().Name, itemButton.GetClientObject().Outer.Name);
     }
 
     // play a cool animation
