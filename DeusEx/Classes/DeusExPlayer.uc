@@ -401,7 +401,7 @@ replication
 
     // Unreliable functions the client can call
     unreliable if (Role < ROLE_Authority)
-        MaintainEnergy, UpdateTranslucency;
+        UpdateTranslucency;
 
     // Functions the server calls in client
     reliable if ((Role == ROLE_Authority) && (bNetOwner))
@@ -1250,14 +1250,6 @@ function UpdateDynamicMusic(float deltaTime)
     // Vanilla Matters: Handled in VMPlayer
 }
 
-// ----------------------------------------------------------------------
-// MaintainEnergy()
-// ----------------------------------------------------------------------
-
-function MaintainEnergy(float deltaTime)
-{
-    // Vanilla Matters: Handled in VMPlayer
-}
 // ----------------------------------------------------------------------
 // RefreshSystems()
 // DEUS_EX AMSD For keeping multiplayer working in better shape
@@ -5999,7 +5991,6 @@ ignores SeePlayer, HearNoise, Bump;
 
         DrugEffects(deltaTime);
         Bleed(deltaTime);
-        MaintainEnergy(deltaTime);
 
         // must update viewflash manually incase a flash happens during a convo
         ViewFlash(deltaTime);
@@ -10075,7 +10066,6 @@ function MultiplayerTick(float DeltaTime)
         ServerTimeLastRefresh = Level.Timeseconds + 10.0;
     }
 
-   MaintainEnergy(lastRefreshTime);
    UpdateTranslucency(lastRefreshTime);
     if ( bNintendoImmunity )
     {

@@ -279,6 +279,7 @@ function ResetSubSystems() {
 //==============================================
 // We handle updating our own stuff here.
 function VMPlayerTick( float deltaTime ) {
+    MaintainEnergy(deltaTime);
     UpdateChargedPickupStatus();
 
     // Calculate visibility values for this frame.

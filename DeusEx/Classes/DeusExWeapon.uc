@@ -3502,11 +3502,14 @@ ignores Fire, AltFire;
     }
 
     function Tick( float deltaTime ) {
+        local Pawn pawn;
+
         global.Tick( deltaTime );
         standingTimer = 0;
         VM_focusTimer = 0;
 
-        if ( Pawn( Owner ).bFire != 0 ) {
+        pawn = Pawn( Owner );
+        if ( pawn != none && pawn.bFire != 0 ) {
             VM_stopReload = true;
         }
     }
