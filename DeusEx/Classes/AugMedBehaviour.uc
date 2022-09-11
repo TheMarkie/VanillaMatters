@@ -1,7 +1,7 @@
 class AugMedBehaviour extends VMAugmentationBehaviour;
 
 var() int HealthThreshold;
-var() int EnergyThreshold;
+var() int LimbHealAmount;
 var() float LimbHealCooldown;
 var() array<int> LimbRegenThresholds;
 var() int LimbRegenAmount;
@@ -27,13 +27,6 @@ function float Tick( float deltaTime ) {
         }
     }
 
-    if ( Player.Energy <= EnergyThreshold ) {
-        item = DeusExPickup( Player.FindInventoryType( class'BioelectricCell' ) );
-        if ( item != none && item.NumCopies > 1 ) {
-            item.Activate();
-        }
-    }
-
     if ( LimbHealTimer > 0 ) {
         LimbHealTimer -= deltaTime;
     }
@@ -47,7 +40,7 @@ function float Tick( float deltaTime ) {
             health = Player.GetBodyPartHealth( partIndex );
 
             if ( LimbHealTimer <= 0 && health <= 0 ) {
-                Player.HealPartIndex( partIndex, HealthThreshold );
+                Player.HealPartIndex( partIndex, LimbHealAmount );
                 Player.ClientMessage( Info.Definition.default.UpgradeName @ "has healed your" @ Player.BodyPartNamesLowercase[partIndex] );
                 LimbHealTimer += LimbHealCooldown;
                 healed = true;
@@ -73,7 +66,7 @@ function float Tick( float deltaTime ) {
 defaultproperties
 {
      HealthThreshold=30
-     EnergyThreshold=40
+     LimbHealAmount=20
      LimbHealCooldown=10.000000
      LimbRegenThresholds=(40,40,60,80)
      LimbRegenAmount=10
