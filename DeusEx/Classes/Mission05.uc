@@ -14,12 +14,7 @@ function FirstFrame()
     local PaulDentonCarcass carc;
     local PaulDenton Paul;
     local Terrorist T;
-    local Inventory item, nextItem;
-    local SpawnPoint SP;
     local AnnaNavarre Anna;
-
-    // Vanilla Matters
-    local DeusExWeapon w;
 
     Super.FirstFrame();
 
@@ -65,44 +60,7 @@ function FirstFrame()
             Player.GenerateTotalHealth();
 
             // Vanilla Matters: Rewrite to get rid of ammo too.
-            if ( Player.Inventory != none ) {
-                item = Player.Inventory;
-                nextItem = none;
-
-                foreach AllActors( class'SpawnPoint', SP, 'player_inv' ) {
-                    while( item != none
-                        && ( ( !item.bDisplayableInv && Ammo( item ) == none )
-                            || item.PickupViewMesh == Mesh'TestBox'
-                        )
-                    ) {
-                        item = item.Inventory;
-                    }
-
-                    if ( item != none ) {
-                        nextItem = item.Inventory;
-
-                        // Vanilla Matters: Fix a bug where grenades would have their count reset to 1.
-                        w = DeusExWeapon( item );
-                        if ( w != None && w.AmmoType != None ) {
-                            if ( w.AmmoName != class'AmmoNone' && w.AmmoType.PickupViewMesh == Mesh'TestBox' && !w.bInstantHit ) {
-                                w.PickupAmmoCount = w.AmmoType.AmmoAmount;
-                            }
-                            else {
-                                w.PickupAmmoCount = w.default.PickupAmmoCount;
-                            }
-                        }
-
-                        item.DropFrom( SP.Location );
-                    }
-
-                    if ( nextItem == none ) {
-                        break;
-                    }
-                    else {
-                        item = nextItem;
-                    }
-                }
-            }
+            RemovePlayerInventory();
 
             flags.SetBool('MS_InventoryRemoved', True,, 6);
         }
@@ -243,6 +201,55 @@ function Timer()
         {
             Player.StartDataLinkTransmission("DL_Paul");
             flags.SetBool('MS_DL_Played', True,, 6);
+        }
+    }
+}
+
+function RemovePlayerInventory() {
+    local Inventory item, nextItem;
+    local SpawnPoint SP;
+    local DeusExWeapon w;
+    local bool noValidItemFound;
+
+    if ( Player.Inventory != none ) {
+        item = Player.Inventory;
+        nextItem = none;
+        noValidItemFound = false;
+
+        while (!noValidItemFound) {
+            noValidItemFound = true;
+            foreach AllActors( class'SpawnPoint', SP, 'player_inv' ) {
+                while( item != none
+                    && ( ( !item.bDisplayableInv && Ammo( item ) == none )
+                        || item.PickupViewMesh == Mesh'TestBox'
+                    )
+                ) {
+                    item = item.Inventory;
+                }
+
+                if ( item != none ) {
+                    noValidItemFound = false;
+                    nextItem = item.Inventory;
+
+                    // Vanilla Matters: Fix a bug where grenades would have their count reset to 1.
+                    w = DeusExWeapon( item );
+                    if ( w != None && w.AmmoType != None ) {
+                        if ( w.AmmoName != class'AmmoNone' && w.AmmoType.PickupViewMesh == Mesh'TestBox' && !w.bInstantHit ) {
+                            w.PickupAmmoCount = w.AmmoType.AmmoAmount;
+                        }
+                        else {
+                            w.PickupAmmoCount = w.default.PickupAmmoCount;
+                        }
+                    }
+
+                    item.DropFrom( SP.Location );
+                }
+
+                item = nextItem;
+                if (item == none) {
+                    break;
+                }
+            }
         }
     }
 }
