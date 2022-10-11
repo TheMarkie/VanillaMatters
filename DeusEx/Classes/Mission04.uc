@@ -364,8 +364,6 @@ function Tick( float deltaTime ) {
                 foreach AllActors( class'PaulDenton', Paul ) {
                     // VM: Only trigger the convo if within range.
                     if ( VSize( Paul.Location - Player.Location ) <= 70 ) {
-                        Paul.bInvincible = false;
-
                         Player.StartConversationByName( 'TalkedToPaulAfterMessage', Paul, False, False );
                     }
 
