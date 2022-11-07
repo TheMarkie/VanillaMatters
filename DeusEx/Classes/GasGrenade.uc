@@ -42,7 +42,7 @@ defaultproperties
      mpDamage=20.000000
      speed=1000.000000
      MaxSpeed=1000.000000
-     Damage=15.000000
+     Damage=8.000000
      MomentumTransfer=50000
      ImpactSound=Sound'DeusExSounds.Weapons.GasGrenadeExplode'
      LifeSpan=0.000000
