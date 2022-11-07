@@ -2628,7 +2628,7 @@ simulated function TraceFire( float accuracy ) {
 
         Other = Pawn( Owner ).TraceShot( HitLocation, HitNormal, EndTrace, StartTrace );
 
-        if ( DeusExPlayer( Owner ) == none ) {
+        if ( DeusExPlayer( Owner ) == none && !bHandToHand ) {
             rot = Rotator( EndTrace - StartTrace );
             if ( AmmoName.Name == 'Ammo3006' ) {
                 Spawn( class'SniperTracer',,, StartTrace + 96 * Vector( rot ), rot );
