@@ -261,25 +261,6 @@ function SelectAug( name name, bool bNewToggle ) {
 }
 
 // ----------------------------------------------------------------------
-// DestroyWindow()
-// ----------------------------------------------------------------------
-
-function DestroyWindow() {
-    local int i;
-
-    for ( i = 0; i < 10; i++ ) {
-        if ( augs[i].aug != none ) {
-            player.AddAugmentationHotBar( i, augs[i].aug.DefinitionClassName );
-        }
-        else {
-            player.AddAugmentationHotBar( i, '' );
-        }
-    }
-
-    super.DestroyWindow();
-}
-
-// ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 defaultproperties

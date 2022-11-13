@@ -148,7 +148,7 @@ function DrawWindow( GC gc ) {
 
     gc.SetAlignments( HALIGN_Right, VALIGN_Center );
     gc.SetTextColor( colSlotNum );
-    gc.DrawText( slotNumberX - 1, slotNumberY, 6, 7, slot );
+    gc.DrawText( slotNumberX - 1, slotNumberY, 6, 7, slot + 1 );
 }
 
 function DrawSlotIcon( GC gc ) {
