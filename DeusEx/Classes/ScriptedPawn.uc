@@ -5466,7 +5466,7 @@ function HandleWeapon(Name event, EAIEventState state, XAIParams params)
         {
             // Vanilla Matters: Rewrite to tweak stuff.
             if ( bHateWeapon ) {
-                IncreaseAgitation( pawnActor, 1.0 );
+                IncreaseAgitation( pawnActor );
             }
             if ( bFearWeapon ) {
                 IncreaseFear( pawnActor, 1.0 );
@@ -5750,7 +5750,7 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                         distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, false, true, true ) > 0 );
                     }
 
-                    if ( distressor != none ) {
+                    if (bHateDistress) {
                         IncreaseAgitation( distressor, 1.0 );
                     }
 
