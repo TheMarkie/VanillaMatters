@@ -32,7 +32,7 @@ function FirstFrame()
 
         // if the player has already talked to Paul, delete him
         if (flags.GetBool('M05PaulDentonDone') ||
-            flags.GetBool('PlayerBailedOutWindow'))
+            flags.GetBool('PaulDenton_Dead'))
         {
             foreach AllActors(class'PaulDenton', Paul)
                 Paul.Destroy();
