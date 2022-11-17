@@ -43,7 +43,7 @@ defaultproperties
      bHasMuzzleFlash=False
      bHandToHand=True
      SwingOffset=(X=24.000000,Z=2.000000)
-     VM_ShotCount=2
+     VM_ShotCount=3
      VM_HeadshotMult=2.000000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoNone'
