@@ -13,6 +13,8 @@ function FirstFrame()
 {
     local DeusExMover M;
     local BlackHelicopter chopper;
+    local NanoKey key;
+    local DeusExMover door;
 
     Super.FirstFrame();
 
@@ -41,6 +43,20 @@ function FirstFrame()
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter')
                 chopper.EnterWorld();
+        }
+
+        // Vanilla Matters: Fix invalid NanoKeys
+        foreach AllActors(class'NanoKey', key) {
+            if (key.Name == 'NanoKey1') {
+                key.KeyID = 'SupplyRoom';
+                break;
+            }
+        }
+        foreach AllActors(class'DeusExMover', door) {
+            if (door.Name == 'DeusExMover138') {
+                door.KeyIDNeeded = 'WeaponWarehouse';
+                break;
+            }
         }
     }
 }
