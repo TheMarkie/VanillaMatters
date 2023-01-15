@@ -7231,7 +7231,8 @@ function Bool DeleteGoal( DeusExGoal goalToDelete )
 // Deletes *ALL* Goals
 // ----------------------------------------------------------------------
 
-function DeleteAllGoals()
+// Vanilla Matters: Made exec
+exec function DeleteAllGoals()
 {
     local DeusExGoal goal;
     local DeusExGoal goalNext;
