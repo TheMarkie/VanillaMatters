@@ -24,7 +24,7 @@ function bool Activate() {
     direction.Z = 0.2;
     direction = Normal( direction );
     Player.Velocity += direction * Distance;
-    if ( Player.Base != Player.Level ) {
+    if ( Player.Base != none && Player.Base != Player.Level ) {
         Player.Velocity += Player.Base.Velocity;
     }
     Player.SetPhysics( PHYS_Falling );
