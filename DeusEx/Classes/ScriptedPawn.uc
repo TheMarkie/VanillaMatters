@@ -1764,10 +1764,10 @@ function float ComputeActorVisibility(actor seeActor)
             mult -= 0.5;
         }
 
-        visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 100, 0, 3 );
+        visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 10, 0, 1 );
     }
     else {
-        visibility = 5.0;
+        visibility = 1.0;
     }
 
     return visibility;
