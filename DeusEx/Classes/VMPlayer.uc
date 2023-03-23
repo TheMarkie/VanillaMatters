@@ -1630,7 +1630,7 @@ function bool GetModifiedDamage( int damage, name damageType, vector hitLocation
     }
     // Damage over Time types scale with difficulty
     else if (damageType == 'Poison') {
-        newDamage *= FClamp(CombatDifficulty / 4, 0.4, 0.65);
+        newDamage *= FClamp(CombatDifficulty / 4, 0.35, 0.5);
     }
 
     modifiedDamage = Max( int( newDamage ), 0 );
@@ -2026,7 +2026,7 @@ function StartBurning( Pawn burner, float burnDamage ) {
 
     myBurner = burner;
 
-    burnTimer += burnDamage;
+    burnTimer = FMin(burnTimer + burnDamage, 20);
 
     if ( bOnFire || Region.Zone.bWaterZone ) {
         return;

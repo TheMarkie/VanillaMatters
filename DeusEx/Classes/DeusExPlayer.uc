@@ -1414,8 +1414,8 @@ function StartPoison( Pawn poisoner, int Damage )
     if (InConversation())  // kinda hacky...
         return;
 
-    // Vanilla Matters: Make poison stack.
-    poisonCounter = poisonCounter + 4;
+    // Vanilla Matters
+    poisonCounter = 4;
 
     if (poisonDamage < Damage)  // set damage amount
         poisonDamage = Damage;
