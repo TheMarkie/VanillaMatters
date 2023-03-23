@@ -7864,8 +7864,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             ServerConditionalNotifyMsg( MPMSG_FirstPoison );
         }
 
-        // Vanilla Matters: Reduce poison damage by half.
-        StartPoison( instigatedBy, Damage * 0.5 );
+        StartPoison( instigatedBy, actualDamage );
     }
 
    // DEUS_EX AMSD Multiplayer shield

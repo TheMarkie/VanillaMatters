@@ -1628,6 +1628,10 @@ function bool GetModifiedDamage( int damage, name damageType, vector hitLocation
     ) {
         newDamage *= ( CombatDifficulty / 2 ) + 0.5;
     }
+    // Damage over Time types scale with difficulty
+    else if (damageType == 'Poison') {
+        newDamage *= FClamp(CombatDifficulty / 4, 0.4, 0.65);
+    }
 
     modifiedDamage = Max( int( newDamage ), 0 );
 
@@ -2022,7 +2026,7 @@ function StartBurning( Pawn burner, float burnDamage ) {
 
     myBurner = burner;
 
-    burnTimer = burnTimer + ( burnDamage * 2 );
+    burnTimer += burnDamage;
 
     if ( bOnFire || Region.Zone.bWaterZone ) {
         return;
@@ -2075,13 +2079,13 @@ function UpdateFire() {
 
     GenerateTotalHealth();
 
-    burnTimer = burnTimer - 10;
+    burnTimer = burnTimer - 5;
 
     if ( Health <= 0 || burnTimer <= 0 ) {
         ExtinguishFire();
 
         if ( Health <= 0 ) {
-            TakeDamage( 10, none, Location, vect( 0, 0, 0 ), 'Burned' );
+            TakeDamage( 5, none, Location, vect( 0, 0, 0 ), 'Burned' );
         }
     }
 }
