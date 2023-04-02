@@ -1517,7 +1517,12 @@ function bool HandleItemPickup( Inventory item, optional bool searchOnly ) {
                     canPickup = false;
                 }
                 else if ( weapon.AmmoType.AmmoAmount >= weapon.AmmoType.MaxAmmo ) {
-                    ClientMessage( Sprintf( MsgTooMuchAmmo, weapon.AmmoType.ItemName ) );
+                    if (weapon.AmmoType.PickupViewMesh != Mesh'TestBox') {
+                        ClientMessage(Sprintf(MsgTooMuchAmmo, weapon.AmmoType.ItemName));
+                    }
+                    else {
+                        ClientMessage(Sprintf(MsgTooMuchAmmo, weapon.ItemName));
+                    }
                     canPickup = false;
                 }
             }
