@@ -55,6 +55,6 @@ function float Tick( float deltaTime ) {
 defaultproperties
 {
      Distance=800
-     Cost=(10,8,6,4)
-     Cooldown=(4,3,2,1)
+     Cost=(12,10,8,4)
+     Cooldown=(5,4,3,1)
 }
