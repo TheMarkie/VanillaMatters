@@ -27,7 +27,9 @@ function bool Activate() {
     if ( Player.Base != none && Player.Base != Player.Level ) {
         Player.Velocity += Player.Base.Velocity;
     }
-    Player.SetPhysics( PHYS_Falling );
+    if (Player.Physics == PHYS_Walking) {
+        Player.SetPhysics(PHYS_Falling);
+    }
 
     Player.PlaySound( Sound'DeusExSounds.Weapons.LAWFire', SLOT_Interact, 2, , 400, 0.5 );
     Player.PlaySound( Sound'DeusExSounds.Weapons.PepperGunSelect', SLOT_Interact, 2, , 400, 0.5 );
