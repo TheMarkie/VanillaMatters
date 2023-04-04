@@ -1844,9 +1844,12 @@ function DrawAugmentations( GC gc ) {
 function float GetCurrentGroundSpeed() {
     local float bonus;
 
-    // Disable movement speed bonus when crouching.
+    // Seperate movement speed bonus into non-crouching and crouching
     if ( !bIsCrouching && !bForceDuck ) {
         bonus = GetValue( 'MovementSpeedBonusMult' );
+    }
+    else {
+        bonus = GetValue( 'CrouchMovementSpeedBonusMult' );
     }
 
     return Default.GroundSpeed * ( 1 + bonus );
