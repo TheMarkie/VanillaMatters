@@ -14,8 +14,8 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-     AmmoAmount=5
-     MaxAmmo=25
+     AmmoAmount=8
+     MaxAmmo=40
      PickupViewMesh=LodMesh'DeusExItems.TestBox'
      Mesh=LodMesh'DeusExItems.TestBox'
      CollisionRadius=22.500000

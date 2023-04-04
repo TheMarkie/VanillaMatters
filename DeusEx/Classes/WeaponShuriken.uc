@@ -12,7 +12,7 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.200000
      reloadTime=0.200000
-     HitDamage=40
+     HitDamage=50
      BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      bHandToHand=True
@@ -20,7 +20,7 @@ defaultproperties
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.AmmoShuriken'
      ReloadCount=1
-     PickupAmmoCount=5
+     PickupAmmoCount=8
      FireOffset=(X=-10.000000,Y=14.000000,Z=22.000000)
      ProjectileClass=Class'DeusEx.Shuriken'
      shakemag=5.000000
