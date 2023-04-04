@@ -10,12 +10,13 @@ defaultproperties
      EnemyEffective=ENMEFF_Organic
      ShotTime=0.600000
      reloadTime=0.000000
-     HitDamage=40
+     HitDamage=20
      maxRange=96
      BaseAccuracy=1.000000
      bHasMuzzleFlash=False
      bHandToHand=True
      bFallbackWeapon=True
+     VM_ShotCount=2
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=2
      AmmoName=Class'DeusEx.AmmoNone'
