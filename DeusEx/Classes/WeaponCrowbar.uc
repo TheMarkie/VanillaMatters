@@ -17,7 +17,6 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     VM_MoverDamageMult=2.000000
      VM_handsTexPos(0)=1
      VM_handsTexPos(1)=2
      AmmoName=Class'DeusEx.AmmoNone'
