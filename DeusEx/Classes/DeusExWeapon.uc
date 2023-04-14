@@ -651,7 +651,7 @@ simulated function float CalculateAccuracy() {
 
     // Vanilla Matters: Fix the scope nullifying the laser bonus.
     if ( bHasScope && !bZoomed && !bLasing ) {
-        accuracy -= 0.2;
+        accuracy -= 0.15;
     }
 
     // Vanilla Matters: Change penalty values for states of health.
