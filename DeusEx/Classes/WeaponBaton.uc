@@ -13,7 +13,7 @@ defaultproperties
      LowAmmoWaterMark=0
      NoiseLevel=0.050000
      reloadTime=0.000000
-     HitDamage=8
+     HitDamage=15
      maxRange=80
      BaseAccuracy=1.000000
      bPenetrating=False
