@@ -10,7 +10,7 @@ defaultproperties
      EnemyEffective=ENMEFF_Organic
      ShotTime=0.600000
      reloadTime=0.000000
-     HitDamage=45
+     HitDamage=50
      maxRange=96
      BaseAccuracy=1.000000
      bHasMuzzleFlash=False
