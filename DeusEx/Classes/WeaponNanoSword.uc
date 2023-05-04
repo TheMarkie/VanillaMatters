@@ -36,7 +36,7 @@ defaultproperties
 
      NoiseLevel=0.400000
      reloadTime=0.000000
-     HitDamage=60
+     HitDamage=75
      maxRange=96
      BaseAccuracy=1.000000
      AreaOfEffect=AOE_Cone
