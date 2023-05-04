@@ -36,15 +36,15 @@ defaultproperties
 
      NoiseLevel=0.400000
      reloadTime=0.000000
-     HitDamage=25
+     HitDamage=60
      maxRange=96
      BaseAccuracy=1.000000
      AreaOfEffect=AOE_Cone
      bHasMuzzleFlash=False
      bHandToHand=True
      SwingOffset=(X=24.000000,Z=2.000000)
-     VM_ShotCount=3
      VM_HeadshotMult=2.000000
+     VM_MoverDamageMult=0.300000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0

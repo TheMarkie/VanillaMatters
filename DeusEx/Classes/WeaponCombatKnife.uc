@@ -11,13 +11,14 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.300000
      reloadTime=0.000000
-     HitDamage=25
+     HitDamage=30
      maxRange=64
      BaseAccuracy=1.000000
      bHasMuzzleFlash=False
      bHandToHand=True
      bFallbackWeapon=True
      VM_HeadshotMult=6.000000
+     VM_MoverDamageMult=0.200000
      VM_handsTexPos(0)=1
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
