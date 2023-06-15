@@ -526,11 +526,8 @@ state PlayerWalking {
 
         if ( aExtra0 != 0 ) {
             DropDecoration();
-            if ( AnimSequence != 'CrouchWalk' ) {
-                PlayCrawling();
-            }
 
-            alpha = maxLeanDist * aExtra0 * 2.0 * deltaTime;
+            alpha = maxLeanDist * aExtra0 * 5.0 * deltaTime;
 
             loc = vect( 0,0,0 );
             loc.Y = alpha;
