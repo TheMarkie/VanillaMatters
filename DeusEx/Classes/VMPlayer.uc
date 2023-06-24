@@ -1015,6 +1015,7 @@ exec function ParseRightClick() {
     // Queue the held item so that it can be picked up.
     if ( IsHolding( inHand ) && FrobTarget == none ) {
         FrobTarget = HeldInHand;
+        item = HeldInHand;
 
         // Gotta do this so that the item can be frobbed properly, since item state and pickup state are different.
         LastHeldInHand = HeldInHand;
