@@ -6,7 +6,7 @@ class WeaponHideAGun extends DeusExWeapon;
 defaultproperties
 {
      LowAmmoWaterMark=0
-     NoiseLevel=0.010000
+     NoiseLevel=0.500000
      Concealability=CONC_All
      ShotTime=0.300000
      reloadTime=0.000000

@@ -5588,9 +5588,11 @@ function HandleLoudNoise(Name event, EAIEventState state, XAIParams params)
 // ----------------------------------------------------------------------
 // Vanilla Matters
 function HandleProjectiles( Name event, EAIEventState state, XAIParams params ) {
-    if ( params.Visibility >= VisibilityThreshold ) {
-        if ( params.bestActor != none ) {
-            ReactToProjectiles( params.bestActor );
+    if (state == EAISTATE_Begin || state == EAISTATE_Pulse) {
+        if ( params.Visibility >= VisibilityThreshold ) {
+            if ( params.bestActor != none ) {
+                ReactToProjectiles( params.bestActor );
+            }
         }
     }
 }

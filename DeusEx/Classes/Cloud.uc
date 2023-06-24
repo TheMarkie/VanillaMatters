@@ -145,8 +145,8 @@ defaultproperties
      bIgnoresNanoDefense=True
      ItemName="Gas Cloud"
      ItemArticle="a"
-     speed=300.000000
-     MaxSpeed=300.000000
+     speed=400.000000
+     MaxSpeed=400.000000
      Damage=1.000000
      MomentumTransfer=100
      LifeSpan=1.000000
