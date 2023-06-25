@@ -2335,7 +2335,7 @@ defaultproperties
      MsgTooMuchAmmo="You already have enough %s"
      MsgChargedPickupAlready="You are already using that type of equipment"
      MsgUseChargedPickup="You need to have the item in your inventory to activate it"
-     SkillPointsTotal=4500
-     SkillPointsAvail=4500
+     SkillPointsTotal=5500
+     SkillPointsAvail=5500
      AugmentationHotBar(10)=AugLight
 }
