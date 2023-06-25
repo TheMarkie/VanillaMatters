@@ -156,7 +156,7 @@ function SetTurretState()
 
 defaultproperties
 {
-     VM_timeCost=7.500000
+     VM_timeCost=8.000000
      enumText(0)="Bypassed"
      enumText(1)="Allies"
      enumText(2)="Enemies"
