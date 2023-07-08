@@ -69,7 +69,7 @@ event InitWindow()
     // Create controls
     PopulateGames();
     EnableButtons();
-    UpdateFreeDiskSpace();
+    // Vanilla Matters: Removed free disk space check because it's broken for large disk spaces and unnecessary
 
     Show();
     SetFocusWindow(lstGames);
@@ -230,7 +230,7 @@ function CreateControls()
     CreateHeaderButtons();
     CreateSnapshotWindow();
     CreateSaveInfoWindow();
-    CreateFreeSpaceWindow();
+    // Vanilla Matters: Removed free disk space check because it's broken for large disk spaces and unnecessary
     CreateConfirmCheckbox();
 }
 
@@ -550,7 +550,7 @@ function DeleteGame(int rowId)
         lstGames.SetRow(rowID);
     }
 
-    UpdateFreeDiskSpace();
+    // Vanilla Matters: Removed free disk space check because it's broken for large disk spaces and unnecessary
 
     EnableButtons();
 }
@@ -757,22 +757,7 @@ function GameDirectory GetSaveGameDirectory()
 // UpdateFreeDiskSpace()
 // ----------------------------------------------------------------------
 
-function UpdateFreeDiskSpace()
-{
-    local GameDirectory saveDir;
-
-    saveDir = player.CreateGameDirectoryObject();
-    freeDiskSpace = saveDir.GetSaveFreeSpace();
-    winFreeSpace.SetText(Sprintf(FreeSpaceLabel, freeDiskSpace / 1024));
-
-    // If free space is below the minimum, show in RED
-    if ((freeDiskSpace / 1024) < minFreeDiskSpace)
-        winFreeSpace.SetTextColorRGB(255, 0, 0);
-    else
-        winFreeSpace.StyleChanged();
-
-    CriticalDelete(savedir);
-}
+// Vanilla Matters: Removed free disk space check because it's broken for large disk spaces and unnecessary
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

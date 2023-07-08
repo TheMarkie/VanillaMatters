@@ -387,23 +387,14 @@ function ConfirmSaveGame()
     // If < the minimum, then notify the user to clear some
     // disk space.
 
-    if ((freeDiskSpace / 1024) < minFreeDiskSpace)
-    {
-        msgBoxMode = MB_LowSpace;
-        root.MessageBox(DiskSpaceTitle, DiskSpaceMessage, 1, False, Self);
+    // Vanilla Matters: Removed free disk space check because it's broken for large disk spaces and unnecessary
+    if (editRowId == newSaveRowId) {
+        SaveGame(editRowId);
     }
-    else
-    {
-        if (editRowId == newSaveRowId)
-        {
-            SaveGame(editRowId);
-        }
-        else
-        {
-            saveRowId = editRowId;
-            msgBoxMode = MB_Overwrite;
-            root.MessageBox( OverwriteTitle, OverwritePrompt, 0, False, Self);
-        }
+    else {
+        saveRowId = editRowId;
+        msgBoxMode = MB_Overwrite;
+        root.MessageBox( OverwriteTitle, OverwritePrompt, 0, False, Self);
     }
 }
 
