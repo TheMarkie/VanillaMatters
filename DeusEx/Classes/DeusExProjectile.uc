@@ -566,18 +566,14 @@ auto simulated state Flying
                     if (Wall.IsA('Mover'))
                     {
                         SetBase(Wall);
-                        Wall.TakeDamage(Damage, Pawn(Owner), Wall.Location, MomentumTransfer*Normal(Velocity), damageType);
+                        // Vanilla Matters
+                        Wall.TakeDamage(Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn(Owner), Wall.Location, MomentumTransfer * Normal(Velocity), damageType);
                     }
             }
         }
 
         if (Wall.IsA('BreakableGlass'))
             bDebris = False;
-
-        // Vanilla Matters: Hurt movers, containers or decos on contact with a multiplier.
-        if ( !bExplodes && ( Mover( Wall ) != none || Decoration( Wall ) != none ) && DeusExPlayer( Pawn( Owner ) ) != None && VM_fromWeapon != None ) {
-            Wall.TakeDamage( Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn( Owner ), Wall.Location, MomentumTransfer * Normal( Velocity ), damageType );
-        }
 
         SpawnEffects(Location, HitNormal, Wall);
 

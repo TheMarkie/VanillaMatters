@@ -16,7 +16,7 @@ defaultproperties
      BaseAccuracy=0.600000
      bHasMuzzleFlash=False
      bHandToHand=True
-     VM_MoverDamageMult=0.500000
+     VM_MoverDamageMult=0.400000
      VM_handsTexPos(0)=0
      VM_handsTexPos(1)=1
      AmmoName=Class'DeusEx.AmmoShuriken'
