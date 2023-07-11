@@ -620,7 +620,15 @@ auto simulated state Flying
                         sp.VM_hitBy = VM_fromWeapon;
                     }
 
-                    damagee.TakeDamage(Damage, Pawn(Owner), HitLocation, MomentumTransfer*Normal(Velocity), damageType);
+                    // Vanilla Matters
+                    if (Decoration(damagee) != none)
+                    {
+                        damagee.TakeDamage(Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn(Owner), HitLocation, MomentumTransfer * Normal(Velocity), damageType);
+                    }
+                    else
+                    {
+                        damagee.TakeDamage(Damage, Pawn(Owner), HitLocation, MomentumTransfer * Normal(Velocity), damageType);
+                    }
                 }
             }
             if (!bStuck)
