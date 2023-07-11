@@ -755,7 +755,7 @@ defaultproperties
      bHighlight=True
      bFrobbable=True
      pickTime=4.000000
-     minDamageThreshold=10
+     minDamageThreshold=40
      NumFragments=16
      FragmentScale=2.000000
      FragmentSpread=32
