@@ -7,6 +7,7 @@ class HUDMedBotAugItemButton extends PersonaItemButton;
 var AugmentationCannister augCan;
 
 var bool bSlotFull;
+var bool bHasIt;
 
 var Color colBorder;
 var Color colIconDisabled;
