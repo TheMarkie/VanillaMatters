@@ -53,14 +53,12 @@ function CalcTrace(float deltaTime)
         if (i == 0)
         {
             if (LaserIterator(RenderInterface) != None)
-                // Vanilla Matters
-                LaserIterator( RenderInterface ).AddBeam( i, Location, Rotation, VSize( Location - HitLocation ) );
+                LaserIterator(RenderInterface).AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
         }
         else
         {
             if (LaserIterator(RenderInterface) != None)
-                // Vanilla Matters
-                LaserIterator( RenderInterface ).AddBeam( i, StartTrace - HitNormal, Rotator( Reflection ), VSize( StartTrace - HitLocation - HitNormal ) );
+                LaserIterator(RenderInterface).AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
         }
 
         if (spot[i] == None)

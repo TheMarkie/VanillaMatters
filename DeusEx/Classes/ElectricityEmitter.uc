@@ -66,8 +66,7 @@ function CalcTrace(float deltaTime)
         }
 
         if (LaserIterator(RenderInterface) != None)
-            // Vanilla Matters
-            LaserIterator( RenderInterface ).AddBeam( 0, Location, Rotation + rot, VSize( Location - HitLocation ) );
+            LaserIterator(RenderInterface).AddBeam(0, Location, Rotation + rot, VSize(Location - HitLocation));
     }
 }
 
