@@ -1917,8 +1917,8 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                         if ( proxyEnemy ) {
                             visibility = 0.2;
                         }
-                        else if ( SeekPawn == candidate && ( dist <= 80 || ( actorVis > 0 && dist <= 200 ) ) ) {
-                            visibility = AICanSee( candidate, 3.0, false, true, true, true );
+                        else if ( SeekPawn == candidate && dist <= 80 ) {
+                            visibility = AICanSee( candidate, , false, true, true, true );
                         }
                         else {
                             visibility = AICanSee( candidate, actorVis, true, true, true, true );
@@ -6753,8 +6753,7 @@ function CheckEnemyParams(Pawn checkPawn,
 
         if (bReplace)
         {
-            // Vanilla Matters: Apply visibility rules.
-            if ( Enemy == checkPawn || AICanSee( checkPawn, ComputeActorVisibility( checkPawn ), false, false, true, true ) > 0 )
+            if ((Enemy == checkPawn) || (AICanSee(checkPawn, , false, false, true, true) > 0))
             {
                 bestPawn        = checkPawn;
                 bestThreatLevel = threatLevel;
