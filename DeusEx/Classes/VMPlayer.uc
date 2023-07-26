@@ -1844,7 +1844,7 @@ function float GetCurrentGroundSpeed() {
 
     // Seperate movement speed bonus into non-crouching and crouching
     if ( !bIsCrouching && !bForceDuck ) {
-        bonus = GetValue( 'MovementSpeedBonusMult' );
+        bonus = GetValue( 'MovementSpeedBonusMult' ) + GetValue('StealthMovementSpeedBonusMult');
     }
     else {
         bonus = GetValue( 'CrouchMovementSpeedBonusMult' );

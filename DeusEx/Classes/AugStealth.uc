@@ -7,7 +7,7 @@ var() array<float> FellDamageResistanceFlat;
 
 static function bool Activate( VMPlayer player, int level ) {
     player.RunSilentValue += default.RunSilentBonus[level];
-    player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', default.MovementSpeedBonusMult[level] );
+    player.GlobalModifiers.Modify( 'StealthMovementSpeedBonusMult', default.MovementSpeedBonusMult[level] );
     player.GlobalModifiers.Modify( 'CrouchMovementSpeedBonusMult', default.CrouchMovementSpeedBonusMult[level] );
     player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', default.FellDamageResistanceFlat[level] );
 
@@ -16,7 +16,7 @@ static function bool Activate( VMPlayer player, int level ) {
 
 static function bool Deactivate( VMPlayer player, int level ) {
     player.RunSilentValue -= default.RunSilentBonus[level];
-    player.GlobalModifiers.Modify( 'MovementSpeedBonusMult', -default.MovementSpeedBonusMult[level] );
+    player.GlobalModifiers.Modify( 'StealthMovementSpeedBonusMult', -default.MovementSpeedBonusMult[level] );
     player.GlobalModifiers.Modify( 'CrouchMovementSpeedBonusMult', -default.CrouchMovementSpeedBonusMult[level] );
     player.CategoryModifiers.Modify( 'DamageResistanceFlat', 'Fell', -default.FellDamageResistanceFlat[level] );
 
