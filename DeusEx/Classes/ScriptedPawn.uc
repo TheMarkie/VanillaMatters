@@ -1860,7 +1860,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
     local float visibility, actorVis, dist, minDist;
     local Pawn candidate;
     local Pawn cycleEnemy;
-    local bool canSee, valid, isPlayer, validEnemy, potentialEnemy, check, proxyEnemy;
+    local bool canSee, valid, isPlayer, validEnemy, potentialEnemy, check;
 
     valid  = false;
     canSee = false;
@@ -1889,15 +1889,13 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                 }
 
                 validEnemy = IsValidEnemy( candidate );
-                proxyEnemy = false;
                 if ( !validEnemy ) {
                     if ( PotentialEnemyTimer > 0 && PotentialEnemyAlliance == candidate.Alliance ) {
                         potentialEnemy = true;
                     }
-                    else if ( candidate.Enemy != none && IsValidEnemy( candidate.Enemy ) && AICanSee( candidate, 5.0, false, true, true, true ) > 0 ) {
+                    else if ( candidate.Enemy != none && IsValidEnemy( candidate.Enemy ) && AICanSee( candidate, 1.0, false, true, true, true ) > 0 ) {
                         candidate = candidate.Enemy;
                         validEnemy = true;
-                        proxyEnemy = true;
                     }
                 }
 
@@ -1906,11 +1904,8 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
                     if ( ( isPlayer && checkPlayer ) || ( !isPlayer && checkOther ) ) {
                         actorVis = ComputeActorVisibility( candidate );
 
-                        if ( proxyEnemy ) {
-                            visibility = 0.2;
-                        }
-                        else if ( SeekPawn == candidate && dist <= 80 ) {
-                            visibility = AICanSee( candidate, , false, true, true, true );
+                        if ( SeekPawn == candidate && dist <= 80 ) {
+                            visibility = AICanSee( candidate, 1.0, false, true, true, true );
                         }
                         else {
                             visibility = AICanSee( candidate, actorVis, true, true, true, true );
