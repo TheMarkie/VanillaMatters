@@ -5732,11 +5732,7 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                 {
                     // Vanilla Matters: Rewrite to add special rules.
                     if ( distressor != none ) {
-                        distressorSeen = ( ( distresseePawn != none && distressee.AICanSee( distressor, distresseePawn.ComputeActorVisibility( distressor ), true, false, true, true ) > 0 ) || distresseePlayer != none );
-                    }
-                    else if ( distresseePawn != none ) {
-                        distressor = distresseePawn.SeekPawn;
-                        distressorSeen = ( AICanSee( distressor, ComputeActorVisibility( distressor ), true, false, true, true ) > 0 );
+                        distressorSeen = distresseePawn != none && distressee.AICanSee( distressor, distresseePawn.ComputeActorVisibility( distressor ), true, false, true, true ) > 0;
                     }
 
                     if (bHateDistress) {
@@ -5747,7 +5743,6 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                         if ( SetEnemy( distressor, seeTime ) ) {
                             SetDistressTimer();
                             HandleEnemy();
-
                             bAttacking = true;
                         }
                     }
