@@ -1731,10 +1731,6 @@ function UpdateActorVisibility( actor seeActor, float deltaTime, float checkTime
 
     if ( bCanSee ) {
         EnemyLastSeen = 0;
-
-        if ( seeActor != none && ( seeActor == Enemy || seeActor == SeekPawn ) ) {
-            LastSeenPos = seeActor.Location;
-        }
     }
     else {
         EnemyLastSeen = EnemyLastSeen + deltaTime;
@@ -1759,10 +1755,6 @@ function float ComputeActorVisibility(actor seeActor)
     if ( player != none ) {
         pvis = player.CalculatePlayerVisibility( self );
         mult = 1 - ( ( player.CombatDifficulty - 1 ) * 0.15 );
-
-        if ( ( ( SeekPawn == player && bSeekPostCombat ) || Enemy == player ) && pvis > 0 ) {
-            mult -= 0.5;
-        }
 
         visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 10, 0, 1 );
     }
@@ -6706,7 +6698,15 @@ function CheckEnemyParams(Pawn checkPawn,
         return;
     }
 
-    bValid = IsValidEnemy( checkPawn ) || checkPawn.Alliance == PotentialEnemyAlliance;
+    bValid = IsValidEnemy(checkPawn);
+    if (bValid && (Enemy != checkPawn))
+    {
+        // Honor cloaking, radar transparency, and other augs if this guy isn't our current enemy
+        // Vanilla Matters
+        if (ComputeActorVisibility(checkPawn) <= 0)
+            bValid = false;
+    }
+
     if (bValid)
     {
         sPawn = ScriptedPawn(checkPawn);
