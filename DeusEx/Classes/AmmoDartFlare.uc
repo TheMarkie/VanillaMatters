@@ -10,6 +10,7 @@ class AmmoDartFlare extends AmmoDart;
 
 defaultproperties
 {
+     AmmoAmount=4
      ItemName="Injector Darts"
      Icon=Texture'DeusEx.VMUI.BeltIconAmmoDartsInjector'
      largeIcon=Texture'DeusEx.VMUI.LargeIconAmmoDartsInjector'

@@ -15,8 +15,8 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      bShowInfo=True
-     AmmoAmount=4
-     MaxAmmo=60
+     AmmoAmount=8
+     MaxAmmo=120
      ItemName="Darts"
      ItemArticle="some"
      PickupViewMesh=LodMesh'DeusExItems.AmmoDart'

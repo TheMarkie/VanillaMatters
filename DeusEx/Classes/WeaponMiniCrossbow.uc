@@ -58,7 +58,7 @@ defaultproperties
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoDartPoison'
      ReloadCount=4
-     PickupAmmoCount=4
+     PickupAmmoCount=8
      FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
      ProjectileClass=Class'DeusEx.DartPoison'
      shakemag=30.000000
