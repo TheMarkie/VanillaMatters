@@ -46,6 +46,7 @@ var() bool          VM_bBreaksGlass;        // Can it break through glass?
 
 var DeusExWeapon    VM_fromWeapon;          // Just something to store useful info like from what weapon was the projectile fired and with what ammo type.
 var DeusExAmmo      VM_withAmmo;            // Can't fetch these later on because the player can change weapon/ammo type.
+var float           VM_MoverDamageMult;     // Extracted from shot weapon
 var float           mpDamage;               // Put this here so we can fetch from outside.
 
 // network replication
@@ -73,6 +74,7 @@ function PostBeginPlay()
 
         if ( VM_fromWeapon != None ) {
             VM_withAmmo = DeusExAmmo( VM_fromWeapon.AmmoType );
+            VM_MoverDamageMult = VM_fromWeapon.VM_MoverDamageMult;
         }
     }
 
@@ -567,7 +569,7 @@ auto simulated state Flying
                     {
                         SetBase(Wall);
                         // Vanilla Matters
-                        Wall.TakeDamage(Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn(Owner), Wall.Location, MomentumTransfer * Normal(Velocity), damageType);
+                        Wall.TakeDamage(Damage * VM_MoverDamageMult, Pawn(Owner), Wall.Location, MomentumTransfer * Normal(Velocity), damageType);
                     }
             }
         }
@@ -623,7 +625,7 @@ auto simulated state Flying
                     // Vanilla Matters
                     if (Decoration(damagee) != none)
                     {
-                        damagee.TakeDamage(Damage * VM_fromWeapon.VM_MoverDamageMult, Pawn(Owner), HitLocation, MomentumTransfer * Normal(Velocity), damageType);
+                        damagee.TakeDamage(Damage * VM_MoverDamageMult, Pawn(Owner), HitLocation, MomentumTransfer * Normal(Velocity), damageType);
                     }
                     else
                     {
