@@ -153,10 +153,16 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         return;
 
     // enough EMP damage shuts down the robot
-    if (damageType == 'EMP')
+    // Vanilla Matters: Stunning damage also doubles as EMP
+    if (damageType == 'EMP' || damageType == 'Stunned')
     {
         oldEMPHitPoints = EMPHitPoints;
-        EMPHitPoints   -= Damage;
+        if (damageType == 'EMP') {
+            EMPHitPoints -= Damage;
+        }
+        else {
+            EMPHitPoints -= Damage / 2;
+        }
 
         // make smoke!
         if (EMPHitPoints <= 0)
