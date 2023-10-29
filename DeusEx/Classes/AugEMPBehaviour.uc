@@ -1,10 +1,12 @@
 class AugEMPBehaviour extends VMAugmentationBehaviour;
 
+var() float Cost;
 var() array<float> EMPResistance;
 var() array<int> Damage;
-var() float Length;
+var() float Range;
+var() float Cooldown;
 
-var ElectricityEmitter emitter;
+var float cooldownTimer;
 
 function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
     super.Refresh( p, i, m );
@@ -12,65 +14,55 @@ function Refresh( VMPlayer p, VMAugmentationInfo i, VMAugmentationManager m ) {
 }
 
 function bool Activate() {
-    if ( emitter == none ) {
-        CreateEmitter();
+    local DeusExProjectile projectile;
+    local Vector start;
+
+    if ( !Player.DrainEnergy( Cost ) ) {
+        Info.WarnNotEnoughEnergy( Cost );
+        return false;
     }
-    emitter.damageAmount = Damage[Info.Level];
-    SnapToPlayerView();
-    emitter.TurnOn();
-    return true;
+
+    Player.PlaySound(Sound'DeusExSounds.Weapons.ProdFire', SLOT_None, 0.6);
+    Player.PlaySound(Sound'BioElectricHiss', SLOT_None, 0.6,,, 0.5);
+
+    start = Player.Location;
+    start.Z += Player.BaseEyeHeight * 0.7;
+    projectile = Player.Spawn(class'AugEMPProjectile', Player,, start, Player.ViewRotation);
+    projectile.VM_fromWeapon = none;
+    projectile.VM_MoverDamageMult = 0;
+    projectile.Damage = Damage[Info.Level];
+    projectile.MaxRange = Range;
+    projectile.DrawScale = 0.2 + (0.15 * Info.Level);
+
+    cooldownTimer = Cooldown;
+
+    return false;
 }
 
-function bool Deactivate() {
-    if ( emitter != none ) {
-        emitter.TurnOff();
-    }
-    return true;
+function float GetCooldown() {
+    return cooldownTimer;
 }
 
 function float Tick( float deltaTime ) {
-    if ( !Info.IsActive ) {
-        return 0;
+    if ( cooldownTimer > 0 ) {
+        cooldownTimer -= deltaTime;
+        if ( cooldownTimer <= 0 ) {
+            cooldownTimer = 0;
+        }
     }
 
-    SnapToPlayerView();
     return super.Tick( deltaTime );
 }
 
 function OnLevelChanged( int oldLevel, int newLevel ) {
-    Player.CategoryModifiers.Modify( 'DamageResistanceMult', 'EMP', -default.EMPResistance[oldLevel] );
-    Player.CategoryModifiers.Modify( 'DamageResistanceMult', 'EMP', default.EMPResistance[newLevel] );
-}
-
-function CreateEmitter() {
-    local Vector location;
-
-    emitter = Player.Spawn( class'ElectricityEmitter', Player );
-    if ( emitter != none ) {
-        emitter.TurnOff();
-        emitter.bFlicker = false;
-        emitter.Length = Length;
-        emitter.randomAngle = 256;
-        emitter.Instigator = Player;
-        location = Player.Location;
-        location.Z += Player.BaseEyeHeight / 2;
-        emitter.SetLocation( location );
-        emitter.SetBase( Player );
-    }
-}
-
-function SnapToPlayerView() {
-    local Vector start, end;
-    local Rotator rotation;
-
-    rotation = Player.ViewRotation;
-    rotation.Pitch += 400;
-    emitter.SetRotation( rotation );
+    Player.CategoryModifiers.Modify( 'DamageResistanceMult', 'EMP', default.EMPResistance[newLevel] - default.EMPResistance[oldLevel] );
 }
 
 defaultproperties
 {
+     Cost=20
      EMPResistance=(0.4,0.8,1,1)
-     Damage=(4,8,16,32)
-     Length=400.000000
+     Damage=(10,20,40,80)
+     Range=400.000000
+     Cooldown=0.500000
 }
