@@ -2794,9 +2794,9 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
     }
 
     // Vanilla Matters: Backstab bonus is now granted when the pawn isn't suspecting, not when struck from behind.
-    // VM: Also apply to non-lethal damage types only.
+    // VM: Also apply to non-lethal weapon damage only.
     if ( damageType == 'KnockedOut' || damageType == 'Stunned' ) {
-        if ( !bDistressed || VM_stunDuration > 0 ) {
+        if ( VM_hitBy != none && (!bDistressed || VM_stunDuration > 0) ) {
             actualDamage *= 10;
         }
     }
