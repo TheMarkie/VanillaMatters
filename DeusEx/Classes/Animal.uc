@@ -320,6 +320,9 @@ function PlayDying(name damageType, vector hitLoc)
             PlayAnimPivot('DeathFront',, 0.1);
     }
 
+    bStunned = damageType == 'Stunned' || damageType == 'KnockedOut'
+        || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas';
+
     PlayDyingSound();
 }
 

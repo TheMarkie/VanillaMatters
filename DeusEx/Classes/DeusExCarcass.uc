@@ -65,16 +65,13 @@ function InitFor(Actor Other)
         VM_name = player.GetDisplayName( Other );
 
         // set as unconscious or add the pawns name to the description
-        if (!bAnimalCarcass)
-        {
-            // Vanilla Matters
-            if ( bNotDead ) {
-                itemName = msgNotDead;
-            }
-
-            // Vanilla Matters: Flip the order, we now display name first then concious state in brackets.
-            itemName = VM_name @ "(" $ itemName $ ")";
+        // Vanilla Matters
+        if ( bNotDead ) {
+            itemName = msgNotDead;
         }
+
+        // Vanilla Matters: Flip the order, we now display name first then concious state in brackets.
+        itemName = VM_name @ "(" $ itemName $ ")";
 
         Mass           = Other.Mass;
         Buoyancy       = Mass * 1.2;
@@ -88,7 +85,6 @@ function InitFor(Actor Other)
         // Will this carcass spawn flies?
         if (bAnimalCarcass)
         {
-            itemName = msgAnimalCarcass;
             if (FRand() < 0.2)
                 bGenerateFlies = true;
         }
@@ -156,9 +152,6 @@ function PostBeginPlay()
         Mesh = Mesh3;
         bNotDead = False;       // you will die in water every time
     }
-
-    if (bAnimalCarcass)
-        itemName = msgAnimalCarcass;
 
     MaxDamage = 0.8*Mass;
     SetScaleGlow();
