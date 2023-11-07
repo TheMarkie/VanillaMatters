@@ -232,6 +232,7 @@ var bool        VM_LoopFireAnimation;
 var localized string VM_msgInfoStun;                // Label for stunning weapons.
 var localized String VM_msgInfoHeadshot;            // Label the headshot multipler section.
 var localized string VM_msgInfoStability;
+var localized string VM_msgInfoMoverDamage;
 var localized string VM_msgInfoDefault;
 var localized string VM_msgInfoRPM;
 var localized String VM_msgFullClip;
@@ -2994,8 +2995,9 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     if ( mod != 1.0 ) {
+        dmg = dmg * mod;
         str = str @ BuildPercentString( mod - 1 );
-        str = str @ "=" @ int( dmg * mod );
+        str = str @ "=" @ dmg;
 
         // Vanilla Matters: Display the same number of shots afterwards.
         if ( Default.VM_ShotCount > 1 ) {
@@ -3070,15 +3072,15 @@ simulated function bool UpdateInfo(Object winObject)
 
     // Vanilla Matters: Max Range.
     if ( projClass != none ) {
-        dmg = projClass.default.MaxRange;
+        i = projClass.default.MaxRange;
     }
     else {
-        dmg = default.MaxRange;
+        i = default.MaxRange;
     }
-    str = int( dmg / 16.0 ) @ msgRangeUnit;
+    str = int( i / 16.0 ) @ msgRangeUnit;
     if ( HasRangeMod() ) {
         str = str @ BuildPercentString( ModMaxRange );
-        str = str @ "=" @ int( ( dmg * ( 1 + ModMaxRange ) ) / 16.0 ) @ msgRangeUnit;
+        str = str @ "=" @ int( ( i * ( 1 + ModMaxRange ) ) / 16.0 ) @ msgRangeUnit;
     }
 
     winInfo.AddInfoItem( msgInfoMaxRange, str, HasRangeMod() );
@@ -3086,6 +3088,12 @@ simulated function bool UpdateInfo(Object winObject)
     // Vanilla Matters: Headshot Multiplier.
     str = "x" $ FormatFloat( default.VM_HeadshotMult );
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
+
+    // Vanilla Matters: Mover damage/damage vs objects
+    if (damageType != 'Stunned' && damageType != 'TearGas') {
+        str = FormatFloat(VM_MoverDamageMult * 100, 0) $ "%" @ "=" @ int(VM_MoverDamageMult * dmg);
+        winInfo.AddInfoItem(VM_msgInfoMoverDamage, str);
+    }
 
     // mass
     winInfo.AddInfoItem(msgInfoMass, int( Default.Mass ) @ msgMassUnit);
@@ -4003,6 +4011,7 @@ defaultproperties
      VM_msgInfoStun="Stun duration:"
      VM_msgInfoHeadshot="Headshot:"
      VM_msgInfoStability="Stability:"
+     VM_msgInfoMoverDamage="vs Objects:"
      VM_msgInfoDefault="Default"
      VM_msgInfoRPM="RPM"
      VM_msgFullClip="You are already fully loaded"
