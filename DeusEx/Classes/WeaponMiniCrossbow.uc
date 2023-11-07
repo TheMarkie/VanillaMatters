@@ -55,7 +55,7 @@ defaultproperties
      bCanHaveModBaseAccuracy=True
      bCanHaveModReloadTime=True
      VM_HeadshotMult=5.000000
-     VM_MoverDamageMult=0.400000
+     VM_MoverDamageMult=0.200000
      VM_handsTexPos(0)=0
      AmmoName=Class'DeusEx.AmmoDartPoison'
      ReloadCount=4
