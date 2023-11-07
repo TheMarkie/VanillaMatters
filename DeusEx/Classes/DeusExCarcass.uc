@@ -94,6 +94,9 @@ function InitFor(Actor Other)
                 bGenerateFlies = true;
         }
 
+        // Vanilla Matters: Unconcious bodies should still provoke people.
+        bEmitCarcass = !bAnimalCarcass;
+
         if (Other.AnimSequence == 'DeathFront')
             Mesh = Mesh2;
 
