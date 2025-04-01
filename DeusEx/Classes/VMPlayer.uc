@@ -1626,10 +1626,13 @@ function bool GetModifiedDamage( int damage, name damageType, vector hitLocation
         newDamage *= CombatDifficulty;
     }
     // Make environmental damage scale with difficulty, emphasizing utility resistances.
-    else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation'
-        || damageType == 'PoisonGas'
-    ) {
-        newDamage *= ( CombatDifficulty / 2 ) + 0.5;
+    else if ( damageType == 'Burned' || damageType == 'Shocked' || damageType == 'Radiation' ) {
+        if ( CombatDifficulty > 1 ) {
+            newDamage *= 1 + ( CombatDifficulty / 4 );
+        }
+        else {
+            newDamage *= CombatDifficulty;
+        }
     }
     // Damage over Time types scale with difficulty
     else if (damageType == 'Poison') {
