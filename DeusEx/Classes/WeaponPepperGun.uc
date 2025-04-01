@@ -53,7 +53,7 @@ defaultproperties
      bAutomatic=True
      ShotTime=0.100000
      reloadTime=3.000000
-     HitDamage=7
+     HitDamage=5
      maxRange=100
      BaseAccuracy=0.600000
      AreaOfEffect=AOE_Sphere
