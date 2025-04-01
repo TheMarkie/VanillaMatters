@@ -13,6 +13,10 @@ var travel int VM_currentVisionLevel;               // Allow player to swap betw
 function ChargedPickupBegin( DeusExPlayer Player ) {
     Super.ChargedPickupBegin( Player );
 
+    if ( player.GetSkillLevel( 'SkillEnviro' ) > 1 ) {
+        VM_currentVisionLevel = 3;
+    }
+
     UpdateHUDDisplay( Player );
 }
 
@@ -41,6 +45,12 @@ function ExtraFunction( DeusExPlayer player ) {
     local int level;
 
     if ( !bIsActive ) {
+        return;
+    }
+
+    if ( player.GetSkillLevel( 'SkillEnviro' ) > 1 ) {
+        VM_currentVisionLevel = 3;
+        UpdateHUDDisplay( player );
         return;
     }
 
