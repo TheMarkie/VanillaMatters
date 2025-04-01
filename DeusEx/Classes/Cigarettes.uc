@@ -58,10 +58,6 @@ state Activated
                 P.TakeDamage( 2, P, P.Location, vect( 0,0,0 ), 'PoisonGas' );
             }
 
-            if ( Rand( 3 ) > 0 ) {
-                PlaySound( sound'MaleCough' );
-            }
-
             timesPuffed = timesPuffed + 1;
         }
     }
