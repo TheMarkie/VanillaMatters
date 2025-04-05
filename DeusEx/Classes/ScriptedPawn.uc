@@ -2371,6 +2371,7 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
     local bool bFearThisInjury;
 
     // Vanilla Matters
+    local float dist;
     local vector loc;
 
     if ((health > 0) && (instigatedBy != None) && (bLookingForInjury || bLookingForIndirectInjury))
@@ -2381,9 +2382,11 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
         bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
 
         // Vanilla Matters: Rewrite to add special rules.
-        if ( AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0
-            || VSize( instigatedBy.Location - Location ) <= 160
-            || ( SeekPawn == instigatedBy && damageType != 'PoisonEffect' ) ) {
+        dist = VSize( instigatedBy.Location - Location );
+        if ( dist <= 320
+            || ( damageType != 'PoisonEffect' && SeekPawn == instigatedBy )
+            || AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0
+        ) {
             if ( bHateThisInjury ) {
                 IncreaseAgitation( instigatedBy );
             }
@@ -5490,7 +5493,8 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
         if (pawnActor != None)
         {
             // Vanilla Matters: Rewrite to add special rules.
-            if ( AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, false, true, true ) > 0 ) {
+            if ( VSize( pawnActor.Location - Location ) <= 640
+                || AICanSee( pawnActor, ComputeActorVisibility( pawnActor ), true, false, true, true ) > 0 ) {
                 if ( bHateShot ) {
                     IncreaseAgitation( pawnActor );
                 }
@@ -5576,7 +5580,7 @@ function HandleLoudNoise(Name event, EAIEventState state, XAIParams params)
 // Vanilla Matters
 function HandleProjectiles( Name event, EAIEventState state, XAIParams params ) {
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse) {
-        if ( params.Visibility >= VisibilityThreshold ) {
+        if ( params.Visibility > 0 ) {
             if ( params.bestActor != none ) {
                 ReactToProjectiles( params.bestActor );
             }
@@ -10317,7 +10321,7 @@ State Seeking
 
         bValid = false;
         // Vanilla Matters: Keep seeking for some more time if we're after an enemy.
-        if ( SeekLevel > 0 || ( bSeekPostCombat && EnemyReadiness >= -6 ) )
+        if ( SeekLevel > 0 || ( bSeekPostCombat && EnemyReadiness > 0 ) )
         {
             if (bSeekLocation)
             {
@@ -13682,8 +13686,14 @@ Begin:
         GotoNextState();
     }
     else {
-        SetSeekLocation( SeekPawn, Location, SEEKTYPE_Guess );
-        GotoState( 'Seeking' );
+        if ( SeekPawn != none && VSize( SeekPawn.Location - Location ) <= 640 ) {
+            SetEnemy( SeekPawn );
+            HandleEnemy();
+        }
+        else {
+            SetSeekLocation( SeekPawn, Location, SEEKTYPE_Guess, true );
+            GotoState( 'Seeking' );
+        }
     }
 }
 
