@@ -12,6 +12,9 @@ var bool bScale;
 var bool bFade;
 var bool bFrozen;
 
+// Vanilla Matters
+var Vector VM_Velocity;      // Cause the smoke to also move in a specific direction
+
 // this seems to have to be here to load the damn smokepuff texture
 #exec OBJ LOAD FILE=Effects
 
@@ -28,6 +31,9 @@ auto simulated state Flying
 
         Velocity.X = OrigVel.X + 2 - FRand() * 5;
         Velocity.Y = OrigVel.Y + 2 - FRand() * 5;
+        
+        // Vanilla Matters
+        Velocity += VM_Velocity;
 
         if (bGravity)
             Velocity.Z += Region.Zone.ZoneGravity.Z * deltaTime * 0.2;

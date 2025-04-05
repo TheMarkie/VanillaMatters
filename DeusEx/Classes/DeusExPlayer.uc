@@ -7906,7 +7906,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         return;
     }
 
-    bPlayAnim = True;
+    // Vanilla Matters: Self damage that is too low doesn't play a hit animation
+    bPlayAnim = actualDamage > 5 || instigatedBy != self;
 
     // if we're burning, don't play a hit anim when taking burning damage
     if (damageType == 'Burned')

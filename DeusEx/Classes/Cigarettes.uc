@@ -21,15 +21,14 @@ state Activated
         local Pawn P;
         local DeusExPlayer player;
 
-        local vector loc;
-        local rotator rot;
+        local vector loc, dir;
         local SmokeTrail puff;
 
         P = Pawn( user );
         player = DeusExPlayer( user );
 
         if ( P != None ) {
-            if ( ( player != None && ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) ) || timesPuffed >= 10 ) {
+            if ( ( player != None && ( player.HeadRegion.Zone.bWaterZone || player.UsingChargedPickup( class'Rebreather' ) ) ) || timesPuffed >= 9 ) {
                 SetTimer( 3.0, false );
 
                 bActive = false;
@@ -42,16 +41,17 @@ state Activated
                 }
             }
 
+            dir = Vector( P.ViewRotation );
             loc = user.Location;
-            rot = user.Rotation;
-            loc += 2.0 * user.CollisionRadius * vector( P.ViewRotation );
-            loc.Z += user.CollisionHeight * 0.9;
-            puff = Spawn( class'SmokeTrail', user,, loc, rot );
+            loc += 0.9 * user.CollisionRadius * dir;
+            loc.Z += user.CollisionHeight * 0.8;
+            puff = Spawn( class'SmokeTrail', user,, loc, user.Rotation );
 
             if (puff != None)
             {
-                puff.DrawScale = 1.0;
+                puff.DrawScale = 0.4;
                 puff.origScale = puff.DrawScale;
+                puff.VM_Velocity = dir * 20;
             }
 
             if ( timesPuffed % 2 == 0 ) {
