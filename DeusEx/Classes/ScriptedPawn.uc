@@ -2369,7 +2369,7 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 
         // Vanilla Matters: Rewrite to add special rules.
         dist = VSize( instigatedBy.Location - Location );
-        if ( dist <= 320
+        if ( dist <= 160
             || ( damageType != 'PoisonEffect' && SeekPawn == instigatedBy )
             || AICanSee( instigatedBy, ComputeActorVisibility( instigatedBy ), true, false, true, true ) > 0
         ) {
