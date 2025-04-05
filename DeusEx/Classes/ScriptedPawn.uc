@@ -1936,7 +1936,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
         }
     }
 
-    UpdateReactionLevel( EnemyReadiness > 0 || GetStateName() == 'Seeking' || bDistressed, deltaTime );
+    UpdateReactionLevel( EnemyReadiness > ( VisibilityThreshold * 10 ) || GetStateName() == 'Seeking' || bDistressed, deltaTime );
 
     if ( !valid ) {
         CycleCumulative = 0;
