@@ -83,12 +83,8 @@ function InitFor(Actor Other)
         SetScaleGlow();
 
         // Will this carcass spawn flies?
-        if (bAnimalCarcass)
-        {
-            if (FRand() < 0.2)
-                bGenerateFlies = true;
-        }
-        else if (!Other.IsA('Robot') && !bNotDead)
+        // Vanilla Matters: Animal unconcious bodies no longer spawn flies
+        if (!Other.IsA('Robot') && !bNotDead)
         {
             if (FRand() < 0.1)
                 bGenerateFlies = true;
