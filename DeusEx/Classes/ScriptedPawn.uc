@@ -416,13 +416,9 @@ var      float    walkAnimMult;
 var      float    runAnimMult;
 
 // Vanilla Matters
-var DeusExWeapon VM_hitBy;          // The weapon that the pawn was hit by. Only used by the player.
-
+var DeusExWeapon VM_hitBy;      // The weapon that the pawn was hit by. Only used by the player.
 var float VM_damageTaken;       // Store the damage to be used after TakeDamageBase where it's not possible to just pass it to. Reset after GotoDisabledState.
-
-var float VM_stunDuration;          // Time being stunned.
-
-var float VM_test;
+var float VM_stunDuration;      // Time being stunned.
 
 native(2102) final function ConBindEvents();
 
@@ -1747,16 +1743,14 @@ function float ComputeActorVisibility(actor seeActor)
     local float visibility;
 
     // Vanilla Matters
-    local float mult, pvis;
     local DeusExPlayer player;
 
-    // Vanilla Matters: Allow player to slip under a detection threshold.
     player = DeusExPlayer( seeActor );
     if ( player != none ) {
-        pvis = player.CalculatePlayerVisibility( self );
-        mult = 1 - ( ( player.CombatDifficulty - 1 ) * 0.15 );
-
-        visibility = FClamp( ( pvis - ( VisibilityThreshold * mult ) ) * 10, 0, 1 );
+        visibility = player.CalculatePlayerVisibility( self ) * 10;
+        if ( player.CombatDifficulty > 1 ) {
+            visibility += FMax( 1 - ( VSize( player.Location - Location ) / 320 ), 0 ) * ( player.CombatDifficulty * 0.125 );
+        }
     }
     else {
         visibility = 1.0;
@@ -1807,8 +1801,6 @@ function UpdateReactionLevel(bool bRise, float deltaSeconds)
 // Vanilla Matters
 function Pawn CheckCycle() {
     local Pawn cycleEnemy;
-    local DeusExPlayer player;
-    local float mult;
 
     cycleEnemy = None;
 
@@ -1821,13 +1813,7 @@ function Pawn CheckCycle() {
     else {
         CycleTimer = 3;
 
-        mult = 1;
-        player = DeusExPlayer( CycleCandidate );
-        if ( player != none ) {
-            mult += ( player.CombatDifficulty - 1 ) * 0.2;
-        }
-
-        EnemyReadiness += CycleCumulative * CyclePeriod * mult;
+        EnemyReadiness += CycleCumulative * CyclePeriod;
 
         if ( EnemyReadiness >= 1.0 ) {
             EnemyReadiness = 1.0;
@@ -1950,7 +1936,7 @@ function bool CheckEnemyPresence( float deltaTime, bool checkPlayer, bool checkO
         }
     }
 
-    UpdateReactionLevel( EnemyReadiness >= ( VisibilityThreshold * 10 ) || GetStateName() == 'Seeking' || bDistressed, deltaTime );
+    UpdateReactionLevel( EnemyReadiness > 0 || GetStateName() == 'Seeking' || bDistressed, deltaTime );
 
     if ( !valid ) {
         CycleCumulative = 0;
