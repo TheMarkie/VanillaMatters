@@ -11882,7 +11882,7 @@ State Alerting
         SetupWeapon(false);
         SetDistress(false);
         EnemyReadiness = 1.0;
-        ReactionLevel  = 1.0;
+        // Vanilla Matters: Alerting state no longer causes AI to skip being startled
         EnableCheckDestLoc(false);
     }
 
@@ -13654,7 +13654,7 @@ state TakingHit
         SetDistress(true);
         TakeHitTimer = 2.0;
         EnemyReadiness = 1.0;
-        ReactionLevel  = 1.0;
+        // Vanilla Matters: TakingHit state no longer causes AI to skip being startled
         bInTransientState = true;
         EnableCheckDestLoc(false);
     }
