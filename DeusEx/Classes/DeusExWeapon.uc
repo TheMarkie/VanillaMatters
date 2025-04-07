@@ -198,6 +198,7 @@ var() bool      VM_bAlwaysAccurate;             // Accuracy does not affect this
 var() bool      VM_pumpAction;                  // Reloads one by one.
 var() int       VM_ShotCount;                   // How many shots come out for each unit of ammo. Applies to both projectile and trace weapons.
 
+var() int       VM_PlayerHitDamage;             // Base damage vs player.
 var() float     VM_MoverDamageMult;             // Damage multiplier against movers like doors and lids.
 
 var() float     VM_HeadshotMult;
@@ -2706,7 +2707,12 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
                         sp.VM_hitBy = self;
                     }
 
-                    Other.TakeDamage( HitDamage * mult, Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+                    if ( Level.NetMode == NM_Standalone && VM_PlayerHitDamage > 0 && Other.IsA( 'DeusExPlayer' ) ) {
+                        Other.TakeDamage( VM_PlayerHitDamage * mult, Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+                    }
+                    else {
+                        Other.TakeDamage( HitDamage * mult, Pawn( Owner ), HitLocation, 1000.0 * X, damageType );
+                    }
                 }
             }
 

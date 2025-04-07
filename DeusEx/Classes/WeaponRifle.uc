@@ -11,6 +11,7 @@ defaultproperties
      ShotTime=1.200000
      reloadTime=2.000000
      HitDamage=50
+     VM_PlayerHitDamage=40
      maxRange=8000
      BaseAccuracy=0.700000
      bCanHaveScope=True

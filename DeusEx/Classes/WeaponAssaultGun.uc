@@ -34,6 +34,7 @@ defaultproperties
      ShotTime=0.125000
      reloadTime=3.000000
      HitDamage=12
+     VM_PlayerHitDamage=8
      maxRange=2400
      BaseAccuracy=0.700000
      AIFireDelay=0.075000

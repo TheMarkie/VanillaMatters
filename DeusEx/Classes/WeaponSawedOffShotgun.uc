@@ -10,6 +10,7 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.300000
      reloadTime=0.400000
+     VM_PlayerHitDamage=8
      maxRange=2400
      BaseAccuracy=0.650000
      AmmoNames(0)=Class'DeusEx.AmmoShell'
