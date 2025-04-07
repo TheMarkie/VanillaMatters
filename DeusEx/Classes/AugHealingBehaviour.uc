@@ -19,7 +19,6 @@ function float Tick( float deltaTime ) {
     if ( Timer >= 1 ) {
         if ( Player.Health < 100 && Player.DrainEnergy( Costs[Info.Level] ) ) {
             Player.HealPlayer( HealAmount[Info.Level], false );
-            Player.ClientFlash( 0.5, vect( 0, 0, 500 ) );
         }
         Timer -= 1;
     }
