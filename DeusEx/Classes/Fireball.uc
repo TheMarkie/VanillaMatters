@@ -57,7 +57,7 @@ defaultproperties
      Damage=5.000000
      MomentumTransfer=500
      ExplosionDecal=Class'DeusEx.BurnMark'
-     LifeSpan=0.500000
+     LifeSpan=1.000000
      DrawType=DT_Sprite
      Style=STY_Translucent
      Texture=FireTexture'Effects.Fire.flame_b'
