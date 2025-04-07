@@ -8,7 +8,7 @@ defaultproperties
      LowAmmoWaterMark=12
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=3.000000
-     HitDamage=35
+     HitDamage=30
      BaseAccuracy=0.650000
      bCanHaveScope=True
      ScopeFOV=20
