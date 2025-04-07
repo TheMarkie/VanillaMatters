@@ -8,7 +8,7 @@ defaultproperties
      Icon=Texture'DeusEx.VMUI.AugIconMed'
      SmallIcon=Texture'DeusEx.VMUI.AugIconMed_Small'
      UpgradeName="AutoMed"
-     Description="The AutoMed module installed in lower torso deploys smart neural sensors to detect medical needs or critical injuries and reacts appropriately by administering built-in corrective treatments or the agent's own medical supply.|n|nWhen head or torso goes below 30 HP: Automatically administers a MedKit. Consume a MedKit, doesn't trigger if there's none.|n|nWhen a limb is fully injured (0 HP): Automatically restores to 20 HP. Has a cooldown of 10 seconds.|nLEVEL 2: Slowly heals damaged limbs over time up to a threshold.|nCan only heal one limb at a time.|n|nLimb Heal: 10 per second|nLimb Heal Threshold: 40 / 40 / 60 / 80 HP"
+     Description="The AutoMed module installed in lower torso deploys smart neural sensors to detect critical injuries and reacts appropriately by administering corrective treatments.|n|nWhen head or torso goes below 30 HP: Automatically administers a MedKit. Requires a MedKit.|n|nPassively heals damaged limbs up to a threshold. One limb at a time.|nLimb Heal: 10 per second|nLimb Heal Threshold: 20 / 40 / 60 / 80 HP|n|nLEVEL 2: When a limb is fully injured (0 HP): It is healed to 30 HP.|nCooldown: 10 seconds.|n|nLEVEL 3: When you take fatal damage to the head or torso: They are healed to 40 HP.|nCooldown: 30 seconds|n|nLEVEL 4: When you take fatal damage: Head and torso are fully healed."
      InstallLocation=AugmentationLocationTorso
      IsPassive=True
      Rates=(0,0,0,0)

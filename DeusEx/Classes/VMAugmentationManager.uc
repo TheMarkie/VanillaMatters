@@ -8,6 +8,7 @@ var travel VMAugmentationInfo FirstAugmentationInfo;
 var transient array<VMAugmentationBehaviour> ProcessMoveHandlers;
 var transient array<VMAugmentationBehaviour> ParseLeftClickHandlers;
 var transient array<VMAugmentationBehaviour> TakeDamageHandlers;
+var transient array<VMAugmentationBehaviour> OnDamageTakenHandlers;
 
 var travel int InstallLocationCounts[7];
 var int InstallLocationMaxCounts[7];
@@ -132,6 +133,19 @@ function bool HandleTakeDamage( out int damage, name damageType, Pawn attacker, 
     }
 
     return handled;
+}
+
+function HandleOnDamageTaken( int damage, name damageType, Pawn attacker, Vector hitLocation ) {
+    local int i, count;
+    local VMAugmentationBehaviour behaviour;
+
+    count = #OnDamageTakenHandlers;
+    for ( i = 0; i < count; i++ ) {
+        behaviour = OnDamageTakenHandlers[i];
+        if ( behaviour.Info.IsActive ) {
+            behaviour.OnDamageTaken( damage, damageType, attacker, hitLocation );
+        }
+    }
 }
 
 //==============================================

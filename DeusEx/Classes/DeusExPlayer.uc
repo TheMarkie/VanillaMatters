@@ -7798,6 +7798,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     // Vanilla Matters
     local float origHT;
+    local VMAugmentationManager augSystem;
 
     origHT = HealthHead + HealthTorso + HealthArmLeft + HealthArmRight + HealthLegLeft + HealthLegRight;
 
@@ -7839,7 +7840,9 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     // Vanilla Matters
     actualDamage = Damage;
-    if ( GetAugmentationSystem().HandleTakeDamage( actualDamage, damageType, instigatedBy, HitLocation ) ) {
+
+    augSystem = GetAugmentationSystem();
+    if ( augSystem.HandleTakeDamage( actualDamage, damageType, instigatedBy, HitLocation ) ) {
         return;
     }
     bDamageGotReduced = actualDamage < Damage;
@@ -8104,6 +8107,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         else
             PlayAnim('WaterHitTorso',,0.1);
     }
+
+    augSystem.HandleOnDamageTaken( actualDamage, damageType, instigatedBy, HitLocation );
 
     GenerateTotalHealth();
 

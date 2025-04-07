@@ -17,11 +17,11 @@ event DrawWindow( GC gc ) {
 
     if ( Info != none ) {
         cooldown = Info.GetCooldown();
-        if ( Info.IsActive ) {
-            color = ColorEnabled;
-        }
-        else if ( cooldown > 0 ) {
+        if ( cooldown > 0 ) {
             color = ColorDisabled;
+        }
+        else if ( Info.IsActive ) {
+            color = ColorEnabled;
         }
         else {
             color = colItemIcon;
@@ -30,8 +30,13 @@ event DrawWindow( GC gc ) {
         gc.SetTileColor( color );
         gc.DrawTexture( 2, 2, 32, 32, 0, 0, icon );
 
-        if ( !Info.IsActive && cooldown > 0 ) {
-            str = FormatFloat( cooldown );
+        if ( cooldown > 0 ) {
+            if ( cooldown < 10 ) {
+                str = FormatFloat( cooldown );
+            }
+            else {
+                str = string( int( cooldown ) );
+            }
             gc.SetFont( Font'FontMenuTitle' );
             gc.SetTextColor( ColorCooldown );
             gc.GetTextExtent( 0, w, h, str );
