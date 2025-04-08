@@ -387,31 +387,30 @@ function ZoneChange(ZoneInfo NewZone)
 
 // Vanilla Matters: Function to scale impact damage based on material.
 function float GetImpactDamageMaterialMult() {
-    local float mult;
-
-    if ( fragType == class'GlassFragment' ) {
-        mult = 0.75;
-    }
-    else if ( fragType == class'MetalFragment' ) {
-        mult = 0.9;
-    }
-    else if ( fragType == class'PaperFragment' ) {
-        mult = 0.15;
+    if ( fragType == class'PaperFragment' ) {
+        return 0.4;
     }
     else if ( fragType == class'PlasticFragment' ) {
-        mult = 0.3;
-    }
-    else if ( fragType == class'WoodFragment' ) {
         return 0.6;
     }
-    else if ( fragType == class'Rockchip' ) {
-        mult = 1.2;
+    else if ( fragType == class'WoodFragment' ) {
+        return 0.8;
     }
-    else {
-        mult = 1.0;
+    else if ( fragType == class'Rockchip' ) {
+        return 1.2;
     }
 
-    return mult;
+    return 1.0;
+}
+
+function name GetImpactDamageType() {
+    if ( fragType == class'PaperFragment'
+        || fragType == class'PlasticFragment'
+        || fragType == class'WoodFragment' ) {
+        return 'KnockedOut';
+    }
+
+    return 'Shot';
 }
 
 // ----------------------------------------------------------------------
@@ -430,6 +429,7 @@ function Bump(actor Other)
     local Vector HitLocation;
     local float realVelocity, kEnergy, impactDamage, mult;
     local Pawn pawnOther;
+    local name damageType;
 
     player = DeusExPlayer(Other);
     pawnOther = Pawn( Other );
@@ -462,8 +462,9 @@ function Bump(actor Other)
         // VM: Damage formula based on real physics formula for impact force.
         realVelocity = ( VSize( Velocity ) / 16 ) * 0.3048;
         kEnergy = 0.5 * ( Mass * 0.6 ) * ( realVelocity * realVelocity );
-        mult = GetImpactDamageMaterialMult();
         // VM: Damage scales with deco material.
+        mult = GetImpactDamageMaterialMult();
+        damageType = GetImpactDamageType();
         impactDamage = kEnergy * 0.01 * mult;
 
         // VM: Not worth doing damage below 10.
@@ -475,8 +476,8 @@ function Bump(actor Other)
                 HitLocation = Other.Location;
             }
 
-            Other.TakeDamage( impactDamage, Instigator, HitLocation, Velocity, 'Shot' );
-            TakeDamage( impactDamage, pawnOther, Location, Velocity, 'Shot' );
+            Other.TakeDamage( impactDamage, Instigator, HitLocation, Velocity, damageType );
+            TakeDamage( impactDamage, pawnOther, Location, Velocity, damageType );
 
             // VM: Sends the target flying based on impact velocity, modified by the ratio between two masses and their materials.
             Other.Velocity = Other.Velocity + ( ( Velocity + vect( 0, 0, 220 ) ) * ( ( Mass * mult ) / ( Other.Mass * 0.2 ) ) );
