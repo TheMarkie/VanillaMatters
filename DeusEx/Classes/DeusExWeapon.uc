@@ -236,6 +236,7 @@ var localized string VM_msgInfoStability;
 var localized string VM_msgInfoMoverDamage;
 var localized string VM_msgInfoDefault;
 var localized string VM_msgInfoRPM;
+var localized string VM_msgInfoAttackSpeed;
 var localized String VM_msgFullClip;
 var localized String VM_msgNoAmmo;
 var localized string VM_msgFromWeapon;
@@ -2070,7 +2071,8 @@ simulated function PlaySelectiveFiring()
             LoopAnim( anim,, 0.1 );
         }
         else {
-            PlayAnim( anim,, 0.05 );
+            rnd = 1 - GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
+            PlayAnim( anim,, 0.05 * rnd );
         }
     }
     else if ( Role == ROLE_Authority )
@@ -3076,6 +3078,13 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem( msgInfoReload, str, mod != 0 );
     }
 
+    // Vanilla Matters: Melee Attack Speed
+    if ( bHandToHand ) {
+        mod = GetGlobalModifierValue( 'MeleeAttackSpeedBonus' );
+        str = int( ( 1 + mod ) * 100 ) $ "%";
+        winInfo.AddInfoItem( VM_msgInfoAttackSpeed, str, mod != 0 );
+    }
+
     // Vanilla Matters: Max Range.
     if ( projClass != none ) {
         i = projClass.default.MaxRange;
@@ -4020,6 +4029,7 @@ defaultproperties
      VM_msgInfoMoverDamage="vs Objects:"
      VM_msgInfoDefault="Default"
      VM_msgInfoRPM="RPM"
+     VM_msgInfoAttackSpeed="Attack Speed:"
      VM_msgFullClip="You are already fully loaded"
      VM_msgNoAmmo="No ammo left to reload"
      VM_msgFromWeapon="from the"
