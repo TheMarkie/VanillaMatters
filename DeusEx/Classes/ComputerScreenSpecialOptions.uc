@@ -301,5 +301,5 @@ defaultproperties
      textureCols=2
      bAlwaysCenter=True
      ComputerNodeFunctionLabel="SpecialOptions"
-     VM_timeCost=8.000000
+     VM_timeCost=7.000000
 }
