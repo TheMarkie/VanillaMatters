@@ -2474,8 +2474,8 @@ simulated function Projectile ProjectileFire( class<projectile> ProjClass, float
 
     for ( i = 0; i < VM_ShotCount; i++ ) {
         if ( i > 0 ) {
-            AdjustedAim.Yaw += Rand( 256 ) - 128;
-            AdjustedAim.Pitch += Rand( 256 ) - 128;
+            AdjustedAim.Yaw += Rand( 400 ) - 200;
+            AdjustedAim.Pitch += Rand( 400 ) - 200;
         }
 
         if (( Level.NetMode == NM_Standalone ) || ( Owner.IsA('DeusExPlayer') && DeusExPlayer(Owner).PlayerIsListenClient()) )
