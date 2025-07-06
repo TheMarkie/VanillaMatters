@@ -62,7 +62,7 @@ function CalcTrace(float deltaTime)
         if ((HitActor != None) && (lastDamageTime >= damageTime))
         {
             HitActor.TakeDamage(damageAmount, Instigator, HitLocation, vect(0,0,0), 'Shocked');
-            lastDamageTime = damageTime;
+            lastDamageTime -= damageTime;
         }
 
         if (LaserIterator(RenderInterface) != None)
