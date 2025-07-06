@@ -73,10 +73,6 @@ function FirstFrame()
             if ( ft.Name == 'FlagTrigger17' ) {
                 ft.Event = '';
             }
-            // Vanilla Matters: Fix Paul being announced dead when exiting through the window.
-            else if ( ft.Name == 'FlagTrigger0' ) {
-                ft.Destroy();
-            }
         }
     }
     // Vanilla Matters: There's no code to spawn Ford in vanilla though he's still in the map, maybe he was never intended to be spawned? But he's functional so let's do it anyway.
@@ -99,25 +95,32 @@ function PreTravel()
 {
     // Vanilla Matters
     local ScriptedPawn sp;
+    local PaulDentonCarcass carcass;
 
-    local bool raidCleared;
+    local bool paulAlive, paulRescued;
 
     // Vanilla Matters: Keep track of Paul's actual status to set flags appropriately.
     if ( localURL == "04_NYC_HOTEL" ) {
         if ( flags.GetBool( 'M04RaidDone' ) ) {
-            if ( !flags.GetBool( 'PaulDenton_Dead' ) ) {
-                raidCleared = true;
+            paulAlive = true;
+            if ( flags.GetBool( 'PaulDenton_Dead' ) ) {
+                foreach AllActors( class'PaulDentonCarcass', carcass ) {
+                    paulAlive = false;
+                    break;
+                }
+            }
+
+            paulRescued = true;
+            if ( paulAlive ) {
                 foreach AllActors( class'ScriptedPawn', sp ) {
                     if ( sp.IsA( 'UNATCOTroop' ) || sp.IsA( 'MIB' ) ) {
-                        raidCleared = false;
+                        paulRescued = false;
+                        break;
                     }
                 }
+            }
 
-                flags.SetBool( 'VM_PaulRescued', raidCleared, true, 5 );
-            }
-            else {
-                flags.SetBool( 'VM_PaulRescued', false, true, 5 );
-            }
+            flags.SetBool( 'VM_PaulRescued', paulAlive && paulRescued, true, 5 );
         }
     }
 
@@ -189,19 +192,6 @@ function Timer()
         }
 
         // Vanilla Matters: Moved the raid start check to Tick.
-
-        // make the MIBs mortal
-        if (!flags.GetBool('MS_MIBMortal'))
-        {
-            if (flags.GetBool('TalkedToPaulAfterMessage_Played'))
-            {
-                foreach AllActors(class'ScriptedPawn', pawn)
-                    if (pawn.IsA('MIB'))
-                        pawn.bInvincible = False;
-
-                flags.SetBool('MS_MIBMortal', True,, 5);
-            }
-        }
 
         // unhide the correct JoJo
         if (!flags.GetBool('MS_JoJoUnhidden') &&
@@ -343,6 +333,10 @@ function Tick( float deltaTime ) {
                 foreach AllActors( class'ScriptedPawn', pawn ) {
                     if ( pawn.IsA( 'UNATCOTroop' ) || pawn.IsA( 'MIB' ) ) {
                         pawn.EnterWorld();
+
+                        if ( pawn.IsA( 'MIB' ) ) {
+                            pawn.bInvincible = False;
+                        }
                     }
                     else if ( pawn.IsA( 'SandraRenton' ) || pawn.IsA( 'GilbertRenton' ) || pawn.IsA( 'HarleyFilben' ) ) {
                         pawn.LeaveWorld();
@@ -359,6 +353,7 @@ function Tick( float deltaTime ) {
                 }
 
                 flags.SetBool( 'M04RaidTeleportDone', True,, 5 );
+                flags.SetBool('MS_MIBMortal', True,, 5);
             }
             else {
                 foreach AllActors( class'PaulDenton', Paul ) {
