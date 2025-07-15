@@ -3013,14 +3013,7 @@ simulated function bool UpdateInfo(Object winObject)
         }
     }
 
-    // Vanilla Matters: Stunning weapons have their "damage" label renamed to "stun duration".
-    damageType = WeaponDamageType();
-    if ( damageType != 'Stunned' && damageType != 'TearGas' ) {
-        winInfo.AddInfoItem( msgInfoDamage, str, mod != 1.0 );
-    }
-    else {
-        winInfo.AddInfoItem( VM_msgInfoStun, str, mod != 1.0 );
-    }
+    winInfo.AddInfoItem( msgInfoDamage, str, mod != 1.0 );
 
     // Vanilla Matters: Skip these info sections if the weapon is melee or non-gun.
     if ( !bHandToHand && default.ReloadCount > 0 ) {
@@ -3105,9 +3098,10 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddInfoItem( VM_msgInfoHeadshot, str );
 
     // Vanilla Matters: Mover damage/damage vs objects
-    if (damageType != 'Stunned' && damageType != 'TearGas') {
-        str = FormatFloat(VM_MoverDamageMult * 100, 0) $ "%" @ "=" @ int(VM_MoverDamageMult * dmg);
-        winInfo.AddInfoItem(VM_msgInfoMoverDamage, str);
+    damageType = WeaponDamageType();
+    if ( damageType != 'Stunned' && damageType != 'TearGas' ) {
+        str = FormatFloat( VM_MoverDamageMult * 100, 0 ) $ "%" @ "=" @ int( VM_MoverDamageMult * dmg );
+        winInfo.AddInfoItem( VM_msgInfoMoverDamage, str );
     }
 
     // mass

@@ -342,8 +342,8 @@ function SpawnTearGas()
                 gas.bFloating = True;
             gas.Instigator = Instigator;
 
-            // Vanilla Matters: Use damage to scale lifespan, which in turn equals to total stun duration.
-            gas.LifeSpan = Damage - gas.Damage;
+            // Vanilla Matters: Tear gas has a fixed duration
+            gas.LifeSpan = 15f;
         }
 
         // Vanilla Matters: Remove RNG from gas cloud spawning, making gas grenades always spawn the same amount of clouds based on blastRadius.

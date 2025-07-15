@@ -2778,7 +2778,7 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
     // if the pawn is stunned, damage is 4X
 
     // Vanilla Matters
-    if ( VM_stunDuration > 0 && damageType != 'Stunned' ) {
+    if ( VM_stunDuration > 0 && damageType != 'TearGas' && damageType != 'HalonGas' && damageType != 'Stunned' ) {
         actualDamage *= 4;
     }
 
@@ -2797,8 +2797,8 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
     else if (Inventory != None) //then check if carrying armor
         actualDamage = Inventory.ReduceDamage(actualDamage, DamageType, HitLocation);
 
-    // gas, EMP and nanovirus do no damage
-    if (damageType == 'TearGas' || damageType == 'EMP' || damageType == 'NanoVirus')
+    // Vanilla Matters: EMP and nanovirus do no damage but tear gas does
+    if ( damageType == 'EMP' || damageType == 'NanoVirus' )
         actualDamage = 0;
 
     return actualDamage;
@@ -3380,7 +3380,7 @@ function GotoDisabledState( name damageType, EHitLocation hitPos ) {
         return;
     }
     else if ( damageType == 'TearGas' || damageType == 'HalonGas' || damageType == 'Stunned' ) {
-        VM_stunDuration = FMax( VM_damageTaken, VM_stunDuration );
+        VM_stunDuration = FClamp( VM_stunDuration + ( VM_damageTaken * 0.5 ), VM_damageTaken, 15 );
 
         if ( damageType == 'Stunned' ) {
             if ( !IsInState( 'Stunned' ) ) {
@@ -4939,9 +4939,10 @@ function PlayDying(name damageType, vector hitLoc)
     }
 
     // don't scream if we are stunned
-    // Vanilla Matters: Add in HalonGas as a non-lethal damage source.
+    // Vanilla Matters: Add in HalonGas and TearGas as non-lethal damage sources.
     if ( damageType == 'Stunned' || damageType == 'KnockedOut'
-        || damageType == 'Poison' || damageType == 'PoisonEffect' || damageType == 'HalonGas'
+        || damageType == 'Poison' || damageType == 'PoisonEffect'
+        || damageType == 'HalonGas' || damageType == 'TearGas'
     ) {
         bStunned = True;
         if (bIsFemale)

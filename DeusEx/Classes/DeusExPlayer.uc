@@ -8141,7 +8141,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             damageAttitudeTo(instigatedBy);
 
         // Vanilla Matters: Self damage that is too low doesn't cause distress
-        if ( actualDamage > 5 || instigatedBy != self ) {
+        if ( actualDamage > 5 || damageType == 'TearGas' || instigatedBy != self ) {
             PlayDXTakeDamageHit(actualDamage, hitLocation, damageType, momentum, bDamageGotReduced);
             AISendEvent('Distress', EAITYPE_Visual);
         }
