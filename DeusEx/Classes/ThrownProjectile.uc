@@ -599,6 +599,12 @@ simulated function BeginPlay()
 
     Super.BeginPlay();
 
+    // Vanilla Matters: Grenades have less fuse time if used by the player
+    aplayer = DeusExPlayer( Owner );
+    if ( aplayer != none ) {
+        fuseLength *= 0.5;
+    }
+
     Velocity = Speed * Vector(Rotation);
     RotationRate = RotRand(True);
     SetTimer(fuseLength, False);
@@ -607,7 +613,6 @@ simulated function BeginPlay()
     // What team is the owner if in team game
     if (( Level.NetMode != NM_Standalone ) && (Role == ROLE_Authority))
     {
-        aplayer = DeusExPlayer(Owner);
         if (( aplayer != None ) && ( TeamDMGame(aplayer.DXGame) != None ))
             team = aplayer.PlayerReplicationInfo.team;
     }
